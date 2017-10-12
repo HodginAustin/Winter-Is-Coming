@@ -1,0 +1,171 @@
+\documentclass[letterpaper,10pt,draftclsnofoot,onecolumn]{article}
+
+\usepackage{titling}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{geometry}
+\geometry{textheight=9.25in, textwidth=6.75in} % 0.75" margins
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{cite}
+\usepackage{setspace}
+
+\singlespacing
+
+
+\title{RGB LED Indoor Plant Growing\\\large Problem Statement - CS Capstone Fall 2017}
+\author{Prepared by: Maximillian Schmidt}
+\date{\today}
+
+
+% pdftotext writeup.pdf - | wc -w
+\begin{document}
+
+	% Title page
+	\begin{titlingpage}
+		\maketitle
+		\begin{abstract}
+			This project is defined as creating a system that controls RGB(Red-Green-Blue) LEDs(Light Emitting Diodes) to effectively control indoor plant growth during the winter season in Oregon.  Oregon's winters are a hostile environment to grow specialty plants such as herbs, spices, or foreign plants.  The conditions outside will be much colder, darker, and humid than the summer months.  These plants are not expected to grow well or even survive in such conditions.  Bringing the plants indoors to a more friendly and managable environment can prove to be a difficult task.  Existing indoor light systems can be expensive, and difficult to customize and use.  Research provided to the project by the client has shown that some plants grow differently under different wavelengths(colors) of light.  The project will aim to produce a system that can control the color, intensity, and schedule of a set of RGB LEDs in a user friendly manner.  With custom control over the growing conditions, the plants will be allowed to grow well, while at the same time reducing the impact on the user's busy life.
+\\
+\\  
+The developed system will include a microprocessor that will manipulate the color, intensity, and schedule of the RGB LEDs.  Along side this hardware, the development of an intuitive user interface will allow an end user to interact with the system with minimal physical interaction.  The project is simple at its core, but many addtional features have been developed to increase functionality and end useability.  
+		\end{abstract}
+	\end{titlingpage}
+
+	% Document body
+	\section*{Definition \& Description}
+	The changing of the seasons is inevitable in Oregon, and with it comes the hardships of growing anything outside. Variables such as temperatures drop significantly, adequate light is a commodity, and there is always a surplus of rain.  Herbs, spices, and plants that call the more mid-latitudes home do not thrive in these conditions.  In fact most cannot survive in these condtions.
+\\
+\\
+	Despite these inadequate conditions, there are some cooks and enthusiasts that would still like to grow these plants all year.  To do so, these plants must be grown in an controlled environment, and the most abundant structure that houses these conditions is one's own home.   So it would seem like the solution to year-round plant growing would be to simply bring the plants indoors.  However, the task is much easier said than done.
+\\
+\\
+	The list of benefits of bringing plants indoors during the winter is shorter than one would expect.  Granted, indoors the temperature and humidity stay relatively consistent, but when it comes to light and water, humans somewhat suffer at the expense of the plants if they plan to conform to their new roommates.  Plants are expecting light on an ancient schedule: the day/night cycle.  Sun-up to sun-down provides on average 16 hours of constant light per day.
+\\
+\\
+	Humans unfortunately cannot offer this light schedule, because lighting is variable in their home.  Humans are relatively busy compared to plants.  They must sleep, their presence at home is variable, and they have their own desired lighting depending on what they are up to.  In short, humans in their efforts to bring plants indoors, still cannot offer the conditions that plants need.
+\\
+\\
+	If schedules were not the problem, currently offered indoor growing light systems are not much help.  They can be expensive, provide little to no customization of lighting needs, and are usually a single color, which is often hard on the eyes.  These systems in the long run cause frustration due to scheduling and lack of options, which will lead to plant neglect, low productivity, and potentially plant death.  There is a need for an affordable lighting system that is customizable in schedule and lighting color.
+
+	\section*{Proposed Solution}
+	The client has clearly expressed a solution that involves using red, green, blue(RGB) light emitting diodes(LED) controlled by a simple microcontroller, which will be able to manipulate the colors of the lights and the schedule they operate on.  The client's main concern is solving the defined problem in this manner.  These requirements for the project are listed below in the required features section.  However, the team we have assembled, with it's broad skill set and experience, has added some additional features which we believe will aid the client's vision of controlling the system.  They are listed in the additional features section.  Additionally, features that the team has come up with that they feel are difficult to accomplish or are out of the range of this project are listed as stretch goals.
+
+	\subsection*{Required Features (v1.0)}
+	\begin{itemize}
+
+		\item Lighting on a Schedule
+		\begin{itemize}
+			\item User may schedule when the lights may turn on and turn off, or change color
+			\end{itemize}
+
+		\item Color and Intensity Control
+		\begin{itemize}
+			\item User may select different colors of light and intensity
+		\end{itemize}
+
+		\item Color Zoning
+		\begin{itemize}
+			\item Controller can assign different colors and/or intensities per zone
+			\item Controller can drive multiple strips if need be
+		\end{itemize}
+		\newpage
+
+
+		\item Single Bed With RGB Strip
+		\begin{itemize}
+			\item A single RGB LED strip and controller per planter
+			\item The microcontroller operates the entire strip of RGB LEDs
+			\item A configuration file determines how the controller operates the strip
+		\end{itemize}
+
+		\item A Simple User Interface
+		\begin{itemize}
+			\item All light and time settings must be controlled from here
+			\item Base requirement is a way to control the system, however rough it may be
+			\item Must edit a configuration and properly update the controller settings
+
+		\end{itemize}
+	\end{itemize}
+
+	\subsection*{Addtional Features (v2.0)}
+	\begin{itemize}
+
+		\item Vertical Lighting
+		\begin{itemize}
+			\item Allows lighting to reach undergrowth of plant
+		\end{itemize}
+
+		\item Alternative/Revamped User Interface
+		\begin{itemize}
+			\item Hosted Web interface on local area network
+			\item Intuitive, easy to use interface
+			\item No physical access to the controller necessary
+		\end{itemize}
+
+		\item Light Zoning Per Strip
+		\begin{itemize}
+			\item Even more control over lights per planter
+			\item Each RGB LED can be indexed
+		\end{itemize}
+
+		\item Android App for Web Server
+		\begin{itemize}
+			\item Mobile support rather than computer based
+		\end{itemize}
+
+		\item Custom Built Enclosure
+		\begin{itemize}
+			\item Enclosure that better supports the LEDs and controller
+		\end{itemize}
+
+		\item Environmental Monitors
+		\begin{itemize}
+			\item Monitors for humidity, temperature, or soil moisture
+			\item Adaptation to the web interface for easy monitoring
+		\end{itemize}
+
+	\end{itemize}
+
+	\subsection*{Stretch Features (v3.0)}
+	\begin{itemize}
+
+		\item Modular Light Strips and Enclosures
+		\begin{itemize}
+			\item Light strips connect to each other on a simple interface
+			\item Enclosures "snap" together and are detected by system for easy setup
+		\end{itemize}
+
+		\item Growing Guides in UI
+		\begin{itemize}
+			\item Interface can provide tips and tricks to the user
+			\begin{itemize}
+				\item Increase productivity and awareness
+			\end{itemize}
+		\end{itemize}
+
+		\item Watering System
+		\begin{itemize}
+			\item Include hardware and monitors to allow automated watering of the planter boxes.
+			\item Requires a custom enclosure
+		\end{itemize}
+		
+		\item Networked Systems
+		\begin{itemize}
+			\item Point-to-Point, adhoc type local network for facilitation of larger, more spread out planters
+		\end{itemize}
+
+	\end{itemize}
+
+
+	\section*{Performance Metrics}
+	Defining success and measurable performance metricson this project has been somewhat a convoluted discussion for our team.  The client's requirements could easily be met by the team of four, but the team's expectations of the project as a whole are placed much higher.  Thinking minimally for the requirements, the team has confirmed the systems necessary to operate the system in an intuitive and simple fashion, which match the client's expectations and requirements.  Being ambitious however, the team has left plenty of room to expand on various points of the system like the UI and LED strip control.  Below the minimum features have been listed to consider the project a success.  Additional features mentioned will be added, time permitting.  
+
+	\begin{itemize}
+		\item \textit{All features presented by the client}, as listed in the \textbf{Required Features} section, are complete. 
+		\item A revamped UI as described in \textbf{Addtional Features}:  An interface that modifies all controller behaviors \textit{while not having physical access to the controller}.
+		\begin{itemize}
+			\item This will likely be a web server hosted on the controller, but the interface will likely change depending on use case.  
+		\end{itemize}
+	\end{itemize}
+\end{document}
