@@ -1,0 +1,128 @@
+\documentclass[letterpaper,10pt,draftclsnofoot,onecolumn]{article}
+
+\usepackage{titling}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{geometry}
+\geometry{textheight=9.25in, textwidth=6.75in} % 0.75" margins
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{cite}
+\usepackage{setspace}
+
+\singlespacing
+
+
+\title{Winter is Coming...\\\large Problem Statement\\\large Capstone Fall17}
+\author{Austin Hodgin}
+\date{\today}
+
+\begin{document}
+
+	% Title page
+	\begin{titlingpage}
+		\maketitle
+		\begin{abstract}
+			This is an abstract
+		\end{abstract}
+	\end{titlingpage}
+
+	% Document body
+	\section*{Definition \& Description}
+	Winter can be a harsh time for plants. At best they go dormant and don't grow, at worst they don't make it through. This is do to the temperature and climate  changing. Oregon is a good example of this. During the spring and summer the temperature are perfect for plants. There is just enough water and the 	  					temperature is stable and perfect for plant growth. With Oregon winter for example comes cold days and lots of rain. This causes a lot of over cast days which is not great for plant growth. Our client for our project, Victor Hsu, would like to grow herbs and plants indoors during these winter months.  
+	\\
+	\\
+	Many of the herbs and plants that people use for cooking come from many different climate around the world that inspire them to grow. This makes it difficult grow where you would like them. Environmental factors such as motorist, light, temperature and pest can all be controlled inside which has inspired people to bring their beloved plants inside with them so they can control all these factors. 
+	\\
+	\\
+	This sounds like an optimum solution for this. However there are several problems with this. The way Humans live and how plants live are very different. Humans live busy lives where they could be gone for long parts of the day or even large parts of the week. This can cause plants to go without light for large chucks of time. The current lighting systems that are available on the market today can be expensive and offer very little in way of features or customization. These systems can be inflexible to either the plant or the person tending the plant which can lead to the plant not doing well. 
+	
+
+
+	\section*{Proposed Solution}
+	With our team consisting of four students and each of us having the skills in related areas to this project, we have the ability to go well above what the client requested. After discussing with the client we came up with a list of required features that he would like as part of this project which are listed in the required features section. The main concern that the client had was solving the problem of interior lighting for plants using RBG LEDs. 
+
+	\subsection*{Required Features - v1.0}
+	\begin{itemize}
+	\item LED lighting for a single bed
+		\begin{itemize}
+			\item A single LED strip with a controller attached to a single planter
+			\item Server running on the controller that controls the state of the LEDS
+			\item Configuration settings for the light state is read from a configuration file on the controller
+			\item Configuration file is able to be changed and then recognized and applied by the controller
+		\end{itemize}•
+	\item User determined light variation
+		\begin{itemize}
+			\item User can determined specific color and light intensity that will be written to and read from the configuration file on the  controller
+		\end{itemize}•
+	\item Lighting Power Schedule
+		\begin{itemize}
+			\item User can specify weekly and daily scheduling for the state of the light (Color, Intensity, Power)
+		\end{itemize}•
+	\item Zoning for individual sections of the planter over multiple strips
+		\begin{itemize}
+			\item controller supports control over multiple LED strips
+			\item  LED strips can be chained through the data pin creating a continuous light strip
+		\end{itemize}•
+	\item User interface used for basic control
+		\begin{itemize}
+			\item Simple interface to edit the configuration file and ability to physically transfer new settings to the controller
+			\item All settings changed in this interface although this might not be the most user friendly
+		\end{itemize}•
+	\end{itemize}•
+
+	\subsection*{Additional Features - v2.0}
+	\begin{itemize}
+		\item Web server and local network client interface for control over the system
+			\begin{itemize}
+				\item Hosted LAN web interface
+				\item All system settings can be updated and applied over the network without physical access to the controller
+				\item Simple to use interface that shows the state of the controller
+			\end{itemize}•
+		\item Multiple colors on a single LED light strip
+			\begin{itemize}
+				\item Ability to have Multiple colors and intensities on a single light strip using LED indexing on the controller
+			\end{itemize}•
+		\item  Flexible zoning
+			\begin{itemize}
+				\item Single strips or sub set of the LED strip can be grouped into zones and controlled together
+			\end{itemize}•
+		\item Android wrapper for the web Server
+			\begin{itemize}
+				\item Mobile support added to the Web interface
+				\item Android application to accompany to act as a wrapper for the web interface
+			\end{itemize}•
+		\item Custom enclosure with vertical lighting
+			\begin{itemize}
+				\item Custom designed planter that holds the  controller and LEDs
+			\end{itemize}•
+		\item Humidity and temperature monitoring system
+			\begin{itemize}
+				\item Control over humanity and temperature sensors
+				\item Web interface plug-in to display humidity and temperature data
+			\end{itemize}•
+	\end{itemize}•
+
+	\subsection*{Stretch Goals - v3.0}
+		\begin{itemize}
+			\item Modular LED Light strip
+				\begin{itemize}
+					\item System to attach multiple light strips together easily
+					\item Automatic detection to newly added light strips
+				\end{itemize}•
+			\item Learning tools built into web application to help use the tool and with gardening practices
+				\begin{itemize}
+					\item An Interface to provide useful tips and suggestions to use the tool and improve gardening effectiveness
+				\end{itemize}•
+			\item Irrigation System
+				\begin{itemize}
+					\item Hardware and software necessary to automatically or schedule watering. This would require the custom enclosure. 
+				\end{itemize}•
+			\item Modular planting enclosure with ability to connect 
+		\end{itemize}•
+
+
+	\section*{Performance Metrics}
+	Section details
+
+\end{document}
