@@ -1,0 +1,197 @@
+\documentclass[onecolumn, draftclsnofoot,10pt, compsoc]{IEEEtran}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{setspace}
+
+\usepackage{geometry}
+\geometry{textheight=9.5in, textwidth=7in}
+
+% 1. Fill in these details
+\def \CapstoneTeamName{			              The Party Parrots}
+\def \CapstoneTeamNumber{					            64}
+\def \GroupMemberOne{				            Austin Hodgin}
+\def \GroupMemberTwo{				            Travis Hodgin}
+\def \GroupMemberThree{			            Maximillian Schmidt}
+\def\GroupMemberFour{		        	                Zach Lerew}
+\def \CapstoneProjectName{	      	             Winter is Coming...}
+\def \CapstoneSponsorCompany{		      Oregon State University }
+\def \CapstoneSponsorPerson{		 			  Victor Hsu}
+
+% 2. Uncomment the appropriate line below so that the document type works
+\def \DocType{		Problem Statement
+				%Requirements Document
+				%Technology Review
+				%Design Document
+				%Progress Report
+				}
+
+\newcommand{\NameSigPair}[1]{\par
+\makebox[2.75in][r]{#1} \hfil 	\makebox[3.25in]{\makebox[2.25in]{\hrulefill} \hfill		\makebox[.75in]{\hrulefill}}
+\par\vspace{-12pt} \textit{\tiny\noindent
+\makebox[2.75in]{} \hfil		\makebox[3.25in]{\makebox[2.25in][r]{Signature} \hfill	\makebox[.75in][r]{Date}}}}
+% 3. If the document is not to be signed, uncomment the RENEWcommand below
+\renewcommand{\NameSigPair}[1]{#1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{titlepage}
+    \pagenumbering{gobble}
+    \begin{singlespace}
+    	%\includegraphics[height=4cm]{coe_v_spot1}
+        \hfill
+        % 4. If you have a logo, use this includegraphics command to put it on the coversheet.
+        %\includegraphics[height=4cm]{CompanyLogo}
+        \par\vspace{.2in}
+        \centering
+        \scshape{
+            \huge CS Capstone \DocType \par
+            {\large\today}\par
+            \vspace{.5in}
+            \textbf{\Huge\CapstoneProjectName}\par
+            %\vfill
+						\vspace{1in}
+            {\large Prepared for}\par
+            \Huge \CapstoneSponsorCompany\par
+            \vspace{5pt}
+            {\Large\NameSigPair{\CapstoneSponsorPerson}\par}
+            {\large Prepared by }\par
+            Group\CapstoneTeamNumber\par
+            % 5. comment out the line below this one if you do not wish to name your team
+            %\CapstoneTeamName\par
+            \vspace{5pt}
+            {\Large
+                \NameSigPair{\GroupMemberOne}\par
+            	 \NameSigPair{\GroupMemberTwo}\par
+                 \NameSigPair{\GroupMemberThree}\par
+		 \NameSigPair{\GroupMemberFour}\par
+
+            }
+            \vspace{20pt}
+        }
+				\vspace{2in}
+        \begin{abstract}
+				\noindent This project involves creating a system to control plant growth lights using a microcontroller. During the winter months in Oregon, outside plant growth is difficult and unproductive. Sensitive plants such as herbs, tomatoes, and decorative plants cannot survive the overcast and cold conditions. Interior plant growth is no small feat either. Existing plant lighting systems can be difficult to use, have few customization options, and often support only a single color of light. Research has shown that some plants thrive best under specific wavelengths of light. This project will allow a user to control the wavelength and intensity of a set of LEDs, and control when they shine. Better control over the conditions of a plant's growth can allow a higher yield and a healthier plant. The controller will define the color, intensity, and schedule of the RGB LEDs connected to it. An associated interface will allow the user to change all of the controller's properties without physical interaction. The project includes many additional goals that will allow for custom zoning on individual light strips and groups of light strips, monitoring of humidity and temperature, a custom enclosure/planter and more.
+        \end{abstract}
+    \end{singlespace}
+\end{titlepage}
+\newpage
+\pagenumbering{arabic}
+%\tableofcontents
+% 7. uncomment this (if applicable). Consider adding a page break.
+%\listoffigures
+%\listoftables
+\clearpage
+\singlespace
+
+
+	% Document body
+	\section*{Problem Description}
+	During the cold and dark winter months, plant growth becomes difficult at best, destructive at worst.
+	\\Oregon is an extreme example of this, as our state is well accustomed to overcast and low temperatures.
+	\\The client of this project, Victor Hsu, has a desire to grow herbs and plants indoors during the long winter months. This is a desire held by all members of our team, and an issue I am facing personally as winter approaches.
+	\\\\Many plants and herbs such as tomatoes, basil, ferns, and plants from foreign climates have a set of environmental variables that allow for optimum growth. Variables such as light wavelength, intensity, temperature, moisture, and pests all have an impact on a plant's health and output. These factors are not present during the cold months, which leads motivated individuals to bring their plants into an indoor climate controlled environment.
+	\\\\However, the problem persists. Human environments rarely mirror that of a bright spring day or a damp forest floor. Residents come and go from work, school, and vacation. Busy schedules can leave plants neglected or without light for days. Current interior plant lighting systems can be expensive and offer little to no customization. Plant growth systems that do not adapt to both the requirements of their plants and their gardener's schedule lead to frustration, low plant yield, and plant death.
+
+	\section*{Proposed Solution}
+	Our team consists of four students. Each of us have skills in an area related to this project, and together we have the ability to go above and beyond what was requested by the client.
+	The required features for this project are straightforward and clear, and are defined in the required features section. The client's primary concern is solving the problem of interior plant lighting using RGB lights managed by a microcontroller. However, our team has a wide range of skills and experience. Therefore a large section of additional features was created.
+	\\Combined experience tells us that given proper design and documentation, the additional features can easily be completed barring any complications. Features that are especially difficult to accomplish, unlikely to be completed, or outside the primary scope of the project are listed as stretch goals.
+
+	\subsection*{Required features - v1.0}
+	\begin{itemize}
+		\item Single plant bed with RGB lighting
+		\begin{itemize}
+			\item A simple LED strip, single controller, single planter
+			\item Service running on a micro controller that can control the power state of attached LED lights
+			\item Configuration settings for the light state is read from a configuration file
+			\item Changes to the configuration file are recognized and applied by the controller
+		\end{itemize}
+		\item Light variation based on user input
+			\begin{itemize}
+				\item User specified colors and light intensity read from a configuration file
+			\end{itemize}
+		\item Flexible light power scheduling
+			\begin{itemize}
+				\item User specified weekly and daily scheduling of light state (color, intensity, power)
+			\end{itemize}
+		\item Zoning for individual control over multiple strips
+			\begin{itemize}
+				\item Controller supports individual control over multiple light strips
+				\item Each data pin can control a chain of light strips
+			\end{itemize}
+		\item Simple user interface for basic control
+			\begin{itemize}
+				\item Base requirements need a way to control the system, however crude
+				\item Simple interface to edit configuration settings and facilitate the physical transfer of new settings to the controller
+				\item All settings can be changed from this interface, though it may not be user friendly
+			\end{itemize}
+	\end{itemize}
+
+	\subsection*{Additional features - v2.0}
+	\begin{itemize}
+		\item Web Server and local network client interface for easy control
+		\begin{itemize}
+			\item Hosted LAN web interface
+			\item Easy to use and responsive interface that reflects the state of the controller
+			\item All system settings can be updated and applied over the network without the need for physical access to the controller
+		\end{itemize}
+		\item Different colors on a single light strip
+			\begin{itemize}
+				\item Multiple colors and intensities on a single light strip using LED indexing
+			\end{itemize}
+		\item Flexible zoning and sub-zoning
+			\begin{itemize}
+				\item Individual strips or sub strip LED groups can be zoned and controlled together
+			\end{itemize}
+		\item Android wrapper app for web server
+			\begin{itemize}
+				\item Mobile support for web interface
+				\item Android application acting as a wrapper for web interface
+			\end{itemize}
+		\item Custom enclosure with vertical lighting
+			\begin{itemize}
+				\item Custom designed planter that fits controller and LEDs
+			\end{itemize}
+		\item Humidity and temperature monitoring
+			\begin{itemize}
+				\item Control over additional humidity and temperature hardware
+				\item Web interface plugin to monitor humidity and temperature
+			\end{itemize}
+	\end{itemize}
+
+	\subsection*{Stretch goals - v3.0}
+	\begin{itemize}
+		\item Modular light strips
+			\begin{itemize}
+				\item Light strips that attach together easily
+				\item Automatic detection of lighting setup
+			\end{itemize}
+		\item Learning tools built into interface to help the user with best gardening practices
+			\begin{itemize}
+				\item Interface provides tips and suggestions to improve gardening effectiveness
+			\end{itemize}
+		\item Modular planting enclosure with snap together components
+			\begin{itemize}
+				\item Self contained enclosures with plug-and-play connectors for automatic and hassle free setup of multiple planters
+			\end{itemize}
+		\item Watering system
+			\begin{itemize}
+				\item Hardware and software necessary to facilitate automatic or scheduled watering. Requires custom enclosure.
+			\end{itemize}
+		\item Inter-system communication for multiple grow light systems separated by distance
+			\begin{itemize}
+				\item Ad hoc style wireless system to allow seamless control over multiple grow light systems each with its own controller
+				\item Support for large distributed systems, such as greenhouses
+			\end{itemize}
+	\end{itemize}
+
+	\section*{Performance Metrics}
+	Defining performance metrics for this project has been a back and forth topic for this team. The client's requirements are easily manageable for a team of four people, but our internal expectations are much higher.
+	\\In a case like this, success should be minimally defined by the set of features necessary to make the system usable and user friendly. Our client's goals define a usable system, but there is room to expand on the user experience to increase usability. The features below describe the minimum set necessary to define the project as a success. Extra features will be added as time allows.
+	\begin{itemize}
+		\item \textbf{All features described by the client} listed in section \textit{Required features} are complete.
+		\item An alternative interface as described in \textit{Additional features}. An interface that allows all controller settings to be modified without \textit{physical access to the controller}.
+		\item This interface will likely be a web server hosted on the controller, but is subject to change as use cases emerge.
+	\end{itemize}
+
+\end{document}
