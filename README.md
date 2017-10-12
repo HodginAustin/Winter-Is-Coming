@@ -1,2 +1,2 @@
-# Winter-Is-Coming....
+# Winter-Is-Coming
 Senior Design Repo
