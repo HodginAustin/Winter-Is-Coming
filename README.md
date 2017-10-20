@@ -1,8 +1,19 @@
-CS Capstone
+# 2017 CS CAPSTONE PROJECT
+## Winter is Coming...
 
-****
+### Prepared for Oregon State University
+#### Victor Hsu
 
-Group
+### Prepared by 
+#### Austin Hodgin
+#### Travis Hodgin
+#### Maximillian Schmidt
+#### Zach Lerew
+
+
+
+Abstract
+===================
 
 <span class="nodecor">This project is defined as creating a system that
 controls RGB(Red-Green-Blue) LEDs(Light Emitting Diodes) to effectively
@@ -27,7 +38,7 @@ the system with minimal physical interaction. The project is simple at
 its core, but many additional features have been developed to increase
 functionality and end usability.</span>
 
-Problem Description {#problem-description .unnumbered}
+Problem Description
 ===================
 
 During the cold and dark winter months, plant growth becomes difficult
@@ -54,7 +65,7 @@ and offer little to no customization. Plant growth systems that do not
 adapt to both the requirements of their plants and their gardener’s
 schedule lead to frustration, low plant yield, and plant death.
 
-Proposed Solution {#proposed-solution .unnumbered}
+Proposed Solution
 =================
 
 The client’s primary concern is solving the problem of interior plant
@@ -71,7 +82,7 @@ likely to be completed barring any complications. Features that are
 especially difficult to accomplish, unlikely to be completed, or are
 outside the primary scope of the project are listed as *stretch goals*.
 
-Required features - v1.0 {#required-features---v1.0 .unnumbered}
+Required features - v1.0
 ------------------------
 
 -   LED lighting for a single plant bed
@@ -114,7 +125,7 @@ Required features - v1.0 {#required-features---v1.0 .unnumbered}
     -   Controller recognizes configuration changes and applies them
         automatically
 
-Additional features - v2.0 {#additional-features---v2.0 .unnumbered}
+Additional features - v2.0
 --------------------------
 
 -   Improved User Interface
@@ -154,7 +165,7 @@ Additional features - v2.0 {#additional-features---v2.0 .unnumbered}
 
     -   Web interface plugin to monitor humidity and temperature
 
-Stretch goals - v3.0 {#stretch-goals---v3.0 .unnumbered}
+Stretch goals - v3.0
 --------------------
 
 -   Modular light strips and enclosure
@@ -189,7 +200,7 @@ Stretch goals - v3.0 {#stretch-goals---v3.0 .unnumbered}
 
     -   Support for large distributed systems, such as greenhouses
 
-Performance Metrics {#performance-metrics .unnumbered}
+Performance Metrics
 ===================
 
 Defining performance metrics for this project has been a back and forth
