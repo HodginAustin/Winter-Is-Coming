@@ -1,14 +1,13 @@
-# 2017 CS CAPSTONE PROJECT
-## Winter is Coming...
+# <p align="center"> 2017 CS CAPSTONE PROJECT </p>
+## <p align="center"> Winter is Coming... </p>
 
-### Prepared for Oregon State University
-#### Victor Hsu
+##### <p align="center"> Prepared for Victor Hsu at Oregon State University </p>
 
-### Prepared by 
-#### Austin Hodgin
-#### Travis Hodgin
-#### Maximillian Schmidt
-#### Zach Lerew
+### <p align="center"> Prepared by </p>
+###### <p align="center">Austin Hodgin </p>
+###### <p align="center">Travis Hodgin </p>
+###### <p align="center">Maximillian Schmidt </p>
+###### <p align="center">Zach Lerew </p>
 
 
 
@@ -220,5 +219,3 @@ added after the completion of these functionally required features.
 
     -   This interface will likely be a web server hosted on the
         controller, but is subject to change as the project evolves.
-
-
