@@ -144,13 +144,105 @@
 		\subsection*{Assumptions and Dependencies}
 
 	\section*{Specific Requirements}
+
 		\subsection*{Required features - v1.0}
+		\begin{itemize}
+			\item LED lighting for a single plant bed
+			\begin{itemize}
+				\item A simple LED strip with a single controller attached to a single planter
+				\item Service running on a micro controller that can control the power state of attached LED lights
+				\item Configuration settings for the light state is read from a configuration file
+				\item Changes to the configuration file are recognized and applied by the controller
+			\end{itemize}
+			\item Color and intensity Control
+				\begin{itemize}
+					\item User can select the color and light intensity of the light strip
+				\end{itemize}
+			\item Lighting state schedule
+				\begin{itemize}
+					\item User can specify weekly and daily scheduling for the state of the light (Color, Intensity, Power)
+				\end{itemize}
+			\item Zoning for individual control over multiple strips
+				\begin{itemize}
+					\item Controller supports individual control of up to 20 zones
+					\item Each zone can chain light strips together on one data pin
+				\end{itemize}
+			\item Simple user interface for basic control
+				\begin{itemize}
+					\item Simple interface to edit configuration settings and physically transfer changes to the controller
+					\item All settings can be changed from this interface, though it may not be user friendly
+					\item Controller recognizes configuration changes and applies them automatically
+				\end{itemize}
+		\end{itemize}
 
 		\subsection*{Additional features - v2.0}
+		\begin{itemize}
+			\item Improved User Interface
+			\begin{itemize}
+				\item Hosted web interface on local network
+				\item Easy to use and responsive interface that shows the current state of the system
+				\item All system settings can be updated and applied over the network without the need for physical access to the controller
+			\end{itemize}
+			\item Sub zoning on an individual light strip
+				\begin{itemize}
+					\item Multiple colors and intensities on a single light strip using LED indexing
+				\end{itemize}
+			\item Flexible zoning and sub-zoning
+				\begin{itemize}
+					\item Whole light strips and sub strips can be zoned together for more precise lighting control
+				\end{itemize}
+			\item Mobile web interface
+				\begin{itemize}
+					\item Web interface adds mobile support
+					\item Android application acting as a wrapper for the web interface
+				\end{itemize}
+			\item Custom enclosure with vertical lighting
+				\begin{itemize}
+					\item Custom designed planter that holds the controller and lights
+				\end{itemize}
+			\item Environmental monitoring
+				\begin{itemize}
+					\item Monitoring for humidity and temperature using additional hardware sensors
+					\item Web interface plugin to monitor humidity and temperature
+				\end{itemize}
+		\end{itemize}
 
 		\subsection*{Stretch goals - v3.0}
+		\begin{itemize}
+			\item Modular light strips and enclosure
+				\begin{itemize}
+					\item Easy to attach light strips are automatically detected and setup
+					\item Snap together enclosures allow quick and effortless system control
+				\end{itemize}
+			\item Gardening guide built into interface to help user learn best gardening practices
+				\begin{itemize}
+					\item Interface provides tips and suggestions to improve growing and gardening
+				\end{itemize}
+			\item Modular planting enclosure with snap together components
+				\begin{itemize}
+					\item Self contained enclosures with plug-and-play connectors for automatic and hassle free setup of multiple planters
+				\end{itemize}
+			\item Irrigation system
+				\begin{itemize}
+					\item Hardware and software necessary to facilitate automatic or scheduled watering
+					\item *Requires custom enclosure
+				\end{itemize}
+			\item Wireless control over multiple plant growth systems
+				\begin{itemize}
+					\item Ad hoc style wireless system to allow seamless control over multiple grow light systems
+					\item Support for large distributed systems, such as greenhouses
+				\end{itemize}
+		\end{itemize}
 
-		\section*{Performance Metrics}
+	\section*{Performance Metrics}
+	Defining performance metrics for this project has been a back and forth topic for this team. The client's requirements are easily met by a team of four people, but our internal expectations are much higher. To avoid feature bloat and to guarantee the product functions per the client's requirements at a minimum, the features below describe the features necessary to define the project as a success. Extra features will be added after the completion of these functionally required features.
+	\begin{itemize}
+		\item \textbf{All features described by the client} listed in section \textit{Required features} are complete.
+		\item An alternative interface as described in \textit{Additional features}. An interface that allows all controller settings to be modified without \textit{physical access to the controller}.
+		\begin{itemize}
+			\item This interface will likely be a web server hosted on the controller, but is subject to change as the project evolves.
+		\end{itemize}
+	\end{itemize}
 
 
 \end{document}
