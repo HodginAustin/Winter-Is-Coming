@@ -4,12 +4,13 @@
 \usepackage{url}
 \usepackage{setspace}
 \usepackage{geometry}
+\usepackage{listings}
 
 \geometry{textheight=9.5in, textwidth=7in}
 
 % 1. Fill in these details
-\def \CapstoneTeamName{			              The Party Parrots}
-\def \CapstoneTeamNumber{					           						 64}
+\def \CapstoneTeamName{			              			 PlanteR-GB}
+\def \CapstoneTeamNumber{					           			 Group 64}
 \def \GroupMemberOne{				           				Austin Hodgin}
 \def \GroupMemberTwo{				           				Travis Hodgin}
 \def \GroupMemberThree{			            Maximillian Schmidt}
@@ -40,8 +41,10 @@
     \begin{singlespace}
     	%\includegraphics[height=4cm]{coe_v_spot1}
         \hfill
+
         % 4. If you have a logo, use this includegraphics command to put it on the coversheet.
-        %\includegraphics[height=4cm]{CompanyLogo}
+        \includegraphics[height=4cm]{derp.jpg}
+
         \par\vspace{.2in}
         \centering
         \scshape{
@@ -49,28 +52,52 @@
             {\large\today}\par
             \vspace{.5in}
             \textbf{\Huge\CapstoneProjectName}\par
+
             %\vfill
 						\vspace{1in}
+
             {\large Prepared for}\par
             \Huge \CapstoneSponsorCompany\par
             \vspace{5pt}
             {\Large\NameSigPair{\CapstoneSponsorPerson}\par}
-            {\large Prepared by }\par
-            Group\CapstoneTeamNumber\par
-            % 5. comment out the line below this one if you do not wish to name your team
-            %\CapstoneTeamName\par
-            \vspace{5pt}
-            {\Large
-                \NameSigPair{\GroupMemberOne}\par
-            	 \NameSigPair{\GroupMemberTwo}\par
-                 \NameSigPair{\GroupMemberThree}\par
-		 \NameSigPair{\GroupMemberFour}\par
 
+						\vspace{1in}
+
+            {\large Prepared by}\par
+						{\huge \CapstoneTeamNumber}\par
+            \CapstoneTeamName\par
+            \vspace{5pt}
+
+            {
+							\Large
+							\NameSigPair{\GroupMemberOne}\par
+							\NameSigPair{\GroupMemberTwo}\par
+							\NameSigPair{\GroupMemberThree}\par
+							\NameSigPair{\GroupMemberFour}\par
             }
+
             \vspace{20pt}
         }
-				\vspace{2in}
+
+				\newpage
         \begin{abstract}
+				\noindent This project will create a system that controls RGB LEDs responsible for indoor plant growth during the cold seasons.
+				Seasonal weather conditions may vary between different parts of the world, but plant growth becomes especially difficult during the fall and winter months.
+				Oregon is an exceptional case of this rule. The state's winter season produces a hostile growth environment for plants such as herbs, spices, and decorative flowers.
+				Plants like these are not able to survive the cold, dark, and humid Oregon weather.
+
+				\noindent Bringing the plants into a more friendly and manageable indoor environment can still prove to be a difficult task.
+				Plants need specific conditions for soil, water, temperature, and light.
+				Existing indoor lighting systems can be difficult to use, expensive, and provide few customization options.
+				Research provided by the client \textbf{\textsuperscript{citation needed}} has shown that some plants grow differently under different colors(wavelengths) of light.
+				This project aims to produce a system that can control the color, intensity, and schedule for multiple zones of RGB LEDs.
+				The system produced by these efforts will have a simple user interface through which all control settings can be viewed and manipulated.
+
+				\noindent Once given control over the growing conditions, the plants will have a better chance of successful growth, and at the same time the impact on the user's busy life will be reduced.
+				The system will be driven by a microprocessor that will manipulate the color, intensity, and schedule for multiple zones of RGB LEDs.
+				Along side this hardware, the development of an intuitive user interface will allow the user to control the system with minimal physical interaction.
+				The project has a simple core, but many stretch goals have been designed to increase functionality and end usability should time allow.
+
         \end{abstract}
     \end{singlespace}
 \end{titlepage}
@@ -78,7 +105,7 @@
 \newpage
 
 \pagenumbering{arabic}
-%\tableofcontents
+\tableofcontents
 % 7. uncomment this (if applicable). Consider adding a page break.
 %\listoffigures
 %\listoftables
@@ -88,15 +115,22 @@
 
 	% Document body
 	\section*{Introduction}
+
 		\subsection*{Purpose}
 
 		\subsection*{Scope}
 
-		 \subsection*{Definitions, Acronyms, and Abbreviations}
+		\subsection*{Definitions, Acronyms, and Abbreviations}
 
-		 \subsection*{References}
+		% References
+		\subsection*{References}
+		%\cite[Sec 3.8]{sourceName}
+		%\bibliographystyle{IEEEtran}
+		%\bibliography{./ref}
 
-		 \subsection*{Overview}
+
+		\subsection*{Overview}
+
 
 	\section*{Overall Description}
 		\subsection*{Product Perspective}
