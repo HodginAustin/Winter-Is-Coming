@@ -117,8 +117,10 @@
 	\section*{Introduction}
 
 		\subsection*{Purpose}
+		
 
 		\subsection*{Scope}
+
 
 		\subsection*{Definitions, Acronyms, and Abbreviations}
 
@@ -133,15 +135,83 @@
 
 
 	\section*{Overall Description}
+
 		\subsection*{Product Perspective}
 
+			\subsection*{System interfaces}
+			Running a control service on microprocessor, reading from a configuration file
+			Running an apache2 webserver that can interface with the control service
+
+
+			\subsection*{User interfaces}
+			Stage 0 - Configuration file that controls the settings of the control service
+			Stage 1 - Python interface to allow user to edit the configuration file with questions and enter values
+			Stage 2 - Apache2 web interface that communicates internally with control service (stretch goal, communicate over network protocol to multiple controllers
+
+
+			\subsection*{Hardware interfaces}
+			Raspberry PI Zero W for control microprocessor
+			Stage 1 - Power a single strip of LEDs off of the raspberry Pi
+			Stage 2 - Power up to four strips of LEDs and the raspberry Pi with a separate power supply, four GPIO pins on the Pi
+			Stage 3 - FadeCandy dithering USB-controlled driver for RGB NeoPixels, power and control LED strips separately from the Pi, allow many zones
+
+
+			\subsection*{Software interfaces}
+			Latest version of Raspbian with command line only
+			Python 3 for control service
+			Apache2 for web service
+
+
+			\subsection*{Communication interfaces}
+			Stage 1 - Control service will communicate with LEDs over GPIO pins
+			Stage 2 - Apache2 web service communicates with Control service through changes to configuration file
+			Stage 3 - Control service takes input from TCP API, web service communicates with control service API
+
+			\subsection*{Memory constraints}
+			Raspberry Pi Zero W has a memory limit of 512 Mb, potentially half of the Pi's memory is taken by OS and services
+			NeoPixel LEDs take 3 Bytes per LED
+
+
+			\subsection*{Operations}
+			Stage 0 - User operates system through changes to configuration file
+			Stage 1 - User operates system through interactive python script
+			Stage 2 - User operates system through Apache2 web service
+
+			When changes are made to the config file, changes are made in the control service at a steady interval (instant, 5sec, 10sec, 30sec)
+			This depends on how fast it takes the control service to reload the config file and apply changes
+
+			\subsection*{Site adaptation requirements}
+			Different stages will support different numbers of LEDs, limited in software.
+			Stage 0 - Two zones (30-40 LEDs max?) controlled on two GPIO pins
+			Stage 1 - Four zones powered separately (higher number of LEDs), depending on the power supply, zones potentially limited only by GPIO pins
+			Stage 2 - FadeCandy controller can control up to 1500 LEDs
+
+
 		\subsection*{Product Functions}
+		V1 - what does it do
+		V2 - what does it do
+		V3 - what does it do
+		Turn on and off LEDs, change color and intensity of LEDs
+		Amazon page description
 
 		\subsection*{User Characteristics}
+		Stage 0 - Knowledge of command line interfaces, SSH for transferring config file updates, know unix
+		Stage 1 - How to run a python script and navigate our interface
+		Stage 3 - Know how to click buttons on a web site, how to navigate to localhost
 
 		\subsection*{Constraints}
+		V1.0
+		Stage 0 - Limited to one or two LED strips
+		Stage 1 - Limited to 4ish LED strips with a separate power supply
+		V2.0
+		Raspberry Pi zero W has limitations on number of GPIO pins
+		File lock limitations for config file
 
 		\subsection*{Assumptions and Dependencies}
+		Stages/iterations/versions require previous ones to be accomplished first
+		Stage 0 - Depends on availability of raspberry Pi zero W
+		Stage 1 - Depends on power supply capabilities for how many LEDs can be powered
+		Stage 2 - Depends on availability of FadeCandy controller
 
 	\section*{Specific Requirements}
 
