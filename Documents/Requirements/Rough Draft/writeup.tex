@@ -117,9 +117,9 @@
 	\section*{Introduction}
 
 		\subsection*{Purpose}
-				The goal of the prepared document is to clearly list and define each of the requirements defined by the client.  Looking ahead, this will refine what the end result of the project shall be,
-				such that the client’s and team’s expectations are fully met after all work is completed.  This document will also weed out any uncertainty about the end result of the proposed product,
-				before work begins.
+			The goal of the prepared document is to clearly list and define each of the requirements defined by the client.  Looking ahead, this will refine what the end result of the project shall be,
+			such that the client’s and team’s expectations are fully met after all work is completed.  This document will also weed out any uncertainty about the end result of the proposed product,
+			before work begins.
 		\subsection*{Scope}
 			The reach of the document includes the team interpreted requirements initially given by the client, the requirements and successive additions that the team has set to improve upon the initial
 			client requirements, and the technical applications that will be used to cover each requirement.  Such requirements will mold the final product in its form and functionality.
@@ -137,7 +137,7 @@
 
 		% References
 		\subsection*{References}
-			Refrences will be added later once more information is aquired about the products that we will be using.
+			Refrences will be added later once more information is acquired about the products that we will be using.
 		%\cite[Sec 3.8]{sourceName}
 		%\bibliographystyle{IEEEtran}
 		%\bibliography{./ref}
@@ -160,7 +160,7 @@
 
 		\noindent \textbf{Version 2.0} consists of additional features added by our team. Version 2.0 will require everything from Version 1.0 to be completed. This version will add many new features. The first, and most
 		important feature will be an easier way to manage the settings. This version will add a web interface that will allow the user to change settings without having physical access to the controller.
-		This new user interface will be able to display the current settings as well as allow the user to make changes.Further additions to the user interface include adding a mobile web page, and android
+		This new user interface will be able to display the current settings as well as allow the user to make changes. Further additions to the user interface include adding a mobile web page, and android
 		phone support to allow users to update settings on their phone or other mobile device, further adding easier access to the settings. This version will also allow the user to change each LED’s
 		settings individually to a new color, or intensity for more flexibility. Adding moisture and temperature sensors is another goal for this version. Adding these will further allow the user to adjust
 		their environment for the specific plants they are growing.
@@ -209,25 +209,25 @@
 				changes will be applied to the system at a steady interval (Instant, 5sec, 10 sec, 30 sec). This is subject to change based on how long the control service takes to reload and apply the changes.
 			\subsubsection*{Site Adaptation Requirements}
 				The system will change to support different number of LEDs, which are limited by software, depending on which iteration we are in. With iteration four, two zones will be controlled and powered by the microcontroller.
-				In iteration five the amount of zone will increase to four zones powered by a separate power supply. With iteration twelve and sixteen another controller will be needed to push the configuration the the increased number
+				In iteration five the amount of zone will increase to four zones powered by a separate power supply. With iteration twelve and sixteen another controller will be needed to push the configuration the increased number
 				of LEDS.
 
 
 
 		\subsection*{User Characteristics}
 		Iterations zero and one will require the user to connect to the microcontroller, either physically, or through an SSH/FTP connection. Knowledge on how to traverse common folder systems will be needed for physical transfer, such as
-		through an SD card or USB connection. SSH connections will require the user to know how to traverse a unix terminal.
-		Iteration two through five will require the user to know how to traverse a unix terminal, as well as run a python script. Users will further have to follow a list of questions and answer them with correct color, intensity, and time.
+		through an SD card or USB connection. SSH connections will require the user to know how to traverse a Unix terminal.
+		Iteration two through five will require the user to know how to traverse a Unix terminal, as well as run a python script. Users will further have to follow a list of questions and answer them with correct color, intensity, and time.
 		Iteration five through sixteen will require the user to be able to connect to a website hosted by the microcontroller by connecting to its local host. The user will also need to know how to click buttons and go through drop down menus on the site.
 
 		\subsection*{Constraints}
-		For iterations zero through four, we will be constrained to using only a max of ten LED’s, due to power limitations.For iterations five through ten, we will be constrained to powering the LED’s off a separate power supply than the microcontroller,
+		For iterations zero through four, we will be constrained to using only a max of ten LED’s, due to power limitations. For iterations five through ten, we will be constrained to powering the LED’s off a separate power supply than the microcontroller,
 		since we may be using more than the max for iterations zero through four. We will have more constraints based on the microcontroller used. Certain controller will have more or less GPIO pins. Microcontrollers may have different clock speeds, and RAM sizes.
 
 		\subsection*{Assumptions and Dependencies}
 		Each version and iteration requires that the previous versions and iterations be complete. Version 2.0 requires version 1.0 to be finished, and iteration five requires that iteration zero through four be finished.
 		Project: Depends on availability of raspberry Pi zero W as well as the availability of the programmable LED’s
-		Iteration five and onward, we will be working with more LED’s. Depending on the microcontroller we choose, we may need to power these separately from the controller itself, as it may draw t0o much current.
+		Iteration five and onward, we will be working with more LED’s. Depending on the microcontroller we choose, we may need to power these separately from the controller itself, as it may draw too much current.
 		Iteration twelve through sixteen will depend on a separate LED controller that will help facilitate the indexing of, and controlling of the LED’s. This also depends on the availability of such a controller.
 
 
