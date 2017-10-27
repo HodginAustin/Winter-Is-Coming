@@ -43,7 +43,7 @@
         \hfill
 
         % 4. If you have a logo, use this includegraphics command to put it on the coversheet.
-        \includegraphics[height=4cm]{derp.jpg}
+        %\includegraphics[height=4cm]{derp.jpg}
 
         \par\vspace{.2in}
         \centering
@@ -153,51 +153,44 @@
 
 		\subsubsection*{Product Functions}
 
-				\subsubsection{System Interfaces}
+				\subsubsection*{System Interfaces}
 				The system as a whole serves as an arbitrator between a user and the ideal growth of their plants.
 				The microprocessor will have control over a series of LEDs, including their color, intensity, and power schedule. The same microprocessor will host an interface that allows the user to control
 				how the microprocessor adjusts the properties of its LEDs.
 
 				Initially during iteration 0 and 1, the user interface to the system will be simplistic and require a high skill ceiling to use. As the project matures into iteration 6, a more useful and
 				simplistic interface will be developed. Similarly, the number of supported LEDs will be limited until iteration 5 when a better power management solution is made.
-					\subsubsection*{User Interfaces}
+				\subsubsection*{User Interfaces}
 					System properties will be controlled through a configuration file that is read by the control service and transformed into the appropriate GPIO signals to change the LED state. Starting at
-					 iteration 1, the configuration file will be the primary and only way to interact with the system’s properties. After core abilities are developed, iteration 2 will create a text-based command
-					 line menu system that allows all settings to be modified. This command line menu will be updated until iteration 5, after which it will be replaced.
+					iteration 1, the configuration file will be the primary and only way to interact with the system’s properties. After core abilities are developed, iteration 2 will create a text-based command
+					line menu system that allows all settings to be modified. This command line menu will be updated until iteration 5, after which it will be replaced.
 					The iteration 6 web interface will be hosted on the microprocessor and will communicate with the control service through changes to the configuration file. This interface will be clearly
 					 organized into categories for each of the major features (e.g. Zones, Scheduling, Profiles, manual control, etc).
 					 sub
-					 \subsubsection{Hardware Interfacecs}
-					 The microprocessor will be the brains for this system, and needs to be capable of running a service that controls the LEDs, as well as hosting a web server accessible from the local network.
+				\subsubsection*{Hardware Interfacecs}
+					The microprocessor will be the brains for this system, and needs to be capable of running a service that controls the LEDs, as well as hosting a web server accessible from the local network.
+					For iteration 0, the microprocessor must be capable of delivering enough power for a single LED strip. Iteration 5 will use a separate power supply, but the microprocessor must still control
+					at least four LED strips through its GPIO pins. Iterations 12 and 16 will require a separate power supply chip, possibly sending data over USB to support larger lighting systems.
+					The recommendation is to use a Raspberry Pi Zero W because of it’s low cost, simplicity, high processing capability for its class, and 40 GPIO pins, two of which deliver power.
+				\subsubsection*{Software Interfaces}
+					The microprocessor will be running a full command line Unix release, but the version will be determined by the specific choice of microprocessor.
+					The control service running on the microprocessor will be written in Python 3 because of its simplicity and ubiquitous support on Unix-like systems.
+					After iteration 5, a web interface will be developed. It will be hosted using Apache HTTP server version 2.4 or newer. The web interface will use a simple tabular card based interface
+					that will allow all system settings to be viewed and modified as the system is running.
 
-					 	For iteration 0, the microprocessor must be capable of delivering enough power for a single LED strip. Iteration 5 will use a separate power supply, but the microprocessor must still control
-						at least four LED strips through its GPIO pins. Iterations 12 and 16 will require a separate power supply chip, possibly sending data over USB to support larger lighting systems.
+				\subsubsection*{communications Interfaces}
+					The control service will communicate with LEDs over the microprocessor's GPIO pins. Data transfer to the LEDs will occur over GPIO pins until iteration 14+ which can bring support for a
+					large amount of LEDs, but may require communication over a USB.
+					Iteration 14 will bring support for communication between distributed systems over the TCP through a REST API built into the control service.
+				\subsubsection*{Memory Constraints}
+					The memory constraints are determined on the type of programmable LED chosen and the type of microcontroller. This section will change as parts are picked and become part of the project.
 
-						The recommendation is to use a Raspberry Pi Zero W because of it’s low cost, simplicity, high processing capability for its class, and 40 GPIO pins, two of which deliver power.
-						\subsubsection{Software Interfaces}
-						The microprocessor will be running a full command line Unix release, but the version will be determined by the specific choice of microprocessor.
-
-						The control service running on the microprocessor will be written in Python 3 because of its simplicity and ubiquitous support on Unix-like systems.
-
-						After iteration 5, a web interface will be developed. It will be hosted using Apache HTTP server version 2.4 or newer. The web interface will use a simple tabular card based interface
-						that will allow all system settings to be viewed and modified as the system is running.
-
-						\subsubsection{communications Interfaces}
-						The control service will communicate with LEDs over the microprocessor's GPIO pins. Data transfer to the LEDs will occur over GPIO pins until iteration 14+ which can bring support for a
-						large amount of LEDs, but may require communication over a USB.
-
-						Iteration 14 will bring support for communication between distributed systems over the TCP through a REST API built into the control service.
-						\subsubsection{Memory Constraints}
-						The memory constraints are determined on the type of programmable LED chosen and the type of microcontroller. This section will change as parts are picked and become part of the project.
-
-					\subsubsection{Operations}
-
+				\subsubsection*{Operations}
 					The operations of this product change based on which iteration we are on. In the first iteration the user will be operating the system through a configuration file on the system. In the second iteration
 					the way the user interacts with it changes to an interactive python script. This script will ask questions about how the user would like to configure the system. Then makes the changes to the configuration file
-
 					The sixth iteration will then change the user operations again by allowing the user to make configurations using a web interface hosted by the system. With each step the changes to the configuration file the
 					changes will be applied to the system at a steady interval (Instant, 5sec, 10 sec, 30 sec). This is subject to change based on how long the control service takes to reload and apply the changes.
-					\subsubsection{Site Adaptation Requirements}
+				\subsubsection*{Site Adaptation Requirements}
 					The system will change to support different number of LEDs, which are limited by software, depending on which iteration we are in. With iteration four, two zones will be controlled and powered by the microcontroller.
 					In iteration five the amount of zone will increase to four zones powered by a separate power supply. With iteration twelve and sixteen another controller will be needed to push the configuration the the increased number
 					of LEDS.
