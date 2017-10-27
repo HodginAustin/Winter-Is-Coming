@@ -1,7 +1,10 @@
-writeup.aux
-writeup.bbl
-writeup.blg
-writeup.log
-writeup.out
-writeup.synctex.gz
-writeup.pdf
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.synctex.gz
+*.pdf
+*.fls
+*.toc
+*.fdb_latexmk
