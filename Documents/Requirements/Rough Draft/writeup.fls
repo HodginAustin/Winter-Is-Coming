@@ -1,6 +1,0 @@
-PWD /home/austin/Documents/School/CS461/Winter-Is-Coming/Documents/Requirements
-INPUT /etc/texmf/web2c/texmf.cnf
-INPUT /usr/share/texmf/web2c/texmf.cnf
-INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
-INPUT writeup.tex
-OUTPUT writeup.log
