@@ -1,9 +1,9 @@
 default: all
 
 doc:
-	latex writeup.tex
-	dvips writeup.dvi
-	ps2pdf writeup.ps
+	pdflatex writeup.tex
+	#dvips writeup.dvi
+	#ps2pdf writeup.ps
 
 all: doc clean
 
@@ -15,3 +15,4 @@ clean:
 	rm -f writeup.log
 	rm -f writeup.out
 	rm -f writeup.ps
+	rm -f writeup.toc

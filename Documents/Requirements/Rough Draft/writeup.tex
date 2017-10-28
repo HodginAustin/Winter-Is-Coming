@@ -105,7 +105,7 @@
 \newpage
 
 \pagenumbering{arabic}
-\tableofcontents
+%\tableofcontents
 % 7. uncomment this (if applicable). Consider adding a page break.
 %\listoffigures
 %\listoftables
@@ -114,19 +114,19 @@
 
 
 	% Document body
-	\section*{Introduction}
+	\section{Introduction}
 
-		\subsection*{Purpose}
+		\subsection{Purpose}
 			The goal of the prepared document is to clearly list and define each of the requirements defined by the client.  Looking ahead, this will refine what the end result of the project shall be,
 			such that the client’s and team’s expectations are fully met after all work is completed.  This document will also weed out any uncertainty about the end result of the proposed product,
 			before work begins.
-		\subsection*{Scope}
+		\subsection{Scope}
 			The reach of the document includes the team interpreted requirements initially given by the client, the requirements and successive additions that the team has set to improve upon the initial
 			client requirements, and the technical applications that will be used to cover each requirement.  Such requirements will mold the final product in its form and functionality.
 			To detail each requirement, the team has provided technical specifics on how each requirement will be met.  The document also includes the details that the team will be executing step by step
 			during the project to meet said result.
 
-		\subsection*{Definitions, Acronyms, and Abbreviations}
+		\subsection{Definitions, Acronyms, and Abbreviations}
 			LED - Light Emitting Diode \\
 			RGB - Red, Green, Blue. Usually referring to an LED that is capable of producing those three colors. \\
 			GPIO - General Purpose Input Output pins, allow the transfer of data between a microprocessor and an external piece of hardware. \\
@@ -136,23 +136,23 @@
 			API - Application Programming Interface \\
 
 		% References
-		\subsection*{References}
+		\subsection{References}
 			Refrences will be added later once more information is acquired about the products that we will be using.
 		%\cite[Sec 3.8]{sourceName}
 		%\bibliographystyle{IEEEtran}
 		%\bibliography{./ref}
 
 
-		\subsection*{Overview}
+		\subsection{Overview}
 			In accordance with the requirements laid out by the client and team, an overall description has been provided that will detail the specifics on what will be used.  The description will dive into
 			the details of hardware and software that the team envisions the project will use to meet and exceed the requirements.  Version numbers, as well as internal iterations of the versions, will detail
 			and divide each set of specifications and the application of the mentioned software and hardware.
 
 
-	\section*{Overall Description}
-		\subsection*{Product Perspective}
+	\section{Overall Description}
+		\subsection{Product Perspective}
 
-		\subsubsection*{Product Functions}
+		\subsubsection{Product Functions}
 		\noindent \textbf{Version 1.0} will consist of three major parts. The first part will be the programmable LED’s that will be used to light the plants. These will need to be reprogrammable in order to allow new settings.
 		These settings include LED color on the RGB spectrum, intensity of the light, and the time the LED’s will turn on, and turn off. All LED’s in this version will be set to the same settings, meaning all
 		LED’s will have the same color, intensity and light time. The second will be the microcontroller. The microcontroller will allow the programmable LED’s to be programed, as well as powering them.
@@ -172,69 +172,69 @@
 		such as greenhouses.
 
 
-		\subsubsection*{System Interfaces}
+		\subsubsection{System Interfaces}
 				The system as a whole serves as an arbitrator between a user and the ideal growth of their plants.
 				The microprocessor will have control over a series of LEDs, including their color, intensity, and power schedule. The same microprocessor will host an interface that allows the user to control
 				how the microprocessor adjusts the properties of its LEDs. Initially during iteration 0 and 1, the user interface to the system will be simplistic and require a high skill ceiling to use. As the project matures into iteration 6, a more useful and
 				simplistic interface will be developed. Similarly, the number of supported LEDs will be limited until iteration 5 when a better power management solution is made.
-		 \subsubsection*{User Interfaces}
+		 \subsubsection{User Interfaces}
 				System properties will be controlled through a configuration file that is read by the control service and transformed into the appropriate GPIO signals to change the LED state. Starting at
 				iteration 1, the configuration file will be the primary and only way to interact with the system’s properties. After core abilities are developed, iteration 2 will create a text-based command
 				line menu system that allows all settings to be modified. This command line menu will be updated until iteration 5, after which it will be replaced.
 				The iteration 6 web interface will be hosted on the microprocessor and will communicate with the control service through changes to the configuration file. This interface will be clearly
 				organized into categories for each of the major features (e.g. Zones, Scheduling, Profiles, manual control, etc).
 				sub
-			\subsubsection*{Hardware Interfaces}
+			\subsubsection{Hardware Interfaces}
 				The microprocessor will be the brains for this system, and needs to be capable of running a service that controls the LEDs, as well as hosting a web server accessible from the local network.
 				For iteration 0, the microprocessor must be capable of delivering enough power for a single LED strip. Iteration 5 will use a separate power supply, but the microprocessor must still control
 				at least four LED strips through its GPIO pins. Iterations 12 and 16 will require a separate power supply chip, possibly sending data over USB to support larger lighting systems.
 				The recommendation is to use a Raspberry Pi Zero W because of it’s low cost, simplicity, high processing capability for its class, and 40 GPIO pins, two of which deliver power.
-			\subsubsection*{Software Interfaces}
+			\subsubsection{Software Interfaces}
 				The microprocessor will be running a full command line Unix release, but the version will be determined by the specific choice of microprocessor.
 				The control service running on the microprocessor will be written in Python 3 because of its simplicity and ubiquitous support on Unix-like systems.
 				After iteration 5, a web interface will be developed. It will be hosted using Apache HTTP server version 2.4 or newer. The web interface will use a simple tabular card based interface
 				that will allow all system settings to be viewed and modified as the system is running.
 
-			\subsubsection*{communications Interfaces}
+			\subsubsection{Communications Interfaces}
 				The control service will communicate with LEDs over the microprocessor's GPIO pins. Data transfer to the LEDs will occur over GPIO pins until iteration 14+ which can bring support for a
 				large amount of LEDs, but may require communication over a USB.
 				Iteration 14 will bring support for communication between distributed systems over the TCP through a REST API built into the control service.
-			\subsubsection*{Memory Constraints}
+			\subsubsection{Memory Constraints}
 				The memory constraints are determined on the type of programmable LED chosen and the type of microcontroller. This section will change as parts are picked and become part of the project.
 
-			\subsubsection*{Operations}
+			\subsubsection{Operations}
 				The operations of this product change based on which iteration we are on. In the first iteration the user will be operating the system through a configuration file on the system. In the second iteration
 				the way the user interacts with it changes to an interactive python script. This script will ask questions about how the user would like to configure the system. Then makes the changes to the configuration file
 				The sixth iteration will then change the user operations again by allowing the user to make configurations using a web interface hosted by the system. With each step the changes to the configuration file the
 				changes will be applied to the system at a steady interval (Instant, 5sec, 10 sec, 30 sec). This is subject to change based on how long the control service takes to reload and apply the changes.
-			\subsubsection*{Site Adaptation Requirements}
+			\subsubsection{Site Adaptation Requirements}
 				The system will change to support different number of LEDs, which are limited by software, depending on which iteration we are in. With iteration four, two zones will be controlled and powered by the microcontroller.
 				In iteration five the amount of zone will increase to four zones powered by a separate power supply. With iteration twelve and sixteen another controller will be needed to push the configuration the increased number
 				of LEDS.
 
 
 
-		\subsection*{User Characteristics}
+		\subsection{User Characteristics}
 		Iterations zero and one will require the user to connect to the microcontroller, either physically, or through an SSH/FTP connection. Knowledge on how to traverse common folder systems will be needed for physical transfer, such as
 		through an SD card or USB connection. SSH connections will require the user to know how to traverse a Unix terminal.
 		Iteration two through five will require the user to know how to traverse a Unix terminal, as well as run a python script. Users will further have to follow a list of questions and answer them with correct color, intensity, and time.
 		Iteration five through sixteen will require the user to be able to connect to a website hosted by the microcontroller by connecting to its local host. The user will also need to know how to click buttons and go through drop down menus on the site.
 
-		\subsection*{Constraints}
+		\subsection{Constraints}
 		For iterations zero through four, we will be constrained to using only a max of ten LED’s, due to power limitations. For iterations five through ten, we will be constrained to powering the LED’s off a separate power supply than the microcontroller,
 		since we may be using more than the max for iterations zero through four. We will have more constraints based on the microcontroller used. Certain controller will have more or less GPIO pins. Microcontrollers may have different clock speeds, and RAM sizes.
 
-		\subsection*{Assumptions and Dependencies}
+		\subsection{Assumptions and Dependencies}
 		Each version and iteration requires that the previous versions and iterations be complete. Version 2.0 requires version 1.0 to be finished, and iteration five requires that iteration zero through four be finished.
 		Project: Depends on availability of raspberry Pi zero W as well as the availability of the programmable LED’s
 		Iteration five and onward, we will be working with more LED’s. Depending on the microcontroller we choose, we may need to power these separately from the controller itself, as it may draw too much current.
 		Iteration twelve through sixteen will depend on a separate LED controller that will help facilitate the indexing of, and controlling of the LED’s. This also depends on the availability of such a controller.
-		\subsection*{Gant Chart}
-		\includegraphics[height=16cm,natwidth=1664,natheight=592]{Gant.png}
+		\subsection{Gant Chart}
+		\includegraphics[width=\linewidth]{Gant.png}
 
 
-	\section*{Specific Requirements}
-		\subsection*{Required features - v1.0}
+	\section{Specific Requirements}
+		\subsection{Required features - v1.0}
 			\begin{itemize}
 				\item Iteration 0
 						\begin{itemize}
@@ -268,7 +268,7 @@
 					\end{itemize}
 			\end{itemize}
 
-		\subsection*{Additional features - v2.0}
+		\subsection{Additional features - v2.0}
 			\begin{itemize}
 				\item Iteration 6
 					\begin{itemize}
@@ -299,7 +299,7 @@
 					\end{itemize}
 			\end{itemize}
 
-		\subsection*{Stretch goals - v3.0}
+		\subsection{Stretch goals - v3.0}
 			\begin{itemize}
 				\item Iteration 11
 					\begin{itemize}
@@ -327,7 +327,7 @@
 					\end{itemize}
 			\end{itemize}
 
-		\section*{Performance Metrics}
+		\section{Performance Metrics}
 		Defining performance metrics for this project has been a back and forth topic for this team. The client's requirements are easily met by a team of four people, but our internal expectations are much higher. To avoid feature bloat and
 		to guarantee the product functions per the client's requirements at a minimum, the features below describe what is necessary to call the project a success. Extra features will be added after the completion of these functionally required
 		features.
