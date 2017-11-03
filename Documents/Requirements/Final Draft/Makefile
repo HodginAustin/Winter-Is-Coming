@@ -2,6 +2,9 @@ default: all
 
 doc:
 	pdflatex writeup.tex
+	bibtex writeup
+	pdflatex writeup.tex
+	pdflatex writeup.tex
 	#dvips writeup.dvi
 	#ps2pdf writeup.ps
 
@@ -16,3 +19,5 @@ clean:
 	rm -f writeup.out
 	rm -f writeup.ps
 	rm -f writeup.toc
+	rm -f writeup.bbl
+	rm -f writeup.blg
