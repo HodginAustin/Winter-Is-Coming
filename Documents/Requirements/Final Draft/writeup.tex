@@ -6,6 +6,7 @@
 \usepackage{geometry}
 \usepackage{listings}
 \usepackage{etoolbox}
+\usepackage{lscape}
 
 \patchcmd{\thebibliography}{\section*{\refname}}{}{}{}
 
@@ -108,7 +109,7 @@
 \newpage
 
 \pagenumbering{arabic}
-%\tableofcontents
+\tableofcontents
 % 7. uncomment this (if applicable). Consider adding a page break.
 %\listoffigures
 %\listoftables
@@ -223,8 +224,13 @@
 		Each version and iteration requires that the previous versions and iterations be complete. Version 2.0 requires version 1.0 to be finished, and iteration five requires that iteration zero through four be finished.
 		Through iteration five and onward, we will be working with more LEDs. Depending on the microcontroller, the LEDs may need to be powered separately from the controller itself, as they may draw too much current.
 		Iteration twelve through fifteen will depend on a separate LED controller that will help facilitate the indexing of, and controlling of the LEDs. This also depends on the availability of such a controller.
-		\subsection{Gant Chart}
+
+		\newpage
+		\begin{landscape}
+		\subsection{Gantt Chart}
 		\includegraphics[width=\linewidth]{Gant.png}
+		\end{landscape}
+		\newpage
 
 
 	\section{Specific Requirements}
