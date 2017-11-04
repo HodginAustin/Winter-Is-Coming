@@ -141,9 +141,16 @@
 
 		%References
 		\subsection{References}
-		%\cite[Sec 3.8]{sourceName}
-		\bibliography{ref}
-		\bibliographystyle{IEEEtran}
+
+		\begingroup
+			\renewcommand{\addcontentsline}[3]{}% Remove functionality of \addcontentsline
+			\renewcommand{\section}[2]{}% Remove functionality of \section
+
+			%\cite[Sec 3.8]{sourceName}
+			\bibliography{ref}
+			\bibliographystyle{IEEEtran}
+
+		\endgroup
 
 		\subsection{Overview}
 			In accordance with the requirements laid out by the client and team, an overall description has been provided that will detail the specifics on what will be used. Version numbers, as well as internal iterations of the versions, will detail
