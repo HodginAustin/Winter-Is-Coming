@@ -126,9 +126,9 @@
 			such that the client's and team's expectations are fully met after all work is completed.  This document will also address any uncertainty about the end result of the proposed product,
 			before work begins.
 		\subsection{Scope}
-			This document includes the requirements initially given by the client as interpreted by the team, the requirements and successive additions that the team has set to improve upon the initial client requirements. Such requirements will mold the final product in its form and functionality.
-			To detail each requirement, the team has provided technical specifics on how each requirement will be met.  The document also includes the details that the team will be executing step by step
-			during the project to meet said result.
+			This document represents the set of requirements initially provided by the client as interpreted by the development team, and successive additions created to improve upon the client's initial feature set.
+			Such requirements will mold the final product in its form and functionality. To detail each requirement, the team has provided technical specifics on how each requirement will be met.  The document also
+			includes the details that the team will be executing step by step	during the project to meet said result.
 
 		\subsection{Definitions, Acronyms, and Abbreviations}
 			LED - Light Emitting Diode \\
@@ -164,13 +164,13 @@
 		\noindent \textbf{Version 1.0} will consist of three major parts. The first part will be the programmable LEDs that will be used to light the plants. These will need to be reprogrammable in order to allow new settings.
 		These settings include LED color on the RGB spectrum, intensity of the light, and the time the LEDs will turn on, and turn off. All LEDs in this version will be set to the same settings, meaning all
 		LEDs will have the same color, intensity and light time. The second part will be the microcontroller. The microcontroller will allow the LEDs to be programed, and will provide power for early iterations.
-		The third part is a user interface to allow these settings to be changed. This version will consist of a configuration file that can be manually changed to modify these settings.
+		The third part is a user interface to allow these settings to be changed. This version will consist of a configuration file that can be manually changed to modify these settings.\\
 
 		\noindent \textbf{Version 2.0} consists of additional features added by our team. Version 2.0 will require everything from Version 1.0 to be completed. This version will add many new features. The first, and most
 		important feature will be an easier way to manage the settings. This version will add a web interface that will allow the user to change settings without having physical access to the controller.
-		This new user interface will be able to display the current settings as well as allow the user to make changes. Further additions to the user interface include adding a mobile web page, and Android
+		This new user interface will be able to display the current settings as well as allow the user to make changes. Further additions to the user interface include adding a mobile web page, and native mobile application for
 		phone support to allow users to update settings on their phone or other mobile device, further adding easier access to the settings. This version will also allow the user to change the LEDs to a new color or intensity for more flexibility. Adding moisture and temperature sensors is another goal for this version. Adding these will further allow the user to adjust
-		their environment for the specific plants they are growing.
+		their environment for the specific plants they are growing.\\
 
 		\noindent \textbf{Version 3.0} consists of our stretch goals: goals that we will attempt to complete when we are finished with version 1.0 and 2.0, given we have enough time. This version, like the last version,
 		requires all previous versions to be complete. Our first stretch goal will be to add predefined setting profiles for various plants. These include adding color, intensity and light timings optimized
@@ -209,8 +209,9 @@
 
 			\subsubsection{Operations}
 				The operations of this product change based on which iteration we are on. In the first iteration the user will be operating the system through a configuration file on the system. In the second iteration
-				the way the user interacts with it changes to an interactive script. This script will ask questions about how the user would like to configure the system. Then makes the changes to the configuration file to configure the system, then make changes to the configuration file.
-				The sixth iteration will then change the user operations again by allowing the user to make configurations using a web interface hosted by the system. With each step the system will apply changes from the configuration file in a steady interval (Instant, 5 sec, 10 sec, 30 sec). This is subject to change based on how long the control service takes to reload and apply the changes.
+				the way the user interacts with it changes to an interactive script. This script will ask questions about how the user would like to configure the system, then makes the changes to the configuration file to configure the system.
+				The sixth iteration will then change the user operations again by allowing the user to make configurations using a web interface hosted by the system. With each step the system will apply changes from the configuration file
+				in a steady interval (Instant, 5 sec, 10 sec, 30 sec). This is subject to change based on how long the control service takes to reload and apply the changes.
 			\subsubsection{Site Adaptation Requirements}
 				The system will change to support different number of LEDs, which are limited by software, depending on which iteration we are in. With iteration four, two zones will be controlled and powered by the microcontroller.
 				In iteration five the amount of zone will increase to four zones powered by a separate power supply. With iterations twelve and fifteen another controller may be needed to push settings to the increased number of LEDs.
@@ -293,7 +294,7 @@
 				\item Iteration 8
 					\begin{itemize}
 						\item Web interface adds support for mobile sized screens
-						\item native mobile application acting as a wrapper for the web interface
+						\item Native mobile application acting as a wrapper for the web interface
 					\end{itemize}
 				\item Iteration 9
 					\begin{itemize}
