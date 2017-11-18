@@ -9,6 +9,7 @@
 \usepackage{etoolbox}
 \usepackage{pdflscape}
 
+
 \geometry{textheight=9.5in, textwidth=7in}
 
 % 1. Fill in these details
@@ -130,12 +131,12 @@
 		The method with which the UI and the control service communicate is obfuscated from the user, but is an important factor in the speed and reliability of the system.
 		The control service interface needs to be versatile enough to support the rapid addition of new features, and simple enough that it does not become a bottleneck in the system.
 
-		\subsection{REST}
+		\subsubsection{REST}
 		REST stands for \textbf{Re}presentational \textbf{S}tate \textbf{T}ransfer.
 		It is an architectural style and modern approach to web service communication. \cite[ch.5]{rest1}
 		REST provides a lightweight communication protocol between client and server,
 		making it a popular building style for cloud-based APIs.
-		It is used commonly all over the web, and by companies like Amazon, Microsoft, and Google \cite{rest2}
+		It is used commonly all over the web, and by companies like Amazon, Microsoft, and Google. \cite{rest2}
 		The architecture provides a limited set of actions (verbs) which accompany each request and determine how the data is processed: GET, POST, PUT, and DELETE.
 		Flexibility is provided by assigning resources (nouns) to a specific URL.
 		REST applications typically send data over HTTP, which can be parsed by existing web technologies, meaning it can be displayed or analyzed in a web page easily.
@@ -162,9 +163,9 @@ Content-Length: 123
 
 		\noindent \\Advantages of using REST architecture:
 		\begin{itemize}
-			\item Adding new data manipulation routes is simple and fast, simply bind a route (\textit{/api/update/schedule/}) to a function (\textit{void UpdateSchedule(request)}).
+			\item Adding new data manipulation routes is simple and fast, simply bind a route (\textit{/api/update/schedule/}) to a function (\textit{void UpdateSchedule(request)})
 			\item Control Service and interface are separated and do not need to understand each other's inner structure to transfer data
-			\item Control Service can assume the role of the \textit{server} in the client-server model by responding to client requests, removing the need for a nodeJS web server to take in requests.
+			\item Control Service can assume the role of the \textit{server} in the client-server model by responding to client requests, removing the need for a nodeJS web server to take in requests
 			\item Control Service can respond to local network requests with no extra effort, allowing the GUI to be hosted on a different networked device (distributed systems)
 		\end{itemize}
 
@@ -181,7 +182,7 @@ Content-Length: 123
 		%Control service - Pull changes from config file, and incorporate changes into driving language file ->
 		%Upon _localhost:8324/api/submit_ - Control service - Recompile driving language file, do something with the hex
 
-		\subsection{File manipulation}
+		\subsubsection{File manipulation}
 		File manipulation is a method of communication where the web server and Control Service communicate through the direct modification of a shared configuration file.
 		This system works by having a standard configuration file structure which is known by both the web server and control service.
 		System settings are changed in the client interface and posted to the web server, which opens and modifies the configuration file it shares with the control service.
@@ -210,7 +211,7 @@ Content-Length: 123
 		%Control service -> Reads changes to config file (parses), update internal state ->
 		%Control service -> Applies changes through GPIO or recompile HEX
 
-		\subsection{Socket IPC}
+		\subsubsection{Socket IPC}
 		Socket IPC (inter-process communication) is a method of communication where the web server and Control Service communicate through a socket connection.
 		Socket communication works by establishing a communication link between a client and the server, which remains open for the duration of the transaction. \cite{socket1}
 		Once data is transferred, the socket is closed. Sockets can communicate between devices on a local network, or between processes on a single device.
@@ -258,7 +259,7 @@ Content-Length: 123
 		The second most important aspect is accessibility. Reading and writing data using the system should be a simple process.
 	  The third aspect is speed. The data will be stored on a device with limited processing capabilities. Saving or loading data should not be a bottleneck to system performance.
 
-		\subsection{Serialization}
+		\subsubsection{Serialization}
 		Supported by most high level object oriented languages, serialization is a process by which an object is converted into a stream of bytes and then stored in a database, file, a different section of memory, or a networked device. \cite{serialization1}
 		The reverse operation is called deserialization, which allows a stored file to be directly converted back into an object in memory.
 		The process of serialization can be used to send object data directly from one system to another, without requiring a manual conversion routine to be written.
@@ -281,7 +282,7 @@ Content-Length: 123
 		\end{itemize}
 
 
-		\subsection{Database}
+		\subsubsection{Database}
 		Database are groups of highly organized data that can be easily created, retrieved, updated, and deleted. \cite{database1}
 		Databases are organized into tables and rows, indexed to provide very fast and efficient data access.
 		A database is typically a file or collection of files stored in a particular format that is probably not human readable.
@@ -333,7 +334,7 @@ while (result.next()) {
 \end{itemize}
 
 
-		\subsection{Translation to markup}
+		\subsubsection{Translation to markup}
 		Internal object state can be converted into a markup configuration file and stored in plain text.
 		There are several languages to choose from for markup (XML, JSON, Yaml) \cite{config1}
 		A conversion function is written that takes an object and manually translates it into a format required by the chosen configuration language.
@@ -377,7 +378,7 @@ while (result.next()) {
 			The internal structure of the system state should be easily modified to allow these changes to happen with little resistance.
 
 
-			\subsection{Objects and classes}
+			\subsubsection{Objects and classes}
 			Object oriented programming (OOP) is a paradigm loved by some, and hated by others.
 			Objects are instances of a template (\textit{class}). More or less, a class is like an ice cube tray, and objects are the resulting ice-cubes.
 			An object is made up of variables (\textit{members}) and functions (\textit{behavior}).
@@ -402,7 +403,7 @@ while (result.next()) {
 			\end{itemize}
 
 
-			\subsection{Structs and lists}
+			\subsubsection{Structs and lists}
 			Structs are a precursor to objects in many ways. They are a relic from the C programming language, but are still a useful method of representing data.
 			Structures or \textit{structs} are collections of variables, usually stored consecutively in memory, which can be manipulated as singular objects, almost as if a struct is a named box in which like data can be stored.
 			Structures are essentially objects without behavior. Data can be stored in a useful and organized manner, but all logic pertaining to that data must be performed in a different location.
@@ -420,7 +421,7 @@ while (result.next()) {
 			\end{itemize}
 
 
-			\subsection{File system or database}
+			\subsubsection{File system or database}
 			This option forgoes the organization and structure provided by objects or structs, and places the system state directly into the persistent storage.
 			Effectively, this method would involve the removal of short term memory in favor of immediately placing everything into long term memory.
 			Using this method, the Control Service becomes an input-output machine whose purpose is to gather input from its API, read physical storage, and insert or modify existing data.
