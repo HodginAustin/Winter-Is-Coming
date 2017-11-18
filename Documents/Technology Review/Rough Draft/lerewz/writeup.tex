@@ -85,7 +85,10 @@
 
 				\newpage
         \begin{abstract}
-				\noindent This is a rough draft, the final draft will have a combined abstract.
+				\noindent The Control Service is a crucial piece of this system. It receives incoming data from client interfaces, processes and stores it, and then sends it to the LED control system.
+				This system will have multiple clients, and possibly multiple LED controllers. The singular path between those two groups is the Control Service, making it a bottleneck of the system.
+				The technology used for the inlet, processing, and outlet of the Control Service will determine the overall throughput of the system.
+				This document will compare three technologies for the processing of client input, the internal representation of data, and the storage of system parameters for persistence.
         \end{abstract}
     \end{singlespace}
 \end{titlepage}
