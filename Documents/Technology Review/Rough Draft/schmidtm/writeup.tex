@@ -84,7 +84,11 @@
 
 				\newpage
         \begin{abstract}
-				\noindent This is a rough draft. The final draft will have a combined abstract from all team members.
+				\noindent In later versions of the end product, the system expands and starts offering the ability to connect other devices to the main controller.  A network
+				will be needed for such communication.  This will allow multiple users to be able to control the LEDs.  Further designs lead to advanced lighting of the planter box,
+				which will require custom fittings.  All of this will not be possible without a core Control Service which controls everything from user input to LED control.  Taking into
+				consideration each of these systems, this document will cover three technologies for the following areas: network structures, custom planter box hardware, and the core control
+				service language.  
         \end{abstract}
     \end{singlespace}
 \end{titlepage}
@@ -130,7 +134,7 @@
 		This web interface will hosted on the local controller (localhost), and only this controller will be accessible to it.
 		This is true, only if there isn't a network infrastructure to allow this host to share its web interface to other devices.
 	  This network infrastructure must accomodate the web interface host, other clients wishing to interact with the LED array, and
-		be as simple to setup and maintain as possible.  \\ 
+		be as simple to setup and maintain as possible.  \\
 
 		There are many different types of devices and protocols that allow devices to pass information to each other, and share resources.
 		Some of these have become more prominent over time due to adaptation and adoption by the majority of industries worldwide.
