@@ -1,0 +1,481 @@
+\documentclass[onecolumn, draftclsnofoot,10pt, compsoc]{IEEEtran}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{etoolbox}
+\usepackage{pdflscape}
+
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{}
+
+\geometry{textheight=9.5in, textwidth=7in}
+
+% 1. Fill in these details
+\def \CapstoneTeamName{			              			 PlanteR-GB}
+\def \CapstoneTeamNumber{					           			 Group 64}
+\def \GroupMemberOne{				           				Travis Hodgin}
+\def \GroupMemberTwo{				           				Austin Hodgin}
+\def \GroupMemberThree{			            Maximillian Schmidt}
+\def\GroupMemberFour{		        	               Zach Lerew}
+\def \CapstoneProjectName{	      	    Winter is Coming...}
+\def \CapstoneSponsorCompany{		    Oregon State University}
+\def \CapstoneSponsorPerson{		 			  				 Victor Hsu}
+
+% 2. Uncomment the appropriate line below so that the document type works
+\def \DocType{		%Problem Statement
+				%Requirements Document
+				Technology Review
+				%Design Document
+				%Progress Report
+				}
+
+\newcommand{\NameSigPair}[1]{\par
+\makebox[2.75in][r]{#1} \hfil 	\makebox[3.25in]{\makebox[2.25in]{\hrulefill} \hfill		\makebox[.75in]{\hrulefill}}
+\par\vspace{-12pt} \textit{\tiny\noindent
+\makebox[2.75in]{} \hfil		\makebox[3.25in]{\makebox[2.25in][r]{Signature} \hfill	\makebox[.75in][r]{Date}}}}
+% 3. If the document is not to be signed, uncomment the RENEWcommand below
+\renewcommand{\NameSigPair}[1]{#1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{titlepage}
+    \pagenumbering{gobble}
+    \begin{singlespace}
+    	%\includegraphics[height=4cm]{coe_v_spot1}
+        \hfill
+
+        % 4. If you have a logo, use this includegraphics command to put it on the coversheet.
+        %\includegraphics[height=4cm]{derp.jpg}
+
+        \par\vspace{.2in}
+        \centering
+        \scshape{
+            \huge CS Capstone \DocType \par
+            {\large\today}\par
+            \vspace{.5in}
+            \textbf{\Huge\CapstoneProjectName}\par
+
+            %\vfill
+						\vspace{1in}
+
+            {\large Prepared for}\par
+            \Huge \CapstoneSponsorCompany\par
+            \vspace{5pt}
+            {\Large\NameSigPair{\CapstoneSponsorPerson}\par}
+
+						\vspace{1in}
+
+            {\large Prepared by}\par
+						{\huge \CapstoneTeamNumber}\par
+            \CapstoneTeamName\par
+            \vspace{5pt}
+
+            {
+							\Large
+							\NameSigPair{\GroupMemberOne}\par
+							%\NameSigPair{\GroupMemberTwo}\par
+							%\NameSigPair{\GroupMemberThree}\par
+							%\NameSigPair{\GroupMemberFour}\par
+            }
+
+            \vspace{20pt}
+        }
+%\textbf{\textsuperscript{citation needed}}
+        \begin{abstract}
+					\noindent The microcontroller is the brain of our project, controlling
+					both our LEDs and our additional features. LEDs are the main focus
+					of our project, and the way we interact between the LED and
+					controller is important. In this document we will compare three
+					different technologies for each of these topics, the microcontroller,
+					LEDs, and LED libraries.
+        \end{abstract}
+    \end{singlespace}
+\end{titlepage}
+
+\newpage
+
+\pagenumbering{arabic}
+\tableofcontents
+% 7. uncomment this (if applicable). Consider adding a page break.
+%\listoffigures
+%\listoftables
+\clearpage
+\singlespace
+
+
+	% Document body
+	\section{Microcontroller}
+		\subsection{Overview and Criteria}
+		The microcontroller will run parts or all of our software. With this in mind,
+		we need to find a controller that fits within certain criteria. The
+		controller must
+		\begin{itemize}
+			\item Controller is reprogramable
+			\item Controller contains I/O pins
+		\end{itemize}
+		The controller must be reprogramable as to allow the user to change files;
+		This also facilitates testing. The I/O pins will allow the LED strips to
+		interface with the controller, as well as allow additional features to be
+		added.
+
+		\vspace{5mm}
+		\noindent Following these criteria, we have a few additional features that would be
+		benifical. These include:
+		\begin{itemize}
+			\item Controller allows multiple applications to run simultaneously
+			\item Controller allows connection via a wireless network
+			\item Controller is capable of hosting a web page
+		\end{itemize}
+		Allowing the controller to run multiple applications will facilitate
+		multiple features to run on a single controller; For example the controller
+		will run the LED interface, as well as hosting a web page. Allowing
+		connection via a wireless network will help with additional features on a
+		single controller.
+		\subsection{Potential Choices}
+		During our research we have found three commonly used microcontrollers that
+		fit our criteria. The first is the Teensy 3.2. The second is the Arduino Uno,
+		and the third is the Raspberry Pi Zero W. These three were chosen for their
+		ease of use, price, and documentation.
+		\subsection{Teensy 3.2}
+		The Teensy 3.2 is a commonly used microntroller for small scale LED projects.
+		it uses an cortex-m4 ARM processor running at 72MHz \cite[Pg 7]{K20}. Storage consists
+		of 256KB of flash memory that will contain the Arduino or C flashed to it.
+		The Teensy has 34 I/O pins, and is powered by 5V supplied by a micro USB
+		cable.
+
+		\vspace{5mm}
+		\noindent The Teensy 3.2 is a fairly small board, being only 1.4 inches long
+		by 0.7 inches wide, which is great for projects where space is limited. The
+		Teensy 3.2 is priced at \$20.
+
+		\vspace{5mm}
+		\noindent Advantages of the Teensy 3.2:
+		\begin{itemize}
+			\item Small form factor
+			\item Runs Arduino and C programs
+			\item Compatible with many LED libraries
+		\end{itemize}
+		Disadvantages of the Teensy 3.2:
+		\begin{itemize}
+			\item Not robust enough for much more than the LEDs
+			\item Documentation is lacking with regards to LEDs
+		\end{itemize}
+		\subsection{Arduino Uno}
+
+		\vspace{5mm}
+		\noindent The Arduino Uno is a popluar microcontroller for many small electroncs
+		projects. The Uno contains an ATmega328 controller running at 20 million
+		instructions per second (MIPS) at 20MHz with 32KB of flash
+		memory\cite[Pg 7]{atmel}. Containing 14 digital I/O pins of which 6
+		can be used for PWM outputs, and six analog inputs \cite[Pg 7]{arduino}. With
+		an input voltage of 5v off a barel jack. The Uno has a large community with
+		a lot of documentation.
+
+		\vspace{5mm}
+		\noindent The Arduino Uno is 2.7 inches by 2.1 inches making it more ideal for
+		projects where size isnt a limiting factor.
+
+		\vspace{5mm}
+		Advantages of the Arduino Uno:
+		\begin{itemize}
+			\item Compatible with many LED libraries
+			\item Addon shields allow for further features to be added
+			\item Interfacing with the LEDs is easiest with this device
+			\item Documentation is fantastic
+		\end{itemize}
+		Disadvantages of the Arduino Uno:
+		\begin{itemize}
+			\item Shields sold seperatly
+			\item Not robust enough to run more than LEDs and sensors
+			\item Wireless connections require more hardware.
+		\end{itemize}
+		\subsection{Raspberry pi Zero W}
+
+		\vspace{5mm}
+		\noindent The Raspberry Pi Zero W is more of a microcomputer than a microcontroller.
+		It is capable of running a full linux operating systems. The Pi Zero W
+		contains an ARM processory at 1GHz with 512MB of RAM Making this the most
+		powerful option we looked at. This device uses 40 GPIO pins for
+		external interface, uses a micro SD card for storage, and supports digital
+		video out via a mini HDMI\cite[Pg 7]{pizero}.
+
+		\vspace{5mm}
+		\noindent Additionally, the Pi Zero W contains a wireless and bluetooth chip built in.
+		From a size standpoint the Raspberry Pi Zero W is another small controller
+		being 2.5 inch by 1.2 inch. This makes this controller another great choice
+		for smaller projects. Raspberry Pi Zero W is priced at \$10, and has a huge
+		community with plenty of documentation.
+
+		\vspace{5mm}
+		\noindent While the Raspberry Pi can run many RGB LEDs, specific models use internal
+		clock timings time the LED signals. This makes running these on the Pi,
+		which uses a multi-tasking linux operating system, a pain.
+
+		\vspace{5mm}
+		\noindent Advantages of the Raspberry Pi Zero W:
+		\begin{itemize}
+			\item Can host local web pages
+			\item Can run a light linux operating system
+			\item Great documentation
+		\end{itemize}
+		Disadvantages of the Raspberry Pi Zero W:
+		\begin{itemize}
+			\item Multitasking operating system makes clock based LEDs a pain to
+			work with.
+		\end{itemize}
+
+		\subsection{Discussion}
+		\noindent Keeping our criteria in mind, each of the controllers listed here meet our
+		requirements. The Teensy, being our least powerful device, is a great choice
+		for small LED projects. It appears the Teensy will not be able to handle
+		both setting the LEDs and changing the time the LEDs will turn on and off
+		at the same time. This makes the Teensy a great option for only a part of
+		the project.
+
+		\vspace{5mm}
+		\noindent The Arduino Uno, being our second most powerful device on the
+		list, is capable of handling both setting the LEDs and changing the time
+		the LEDs will turn on and off. This makes it a great option for this
+		project. Since it is an Arduino, we are limited to two coding languages;
+		Arduino, and C. The only way for the Uno to connect to a wireless network,
+		is by using an external shield or USB wireless adapter. This means we will
+		need additional hardware to connect to any network.
+
+
+		\vspace{5mm}
+		\noindent The Raspberry Pi Zero W is the most powerful controller option on
+		this list. This gives us more options in terms of additional
+		features. With its great support, amount of GPIO pins, and ability to run
+		several applications at the same time, this is would be a great option for
+		a sort of "master" running our some of our additional features such as a
+		local web page, and moisture sensors, while another controller can handle
+		the LED controls.
+
+		\subsection{Conclusion}
+		\noindent Given our criteria, and our additional features, we have decided
+		to use the Raspberry Pi Zero W and a Teensy 3.2. Because of the power of the
+		Pi Zero W, the ability to run a full linux operating system, price, size,
+		and number of GPIO pins, this controller fits everything we need and more.
+		The LED libraries make using the Teensy as the LED driver much more
+		attractive. I will discuss LED Libraries in another section. The Pi Zero
+		W's ability to host web pages, and connect to wireless networks with no a
+		dditional hardware, we can achieve much more of our additional features.
+	\section{LEDs}
+		\subsection{Overview and Criteria}
+		\noindent The LEDs are the centeral point of this project. As such, we need
+		to pick a type that suits our needs. For this we need the LEDs to be a
+		certain type. Our criteria are:
+		\begin{itemize}
+			\item The LEDs must be RGB
+			\item The LEDs strips must be modular
+		\end{itemize}
+		\noindent The LEDs we choose have to be RGB, that is the point of this
+		project. With modular LEDs, we will be able to create any size kit we want,
+		depending on how many LEDs we want to use.
+		\subsection{Potential Choices}
+		\noindent We have three great choices for LEDs. The first is the Adafruit
+		WS2812 Neopixel LED strip. The second is the DOTSTAR APA102 LED strip.
+		Lastly we have the WS2801 diffused LED strand. Each of these fits all of
+		our criteria.
+		\subsection{Neopixel WS2812}
+		\noindent The WS2812 Neopixel LEDs from Adafruit is popular for many LED
+		projects. These LEDs are digitally addressable, meaning we can set each LED
+		color individualy; Each LED has a shift-registers, chained throughout the
+		strip which allows us to shorten the strip, or add more to the end
+		\cite[Pg 7]{neo}. Once you set the color, you can disconnect the strip from
+		the controller, and as long as its still being powered, it will remain
+		thanks to the build in PWM into each LED-chip. Powering the LEDs comes
+		from solder pads on the side of each LED that will provide 5V and up to 2A,
+		ground, and a data line.
+
+
+		\vspace{5mm}
+		\noindent Neopixel LEDs come in several size price combonations, the most
+		popular being 60 LEDs for \$24.99, across a full meter.
+
+		\vspace{5mm}
+		\noindent Advantages of the Neopixel WS2812:
+		\begin{itemize}
+			\item Documentation is great
+			\item Digitally addressable
+			\item Modular
+			\item Many libraries
+		\end{itemize}
+		Disadvantages of the Neopixel WS2812:
+		\begin{itemize}
+			\item Clock controlled
+		\end{itemize}
+		\subsection{DOTSTAR APA102}
+		\noindent The DOTSTR APA102 are an alternative to adafruits Neopixel LEDs. Instead
+		of working on a single data pin, these work on a 2-wire SPI, meaning data
+		can traverse the strip much faster than the Neopixel PWM system. These do
+		not require timing meaning clock cycles will not affect these
+		\cite[Pg2]{dotstar}. These contain 30 LEDs per meter with 24-bit color,
+		8 bits for each red, green, and blue. Like the Neopixel, each LED acts Like
+		a shift register, which means we can, if not hardware limited, control an
+		infinite number of LEDs. The full meter costs \$19.95.
+
+		\vspace{5mm}
+		\noindent Advantages of the Dotstar APA102:
+		\begin{itemize}
+			\item SPI allows data to travel faster down the LED strip.
+		\end{itemize}
+		Disadvantages of the Dotstar APA102:
+		\begin{itemize}
+			\item Less LED per meter than Neopixel
+			\item SPI can be hard to set up
+			\item Documentation is lacking
+		\end{itemize}
+		\subsection{WS2801 Diffused LED Strand}
+		\noindent The WS2801 LED strand runs similarly to the Neopixel LEDS as they
+		are clock based. Instead of a strip, they are in a strand of weatherproof
+		"dots" that fit through a 12mm hole\cite[Pg 7]{strand}. These are diffused
+		LEDs meaning the light is spread more evenly, reducing hard edges and
+		shadows. Like the other two options, these are 24-bit colors. Similarly to
+		the Neopixel's thes are PWM driven and must be clocked by the controller.
+
+		\vspace{5mm}
+		\noindent These only come in strands of 25, making these not very modular without
+		modifications. They are run off of 5V at up to 2A, just like the previous
+		choices. They are priced at \$39.95 for 25 LEDs.
+
+		\vspace{5mm}
+		\noindent Advantages of the WS2801 Diffused LED Strands:
+		\begin{itemize}
+			\item Diffused lighting helps reduce hard shadows
+			\item Dot based LED gives more options for hiding wiring
+			\item Many libraries
+		\end{itemize}
+		Disadvantages of the WS2801 Diffused LED Strands:
+		\begin{itemize}
+			\item Not easily modular
+			\item clock controlled
+			\item Forced to use 25 pixels
+		\end{itemize}
+		\subsection{Discussion}
+		The WS2812 and the WS2801 use the same clock based control, making the only
+		difference in the style of LED. Both the WS2812 and the DOTSTAR LEDs are
+		strips of flat LEDs, with the Dotstar being about \$5 cheaper.
+
+		\vspace{5mm}
+		\noindent The DOTSTAR uses a non clock based SPI connection from the
+		controller, making it an interesting choice. The major complaint is the
+		documentation.
+		\subsection{Conclusion}
+		\noindent Because of the documentation, the libraries supported, and size,
+		we have chosen to go with the WS812 Neopixel LEDs. These are the LEDs we
+		have seen for many different projects, has great documentation from both
+		Adafruit, and users, is supported by many libraries, and can be split up
+		into smaller strips if needed makes this our best choice.
+
+
+	\section{LED Libraries}
+		\subsection{Overview and Criteria}
+		\noindent LED libraries are what the microcontroller uses to interface with
+		the LEDs. We need to pick a library that fits with our microcontroller, and
+		LED choice. It is important to note that there exists libraries to run
+		clock based LEDs on the raspberry pi using hardware PWM. These, however
+		are created by other users, and are not updated often. Because of this, our
+		criteria are:
+		\begin{itemize}
+			\item Library must work with either the Raspberry Pi, or Arduino Uno
+			\item Library must work with the WS2812 Neopixel LEDs
+		\end{itemize}
+		\noindent We need to be sure the library we want to use is compatible with
+		the controller we are using, otherwise the whole project will not work.
+		Similarly, we need to make sure the library can work for the LEDs of our
+		choice.
+		\subsection{Potential Choices}
+		\noindent For libraries, we have several choices. The first is fastLED. The
+		second is the Adafruits Neopixel library, and the third choice is to build
+		our own library. Each of these options will fit our criteria.
+		\subsection{FastLED}
+		\noindent FastLED is an arduino based library created to make programming
+		LEDs faster and easier. This library has support for both SPI, and 3-wire
+		chipsets\cite[Pg 7]{fastLED}. Many projects found using the Neopixel LEDs
+		used this library.
+
+		\vspace{5mm}
+		\noindent This library is written in C++ and can be used in for anything
+		that can run Arduino, such as the Arduino Uno and Teensy 3.2. Supporting
+		both SPI and 3-wire chipsets allow for many different types of LEDs to
+		interface, however it cannont be used on multi-tasking devices such as the
+		raspberry pi. This is mostly due to the LEDs supported have a problem with
+		clock timing, with the exception of LEDs such as the APA102.
+
+		\vspace{5mm}
+		\noindent Advantages to FastLED:
+		\begin{itemize}
+			\item Supports many different LED structures
+			\item Great documentation
+		\end{itemize}
+		Disadvantages to FastLED:
+		\begin{itemize}
+			\item limited to running on Arduino
+		\end{itemize}
+		\subsection{Adafruit Library}
+		\noindent The Adafruit Neopixel Library is specifically designed for their Neopixel
+		LEDs. This library is written in C++ and is made for use for Arduino
+		projects. That means this can be run on anything that can run Arduino such
+		as the Arduino Uno and the Teensy 3.2. Adafruit has an article discussing
+		the use of the library\cite[Pg 7]{neolib}.
+
+
+		\vspace{5mm}
+		\noindent Past this, the library has little in the way of documentation. The article
+		discusses basic use, but doesn't go into much past their test script. This
+		will lead to more time spent digging into the code base. In our research we
+		have found many different projects using this library.
+
+		\vspace{5mm}
+		\noindent Advantages of the Adafruit Neopixel Library:
+		\begin{itemize}
+			\item Built specifically for Neopixel
+			\item Built for use on Arduino devices
+		\end{itemize}
+		Disadvantages of the Adafruit Library:
+		\begin{itemize}
+			\item Can only use Neopixel LEDs
+			\item Documentation is a little lacking
+		\end{itemize}
+		\subsection{Build our Own}
+		\noindent Building our own library will reduce a lot of our problems of other
+		libraries. We can code specifically for the LED and controller we want.
+		This reduces the amount of added code the controller will use. Additionally,
+		we will have better knowledge of how to write the project, as we are the
+		ones who wrote it.
+
+		\vspace{5mm}
+		\noindent The major problem that comes with building our own LED library is time.
+		Havig to write our own library will require extensive resarch, writing, and
+		testing time that can detract from our original project.
+		\subsection{Discussion}
+		\noindent FastLED is a very popular LED library used in many projects we found
+		during our research. With its broad LED support, and great documentation,
+		it is an appealing option. The Neopixel library, while only made for use on
+		the Neopixel LEDs, isn't bloated by the addition of these other LED types.
+		Building our own library would allow us to intergrate only features we need
+		for the specific LED type we are using. This however, will require more
+		time for us to complete.
+		\subsection{Conclusion}
+		\noindent Because of the documentation and LED support, we have decided to use
+		FastLED as our LED library. FastLED has great support, and allows many LED
+		types for future expansion if needed.
+
+		\newpage
+		%References
+				\subsection{References}
+
+				\begingroup
+					\renewcommand{\addcontentsline}[3]{}% Remove functionality of \addcontentsline
+					\renewcommand{\section}[2]{}% Remove functionality of \section
+
+					%\cite[Sec 3.8]{sourceName}
+					\bibliography{ref}
+					\bibliographystyle{IEEEtran}
+
+				\endgroup
+				\newpage
+	\end{document}

@@ -85,7 +85,7 @@
 %\textbf{\textsuperscript{citation needed}}
 				\newpage
         \begin{abstract}
-				\noindent This document details the entire system design for the PlantR-GB system
+				\noindent This document details the entire system design for the PlanteR-GB system
         \end{abstract}
     \end{singlespace}
 \end{titlepage}
@@ -102,33 +102,69 @@
 
 \newpage
 
+% Document outline based on summary of IEEE 1016-2009 from http://www.zeynepaltan.info/SDD-Template.pdf
+
 	% Introduction
 	\section{Introduction}
 		\subsection{Purpose}
 		\subsection{Scope}
-		\subsection{Context}
-		\subsection{Summary}
+		\subsection{Overview}
+		\subsection{Definitions and Acronyms}
+		\subsection{Reference Material}
+			\begingroup
+				\renewcommand{\addcontentsline}[3]{}% Remove functionality of \addcontentsline
+				\renewcommand{\section}[2]{}% Remove functionality of \section
+				%\cite[Sec 3.8]{sourceName}
+				\bibliography{ref}
+				\bibliographystyle{IEEEtran}
+			\endgroup
+
+	\section{System Overview}
+		\subsection{Assumptions}
+		\subsection{General Constraints}
+		\subsection{System Environment}
 
 
-	%References
-	\section{References}
-		\begingroup
-			\renewcommand{\addcontentsline}[3]{}% Remove functionality of \addcontentsline
-			\renewcommand{\section}[2]{}% Remove functionality of \section
+	\section{System Architecture}
+		\subsection{System Diagram}
+		NOTE:TO BE REPLACED WITH REAL DIAGRAM
+		
+		\includegraphics[width=\linewidth]{sysdiag.png}
 
-			%\cite[Sec 3.8]{sourceName}
-			\bibliography{ref}
-			\bibliographystyle{IEEEtran}
-		\endgroup
+		\subsection{Hardware}
+			\subsubsection{Master Controller}
+			\subsubsection{Slave Controller}
+		\subsection{Control Service}
+			\subsubsection{API}
+			\subsubsection{Internal State}
+			\subsubsection{Data Parser}
+		\subsection{Data Design}
+			\subsubsection{Data Description}
+			\subsubsection{Zones table}
+			\subsubsection{Schedules table}
+			\subsubsection{Profiles table}
+			\subsubsection{Controllers table}
+		\subsection{LED Control System}
+			\subsubsection{Slave Controller Communication}
+			\subsubsection{Slave Controller Software}
 
 
-	% Glossary
-	\section{Glossary}
+	\section{Human Interface Design}
+		\subsection{Overview of User Interface}
+		\subsection{Command Line Interface}
+			\subsubsection{Interface Overview}
+			\subsubsection{Mockup}
+		\subsection{Web Interface}
+			\subsubsection{Interface Overview}
+			\subsubsection{Home Page}
+			\subsubsection{Mockup}
+			\subsubsection{Zones Page}
+			\subsubsection{Mockup}
+			%... etc for more pages
 
+	%\section{Requirements Matrix} %??? What is this, it was in a template somewhere
 
-	% Document Body
-	\section{Stakeholders and Design Concerns}
-
+	\section{Appendices} % OR glossary??
 
 
 
