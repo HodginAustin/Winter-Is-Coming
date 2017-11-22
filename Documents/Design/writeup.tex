@@ -200,7 +200,10 @@ DELETE http://localhost:5324/zone/3/          // Delete zone 3
 			The system consists of a few core objects and several smaller ones.
 
 			\noindent \\This diagram shows the internal state of the control service
-			\includegraphics[width=\linewidth]{systemDiagrams/state.png}
+
+			\begin{center}
+			\includegraphics[width=\hsize]{systemDiagrams/state.png}
+			\end{center}
 
 			\subsubsection{Data Parser}
 			During system startup, the control service will read data from the persistent storage and build a set of internal objects representing the state at the time it was last saved.
