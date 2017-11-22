@@ -5,6 +5,7 @@
 \usepackage{setspace}
 \usepackage{geometry}
 \usepackage{listings}
+\usepackage{color}
 \usepackage{etoolbox}
 \usepackage{pdflscape}
 
@@ -102,6 +103,25 @@
 
 \newpage
 
+
+% Syntax highlighting
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  backgroundcolor=\color{white},   % choose the background color
+  basicstyle=\footnotesize,        % size of fonts used for the code
+  breaklines=true,                 % automatic line breaking only at whitespace
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  escapeinside={\%*}{*)},          % if you want to add LTeX within your code
+  keywordstyle=\color{blue},       % keyword style
+  stringstyle=\color{mymauve},     % string literal style
+	frame = single,                  % code framing
+}
+
+
 % Document outline based on summary of IEEE 1016-2009 from http://www.zeynepaltan.info/SDD-Template.pdf
 
 	% Introduction
@@ -111,6 +131,9 @@
 		\subsection{Overview}
 		\subsection{Definitions and Acronyms}
 		\textbf{API} - Application Programming Interface
+		\textbf{REST} - \textbf{Re}presentational \textbf{S}tate \textbf{T}ransfer.
+
+
 		\subsection{Reference Material}
 			\begingroup
 				\renewcommand{\addcontentsline}[3]{}% Remove functionality of \addcontentsline
@@ -130,7 +153,7 @@
 		\subsection{System Diagram}
 		NOTE:TO BE REPLACED WITH REAL DIAGRAM
 
-		\includegraphics[width=\linewidth]{sysdiag.png}
+		\includegraphics[width=\linewidth]{systemDiagrams/sysdiag.png}
 
 		\subsection{Hardware}
 			\subsubsection{Overview}
@@ -157,9 +180,33 @@
 			In essence, it defines the data contract between the system and storage.
 
 			\subsubsection{API}
-			The API will follow the REST protocol. It is an architectural style and modern approach to web service communication. \cite[ch.5]{rest1}
+			The API will follow the REST protocol. It is an architectural style and modern approach to web service communication. \cite{rest1}
+			REST provides a lightweight communication protocol between client and server, making it a popular building style for cloud-based APIs.
+			The control service API consists of a series of routes, each relevant to a particular parameter or set of parameters.
+
+			\noindent \\Here is a client request to the control service API.
+			\begin{lstlisting}[language=XML]
+PUT    http://localhost:5324/zone/3/               // Add a new zone with ID 3
+POST   http://localhost:5324/zone/3/color/ff0000  // Update zone 3 color to red
+POST   http://localhost:5324/zone/3/intensity/85 // Update zone 3 intensity to 85%
+POST   http://localhost:5324/zone/3/power/on    // Turn zone 3 on
+GET    http://localhost:5324/zone/3/color/     // Get the color of zone 3, returns ff0000 (red)
+DELETE http://localhost:5324/zone/3/          // Delete zone 3
+\end{lstlisting}
+
 			\subsubsection{Internal State}
+			The internal state of the system will be represented by a series of objects with variables and methods.
+			A class represents a template that can be instantiated into an in-memory object.
+			The system consists of a few core objects and several smaller ones.
+
+			\noindent \\This diagram shows the internal state of the control service
+			\includegraphics[width=\linewidth]{systemDiagrams/state.png}
+
 			\subsubsection{Data Parser}
+			During system startup, the control service will read data from the persistent storage and build a set of internal objects representing the state at the time it was last saved.
+			The data parser serves as a translator between SQL data and objects.
+			The parser will also contain any conversion routines necessary should the data format be changed significantly between iterations.
+
 
 		\subsection{Data Design}
 			\subsubsection{Overview}
