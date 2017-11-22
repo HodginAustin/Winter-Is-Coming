@@ -130,6 +130,7 @@
 		\subsection{Scope}
 		\subsection{Overview}
 		\subsection{Definitions and Acronyms}
+		\textbf{UI} - User Interface
 		\textbf{API} - Application Programming Interface
 		\textbf{REST} - \textbf{Re}presentational \textbf{S}tate \textbf{T}ransfer.
 
@@ -151,7 +152,7 @@
 
 	\section{System Architecture}
 		\subsection{System Diagram}
-		NOTE:TO BE REPLACED WITH REAL DIAGRAM
+		NOTE:TO BE REPLACED WITH BETTER DIAGRAM
 
 		\includegraphics[width=\linewidth]{systemDiagrams/sysdiag.png}
 
@@ -164,34 +165,63 @@
 		\subsection{Control Service}
 			\subsubsection{Overview}
 			The control service is the bridge between the user interface and the LEDs.
-			It has an API that serves as the entry point for all system changes, an internal state representation which is translated to persistent storage, and fed to the LED control system.
-			The control service API obfuscates the communication between the client UI and the master controller.
-			The API implements a simple method of data communication by opening a series of routes at a specific port on the master controller
-			To make a data request or modification, the client sends data to the control service using one of the REST verbs (GET, POST, PUT, DELETE, etc) in addition to its data payload.
-			Using the REST protocol simplifies communication between client and server, but also allows new settings and parameters to be quickly changed during development.
+			It has an API that serves as the entry point for all system changes, an internal state representation which is fed to the LED control system and translated to persistent storage.
+			The API obfuscates the communication between the client UI and the control service by providing a set of routes through which data can be sent.
+			To make a data request or modification, the client sends data to the control service using one of the REST verbs (GET, POST, PUT, DELETE, etc) in addition to its data.
+			Using the REST protocol simplifies communication between client and server, but also allows new settings and parameters to quickly become accessible through the addition of new routes.
 
 			The control service internal state is the primary representation of the settings and configuration of the system.
-			This internal state will be the meeting point between the API, data storage, and LED control system.
-			It is responsible for representing all data and putting it in persistent storage.
-			The system is represented by a selection of objects such as the Zone, Schedule, Controller, and Profile.
+			This internal state is the focal point of the API, data storage, and LED control system.
+			It is responsible for representing all data and committing it into persistent storage.
+			When a client UI makes a change to a system parameter, the data is routed through the API and into the internal state
 
-			Reading and writing to the state of internal objects changes how the system behaves, and updates the persistent storage using the Data Parser.
-			The data parser is responsible for translating the system state into persistent storage.
-			In essence, it defines the data contract between the system and storage.
+			The data parser is responsible for translating the objects representing the system's state into persistent storage.
+			When the system starts, the data parser reads from persistent storage and builds the system's internal state.
+			API requests cause the data parser to copy the current system state into persistent storage.
+			Effectively, the data parser defines the contract between the system and persistent storage.
 
 			\subsubsection{API}
 			The API will follow the REST protocol. It is an architectural style and modern approach to web service communication. \cite{rest1}
 			REST provides a lightweight communication protocol between client and server, making it a popular building style for cloud-based APIs.
 			The control service API consists of a series of routes, each relevant to a particular parameter or set of parameters.
+			The internal state is updated when a client sends a request to the API
 
-			\noindent \\Here is a client request to the control service API.
+			\noindent \\Here is an example of a series of REST requests necessary to create the system state shown in the next section.
 			\begin{lstlisting}[language=XML]
-PUT    http://localhost:5324/zone/3/               // Add a new zone with ID 3
-POST   http://localhost:5324/zone/3/color/ff0000  // Update zone 3 color to red
-POST   http://localhost:5324/zone/3/intensity/85 // Update zone 3 intensity to 85%
-POST   http://localhost:5324/zone/3/power/on    // Turn zone 3 on
-GET    http://localhost:5324/zone/3/color/     // Get the color of zone 3, returns ff0000 (red)
-DELETE http://localhost:5324/zone/3/          // Delete zone 3
+// Create an LED state with ID 3
+PUT http://localhost:5324/ledstate/3
+// Set the color of LED state 3 to red
+POST http://localhost:5324/ledstate/3/color/ff0000
+// Set the intensity of LED state 3 to 85%
+POST http://localhost:5324/ledstate/3/intensity/85
+// Set the power of LED state to on
+POST http://localhost:5324/ledstate/3/power/on
+
+// Add a new schedule with ID 4
+PUT http://localhost:5324/schedule/4/
+// LED state 3 will trigger at 8:30am
+POST http://localhost:5324/schedule/4/hour/0830/ledstate/3
+// LED state 4 will trigger at 2:00pm
+POST http://localhost:5324/schedule/4/hour/1600/ledstate/4
+// LED state 0 will trigger at 9:00pm
+POST http://localhost:5324/schedule/4/hour/2100/ledstate/0
+
+// Add a new zone with ID 3
+PUT http://localhost:5324/zone/3/
+// Set the schedule used by zone 3 to schedule 4
+POST http://localhost:5324/zone/3/schedule/4
+// Assign LEDs 1 through 4 to zone 3
+POST http://localhost:5324/zone/3/leds/1-4
+// Assign LEDs 6 through 8 to zone 3
+POST http://localhost:5324/zone/3/leds/6-8
+// Assign LED 9 to zone 3
+POST http://localhost:5324/zone/3/leds/9
+
+// Get the current color of zone 3
+GET http://localhost:5324/zone/3/color/
+
+// Delete zone 3
+DELETE http://localhost:5324/zone/3/
 \end{lstlisting}
 
 			\subsubsection{Internal State}
@@ -206,8 +236,8 @@ DELETE http://localhost:5324/zone/3/          // Delete zone 3
 			\end{center}
 
 			\subsubsection{Data Parser}
-			During system startup, the control service will read data from the persistent storage and build a set of internal objects representing the state at the time it was last saved.
-			The data parser serves as a translator between SQL data and objects.
+			The data parser serves as a translator between persistent storage and internal state.
+			When a change is made to the system, the data parser is triggered to update the changed value in persistent storage.
 			The parser will also contain any conversion routines necessary should the data format be changed significantly between iterations.
 
 
