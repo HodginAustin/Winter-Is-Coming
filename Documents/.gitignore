@@ -8,3 +8,4 @@
 *.fls
 *.toc
 *.fdb_latexmk
+*.synctex(busy)
