@@ -110,6 +110,7 @@
 		\subsection{Scope}
 		\subsection{Overview}
 		\subsection{Definitions and Acronyms}
+		\textbf{API} - Application Programming Interface
 		\subsection{Reference Material}
 			\begingroup
 				\renewcommand{\addcontentsline}[3]{}% Remove functionality of \addcontentsline
@@ -128,26 +129,55 @@
 	\section{System Architecture}
 		\subsection{System Diagram}
 		NOTE:TO BE REPLACED WITH REAL DIAGRAM
-		
+
 		\includegraphics[width=\linewidth]{sysdiag.png}
 
 		\subsection{Hardware}
+			\subsubsection{Overview}
 			\subsubsection{Master Controller}
 			\subsubsection{Slave Controller}
+
+
 		\subsection{Control Service}
+			\subsubsection{Overview}
+			The control service is the bridge between the user interface and the LEDs.
+			It has an API that serves as the entry point for all system changes, an internal state representation which is translated to persistent storage, and fed to the LED control system.
+			The control service API obfuscates the communication between the client UI and the master controller.
+			The API implements a simple method of data communication by opening a series of routes at a specific port on the master controller
+			To make a data request or modification, the client sends data to the control service using one of the REST verbs (GET, POST, PUT, DELETE, etc) in addition to its data payload.
+			Using the REST protocol simplifies communication between client and server, but also allows new settings and parameters to be quickly changed during development.
+
+			The control service internal state is the primary representation of the settings and configuration of the system.
+			This internal state will be the meeting point between the API, data storage, and LED control system.
+			It is responsible for representing all data and putting it in persistent storage.
+			The system is represented by a selection of objects such as the Zone, Schedule, Controller, and Profile.
+
+			Reading and writing to the state of internal objects changes how the system behaves, and updates the persistent storage using the Data Parser.
+			The data parser is responsible for translating the system state into persistent storage.
+			In essence, it defines the data contract between the system and storage.
+
 			\subsubsection{API}
+			The API will follow the REST protocol. It is an architectural style and modern approach to web service communication. \cite[ch.5]{rest1}
 			\subsubsection{Internal State}
 			\subsubsection{Data Parser}
+
 		\subsection{Data Design}
+			\subsubsection{Overview}
 			\subsubsection{Data Description}
 			\subsubsection{Zones table}
 			\subsubsection{Schedules table}
 			\subsubsection{Profiles table}
 			\subsubsection{Controllers table}
+
 		\subsection{LED Control System}
+			\subsubsection{Overview}
 			\subsubsection{Slave Controller Communication}
 			\subsubsection{Slave Controller Software}
 
+		\subsection{Stretch goal: Custom Enclosure}
+			\subsubsection{Overview}
+		\subsection{Stretch goal: External sensors}
+			\subsubsection{Overview}
 
 	\section{Human Interface Design}
 		\subsection{Overview of User Interface}
@@ -161,6 +191,15 @@
 			\subsubsection{Zones Page}
 			\subsubsection{Mockup}
 			%... etc for more pages
+
+	% Scheduling
+	\section{Project Timeline}
+		\subsection{Iteration 1}
+		\subsection{Iteration 2}
+		\subsection{Iteration 3}
+		\subsection{Iteration 4}
+		\subsection{Iteration 5}
+		\subsection{Iteration 6}
 
 	%\section{Requirements Matrix} %??? What is this, it was in a template somewhere
 
