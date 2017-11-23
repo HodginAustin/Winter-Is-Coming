@@ -152,9 +152,11 @@
 
 	\section{System Architecture}
 		\subsection{System Diagram}
-		NOTE:TO BE REPLACED WITH BETTER DIAGRAM
 
+		\noindent \\This system is comprised of many distinct pieces. Each of them will be explored in further depth in the sections below.
+		\begin{center}
 		\includegraphics[width=\linewidth]{systemDiagrams/systemdiag.png}
+		\end{center}
 
 		\subsection{Hardware}
 			\subsubsection{Overview}
@@ -230,10 +232,9 @@ DELETE http://localhost:5324/zone/3/
 			A class represents a template that can be instantiated into an in-memory object.
 			The system consists of a few core objects and several smaller ones.
 
-			\noindent \\This diagram shows the internal state of the control service
-
+			\noindent \\This diagram shows the internal state of the control service:
 			\begin{center}
-			\includegraphics[width=\hsize]{systemDiagrams/internalstate.png}
+			\includegraphics[width=\linewidth]{systemDiagrams/internalstate.png}
 			\end{center}
 
 			\subsubsection{Data Parser}
@@ -249,8 +250,14 @@ DELETE http://localhost:5324/zone/3/
 			The Data Parser in the Control Service will translate the internal state into a series of SQL commands to INSERT, UPDATE, or DELETE from the data tables.
 			A database is used because of its ability to update, delete, or read a single piece of information without requiring the entire data structure to be read into memory.
 			When changes are made to the way data is structured in the internal state, the database can be restructured and updated with a short SQL script.
-			 
+
+			\noindent \\These are the tables that exist within the database:
+			\begin{center}
+			\includegraphics[width=\linewidth]{systemDiagrams/database.png}
+			\end{center}
+
 			\subsubsection{Data Description}
+
 			\subsubsection{Zones table}
 			\subsubsection{Schedules table}
 			\subsubsection{Profiles table}
