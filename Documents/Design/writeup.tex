@@ -154,7 +154,7 @@
 		\subsection{System Diagram}
 		NOTE:TO BE REPLACED WITH BETTER DIAGRAM
 
-		\includegraphics[width=\linewidth]{systemDiagrams/sysdiag.png}
+		\includegraphics[width=\linewidth]{systemDiagrams/systemdiag.png}
 
 		\subsection{Hardware}
 			\subsubsection{Overview}
@@ -181,6 +181,7 @@
 			Effectively, the data parser defines the contract between the system and persistent storage.
 
 			\subsubsection{API}
+			%pistache.io is a good REST library for C++
 			The API will follow the REST protocol. It is an architectural style and modern approach to web service communication. \cite{rest1}
 			REST provides a lightweight communication protocol between client and server, making it a popular building style for cloud-based APIs.
 			The control service API consists of a series of routes, each relevant to a particular parameter or set of parameters.
@@ -232,7 +233,7 @@ DELETE http://localhost:5324/zone/3/
 			\noindent \\This diagram shows the internal state of the control service
 
 			\begin{center}
-			\includegraphics[width=\hsize]{systemDiagrams/state.png}
+			\includegraphics[width=\hsize]{systemDiagrams/internalstate.png}
 			\end{center}
 
 			\subsubsection{Data Parser}
@@ -243,6 +244,12 @@ DELETE http://localhost:5324/zone/3/
 
 		\subsection{Data Design}
 			\subsubsection{Overview}
+			% Probably SQLite, because MySQL is a memory hog
+			The persistent data storage will be done with a database.
+			The Data Parser in the Control Service will translate the internal state into a series of SQL commands to INSERT, UPDATE, or DELETE from the data tables.
+			A database is used because of its ability to update, delete, or read a single piece of information without requiring the entire data structure to be read into memory.
+			When changes are made to the way data is structured in the internal state, the database can be restructured and updated with a short SQL script.
+			 
 			\subsubsection{Data Description}
 			\subsubsection{Zones table}
 			\subsubsection{Schedules table}
