@@ -1,5 +1,6 @@
 \documentclass[onecolumn, draftclsnofoot,10pt, compsoc]{IEEEtran}
 
+\usepackage{float}
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage{setspace}
@@ -96,7 +97,7 @@
 \pagenumbering{arabic}
 \tableofcontents
 % 7. uncomment this (if applicable). Consider adding a page break.
-%\listoffigures
+\listoffigures
 %\listoftables
 \clearpage
 \singlespace
@@ -131,8 +132,8 @@
 		\subsection{Overview}
 		\subsection{Definitions and Acronyms}
 		\textbf{UI} - User Interface
-		\textbf{API} - Application Programming Interface
-		\textbf{REST} - \textbf{Re}presentational \textbf{S}tate \textbf{T}ransfer.
+		\\\textbf{API} - Application Programming Interface
+		\\\textbf{REST} - \textbf{Re}presentational \textbf{S}tate \textbf{T}ransfer.
 
 
 		\subsection{Reference Material}
@@ -154,14 +155,19 @@
 		\subsection{System Diagram}
 
 		\noindent \\This system is comprised of many distinct pieces. Each of them will be explored in further depth in the sections below.
+
 		\begin{center}
-		\includegraphics[width=\linewidth]{systemDiagrams/systemdiag.png}
+			\begin{figure}[H]
+				\includegraphics[width=\linewidth]{systemDiagrams/systemdiag.png}
+				\caption{The PlanteR-GB system including interface and control systems}
+				\label{fig:systemDiagram}
+			\end{figure}
 		\end{center}
 
 		\subsection{Hardware}
 			\subsubsection{Overview}
 			\subsubsection{Master Controller}
-			\subsubsection{Slave Controller}
+			\subsubsection{Slave Controller(s)}
 
 
 		\subsection{Control Service}
@@ -172,20 +178,22 @@
 			To make a data request or modification, the client sends data to the control service using one of the REST verbs (GET, POST, PUT, DELETE, etc) in addition to its data.
 			Using the REST protocol simplifies communication between client and server, but also allows new settings and parameters to quickly become accessible through the addition of new routes.
 
-			The control service internal state is the primary representation of the settings and configuration of the system.
+			\hfill \break
+			\noindent The control service internal state is the primary representation of the settings and configuration of the system.
 			This internal state is the focal point of the API, data storage, and LED control system.
 			It is responsible for representing all data and committing it into persistent storage.
 			When a client UI makes a change to a system parameter, the data is routed through the API and into the internal state
 
-			The data parser is responsible for translating the objects representing the system's state into persistent storage.
+			\hfill \break
+			\noindent The data parser is responsible for translating the objects representing the system's state into persistent storage.
 			When the system starts, the data parser reads from persistent storage and builds the system's internal state.
 			API requests cause the data parser to copy the current system state into persistent storage.
 			Effectively, the data parser defines the contract between the system and persistent storage.
 
 			\subsubsection{API}
 			%pistache.io is a good REST library for C++
-			The API will follow the REST protocol. It is an architectural style and modern approach to web service communication. \cite{rest1}
-			REST provides a lightweight communication protocol between client and server, making it a popular building style for cloud-based APIs.
+			The API will follow a REST protocol. REST is an architectural style and modern approach to web service communication. \cite{rest1}
+			It provides a lightweight communication protocol between client and server, making it a popular building style for cloud-based APIs.
 			The control service API consists of a series of routes, each relevant to a particular parameter or set of parameters.
 			The internal state is updated when a client sends a request to the API
 
@@ -233,8 +241,13 @@ DELETE http://localhost:5324/zone/3/
 			The system consists of a few core objects and several smaller ones.
 
 			\noindent \\This diagram shows the internal state of the control service:
+
 			\begin{center}
-			\includegraphics[width=\linewidth]{systemDiagrams/internalstate.png}
+				\begin{figure}[H]
+					\includegraphics[width=\linewidth]{systemDiagrams/internalstate.png}
+					\caption{The Internal state of the Control Service is the primary data representation, which is translated as necessary to persistent storage and LED control system.}
+					\label{fig:internalStateDiagram}
+				\end{figure}
 			\end{center}
 
 			\subsubsection{Data Parser}
@@ -253,7 +266,11 @@ DELETE http://localhost:5324/zone/3/
 
 			\noindent \\These are the tables that exist within the database:
 			\begin{center}
-			\includegraphics[width=\linewidth]{systemDiagrams/database.png}
+				\begin{figure}[H]
+					\includegraphics[width=\linewidth]{systemDiagrams/database.png}
+					\caption{The database is a table representation of the Control Service internal state}
+					\label{fig:databaseDiagram}
+				\end{figure}
 			\end{center}
 
 			\subsubsection{Data Description}
