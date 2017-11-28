@@ -125,13 +125,29 @@
 
 % Document outline based on summary of IEEE 1016-2009 from http://www.zeynepaltan.info/SDD-Template.pdf
 
+%%%%%%%%%%%%%%%%%%%%%%% NOTES %%%%%%%%%%%%%%%%%%%%%%%
+% These are general guidelines I think will make the document sound more professional.
+% Use your judgement, but at very least we should be consistent throughout.
+% 1. Avoid using first person language, no I/We/Our/The Team.
+%    Write as if this document is made by someone else, and given to the developers (us).
+% 2. Try to describe the system as if it already exists, not as if it *will* be made.
+%    Think like a wikipedia page, not an instruction manual.
+% 3. Use acronyms as if the reader already knows what they mean, don't define them in the text. (e.g. LED (Light Emitting Diode))
+%    There is a definition section explicitly for various terms and acronyms.
+% 4. Keep it simple, stupid. This should be the ultimate source of how this system works, and nothing in it should require extra explanation after it is printed.
+%    Ideally, another developer could pick this thing up and figure out how to build the system over again.
+% 5. Avoid double spaces, CTRL+F "  " (whole words) ever so often.
+% 6. Check for lines without periods using CTRL+F (regex) and give it this expression: ^[^\n][^\\\][^.]*$
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 	% Introduction
 	\section{Introduction}
 		\subsection{Purpose}
 		\subsection{Scope}
 		\subsection{Overview}
 		\subsection{Definitions and Acronyms}
-		\textbf{UI} - User Interface
+		\textbf{LED} - Light Emitting Diode
+		\\\textbf{UI} - User Interface
 		\\\textbf{API} - Application Programming Interface
 		\\\textbf{REST} - \textbf{Re}presentational \textbf{S}tate \textbf{T}ransfer.
 
@@ -154,7 +170,7 @@
 	\section{System Architecture}
 		\subsection{System Diagram}
 
-		\noindent \\This system is comprised of many distinct pieces. Each of them will be explored in further depth in the sections below.
+		\noindent \\This system is comprised of many distinct pieces. Each of them are explored in further depth in the sections below.
 
 		\begin{center}
 			\begin{figure}[H]
@@ -167,7 +183,7 @@
 		\subsection{Hardware}
 			\subsubsection{Overview}
 			\subsubsection{Master Controller}
-			\subsubsection{Slave Controller(s)}
+			\subsubsection{LED Controller(s)}
 
 
 		\subsection{Control Service}
@@ -178,24 +194,22 @@
 			To make a data request or modification, the client sends data to the control service using one of the REST verbs (GET, POST, PUT, DELETE, etc) in addition to its data.
 			Using the REST protocol simplifies communication between client and server, but also allows new settings and parameters to quickly become accessible through the addition of new routes.
 
-			\hfill \break
-			\noindent The control service internal state is the primary representation of the settings and configuration of the system.
+			\noindent \\The control service internal state is the primary representation of the settings and configuration of the system.
 			This internal state is the focal point of the API, data storage, and LED control system.
 			It is responsible for representing all data and committing it into persistent storage.
-			When a client UI makes a change to a system parameter, the data is routed through the API and into the internal state
+			When a client UI makes a change to a system parameter, the data is routed through the API and into the internal state.
 
-			\hfill \break
-			\noindent The data parser is responsible for translating the objects representing the system's state into persistent storage.
+			\noindent \\The data parser is responsible for translating the objects representing the system's state into persistent storage.
 			When the system starts, the data parser reads from persistent storage and builds the system's internal state.
 			API requests cause the data parser to copy the current system state into persistent storage.
 			Effectively, the data parser defines the contract between the system and persistent storage.
 
 			\subsubsection{API}
 			%pistache.io is a good REST library for C++
-			The API will follow a REST protocol. REST is an architectural style and modern approach to web service communication. \cite{rest1}
+			The API implements a REST protocol. REST is an architectural style and modern approach to web service communication. \cite{rest1}
 			It provides a lightweight communication protocol between client and server, making it a popular building style for cloud-based APIs.
 			The control service API consists of a series of routes, each relevant to a particular parameter or set of parameters.
-			The internal state is updated when a client sends a request to the API
+			The internal state is updated when a client sends a request to the API.
 
 			\noindent \\Here is an example of a series of REST requests necessary to create the system state shown in the next section.
 			\begin{lstlisting}[language=XML]
@@ -210,11 +224,11 @@ POST http://localhost:5324/ledstate/3/power/on
 
 // Add a new schedule with ID 4
 PUT http://localhost:5324/schedule/4/
-// LED state 3 will trigger at 8:30am
+// LED state 3 triggers at 8:30am
 POST http://localhost:5324/schedule/4/hour/0830/ledstate/3
-// LED state 4 will trigger at 2:00pm
+// LED state 4 triggers at 2:00pm
 POST http://localhost:5324/schedule/4/hour/1600/ledstate/4
-// LED state 0 will trigger at 9:00pm
+// LED state 0 triggers at 9:00pm
 POST http://localhost:5324/schedule/4/hour/2100/ledstate/0
 
 // Add a new zone with ID 3
@@ -236,9 +250,17 @@ DELETE http://localhost:5324/zone/3/
 \end{lstlisting}
 
 			\subsubsection{Internal State}
-			The internal state of the system will be represented by a series of objects with variables and methods.
-			A class represents a template that can be instantiated into an in-memory object.
-			The system consists of a few core objects and several smaller ones.
+			The internal state of the system is represented by a series of objects closely mirroring their physical counterparts.
+			An object is a template that can be instantiated into memory, and then manipulated.
+			Using objects allows the system to represent its properties in a human readable way, as well as easily translate them into persistent storage and LED controller data.
+
+			\noindent \\In this system, the smallest unit of measurement is the LED. The properties assigned to groups of LEDs defines the behavior of the system as a whole.
+			A strip may have any number of individually index-able LEDs, attached to a single LED controller.
+			The Controller contains all information needed for the Control Service to locate and communicate with a physical LED controller.
+			The Zone is the next highest unit of measurement, and represents a set of relationships between LEDs and a shared schedule of behavior.
+			A schedule contains a series of time stamps each of which point to an LED state.
+			Color, intensity, and power (on/off) are the three properties of an LED. An LED state defines a single combination of these properties, and can be assigned to a Zone at a specific time.
+
 
 			\noindent \\This diagram shows the internal state of the control service:
 
@@ -253,37 +275,102 @@ DELETE http://localhost:5324/zone/3/
 			\subsubsection{Data Parser}
 			The data parser serves as a translator between persistent storage and internal state.
 			When a change is made to the system, the data parser is triggered to update the changed value in persistent storage.
-			The parser will also contain any conversion routines necessary should the data format be changed significantly between iterations.
+			The parser contains any conversion routines necessary should the data format be changed significantly between iterations.
 
 
 		\subsection{Data Design}
 			\subsubsection{Overview}
 			% Probably SQLite, because MySQL is a memory hog
-			The persistent data storage will be done with a database.
-			The Data Parser in the Control Service will translate the internal state into a series of SQL commands to INSERT, UPDATE, or DELETE from the data tables.
+			The persistent data storage is done with a database.
+			The Data Parser in the Control Service translates the internal state into a series of SQL commands to INSERT, UPDATE, or DELETE from the data tables.
 			A database is used because of its ability to update, delete, or read a single piece of information without requiring the entire data structure to be read into memory.
-			When changes are made to the way data is structured in the internal state, the database can be restructured and updated with a short SQL script.
+			When changes are made to the way data is structured in the internal state, the database can be restructured and updated with a short script.
 
 			\noindent \\These are the tables that exist within the database:
 			\begin{center}
 				\begin{figure}[H]
 					\includegraphics[width=\linewidth]{systemDiagrams/database.png}
-					\caption{The database is a table representation of the Control Service internal state}
+					\caption{EM Diagram of the database tables}
 					\label{fig:databaseDiagram}
 				\end{figure}
 			\end{center}
 
 			\subsubsection{Data Description}
+			In the database, LEDs are stored with an ID, zone, profile, and controller. Zones store the schedule that all LEDs within it follow.
+			Schedules store LED states and the time that each becomes active. LED states store color, intensity, and the power state.
+			Lastly, profiles store a name and description, but each LED itself stores the Zone it belongs to per Profile.
+
+			\subsubsection{LEDs table}
+				\begin{tabular}{ |c|c|c|c|c| }
+					\hline
+					id (INT) & strip\_index (INT) & controller\_id (INT) & zone\_id (INT) & profile\_id (INT) \\
+					\hline
+					100 & 100 & 100 & 100 & 100 \\
+					100 & 100 & 100 & 100 & 100 \\
+					100 & 100 & 100 & 100 & 100 \\
+					\hline
+				\end{tabular}
+
+			\subsubsection{LED States table}
+				\begin{tabular}{ |c|c|c|c| }
+					\hline
+					id (INT) & color (CHAR(7)) & intensity (FLOAT) & pwr (BIT)\\
+					\hline
+					100 & 100 & 100 & 100 \\
+					100 & 100 & 100 & 100 \\
+					100 & 100 & 100 & 100 \\
+					\hline
+				\end{tabular}
 
 			\subsubsection{Zones table}
+				\begin{tabular}{ |c|c| }
+					\hline
+					id (INT) & schedule\_id (INT) \\
+					\hline
+					100 & 100 \\
+					100 & 100 \\
+					100 & 100 \\
+					\hline
+				\end{tabular}
+
 			\subsubsection{Schedules table}
+				\begin{tabular}{ |c|c|c| }
+					\hline
+					id (INT) & effective (INT) & led\_state\_id (INT) \\
+					\hline
+					100 & 100 & 100 \\
+					100 & 100 & 100 \\
+					100 & 100 & 100 \\
+					\hline
+				\end{tabular}
+
 			\subsubsection{Profiles table}
+				\begin{tabular}{ |c|c|c| }
+					\hline
+					id (INT) & name (TEXT) & description (TEXT) \\
+					\hline
+					100 & 100 & 100 \\
+					100 & 100 & 100 \\
+					100 & 100 & 100 \\
+					\hline
+				\end{tabular}
+
 			\subsubsection{Controllers table}
+				\begin{tabular}{ |c|c|c|c| }
+					\hline
+					id (INT) & gpio (INT) & addr (TEXT) & details (TEXT) \\
+					\hline
+					100 & 100 & 100 & 100 \\
+					100 & 100 & 100 & 100 \\
+					100 & 100 & 100 & 100 \\
+					\hline
+				\end{tabular}
+
 
 		\subsection{LED Control System}
 			\subsubsection{Overview}
-			\subsubsection{Slave Controller Communication}
-			\subsubsection{Slave Controller Software}
+			\subsubsection{LED Controller Communication}
+			\subsubsection{LED Controller Software}
 
 		\subsection{Stretch goal: Custom Enclosure}
 			\subsubsection{Overview}

@@ -1,0 +1,36 @@
+zones
+id INT
+schedule_id INT
+
+
+leds
+id INT
+strip_index INT
+controller_id INT
+zone_id INT
+profile_id INT
+
+controllers
+id INT
+gpio INT
+addr TEXT
+details TEXT
+
+
+schedules
+id INT
+effective INT
+led_state_id INT
+
+
+led_states
+id INT
+color CHAR(7)
+intensity FLOAT
+pwr BIT
+
+
+profiles
+id INT
+name TEXT
+description TEXT
