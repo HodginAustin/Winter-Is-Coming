@@ -87,7 +87,10 @@
 %\textbf{\textsuperscript{citation needed}}
 				\newpage
         \begin{abstract}
-				\noindent This document details the entire system design for the PlanteR-GB system
+				\noindent This document details the system design for the PlanteR-GB system when it reaches Iteration 6. It defines the implementation steps for each subsystem
+				that satisfies the requirements with the reviewed technologies. Each member of the team is responsible for the sections researched, and thus, the implementation of
+				the technology selected. For team members that researched technologies aimed at completing stretch goals, they will be assisting with items of the lower iterations.
+				The document serves to be a set of general guidelines that the implementation ultimately follows.
         \end{abstract}
     \end{singlespace}
 \end{titlepage}
@@ -142,14 +145,26 @@
 
 	% Introduction
 	\section{Introduction}
+
 		\subsection{Purpose}
+		The aim of this document is to provide a solid base that the implemenation of the system can build upon. It generalizes how the RGB LEDs system
+		will operate, yet details how each researched technology contributes to the overall function.  The specifics of the implementation may change as new
+		challenges are presented, but the overall system function and design should not.
+
 		\subsection{Scope}
+		Due to the minimal requirements set on the project, the core design only covers items up until the end of Iteration 6. Iteration 6 marks the end of the
+		requirements set by both the client and implementation team. Each section dives into detail	about selected technologies to perform critical functions,
+		and how each of them are used in conjunction with each other. However, the design also keeps future iterations in mind, and leaves some areas open to
+		adaptation and improvements.
+
 		\subsection{Overview}
+		The following will cover
 		\subsection{Definitions and Acronyms}
 		\textbf{LED} - Light Emitting Diode
 		\\\textbf{UI} - User Interface
 		\\\textbf{API} - Application Programming Interface
-		\\\textbf{REST} - \textbf{Re}presentational \textbf{S}tate \textbf{T}ransfer.
+		\\\textbf{REST} - \textbf{Re}presentational \textbf{S}tate \textbf{T}ransfer
+		\\\textbf{LAN} - \textbf{L}ocal \textbf{A}rea \textbf{N}etwork
 
 
 		\subsection{Reference Material}
@@ -163,9 +178,23 @@
 
 	\section{System Overview}
 		\subsection{Assumptions}
-		\subsection{General Constraints}
-		\subsection{System Environment}
+		Considering the hardware selected, the members of the team have made the following assumptions about the system and the end use case. The user(s) have 
+		the general knowledge of how to interface with the Raspberry Pi's inputs and outputs, such as graphics and keyboard/mouse input. The users also have the 
+		basic knowledge to launch programs from a standard OS desktop environment, navigate web pages, and provide keyboard input to some initial command line 
+		scripts. Regarding the hardware used, it is also a given that electrical hazards that could result in physical harm to the user or hardware, are avoided.
 
+		\subsection{General Constraints}
+		Limiting factors mostly come from the limited performance hardware selected. These technologies are small form factor and operate on low energy levels
+		to complete their computation. Thus, these systems will be limited in their processing performance, and the amount of memory they have. Due to their 
+		low energy input, they also cannot output much power. This will limit how many LEDs can be initially powered from a controller until a more powerful
+		electricity source can be found. 
+
+		\subsection{System Environment}
+		The system will often reside in a residential setting or outdoor covered garden.  When indoors in an aparment or house, factors such as temperature and 
+		humidity will be controlled by a separate, independent system.  The system will not have to endure any elements of nature or unpreferrable conditions 
+		for electronics. As per the software environment, most master controller code will be housed and run in a Unix type environment. The smaller controller 
+		code source will also be housed in the same environment, but the raw binaries will staticly run on the smaller controllers in their low-level instruction
+		environment.  
 
 	\section{System Architecture}
 		\subsection{System Diagram}
