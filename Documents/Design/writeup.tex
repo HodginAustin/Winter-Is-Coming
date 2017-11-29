@@ -190,9 +190,9 @@
 		\subsection{Control Service}
 			\subsubsection{Overview}
 			The control service is the bridge between the user interface and the LEDs.
-			It has an API that serves as the entry point for all system changes, an internal state representation which is fed to the LED control system and translated to persistent storage.
+			It has an API that serves as the entry point for all system changes, an internal state representation which is fed to the LED control system and also translated into persistent storage.
 			The API obfuscates the communication between the client UI and the control service by providing a set of routes through which data can be sent.
-			To make a data request or modification, the client sends data to the control service using one of the REST verbs (GET, POST, PUT, DELETE, etc) in addition to its data.
+			To make a data request or modification, the client sends data to the control service using one of the REST verbs (GET, POST, PUT, DELETE, etc).
 			Using the REST protocol simplifies communication between client and server, but also allows new settings and parameters to quickly become accessible through the addition of new routes.
 
 			\noindent \\The control service internal state is the primary representation of the settings and configuration of the system.
