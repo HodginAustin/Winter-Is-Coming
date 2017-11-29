@@ -184,6 +184,7 @@
 			\subsubsection{Overview}
 			\subsubsection{Master Controller}
 			\subsubsection{LED Controller(s)}
+			\subsubsection{LED strips}
 
 
 		\subsection{Control Service}
@@ -273,9 +274,11 @@ DELETE http://localhost:5324/zone/3/
 			\end{center}
 
 			\subsubsection{Data Parser}
-			The data parser serves as a translator between persistent storage and internal state.
-			When a change is made to the system, the data parser is triggered to update the changed value in persistent storage.
-			The parser contains any conversion routines necessary should the data format be changed significantly between iterations.
+			The data parser serves as a translator between internal state and persistent storage.
+			Data flows from the Control Service API, into the internal state, and then finally to the Data Parser where the data is saved.
+			The data parser has a series of functions which take internal state objects as parameters, and generate queries that are ran against the database.
+			In addition to saving data, the data parser has functions that query the database and return internal state objects.
+			Lastly, any conversion routines necessary should the data format be changed significantly between iterations.
 
 
 		\subsection{Data Design}
