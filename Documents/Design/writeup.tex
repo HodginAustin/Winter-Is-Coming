@@ -195,15 +195,14 @@
 			To make a data request or modification, the client sends data to the control service using one of the REST verbs (GET, POST, PUT, DELETE, etc).
 			Using the REST protocol simplifies communication between client and server, but also allows new settings and parameters to quickly become accessible through the addition of new routes.
 
-			\noindent \\The control service internal state is the primary representation of the settings and configuration of the system.
+			\noindent \\The control service internal state is the primary representation of the configuration and settings of the system.
 			This internal state is the focal point of the API, data storage, and LED control system.
 			It is responsible for representing all data and committing it into persistent storage.
 			When a client UI makes a change to a system parameter, the data is routed through the API and into the internal state.
 
-			\noindent \\The data parser is responsible for translating the objects representing the system's state into persistent storage.
-			When the system starts, the data parser reads from persistent storage and builds the system's internal state.
-			API requests cause the data parser to copy the current system state into persistent storage.
-			Effectively, the data parser defines the contract between the system and persistent storage.
+			\noindent \\The data parser is responsible for translating the system state into persistent storage when changes are made.
+			When the system starts, the data parser reads from persistent storage and rebuilds the internal state.
+			A database with tables closely mirroring the internal state objects is the persistent end of the data parser.
 
 			\subsubsection{API}
 			%pistache.io is a good REST library for C++
@@ -212,7 +211,7 @@
 			The control service API consists of a series of routes, each relevant to a particular parameter or set of parameters.
 			The internal state is updated when a client sends a request to the API.
 
-			\noindent \\Here is an example of a series of REST requests necessary to create the system state shown in the next section.
+			\noindent \\Here is an example of a series of REST requests which build a basic functioning system:
 			\begin{lstlisting}[language=XML]
 // Create an LED state with ID 3
 PUT http://localhost:5324/ledstate/3
@@ -256,9 +255,10 @@ DELETE http://localhost:5324/zone/3/
 			Using objects allows the system to represent its properties in a human readable way, as well as easily translate them into persistent storage and LED controller data.
 
 			\noindent \\In this system, the smallest unit of measurement is the LED. The properties assigned to groups of LEDs defines the behavior of the system as a whole.
-			A strip may have any number of individually index-able LEDs, attached to a single LED controller.
+			A strip may have any number of individually controllable LEDs, attached to an LED controller.
 			The Controller contains all information needed for the Control Service to locate and communicate with a physical LED controller.
 			The Zone is the next highest unit of measurement, and represents a set of relationships between LEDs and a shared schedule of behavior.
+			The LEDs within a zone can come from any number of LED strips attached to any LED controllers in the system.
 			A schedule contains a series of time stamps each of which point to an LED state.
 			Color, intensity, and power (on/off) are the three properties of an LED. An LED state defines a single combination of these properties, and can be assigned to a Zone at a specific time.
 
@@ -278,7 +278,7 @@ DELETE http://localhost:5324/zone/3/
 			Data flows from the Control Service API, into the internal state, and then finally to the Data Parser where the data is saved.
 			The data parser has a series of functions which take internal state objects as parameters, and generate queries that are ran against the database.
 			In addition to saving data, the data parser has functions that query the database and return internal state objects.
-			Lastly, any conversion routines necessary should the data format be changed significantly between iterations.
+			Lastly, the data parser is responsible for any conversion routines necessary should the data format be changed significantly between iterations.
 
 
 		\subsection{Data Design}
