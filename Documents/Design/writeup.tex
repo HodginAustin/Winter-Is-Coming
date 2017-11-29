@@ -290,7 +290,7 @@ DELETE http://localhost:5324/zone/3/
 			\begin{center}
 				\begin{figure}[H]
 					\includegraphics[width=\linewidth]{systemDiagrams/database.png}
-					\caption{EM Diagram of the database tables}
+					\caption{Schema Diagram of the database tables}
 					\label{fig:databaseDiagram}
 				\end{figure}
 			\end{center}
@@ -299,6 +299,8 @@ DELETE http://localhost:5324/zone/3/
 			In the database, LEDs are stored with an ID, zone, profile, and controller. Zones store the schedule that all LEDs within it follow.
 			Schedules store LED states and the time that each becomes active. LED states store color, intensity, and the power state.
 			Lastly, profiles store a name and description, but each LED itself stores the Zone it belongs to per Profile.
+
+			\noindent \\The tables below contain example data that represents how a real system might look.
 
 			\subsubsection{LEDs table}
 				\begin{tabular}{ |c|c|c|c|c| }
