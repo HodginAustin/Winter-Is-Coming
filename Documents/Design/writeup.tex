@@ -390,18 +390,120 @@ DELETE http://localhost:5324/zone/3/
 		\subsection{Stretch goal: External sensors}
 			\subsubsection{Overview}
 
-	\section{Human Interface Design}
-		\subsection{Overview of User Interface}
-		\subsection{Command Line Interface}
-			\subsubsection{Interface Overview}
-			\subsubsection{Mockup}
-		\subsection{Web Interface}
-			\subsubsection{Interface Overview}
-			\subsubsection{Home Page}
-			\subsubsection{Mockup}
-			\subsubsection{Zones Page}
-			\subsubsection{Mockup}
-			%... etc for more pages
+			\section{Human Interface Design}
+			        \subsection{Overview of User Interface}
+			        They way humans interface with a program is an important part of any program.
+			        For this project there will be two iterations of the human interface. The
+			        first being over command line. The second would be through a web interface.
+			        \subsection{Command Line Interface}
+			            \subsubsection{Interface Overview}
+			            The command line interface will ask questions of the user about how they
+			            would like to configure the settings. There will be 5 options for them to
+			            choose from in the main menu. Those options are, Bed Options, Zoning Options,
+			            Scheduling Options, Profile Options and the final option is to apply changes.
+			            Each Option as sub options to configure that section. For example in the
+			            scheduling section it will prompt you to edit a schedule or to add a schedule.
+			            If you choose to edit a schedule you will then be taken to choose which
+			            schedule you would like to modify and then you can choose all the options
+			            such as what time it starts, what color you want and what brightness you would like.
+			            Once all the options are filled in then it will take you back to the main
+			            option page where you can apply the changes.
+			            \subsubsection{Command Line Mockup}
+			            \begin{center}
+			                \begin{figure}[H]
+			                    \includegraphics[width=\linewidth]{comand_line_interface/Selection_006.png}
+			                    \caption{Start of Command Line Interface}
+			                    \label{fig:Start of Command Line Interface}
+			                \end{figure}
+
+			                \begin{figure}[H]
+			                    \includegraphics[width=\linewidth]{comand_line_interface/Selection_003.png}
+			                    \caption{Bed and Zone Selection Menu}
+			                    \label{fig:Bed and Zone Selection Menu}
+			                \end{figure}
+
+			            \begin{figure}[H]
+			                \includegraphics[width=\linewidth]{comand_line_interface/Selection_004.png}
+			                \caption{Scheduling Configuration Menu}
+			                \label{fig:Scheduling Configuration Menu}
+			            \end{figure}
+
+			            \begin{figure}[H]
+			                \includegraphics[width=\linewidth]{comand_line_interface/Selection_005.png}
+			                \caption{End of Command Line Interface}
+			                \label{fig:End of Command Line Interface}
+			            \end{figure}
+			        \end{center}
+
+			        \subsection{Web Interface}
+			            \subsubsection{Interface Overview}
+			            The web interface will consist of four pages to configure the settings of
+			            the lighting system. The pages are the home page where the bed that the user
+			            wishes to modify is selected. The Zoning page where the user can select
+			            the zones the user would like to set on the LED strips. A Scheduling page
+			            to set up schedules for when to turn on and off, what color and how bright.
+			            The last page is the profile page where a user can create and change profiles.
+			            The currently selected bed and profile will appear in the top right corner.
+			            Below each page will be discussed in more detail and a mockup of each page
+			            is displayed.
+			            \subsubsection{Home Page}
+			            The home page of the web interface will prompt the user to select which
+			            bed they would like to modify. If the user only has one bed hooked up there
+			            will only be one option. If more beds are added it will add more beds to this
+			            section. The chosen bed will appear in the top right corner under Currently
+			            Selected.
+			            \subsubsection{Home Page Mockup}
+			            \begin{center}
+			                \begin{figure}[H]
+			                    \includegraphics[width=\linewidth]{web_design/BedPage.png}
+			                    \caption{Home Web Page}
+			                    \label{fig:Home Page}
+			                \end{figure}
+			            \end{center}
+			            \subsubsection{Zones Page}
+			            The zoning section of the web page will be where they user sets zones on
+			            the LEDs. It will show the user all the LED strips that are on that bed
+			            and will allow them to assign each LED to a zone by click on it. The number
+			            of zones can be added to by clicking the "Add Zone" button. They will appear
+			            below with the color that is assigned to that zone. You can then select
+			            which zone you would like to add LEDs too by clicking the drop down menu "Select Zone".
+			            When you add an LED to a zone a box with that color will appear around it
+			            and grow as more LEDs are added to the zone.
+			            \subsubsection{Zoning Page Mockup}
+			            \begin{center}
+			                \begin{figure}[H]
+			                    \includegraphics[width=\linewidth]{web_design/ZoningPage.png}
+			                    \caption{Zoning Web Page}
+			                    \label{fig:Zoning Page}
+			                \end{figure}
+			            \end{center}
+			            \subsubsection{Schedule Page}
+			            The schedule page will be where the main part of the configuration is done.
+			            This is where you would select what time color and brightness of the LEDs.
+			            You can have different schedules for different zones. You can add new schedule
+			            by clicking the "Add Schedule" button and it will add a new schedule to the
+			            list.
+			            \subsubsection{Schedule Page Mockup}
+			            \begin{center}
+			                \begin{figure}[H]
+			                    \includegraphics[width=\linewidth]{web_design/SchedulingPage.png}
+			                    \caption{Scheduling Web Page Mockup}
+			                    \label{fig:Schedule Page}
+			                \end{figure}
+			            \end{center}
+			            \subsubsection{Profile Page}
+			            The profile page is where you can switch or create new profiles. The profile
+			            that is currently selected is in the top right of the screen under the "Currently
+			            Selected" section.
+			            \subsubsection{Profile Page Mockup}
+			            \begin{center}
+			                \begin{figure}[H]
+			                    \includegraphics[width=\linewidth]{web_design/ProfilePage.png}
+			                    \caption{Profile Web Page Mockup}
+			                    \label{fig:Profile Page}
+			                \end{figure}
+			            \end{center}
+
 
 	% Scheduling
 	\section{Project Timeline}
