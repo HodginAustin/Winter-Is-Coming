@@ -159,7 +159,7 @@
 
 		\subsection{Overview}
 		[Complete Later]
- 
+
 
 		\subsection{Definitions and Acronyms}
 		\textbf{LED} - Light Emitting Diode
@@ -180,23 +180,23 @@
 
 	\section{System Overview}
 		\subsection{Assumptions}
-		Considering the hardware selected, the members of the team have made the following assumptions about the system and the end use case. The user(s) have 
-		the general knowledge of how to interface with the Raspberry Pi's inputs and outputs, such as graphics and keyboard/mouse input. The users also have the 
-		basic knowledge to launch programs from a standard OS desktop environment, navigate web pages, and provide keyboard input to some initial command line 
+		Considering the hardware selected, the members of the team have made the following assumptions about the system and the end use case. The user(s) have
+		the general knowledge of how to interface with the Raspberry Pi's inputs and outputs, such as graphics and keyboard/mouse input. The users also have the
+		basic knowledge to launch programs from a standard OS desktop environment, navigate web pages, and provide keyboard input to some initial command line
 		scripts. Regarding the hardware used, it is also a given that electrical hazards that could result in physical harm to the user or hardware, are avoided.
 
 		\subsection{General Constraints}
 		Limiting factors mostly come from the limited performance hardware selected. These technologies are small form factor and operate on low energy levels
-		to complete their computation. Thus, these systems will be limited in their processing performance, and the amount of memory they have. Due to their 
+		to complete their computation. Thus, these systems will be limited in their processing performance, and the amount of memory they have. Due to their
 		low energy input, they also cannot output much power. This will limit how many LEDs can be initially powered from a controller until a more powerful
-		electricity source can be found. 
+		electricity source can be found.
 
 		\subsection{System Environment}
-		The system will often reside in a residential setting or outdoor covered garden.  When indoors in an aparment or house, factors such as temperature and 
-		humidity will be controlled by a separate, independent system.  The system will not have to endure any elements of nature or unpreferrable conditions 
-		for electronics. As per the software environment, most master controller code will be housed and run in a Unix type environment. The smaller controller 
+		The system will often reside in a residential setting or outdoor covered garden.  When indoors in an aparment or house, factors such as temperature and
+		humidity will be controlled by a separate, independent system.  The system will not have to endure any elements of nature or unpreferrable conditions
+		for electronics. As per the software environment, most master controller code will be housed and run in a Unix type environment. The smaller controller
 		code source will also be housed in the same environment, but the raw binaries will staticly run on the smaller controllers in their low-level instruction
-		environment.  
+		environment.
 
 	\section{System Architecture}
 		\subsection{System Diagram}
@@ -213,23 +213,23 @@
 
 		\subsection{Hardware}
 			\subsubsection{Overview}
-			The hardware controls the LEDs as well as run software. This software
+			\noindent The hardware controls the LEDs as well as run software. This software
 			consists of controlling the LEDs, checking time, and other additional
 			features such as a hosting a local web page. Because of the robustness of
 			the software, we will be using two different controllers.
 
-			Using two controllers, one for LED control, and another to control timing
+			\noindent Using two controllers, one for LED control, and another to control timing
 			and additional features. The Raspberry Pi Zero W and teensy 3.2 were chosen
 			as our controllers.
 			\subsubsection{Master Controller}
-			The Raspberry Pi Zero W was chosen to be our master controller for its
+			\noindent The Raspberry Pi Zero W was chosen to be our master controller for its
 			multitasking capabilities. Raspberry pi zero uses a ARM11 processor
 			running at 1GHz with 512MB of RAM\cite{pizero}. The Pi Zero W has a built in wireless and
 			Bluetooth chip, allowing access to a wireless network without the need
 			of additional hardware. This cuts down on the cost of the build and
 			simplifies the build.
 
-			The Raspberry Pi Zero W's ability to host a local web page while also
+			\noindent The Raspberry Pi Zero W's ability to host a local web page while also
 			keeping time makes this perfect to use as our master controller. The
 			master controller will be in charge of our web hosting for iteration 6,
 			and store our data which will then  be sent to the LED controller to send
@@ -238,23 +238,22 @@
 				\begin{figure}[H]
 					\includegraphics[width=\linewidth]{systemDiagrams/pischem.png}
 					\caption{Raspberry Pi Zero W schematic}
-					\label{fig:pischematic}
+					\label{fig:piSchematic}
 				\end{figure}
 			\end{center}
 			\subsubsection{LED Controller(s)}
-			The Teensy 3.2 was chosen for its ability to run Arduino and C programs.
-			The size of the Teensy
-			as reducing the total size of the build will help cut down on minimum size
-			of each box.
-
-			The Teensy 3.2 can run Arduino code and as such can use FastLED, the LED
+			\noindent The Teensy 3.2 was chosen for its ability to run Arduino and C programs.
+			The size of the Teensy also makes this a great choice as as reducing the
+			total size of the build will help cut down on minimum size of each box.
+			The Teensy 3.2 runs an updated Cortex-M4 with 64kB of RAM making this a
+			better choice than the Teensy 2.0\cite{atmel}. The Teensy 3.2 can run Arduino code and as such can use FastLED, the LED
 			control library we will be using.
 
 			\subsubsection{LED strips}
-			We will be using the WS812 Neopixel LED strips by Adafruit. These LED
+			\noindent We will be using the WS812 Neopixel LED strips by Adafruit. These LED
 			strips are fairly thin, at 12.5mm wide with the included casing. The
 			Neopixel LEDs are fully compatible with the FastLED library we are Using
-			and are fully addressable.
+			and are fully addressable\cite{neo}.
 
 		\subsection{Control Service}
 			\subsubsection{Overview}
@@ -451,23 +450,23 @@ DELETE http://localhost:5324/zone/3/
 
 		\subsection{LED Control System}
 			\subsubsection{Overview}
-				LED control System will be handled by two different controllers. The master controller will be used to handle human input such
+				\noindent LED control System will be handled by two different controllers. The master controller will be used to handle human input such
 				as schedule, color, and intensity. The LED controller itself will handle the LED input, telling the LEDs what color to be,
 				intensity, and whether they are on or off. Doing This allows a single controller to handle communication to the LEDs, as the
-				LEDs are clock based and can be interfered by other processes.
+				LEDs are clock based and can be interfered by other processes\cite{fastLED}.
 				\subsubsection{LED Controller Communication}
-				Communication between the master controller and LED controller will be done via a serial link.
+				\noindent Communication between the master controller and LED controller will be done via a serial link.
 				Connecting pins eight and ten of the Pi zero TX and RX respectively, to the Teensy pins zero and one, we can create a serial link
 				capable of sending data created to from the user through the pi, to the teensy, and out to the LED strip.
 				The Pi zero will need to translate what is given from the user, to serial, and then send to the Teensy. The Teensy will then have to communicate
 				the recieved serial data to the LEDs via the FastLED library.
-			\subsubsection{LED Controller Software}
-			FastLED is the chosen library that will be used on the LED controller.
-			FastLED, as the name implies, is a fast LED library created for Arduino projects.
-			Intial code would look like This
+				\subsubsection{LED Controller Software}
+				\noindent FastLED is the chosen library that will be used on the LED controller.
+				FastLED, as the name implies, is a fast LED library created for Arduino projects.
+				Intial code would look like This
 
 			\begin{lstlisting}
-#defin NUM_LEDS 10 // number of LEDs on the strip. use only number of LED's on the strip
+#define NUM_LEDS 10 // number of LEDs on the strip. use only number of LED's on the strip
 #define DATA_PIN 6 // pin used for data signal
 
 void setup(){
@@ -480,12 +479,7 @@ void loop(){
 	delay(30); //refresh every 30 cycles
 }
 
-			\end{lstlisting}
-
-		\subsection{Stretch goal: Custom Enclosure}
-			\subsubsection{Overview}
-		\subsection{Stretch goal: External sensors}
-			\subsubsection{Overview}
+		\end{lstlisting}
 
 			\section{Human Interface Design}
 			        \subsection{Overview of User Interface}
