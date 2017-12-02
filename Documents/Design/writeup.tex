@@ -148,7 +148,7 @@
 
 		\subsection{Purpose}
 		The aim of this document is to provide a solid base that the implemenation of the system can build upon. It generalizes how the RGB LEDs system
-		will operate, yet details how each researched technology contributes to the overall function.  The specifics of the implementation may change as new
+		will operate, yet details how each researched technology contributes to the overall function. The specifics of the implementation may change as new
 		challenges are presented, but the overall system function and design should not.
 
 		\subsection{Scope}
@@ -158,7 +158,7 @@
 		adaptation and improvements.
 
 		\subsection{Overview}
-		The following sections of the document provide the formal details on how the design is carried out.  Each section is focused on a particular aspect of the
+		The following sections of the document provide the formal details on how the design is carried out. Each section is focused on a particular aspect of the
 		design, and how it plays a crucial roll in the total functionality of the sytem. Each section and implementation is necessary to fulfill the requirements of
 		Iteration 6.\\
 
@@ -202,8 +202,8 @@
 		electricity source can be found.
 
 		\subsection{System Environment}
-		The system will often reside in a residential setting or outdoor covered garden.  When indoors in an aparment or house, factors such as temperature and
-		humidity will be controlled by a separate, independent system.  The system will not have to endure any elements of nature or unpreferrable conditions
+		The system will often reside in a residential setting or outdoor covered garden. When indoors in an aparment or house, factors such as temperature and
+		humidity will be controlled by a separate, independent system. The system will not have to endure any elements of nature or unpreferrable conditions
 		for electronics. As per the software environment, most master controller code will be housed and run in a Unix type environment. The smaller controller
 		code source will also be housed in the same environment, but the raw binaries will staticly run on the smaller controllers in their low-level instruction
 		environment.
@@ -242,7 +242,7 @@
 			\noindent The Raspberry Pi Zero W's ability to host a local web page while also
 			keeping time makes this perfect to use as our master controller. The
 			master controller will be in charge of our web hosting for iteration 6,
-			and store our data which will then  be sent to the LED controller to send
+			and store our data which will then be sent to the LED controller to send
 			to the LEDs.
 			\begin{center}
 				\begin{figure}[H]
@@ -626,14 +626,31 @@ void loop(){
 		become a shortened interval of time.  However, it still leaves time should any new issues arise in the details of the design.
 
 		\subsection{Iteration 2}
-		Iteration 2's largest feature is the scripting of the basic LED controls.  A user may run a terminal, text based script to insert values into the control
-		service. This will update the LEDs quickly, but will not be user friendly or quick.  This may also be a shortened iteration interval.  The passing of
-		data is completed, and a script is now taking over for manual updates.  
+		Iteration 2's largest feature is the scripting of the basic LED controls.  A user may run a text based script to insert values into the control
+		service. This will update the LEDs quickly, but will not be user friendly.  This may also be a shortened iteration interval.  The passing of
+		data is completed, and a script is now taking over for manual updates.  This script may also be the base for which future command line interfaces to the
+		LEDs will	be made.
 
 		\subsection{Iteration 3}
+		This iteration sees the first basic functionality of scheduling the LED timings.  Currently, the requirements state the iteration includes daily or
+		weekly changes, but could also include hourly start timings for a specific LED state. Seeing as this iteration requires the implementation of a clock,
+		and potentially multiple schedules running, this iteration could take the entire two weeks of the interval.
+
 		\subsection{Iteration 4}
+		Adding the largest functionality yet, Iteration 4 includes the implementation of LED zoning.  Each zone has its own state and schedule.  This iteration
+		will almost certainly take the entire two week interval. This is due to the increased coding of the internal state housed by the master controller, which
+		will keep a complete "image" of all zones, their specific LEDs, and schedules.
+
 		\subsection{Iteration 5}
+		Further building upon the previous iteration, Iteration 5 increases the amount of LEDs that can be driven, and the amount of control zones. This provides
+		more precise control, and more options for future customization. This iteration is not expected to take the full two alotted weeks.  Spending less time at
+		this stage will give wiggle	room to the final iteration.
+
 		\subsection{Iteration 6}
+		Of the 7 iterations, Iteration 6 provides the largest boost of usability with a full fledged web interface.  This web page, or set of pages, can provide
+		the end	user the graphical representation of the current planter bed and all its LEDs.  It will also give them full control of color, brightness, zoning,
+		and scheduling, all within a few clicks.  This iteration will take the remaining time left.  If it turns out that it is completed early, the next set of
+		iterations will be attempted.
 
 	%\section{Requirements Matrix} %??? What is this, it was in a template somewhere
 
