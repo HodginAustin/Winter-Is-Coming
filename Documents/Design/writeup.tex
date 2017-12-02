@@ -158,13 +158,23 @@
 		adaptation and improvements.
 
 		\subsection{Overview}
-		[Complete Later]
+		The following sections of the document provide the formal details on how the design is carried out.  Each section is focused on a particular aspect of the
+		design, and how it plays a crucial roll in the total functionality of the sytem. Each section and implementation is necessary to fulfill the requirements of
+		Iteration 6.\\
+
+		\noindent When considering the system's architecture, one has to look at the physical hardware, and the control services operating the hardware. These components
+		ideally are the chokepoints of the system function. The system also has to handle the data flow, the organization of the data, and lastly, the
+		conversion of said data to meaningful values for the RGB LEDs.\\
+
+		\noindent The system would also be incomplete without a useful human interface. This interface can be somewhat simple, such as a command line terminal, or it can
+		take the form of a graphical web page, that allows one to visually see the system setup with a depicted diagram, offering more control.
 
 
 		\subsection{Definitions and Acronyms}
-		\textbf{LED} - Light Emitting Diode
-		\\\textbf{UI} - User Interface
-		\\\textbf{API} - Application Programming Interface
+		\textbf{LED} - \textbf{L}ight \textbf{E}mitting \textbf{D}iode
+		\\\textbf{RGB} - \textbf{R}ed \textbf{G}reen \textbf{B}lue (LED)
+		\\\textbf{UI} - \textbf{U}ser \textbf{I}nterface
+		\\\textbf{API} - \textbf{A}pplication \textbf{P}rogramming \textbf{I}nterface
 		\\\textbf{REST} - \textbf{Re}presentational \textbf{S}tate \textbf{T}ransfer
 		\\\textbf{LAN} - \textbf{L}ocal \textbf{A}rea \textbf{N}etwork
 
