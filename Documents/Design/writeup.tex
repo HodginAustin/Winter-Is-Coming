@@ -608,8 +608,28 @@ void loop(){
 
 	% Scheduling
 	\section{Project Timeline}
+		\subsection{Overview}
+		Looking at the general timing of each of the described implementations, and given roughly 13 weeks, plus or minus a week, each iteration of the project
+		should be given about two weeks of time. This allow plenty of time to be spent on each iteration. If an iteration takes less time than expected, this
+		allows work to start on the next iteration early.  The more iterations that are completed early, the more the iterations contained in the
+		\textbf{Additional Features - v2.0} and \textbf{Stretch Goals - v3.0} can also potentially be completed.
+
+		\subsection{Iteration 0}
+		Iteration 0 accomplishes rough connectivity between the RGB strips and the microcontroller system.  This means the Master controller can provide input
+		to the LED controllers to manipulate trivial options like color and brightness.  This iteration is only expected to take a maximum of 2 weeks, and may
+		take closer to the end of those two weeks.  This is the initial "get the ball rolling" iteration. It is expected there may be some complications
+		getting used to the code environment, and getting the hardware up and running.
+
 		\subsection{Iteration 1}
+		Iteration 1 builds on Iteration 1 by making the LED controller look for values and configurations on the Master controller.  These are scheduled
+		statically. This is more of a testing iteration to see what the capabiliities of communication are between the two controllers.  This will likely
+		become a shortened interval of time.  However, it still leaves time should any new issues arise in the details of the design.
+
 		\subsection{Iteration 2}
+		Iteration 2's largest feature is the scripting of the basic LED controls.  A user may run a terminal, text based script to insert values into the control
+		service. This will update the LEDs quickly, but will not be user friendly or quick.  This may also be a shortened iteration interval.  The passing of
+		data is completed, and a script is now taking over for manual updates.  
+
 		\subsection{Iteration 3}
 		\subsection{Iteration 4}
 		\subsection{Iteration 5}
