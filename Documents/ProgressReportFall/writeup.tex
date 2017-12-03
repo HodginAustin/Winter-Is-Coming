@@ -211,19 +211,28 @@
 
 		\section{Problems}
 			\subsection{Latex Table Of Contents}
-				During week 6 we experienced a problem where we could not get our table
-				of contents to generate in our latex documents.
-					\subsubsection{Solution}
-					The Solution to this was we were using the incorrect formatting for each
-					section. Instead of using the \verb|\section*| syntax to generate a section that
-					didn't have a number we started using \verb|\section| This allowed the table
-					to be generated.
-				\subsection{Five Person Scheduling}
-				Seeing that the group consists of four members, and our client's schedule contains busy times similar to ours, scheduling times that worked for everyone
-				forced compromises in meeting times.
-					\subsubsection{Solution}
-					With no "perfect" times aligning in anyone's schedules, some group members had to cut time from work, other class work, or personal time to work on the project.
-					There was no "clean" solution to the scheduling issue.
+			During week 6 we experienced a problem where we could not get our table
+			of contents to generate in our latex documents.
+				\subsubsection{Solution}
+				The Solution to this was we were using the incorrect formatting for each
+				section. Instead of using the \verb|\section*| syntax to generate a section that
+				didn't have a number we started using \verb|\section| This allowed the table
+				to be generated.
+			\subsection{Libraries Not On Desired Platform}
+      Orginally we were wanting to use the raspberry pi for our controllers. After
+      looking at all the libraries needed to run the LEDs we found out that the
+      pi would not be able to use them due to the fact that the libraries are very
+      dependent on clock cycle and the OS can interrupt it.
+		  	\subsubsection{Solution}
+		    The solution that we came up with to solve this is to use a raspberry pi to
+		    be the main controller and another microcontroller would be the device that
+		    would be controlling the LEDs.
+		 \subsection{Five Person Scheduling}
+		 Seeing that the group consists of four members, and our client's schedule contains busy times similar to ours, scheduling times that worked for everyone
+		 forced compromises in meeting times.
+		 	  \subsubsection{Solution}
+			  With no "perfect" times aligning in anyone's schedules, some group members had to cut time from work, other class work, or personal time to work on the project.
+			  There was no "clean" solution to the scheduling issue.
 
 
 	\section{Retrospective}
