@@ -212,8 +212,15 @@
 					section. Instead of using the \verb|\section*| syntax to generate a section that
 					didn't have a number we started using \verb|\section| This allowed the table
 					to be generated.
-		\subsection{Foo Bar}
+		\subsection{Libraries Not On Desired Platform}
+			Orginally we were wanting to use the raspberry pi for our controllers. After
+			looking at all the libraries needed to run the LEDs we found out that the
+			pi would not be able to use them due to the fact that the libraries are very
+			dependent on clock cycle and the OS can interrupt it.
 			\subsubsection{Solution}
+			The solution that we came up with to solve this is to use a raspberry pi to
+			be the main controller and another microcontroller would be the device that
+			would be controlling the LEDs. 
 
 	\section{Retrospective}
 	\begin{tabular}{ |c|c|c|c|c| }
