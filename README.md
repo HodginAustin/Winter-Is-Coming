@@ -1,5 +1,19 @@
-# <p align="center"> 2017 CS CAPSTONE PROJECT </p>
-## <p align="center"> Winter is Coming... </p>
+# <h1 align="center"> 2017 CS CAPSTONE PROJECT </h1>
+## <h2 align="center"> Winter is Coming... </h2>
+
+
+<br/><br/>
+
+<div>
+    <h3 align="center">Install Instructions</h3>
+    <ul align="center">
+        <li>Step 1</li>
+        <li>Step 2</li>
+    </ul>
+</div>
+
+<br/><br/>
+
 
 ##### <p align="center"> Prepared for Victor Hsu at Oregon State University </p>
 
