@@ -1,4 +1,4 @@
-#include "includes/InternalState.hpp"
+#include "./includes/InternalState.hpp"
 
 InternalState::InternalState()
 {
