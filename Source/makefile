@@ -3,8 +3,8 @@ default:
 	make all
 
 
-all: main internal_state led zone schedule led_state controller
-	g++ -std=c++14 -o ./out/plantergb ./out/main.o ./out/led.o ./out/zone.o ./out/schedule.o ./out/ledstate.o ./out/controller.o
+all: main internal_state led zone schedule led_state controller profile
+	g++ -std=c++14 -o ./out/plantergb ./out/main.o ./out/led.o ./out/zone.o ./out/schedule.o ./out/ledstate.o ./out/controller.o ./out/profile.o
 
 main:
 	g++ -std=c++14 -Wall -c ./main.cpp -o ./out/main.o
@@ -27,6 +27,9 @@ led_state:
 
 controller:
 	g++ -std=c++14 -Wall -c ./models/Controller.cpp -o ./out/controller.o
+
+profile:
+	g++ -std=c++14 -Wall -c ./models/Profile.cpp -o ./out/profile.o
 
 
 clean:
