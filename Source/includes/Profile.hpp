@@ -8,6 +8,7 @@ private:
     std::string description;
 
 public:
+    // Constructor
     Profile(unsigned int id);
 
     // Accessors

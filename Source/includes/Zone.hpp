@@ -6,6 +6,7 @@ private:
     unsigned int schedule_id;
 
 public:
+    // Constructor
     Zone(unsigned int id);
 
     // Accessors

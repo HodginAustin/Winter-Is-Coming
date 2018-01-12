@@ -1,9 +1,11 @@
 #include "../includes/DailyState.hpp"
 
+// Constructor
 DailyState::DailyState(unsigned int id)
 {
     set_id(id);
 }
+
 
 // Accessors
 unsigned int DailyState::get_id()

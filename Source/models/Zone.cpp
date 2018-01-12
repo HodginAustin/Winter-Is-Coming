@@ -1,9 +1,12 @@
 #include "../includes/Zone.hpp"
 
+
+// Constructor
 Zone::Zone(unsigned int id)
 {
     set_id(id);
 }
+
 
 // Accessors
 unsigned int Zone::get_id()

@@ -1,10 +1,12 @@
 #include "../includes/Profile.hpp"
 
 
+// Constructor
 Profile::Profile(unsigned int id)
 {
     set_id(id);
 }
+
 
 // Accessors
 unsigned int Profile::get_id()

@@ -1,6 +1,7 @@
 #include "../includes/Controller.hpp"
 
 
+// Constructor
 Controller::Controller(unsigned int id)
 {
     set_id(id);

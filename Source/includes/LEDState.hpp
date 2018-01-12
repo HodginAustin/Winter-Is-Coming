@@ -8,6 +8,7 @@ private:
     bool power;
 
 public:
+    // Constructor
     LEDState(unsigned int id);
 
     // Accessors

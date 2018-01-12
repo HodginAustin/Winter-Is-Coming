@@ -9,6 +9,7 @@ private:
     unsigned int profile_id;
 
 public:
+    // Constructor
     LED(unsigned int id);
 
     // Accessors

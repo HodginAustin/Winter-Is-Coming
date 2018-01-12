@@ -9,6 +9,7 @@ private:
     std::string details;
 
 public:
+    // Constructor
     Controller(unsigned int id);
 
     // Accessors

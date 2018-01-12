@@ -7,6 +7,7 @@ private:
     DailyState* weeklyState[7];
 
 public:
+    // Constructor
     Schedule(unsigned int id);
 
     // Accessors

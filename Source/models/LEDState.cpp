@@ -1,9 +1,12 @@
 #include "../includes/LEDState.hpp"
 
+
+// Constructor
 LEDState::LEDState(unsigned int id)
 {
     set_id(id);
 }
+
 
 // Accessors
 unsigned int LEDState::get_id()
