@@ -1,21 +1,24 @@
+#include <map>
 
 class DailyState
 {
 private:
     unsigned int id;
-    unsigned int effective_time;
-    unsigned int led_state_id;
+    std::map<unsigned int, unsigned int> hourlyStates;
 
 public:
+    // Constructor
     DailyState(unsigned int id);
 
     // Accessors
     unsigned int get_id();
-    unsigned int get_effective_time();
-    unsigned int get_led_state_id();
+    std::map<unsigned int, unsigned int> get_hourly_state_map();
 
     // Mutators
     void set_id(unsigned int);
-    void set_effective_time(unsigned int);
-    void set_led_state_id(unsigned int);
+
+    // CRUD
+    bool create_update_state(unsigned int time, unsigned int state);
+    unsigned int get_led_state_id(unsigned int time);
+    bool delete_state(unsigned int time);
 };
