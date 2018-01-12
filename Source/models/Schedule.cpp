@@ -1,9 +1,12 @@
 #include "../includes/Schedule.hpp"
 
+
+// Constructor
 Schedule::Schedule(unsigned int id)
 {
     set_id(id);
 }
+
 
 // Accessors
 unsigned int Schedule::get_id()
@@ -11,14 +14,11 @@ unsigned int Schedule::get_id()
     return id;
 }
 
-unsigned int Schedule::get_effective_time()
+DailyState* get_daily_state(unsigned int day)
 {
-    return effective_time;
-}
+    if (day < 0 || day > 6) { return NULL; }
 
-unsigned int Schedule::get_led_state_id()
-{
-    return led_state_id;
+    return weeklyState[day];
 }
 
 
@@ -28,12 +28,9 @@ void Schedule::set_id(unsigned int val)
     id = val;
 }
 
-void Schedule::set_effective_time(unsigned int val)
+void set_daily_state(unsigned int day, DailyState* state)
 {
-    effective_time = val;
-}
+    if (day < 0 || day > 6 || state == NULL) { return NULL; }
 
-void Schedule::set_led_state_id(unsigned int val)
-{
-    led_state_id = val;
+    weeklyState[day] = state;
 }
