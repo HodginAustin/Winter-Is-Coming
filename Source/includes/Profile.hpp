@@ -1,3 +1,9 @@
+// Include Guard
+#ifndef __PROFILE_H_INCLUDED__
+#define __PROFILE_H_INCLUDED__
+//=================================
+
+
 #include <string>
 
 class Profile
@@ -21,3 +27,5 @@ public:
     void set_name(std::string);
     void set_description(std::string);
 };
+
+#endif //__PROFILE_H_INCLUDED__

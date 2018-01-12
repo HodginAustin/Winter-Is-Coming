@@ -1,3 +1,8 @@
+// Include Guard
+#ifndef __LEDSTATE_H_INCLUDED__
+#define __LEDSTATE_H_INCLUDED__
+//=================================
+
 
 class LEDState
 {
@@ -23,3 +28,5 @@ public:
     void set_intensity(float);
     void set_power(bool);
 };
+
+#endif //__CONTROLLER_H_INCLUDED__

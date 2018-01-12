@@ -1,3 +1,9 @@
+// Include Guard
+#ifndef __DAILYSTATE_H_INCLUDED__
+#define __DAILYSTATE_H_INCLUDED__
+//=================================
+
+
 #include <map>
 
 class DailyState
@@ -22,3 +28,5 @@ public:
     unsigned int get_led_state_id(unsigned int time);
     bool delete_state(unsigned int time);
 };
+
+#endif //__DAILYSTATE_H_INCLUDED__

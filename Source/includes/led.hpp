@@ -1,3 +1,8 @@
+// Include Guard
+#ifndef __LED_H_INCLUDED__
+#define __LED_H_INCLUDED__
+//=================================
+
 
 class LED
 {
@@ -26,3 +31,5 @@ public:
     void set_zone_id(unsigned int);
     void set_profile_id(unsigned int);
 };
+
+#endif //__LED_H_INCLUDED__

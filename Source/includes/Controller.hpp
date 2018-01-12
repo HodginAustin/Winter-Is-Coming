@@ -1,3 +1,9 @@
+// Include Guard
+#ifndef __CONTROLLER_H_INCLUDED__
+#define __CONTROLLER_H_INCLUDED__
+//=================================
+
+
 #include <string>
 
 class Controller
@@ -24,3 +30,5 @@ public:
     void set_address(std::string);
     void set_details(std::string);
 };
+
+#endif //__CONTROLLER_H_INCLUDED__

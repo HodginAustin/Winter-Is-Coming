@@ -1,3 +1,8 @@
+// Include Guard
+#ifndef __ZONE_H_INCLUDED__
+#define __ZONE_H_INCLUDED__
+//=================================
+
 
 class Zone
 {
@@ -17,3 +22,5 @@ public:
     void set_id(unsigned int);
     void set_schedule_id(unsigned int);
 };
+
+#endif //__ZONE_H_INCLUDED__

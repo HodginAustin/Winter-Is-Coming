@@ -1,3 +1,9 @@
+// Include Guard
+#ifndef __SCHEDULE_H_INCLUDED__
+#define __SCHEDULE_H_INCLUDED__
+//=================================
+
+
 #include "./DailyState.hpp"
 
 class Schedule
@@ -18,3 +24,5 @@ public:
     void set_id(unsigned int);
     void set_daily_state(unsigned int day, DailyState* state);
 };
+
+#endif //__SCHEDULE_H_INCLUDED__
