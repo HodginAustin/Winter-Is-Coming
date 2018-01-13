@@ -11,7 +11,7 @@ class DailyState
 {
 private:
     unsigned int id;
-    std::map<unsigned int, LEDState*> hourlyStates;
+    std::map<unsigned int, LEDState*> timeStatePairs;
 
 public:
     // Constructor
@@ -19,7 +19,7 @@ public:
 
     // Accessors
     unsigned int get_id();
-    std::map<unsigned int, LEDState*> get_hourly_state_map();
+    std::map<unsigned int, LEDState*> get_time_state_map();
 
     // Mutators
     void set_id(unsigned int);
