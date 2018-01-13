@@ -1,3 +1,4 @@
+#include <iterator>
 #include "../includes/DailyState.hpp"
 
 // Constructor
@@ -13,7 +14,7 @@ unsigned int DailyState::get_id()
     return id;
 }
 
-std::map<unsigned int, unsigned int> DailyState::get_hourly_state_map()
+std::map<unsigned int, LEDState*> DailyState::get_hourly_state_map()
 {
     return hourlyStates;
 }
@@ -27,20 +28,17 @@ void DailyState::set_id(unsigned int val)
 
 
 // CRUD
-bool DailyState::create_update_state(unsigned int time, unsigned int state)
+bool DailyState::add_state(unsigned int time, LEDState* state)
 {
     // Check if key already exists, update if it does, insert new key if not
     if (hourlyStates.count(time) > 0) {
-        hourlyStates[time] = state;
-        return false;
+        return (hourlyStates[time] = state);
     } else {
-        std::pair<std::map<unsigned int, unsigned int>::iterator, bool> result;
-        result = hourlyStates.insert(std::pair<unsigned int, unsigned int>(time, state));
-        return result.second;
+        return hourlyStates.insert(std::make_pair(time, state)).second;
     }
 }
 
-unsigned int DailyState::get_led_state_id(unsigned int time)
+LEDState* DailyState::get_led_state(unsigned int time)
 {
     if (hourlyStates.count(time) > 0) {
         return hourlyStates[time];
@@ -51,7 +49,7 @@ unsigned int DailyState::get_led_state_id(unsigned int time)
 
 bool DailyState::delete_state(unsigned int time)
 {
-    std::map<unsigned int, unsigned int>::iterator iter = hourlyStates.find(time);
+    std::map<unsigned int, LEDState*>::iterator iter = hourlyStates.find(time);
     if (iter == hourlyStates.end()) { return false; }
 
     hourlyStates.erase(iter);

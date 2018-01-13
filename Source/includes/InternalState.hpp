@@ -4,10 +4,15 @@
 //=================================
 
 
+#include <vector>
+#include "./Profile.hpp"
+#include "./Zone.hpp"
+
 class InternalState
 {
 private:
-
+    std::vector<Profile*> profiles;
+    Profile* currentProfile;
 public:
     // Constructor
     InternalState();

@@ -5,12 +5,13 @@
 
 
 #include <map>
+#include "./LEDState.hpp"
 
 class DailyState
 {
 private:
     unsigned int id;
-    std::map<unsigned int, unsigned int> hourlyStates;
+    std::map<unsigned int, LEDState*> hourlyStates;
 
 public:
     // Constructor
@@ -18,14 +19,17 @@ public:
 
     // Accessors
     unsigned int get_id();
-    std::map<unsigned int, unsigned int> get_hourly_state_map();
+    std::map<unsigned int, LEDState*> get_hourly_state_map();
 
     // Mutators
     void set_id(unsigned int);
 
     // CRUD
-    bool create_update_state(unsigned int time, unsigned int state);
-    unsigned int get_led_state_id(unsigned int time);
+    /// Summary ///
+    // Returns true when key/value is added or updated, false when key exists
+    ///
+    bool add_state(unsigned int time, LEDState* state);
+    LEDState* get_led_state(unsigned int time);
     bool delete_state(unsigned int time);
 };
 

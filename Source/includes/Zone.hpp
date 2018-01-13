@@ -4,11 +4,16 @@
 //=================================
 
 
+#include <vector>
+#include "./Schedule.hpp"
+#include "./LED.hpp"
+
 class Zone
 {
 private:
     unsigned int id;
-    unsigned int schedule_id;
+    Schedule* schedule;
+    std::vector<LED*> leds;
 
 public:
     // Constructor
@@ -16,11 +21,16 @@ public:
 
     // Accessors
     unsigned int get_id();
-    unsigned int get_schedule_id();
+    Schedule* get_schedule();
 
     // Mutators
     void set_id(unsigned int);
-    void set_schedule_id(unsigned int);
+    void set_schedule(Schedule*);
+
+    // CRUD
+    void add_led(LED* led);
+    std::vector<LED*> get_leds();
+    void delete_led(LED* led);
 };
 
 #endif //__ZONE_H_INCLUDED__

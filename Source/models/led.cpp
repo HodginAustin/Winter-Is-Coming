@@ -19,19 +19,9 @@ unsigned int LED::get_strip_idx()
     return strip_idx;
 }
 
-unsigned int LED::get_controller_idx()
+Controller* LED::get_controller()
 {
-    return controller_idx;
-}
-
-unsigned int LED::get_zone_id()
-{
-    return zone_id;
-}
-
-unsigned int LED::get_profile_id()
-{
-    return profile_id;
+    return controller;
 }
 
 
@@ -46,17 +36,7 @@ void LED::set_strip_idx(unsigned int val)
     strip_idx = val;
 }
 
-void LED::set_controller_idx(unsigned int val)
+void LED::set_controller(Controller* newController)
 {
-    controller_idx = val;
-}
-
-void LED::set_zone_id(unsigned int val)
-{
-    zone_id = val;
-}
-
-void LED::set_profile_id(unsigned int val)
-{
-    profile_id = val;
+    controller = newController;
 }
