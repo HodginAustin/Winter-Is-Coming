@@ -1,3 +1,4 @@
 *.o
-./out/
-./.vscode/
+out/
+.vscode/
+Source/.vscode/settings.json

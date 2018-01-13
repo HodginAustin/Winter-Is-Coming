@@ -1,3 +1,9 @@
+// Include Guard
+#ifndef __CONTROLLER_H_INCLUDED__
+#define __CONTROLLER_H_INCLUDED__
+//=================================
+
+
 #include <string>
 
 class Controller
@@ -9,6 +15,7 @@ private:
     std::string details;
 
 public:
+    // Constructor
     Controller(unsigned int id);
 
     // Accessors
@@ -23,3 +30,5 @@ public:
     void set_address(std::string);
     void set_details(std::string);
 };
+
+#endif //__CONTROLLER_H_INCLUDED__
