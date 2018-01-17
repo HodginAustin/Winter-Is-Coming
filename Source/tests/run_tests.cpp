@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "./test_controller.cpp"
+#include "./test_dailystate.cpp"
 
 
 #define GET_VAR_NAME(variable) #variable
@@ -21,7 +22,10 @@ void run_test(std::string name, bool (*func)())
 
 int main()
 {
+    // Internal state tests
     run_test(GET_VAR_NAME(test_controller), test_controller);
+    run_test(GET_VAR_NAME(test_dailystate), test_dailystate);
+
     return 0;
 }
 

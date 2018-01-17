@@ -16,7 +16,7 @@ unsigned int DailyState::get_id()
     return id;
 }
 
-std::map<unsigned int, LEDState*> DailyState::get_time_state_map()
+std::unordered_map<unsigned int, LEDState*> DailyState::get_time_state_map()
 {
     return timeStatePairs;
 }
@@ -45,9 +45,9 @@ LEDState* DailyState::get_led_state(unsigned int time)
     LEDState* nearest_state = 0;
     unsigned int nearest_time = 0;
 
-    // First check if any time<->state pairs exist
-    if (timeStatePairs.count(time) > 0) {
-        std::map<unsigned int, LEDState*>::iterator iter = timeStatePairs.begin();
+    // First check if no time<->state pairs exist
+    if (timeStatePairs.count(time) == 0) {
+        std::unordered_map<unsigned int, LEDState*>::iterator iter = timeStatePairs.begin();
 
         // Iterate through all map pairs
         while(iter != timeStatePairs.end()) {
@@ -61,17 +61,23 @@ LEDState* DailyState::get_led_state(unsigned int time)
 
             iter++;
         }
+    } else {
+        nearest_time = time;
     }
 
     nearest_state = timeStatePairs[nearest_time];
     return nearest_state;
 }
 
+#include <iostream>
+
 bool DailyState::delete_state(unsigned int time)
 {
-    std::map<unsigned int, LEDState*>::iterator iter = timeStatePairs.find(time);
-    if (iter == timeStatePairs.end()) { return false; }
+    timeStatePairs.erase(time);
+    return timeStatePairs.count(time) == 0;
+}
 
-    timeStatePairs.erase(iter);
-    return true;
+int DailyState::get_time_state_count()
+{
+    return timeStatePairs.size();
 }

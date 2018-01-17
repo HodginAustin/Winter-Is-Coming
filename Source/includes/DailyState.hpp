@@ -4,14 +4,14 @@
 //=================================
 
 
-#include <map>
+#include <unordered_map>
 #include "./LEDState.hpp"
 
 class DailyState
 {
 private:
     unsigned int id;
-    std::map<unsigned int, LEDState*> timeStatePairs;
+    std::unordered_map<unsigned int, LEDState*> timeStatePairs;
 
 public:
     // Constructor
@@ -19,7 +19,7 @@ public:
 
     // Accessors
     unsigned int get_id();
-    std::map<unsigned int, LEDState*> get_time_state_map();
+    std::unordered_map<unsigned int, LEDState*> get_time_state_map();
 
     // Mutators
     void set_id(unsigned int);
@@ -31,6 +31,7 @@ public:
     bool add_state(unsigned int time, LEDState* state);
     LEDState* get_led_state(unsigned int time);
     bool delete_state(unsigned int time);
+    int get_time_state_count();
 };
 
 #endif //__DAILYSTATE_H_INCLUDED__
