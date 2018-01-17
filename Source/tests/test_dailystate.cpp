@@ -1,5 +1,4 @@
 #include <unordered_map>
-#include <iostream>
 
 #include "./asserting.h"
 #include "../includes/DailyState.hpp"
