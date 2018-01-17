@@ -20,7 +20,7 @@ public:
     // Accessors
     unsigned int get_id();
     DailyState* get_daily_state(unsigned int day);
-    LEDState* get_active_state(unsigned int time, unsigned int day);
+    LEDState* get_active_state(unsigned int time, int day);
 
     // Mutators
     void set_id(unsigned int);

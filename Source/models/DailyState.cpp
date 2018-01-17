@@ -60,7 +60,7 @@ LEDState* DailyState::get_led_state(unsigned int time)
             }
 
             iter++;
-        }
+        }        
     } else {
         nearest_time = time;
     }
