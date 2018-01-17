@@ -25,9 +25,6 @@ public:
     void set_id(unsigned int);
 
     // CRUD
-    /// Summary ///
-    // Returns true when key/value is added or updated, false when key exists
-    ///
     bool add_state(unsigned int time, LEDState* state);
     LEDState* get_led_state(unsigned int time);
     bool delete_state(unsigned int time);

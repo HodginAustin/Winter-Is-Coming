@@ -2,8 +2,7 @@ GCC = g++ -std=c++14 -Wall -g
 INTERNAL_STATE_OBJECTS = ./out/led.o ./out/zone.o ./out/dailystate.o ./out/schedule.o ./out/ledstate.o ./out/controller.o ./out/profile.o
 
 
-default:
-	directories
+default: directories
 	make internal_state
 	make control_service_main
 	make control_service
