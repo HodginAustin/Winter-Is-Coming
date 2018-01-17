@@ -6,6 +6,7 @@
 #include "./test_profile.cpp"
 #include "./test_schedule.cpp"
 #include "./test_zone.cpp"
+#include "./test_internal_state_manager.cpp"
 
 
 #define GET_VAR_NAME(variable) #variable
@@ -26,6 +27,7 @@ void run_test(std::string name, bool (*func)())
 int main()
 {
     // Internal state tests
+    run_test(GET_VAR_NAME(test_internal_state_manager), test_internal_state_manager);
     run_test(GET_VAR_NAME(test_controller), test_controller);
     run_test(GET_VAR_NAME(test_dailystate), test_dailystate);
     run_test(GET_VAR_NAME(test_profile), test_profile);

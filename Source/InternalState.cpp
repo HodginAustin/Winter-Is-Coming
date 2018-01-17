@@ -1,33 +1,38 @@
 #include <algorithm>
 #include "./includes/InternalState.hpp"
 
+// Required for static class members
+std::vector<Profile*> InternalState::profiles;
+Profile* InternalState::currentProfile;
 
 // Initialization
 void InternalState::Initialize()
 {
-    currentProfile = 0;
+    InternalState::currentProfile = 0;
 }
 
 
 // Accessors
 Profile* InternalState::get_current_profile()
 {
-    return currentProfile;
+    return InternalState::currentProfile;
 }
 
 
 // CRUD
 void InternalState::add_profile(Profile* profile)
 {
-    profiles.push_back(profile);
+    InternalState::profiles.push_back(profile);
 }
 
 std::vector<Profile*> InternalState::get_profiles()
 {
-    return profiles;
+    return InternalState::profiles;
 }
 
 void InternalState::delete_profile(Profile* profile)
 {
-    profiles.erase(std::remove(profiles.begin(), profiles.end(), profile), profiles.end());
+    InternalState::profiles.erase(
+        std::remove(InternalState::profiles.begin(), InternalState::profiles.end(), profile),
+        InternalState::profiles.end());
 }

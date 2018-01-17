@@ -18,7 +18,7 @@ public:
     static void Initialize();
 
     // Accessors
-    static Profile* get_current_profile();
+    Profile* get_current_profile();
 
     // CRUD
     static void add_profile(Profile* profile);

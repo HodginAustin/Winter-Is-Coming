@@ -1,5 +1,5 @@
 GCC = g++ -std=c++14 -Wall -g
-INTERNAL_STATE_OBJECTS = ./out/led.o ./out/zone.o ./out/dailystate.o ./out/schedule.o ./out/ledstate.o ./out/controller.o ./out/profile.o
+INTERNAL_STATE_OBJECTS = ./out/internalstate.o ./out/led.o ./out/zone.o ./out/dailystate.o ./out/schedule.o ./out/ledstate.o ./out/controller.o ./out/profile.o
 
 
 default: directories
