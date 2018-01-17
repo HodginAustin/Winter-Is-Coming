@@ -15,5 +15,3 @@ int Apply_config();
 
 string build_url();
 
-
-

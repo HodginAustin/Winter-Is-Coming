@@ -1,5 +1,7 @@
 #include "./includes/header.hpp"
 
+using namespace std;
+
 int main(){
 
 	int option = 0;
@@ -66,8 +68,6 @@ int configure_zone(){
 
 int configure_schedule(int &ColorR, int &ColorG, int &ColorB, int &schedule_number, int &schedule_edit, int &brightness)
 {
-
-
 	string schedule_time;
 
 	system("clear");
@@ -116,9 +116,5 @@ int configure_profile(){
 string build_url(){
 
 	string url;
-
-
-
 	return url;
-
 }
