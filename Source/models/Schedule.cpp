@@ -34,7 +34,6 @@ LEDState* get_led_state_from_daily_state(unsigned int time, DailyState* ds)
     return ds->get_led_state(time);
 }
 
-#include <iostream>
 LEDState* Schedule::get_active_state(unsigned int time, int day)
 {
     if (day < 0 || day > 6) { return 0; }
