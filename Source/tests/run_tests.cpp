@@ -1,0 +1,39 @@
+#include <string>
+#include <iostream>
+
+#include "./test_controller.cpp"
+#include "./test_dailystate.cpp"
+#include "./test_profile.cpp"
+#include "./test_schedule.cpp"
+#include "./test_zone.cpp"
+#include "./test_internal_state_manager.cpp"
+
+
+#define GET_VAR_NAME(variable) #variable
+
+
+void run_test(std::string name, bool (*func)())
+{
+    std::cout << name;
+    std::cout << "...";
+    bool result = func();
+    if (result){
+        std::cout << "OK" << std::endl;
+    } else {
+        std::cout << "FAIL" << std::endl;
+    }
+}
+
+int main()
+{
+    // Internal state tests
+    run_test(GET_VAR_NAME(test_internal_state_manager), test_internal_state_manager);
+    run_test(GET_VAR_NAME(test_controller), test_controller);
+    run_test(GET_VAR_NAME(test_dailystate), test_dailystate);
+    run_test(GET_VAR_NAME(test_profile), test_profile);
+    run_test(GET_VAR_NAME(test_schedule), test_schedule);
+    run_test(GET_VAR_NAME(test_zone), test_zone);
+
+    return 0;
+}
+

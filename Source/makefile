@@ -1,19 +1,32 @@
 GCC = g++ -std=c++14 -Wall -g
+INTERNAL_STATE_OBJECTS = ./out/internalstate.o ./out/led.o ./out/zone.o ./out/dailystate.o ./out/schedule.o ./out/ledstate.o ./out/controller.o ./out/profile.o
 
 
-default:
+default: directories
+	make internal_state
+	make control_service_main
+	make control_service
+	make tests
+
+
+# Output directories
+directories:
 	mkdir -p out/
-	make all
+	mkdir -p out/tests/
 
 
-all: main internal_state led zone schedule daily_state led_state controller profile
-	$(GCC) -o ./out/plantergb ./out/main.o ./out/led.o ./out/zone.o ./out/dailystate.o ./out/schedule.o ./out/ledstate.o ./out/controller.o ./out/profile.o
-
-main:
+# Control service
+control_service_main:
 	$(GCC) -c ./main.cpp -o ./out/main.o
 
+control_service:
+	$(GCC) -o ./out/plantergb ./out/main.o $(INTERNAL_STATE_OBJECTS)
+
+
 # Internal State
-internal_state:
+internal_state: internal_state_manager led zone schedule daily_state led_state controller profile
+
+internal_state_manager:
 	$(GCC) -c ./InternalState.cpp -o ./out/internalstate.o
 
 led:
@@ -38,5 +51,11 @@ profile:
 	$(GCC) -c ./models/Profile.cpp -o ./out/profile.o
 
 
+# Tests
+tests: directories
+	$(GCC) -c ./tests/run_tests.cpp -o ./out/tests/run_tests.o
+	$(GCC) -o ./out/tests/run_tests $(INTERNAL_STATE_OBJECTS) ./out/tests/run_tests.o
+
+
 clean:
-	rm -f ./out/*.*
+	rm -rf ./out/*

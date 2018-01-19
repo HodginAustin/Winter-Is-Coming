@@ -11,11 +11,19 @@
 class InternalState
 {
 private:
-    std::vector<Profile*> profiles;
-    Profile* currentProfile;
+    static std::vector<Profile*> profiles;
+    static Profile* currentProfile;
 public:
-    // Constructor
-    InternalState();
+    // Initialization
+    static void Initialize();
+
+    // Accessors
+    Profile* get_current_profile();
+
+    // CRUD
+    static void add_profile(Profile* profile);
+    static std::vector<Profile*> get_profiles();
+    static void delete_profile(Profile* profile);
 };
 
 #endif //__INTERNALSTATE_H_INCLUDED__
