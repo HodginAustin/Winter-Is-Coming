@@ -6,7 +6,7 @@
 
 #include <vector>
 #include "./Schedule.hpp"
-#include "./LED.hpp"
+#include "./led.hpp"
 
 class Zone
 {

@@ -1,9 +1,11 @@
 GCC = g++ -std=c++14 -Wall -g
 INTERNAL_STATE_OBJECTS = ./out/internalstate.o ./out/led.o ./out/zone.o ./out/dailystate.o ./out/schedule.o ./out/ledstate.o ./out/controller.o ./out/profile.o
-
+API_OBJECTS = ./out/api.o
 
 default: directories
 	make internal_state
+	make copy_api
+	make api
 	make control_service_main
 	make control_service
 	make tests
@@ -17,10 +19,15 @@ directories:
 
 # Control service
 control_service_main:
-	$(GCC) -c ./main.cpp -o ./out/main.o
+	$(GCC) -c ./main.cpp -o ./out/main.o -lpistache -lpthread 
 
 control_service:
-	$(GCC) -o ./out/plantergb ./out/main.o $(INTERNAL_STATE_OBJECTS)
+	$(GCC) -o ./out/plantergb ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) -lpistache -lpthread 
+
+
+# API
+api:
+	$(GCC) -c ./API.cpp -o ./out/api.o
 
 
 # Internal State
@@ -30,7 +37,7 @@ internal_state_manager:
 	$(GCC) -c ./InternalState.cpp -o ./out/internalstate.o
 
 led:
-	$(GCC) -c ./models/LED.cpp -o ./out/led.o
+	$(GCC) -c ./models/led.cpp -o ./out/led.o
 
 zone:
 	$(GCC) -c ./models/Zone.cpp -o ./out/zone.o
@@ -57,5 +64,24 @@ tests: directories
 	$(GCC) -o ./out/tests/run_tests $(INTERNAL_STATE_OBJECTS) ./out/tests/run_tests.o
 
 
+# Install
+copy_api:
+	# Move API library to appropriate place
+	sudo cp ./environment/usr/local/lib/libpistache.a /usr/local/lib/
+	sudo cp -r ./environment/usr/local/include/* /usr/local/include/
+
+# Download and build the API from source (only to be used for unix systems other than the Raspberry Pi Zero W)
+build_api:
+	git clone https://github.com/oktal/pistache.git
+	git submodule update --init
+	cd pistache
+	mkdir build
+	cd build
+	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+	make
+	sudo make install
+
+
+# Clean up
 clean:
 	rm -rf ./out/*
