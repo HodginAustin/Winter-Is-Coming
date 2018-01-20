@@ -5,7 +5,7 @@
 
 bool test_internal_state_manager()
 {
-    InternalState::Initialize();
+    InternalState::initialize();
 
     Profile* p1 = new Profile(1);
     Profile* p2 = new Profile(2);

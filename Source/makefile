@@ -3,6 +3,7 @@ INTERNAL_STATE_OBJECTS = ./out/internalstate.o ./out/led.o ./out/zone.o ./out/da
 API_OBJECTS = ./out/api.o
 
 default: directories
+	make internal_state_objects
 	make internal_state
 	make copy_api
 	make api
@@ -31,9 +32,9 @@ api:
 
 
 # Internal State
-internal_state: internal_state_manager led zone schedule daily_state led_state controller profile
+internal_state_objects: led zone schedule daily_state led_state controller profile
 
-internal_state_manager:
+internal_state:
 	$(GCC) -c ./InternalState.cpp -o ./out/internalstate.o
 
 led:
