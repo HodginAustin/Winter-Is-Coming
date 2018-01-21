@@ -32,9 +32,25 @@ private:
 
     // Controller functions (REST methods)
     // System routes
+    void system_restart(REQUEST_RESPONSE);
+
+    // Actions
     void api_shutdown(REQUEST_RESPONSE);
 
+    // Profile routes
+    void get_profiles(REQUEST_RESPONSE);
     void get_profile(REQUEST_RESPONSE);
+    void get_current_profile(REQUEST_RESPONSE);
+    void post_profile(REQUEST_RESPONSE);
+    void delete_profile(REQUEST_RESPONSE);
+
+    // Zone routes
+    void get_zones(REQUEST_RESPONSE);
+    void get_zone(REQUEST_RESPONSE);
+    void post_zone(REQUEST_RESPONSE);
+    void delete_zone(REQUEST_RESPONSE);
+
+    // 
 };
 
 #endif //__API_H_INCLUDED__

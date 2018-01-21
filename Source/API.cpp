@@ -46,13 +46,17 @@ void API::setup_routes()
     // System routes
     Routes::Get(router, "/shutdown", Routes::bind(&API::api_shutdown, this));
 
+    // Profile routes
+    Routes::Get(router, "/profiles", Routes::bind(&API::get_profiles, this));
     Routes::Get(router, "/profile/:id", Routes::bind(&API::get_profile, this));
+
+
+
 
     //Routes::Post(router, "/record/:name/:value?", Routes::bind(&StatsEndpoint::doRecordMetric, this));
     //Routes::Get(router, "/value/:name", Routes::bind(&StatsEndpoint::doGetMetric, this));
     //Routes::Get(router, "/ready", Routes::bind(&Generic::handleReady));
     //Routes::Get(router, "/auth", Routes::bind(&StatsEndpoint::doAuth, this));
-
 }
 
 
@@ -64,6 +68,11 @@ void API::api_shutdown(REQUEST_RESPONSE)
     shutdown();
 }
 
+// Profile routes
+void API::get_profiles(REQUEST_RESPONSE)
+{
+
+}
 void API::get_profile(REQUEST_RESPONSE)
 {
     auto id = request.param(":id").as<unsigned int>();
@@ -76,6 +85,8 @@ void API::get_profile(REQUEST_RESPONSE)
         response.send(Http::Code::Not_Found, "Profile not found with id " + std::to_string(id));
     }
 }
+
+
 
 
 // Example get and post
