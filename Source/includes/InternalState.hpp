@@ -34,7 +34,6 @@ public:
     // Profile CRUD
     static void add_profile(Profile* profile);
     static std::vector<Profile*> get_profiles();
-    static Profile* get_profile(unsigned int id);
     static void delete_profile(Profile* profile);
     // LED CRUD
     static void add_led(LED* led);

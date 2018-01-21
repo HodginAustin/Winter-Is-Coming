@@ -40,15 +40,16 @@ std::vector<Profile*> InternalState::get_profiles()
     return profiles;
 }
 
-Profile* InternalState::get_profile(unsigned int id)
-{
-    std::vector<Profile*>::iterator iter;
-    for ( iter = InternalState::profiles.begin(); iter < InternalState::profiles.end(); ++iter )
-    {
-        if ((*iter)->get_id() == id){ return *iter; }
-    }
-    return 0;
-}
+// TODO: Move to REST function
+//Profile* InternalState::get_profile(unsigned int id)
+//{
+//    std::vector<Profile*>::iterator iter;
+//    for ( iter = InternalState::profiles.begin(); iter < InternalState::profiles.end(); ++iter )
+//    {
+//        if ((*iter)->get_id() == id){ return *iter; }
+//    }
+//    return 0;
+//}
 
 void InternalState::delete_profile(Profile* profile)
 {
