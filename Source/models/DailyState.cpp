@@ -40,6 +40,11 @@ bool DailyState::add_state(unsigned int time, LEDState* state)
     }
 }
 
+std::unordered_map<unsigned int, LEDState*> DailyState::get_led_states()
+{
+    return timeStatePairs;
+}
+
 LEDState* DailyState::get_led_state(unsigned int time)
 {
     LEDState* nearest_state = 0;
