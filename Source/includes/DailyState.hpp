@@ -26,6 +26,7 @@ public:
 
     // CRUD
     bool add_state(unsigned int time, LEDState* state);
+    std::unordered_map<unsigned int, LEDState*> get_led_states();
     LEDState* get_led_state(unsigned int time);
     bool delete_state(unsigned int time);
     int get_time_state_count();
