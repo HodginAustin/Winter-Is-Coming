@@ -38,7 +38,7 @@ internal_state:
 	$(GCC) -c ./InternalState.cpp -o ./out/internalstate.o
 
 led:
-	$(GCC) -c ./models/led.cpp -o ./out/led.o
+	$(GCC) -c ./models/LED.cpp -o ./out/led.o
 
 zone:
 	$(GCC) -c ./models/Zone.cpp -o ./out/zone.o
