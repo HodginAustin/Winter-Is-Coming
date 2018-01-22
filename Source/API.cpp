@@ -44,47 +44,313 @@ void API::setup_routes()
 {
     using namespace Rest;
     // System routes
+    Routes::Get(router, "/", Routes::bind(&API::index, this));
+    Routes::Get(router, "/restart", Routes::bind(&API::system_restart, this));
+
+    // API Actions
     Routes::Get(router, "/shutdown", Routes::bind(&API::api_shutdown, this));
 
-    // Profile routes
+    // Profile CRUD routes
     Routes::Get(router, "/profiles", Routes::bind(&API::get_profiles, this));
-    Routes::Get(router, "/profile/:id", Routes::bind(&API::get_profile, this));
+    Routes::Post(router, "/profiles/add", Routes::bind(&API::post_profile, this));
+    Routes::Delete(router, "profile/:id/delete", Routes::bind(&API::delete_profile, this));
+    // LED CRUD routes
+    Routes::Get(router, "leds", Routes::bind(&API::get_leds, this));
+    Routes::Get(router, "leds/:id", Routes::bind(&API::get_led, this));
+    Routes::Post(router, "leds/add", Routes::bind(&API::post_led, this));
+    Routes::Delete(router, "leds/:id/delete", Routes::bind(&API::delete_led, this));
+    Routes::Get(router, "leds/:id/controller", Routes::bind(&API::get_led_controller, this));
+    Routes::Put(router, "leds/:id/controller/add", Routes::bind(&API::put_led_controller, this));
+    Routes::Delete(router, "leds/:led_id/controller/delete", Routes::bind(&API::delete_led_controller, this));
+    // Controller CRUD routes
+    Routes::Get(router, "controllers", Routes::bind(&API::get_controllers, this));
+    Routes::Get(router, "controllers/:id", Routes::bind(&API::get_controller, this));
+    Routes::Post(router, "controllers/add", Routes::bind(&API::post_controller, this));
+    Routes::Delete(router, "controllers/:id/delete", Routes::bind(&API::delete_controller, this));
+    // LEDState CRUD routes
+    Routes::Get(router, "led_states", Routes::bind(&API::get_led_states, this));
+    Routes::Get(router, "led_states/:id", Routes::bind(&API::get_led_state, this));        
+    Routes::Post(router, "led_states/add", Routes::bind(&API::post_led_state, this));
+    Routes::Delete(router, "led_states/:id/delete", Routes::bind(&API::delete_led_state, this));
+    // DailyState CRUD routes
+    Routes::Get(router, "daily_states", Routes::bind(&API::get_daily_states, this));
+    Routes::Get(router, "daily_states/:id", Routes::bind(&API::get_daily_state, this));
+    Routes::Post(router, "daily_states/add", Routes::bind(&API::post_daily_state, this));
+    Routes::Delete(router, "daily_states/:id/daily_states", Routes::bind(&API::delete_daily_state, this));
+    Routes::Get(router, "daily_states/:id/led_states", Routes::bind(&API::get_daily_state_led_states, this));
+    Routes::Put(router, "daily_states/:daily_state_id/led_states/add",
+                        Routes::bind(&API::put_daily_state_led_state, this));
+    Routes::Delete(router, "daily_states/:daily_state_id/led_states/:led_id/delete", Routes::bind(&API::delete_daily_state_led_state, this));
 
+    // Profile routes
+    Routes::Get(router, "profiles/:id", Routes::bind(&API::get_profile, this));
+    Routes::Get(router, "current_profile", Routes::bind(&API::get_current_profile, this));
+    Routes::Get(router, "profiles/:id/zones", Routes::bind(&API::get_profile_zones, this));
+    Routes::Post(router, "profiles/:id/zones/add", Routes::bind(&API::post_profile_zone, this));
+    Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/delete", Routes::bind(&API::delete_profile_zone, this));
 
+    // Zone routes
+    Routes::Get(router, "profiles/:profile_id/zones/:zone_id", Routes::bind(&API::get_zone, this));
+    Routes::Get(router, "profiles/:profile_id/zones/:zone_id/schedule", Routes::bind(&API::get_zone_schedule, this));
+    Routes::Get(router, "profiles/:profile_id/zones/:zone_id/leds", Routes::bind(&API::get_zone_leds, this));
+    Routes::Put(router, "profiles/:profile_id/zones/:zone_id/leds/add/", Routes::bind(&API::put_zone_led, this));
+    Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/leds/:led_id/delete",
+                            Routes::bind(&API::delete_zone_led, this));
 
+    // Schedule routes
+    Routes::Get(router, "profiles/:profile_id/zones/:zone_id/schedule/active_state", Routes::bind(&API::get_schedule_active_led_state, this));
+    Routes::Put(router, "profiles/:profile_id/zones/:zone_id/schedule/day/:day_of_week/add/",
+                            Routes::bind(&API::put_schedule_daily_state, this));
+    Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/schedule/day/:day_of_week/delete",
+                            Routes::bind(&API::delete_schedule_daily_state, this));
+}
 
-    //Routes::Post(router, "/record/:name/:value?", Routes::bind(&StatsEndpoint::doRecordMetric, this));
-    //Routes::Get(router, "/value/:name", Routes::bind(&StatsEndpoint::doGetMetric, this));
-    //Routes::Get(router, "/ready", Routes::bind(&Generic::handleReady));
-    //Routes::Get(router, "/auth", Routes::bind(&StatsEndpoint::doAuth, this));
+void API::log_req(REQUEST)
+{
+    std::cout << "Received request!" << std::endl;
 }
 
 
 // Controller endpoints (REST methods)
+
 // System routes
-void API::api_shutdown(REQUEST_RESPONSE)
+void API::index(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Welcome to PlanteRGB!");
+}
+void API::system_restart(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Restarting");
+}
+
+// Actions
+void API::api_shutdown(REQUEST, RESPONSE)
 {
     response.send(Http::Code::Ok, "Shutting down");
     shutdown();
 }
 
-// Profile routes
-void API::get_profiles(REQUEST_RESPONSE)
+// Profile CRUD routes
+void API::get_profiles(REQUEST, RESPONSE)
 {
-
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
 }
-void API::get_profile(REQUEST_RESPONSE)
+void API::post_profile(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::delete_profile(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+// LED CRUD
+void API::get_leds(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::post_led(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::delete_led(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+// Controller CRUD
+void API::get_controllers(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::post_controller(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::delete_controller(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+// LEDState CRUD
+void API::get_led_states(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::post_led_state(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::delete_led_state(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+// DailyState CRUD
+void API::get_daily_states(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::post_daily_state(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::delete_daily_state(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+
+// Profile routes
+void API::get_profile(REQUEST, RESPONSE)
 {
     auto id = request.param(":id").as<unsigned int>();
-    
     Profile* profile = InternalState::get_profile(id);
 
-    if (profile != 0){
-        response.send(Http::Code::Ok, profile->get_name());
-    } else {
-        response.send(Http::Code::Not_Found, "Profile not found with id " + std::to_string(id));
-    }
+    if (profile != 0){ response.send(Http::Code::Ok, profile->get_name()); }
+    else { response.send(Http::Code::Not_Found, "Profile not found with id " +
+                                                std::to_string(id)); }
 }
+void API::get_current_profile(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::get_profile_zones(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::post_profile_zone(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::delete_profile_zone(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+
+// Zone routes
+void API::get_zone(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::get_zone_schedule(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::get_zone_leds(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::put_zone_led(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::delete_zone_led(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+
+// LED routes
+void API::get_led(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::get_led_controller(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::put_led_controller(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::delete_led_controller(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+
+// Controller routes
+void API::get_controller(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+
+// Schedule routes
+void API::put_schedule_daily_state(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::delete_schedule_daily_state(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::get_schedule_active_led_state(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+
+// DailyState routes
+void API::get_daily_state(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::get_daily_state_led_states(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::put_daily_state_led_state(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+void API::delete_daily_state_led_state(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+
+// LEDState routes
+void API::get_led_state(REQUEST, RESPONSE)
+{
+    log_req(request);
+    response.send(Http::Code::Ok, "Error: not Implemented");
+}
+
+
+
+
+
+
 
 
 
