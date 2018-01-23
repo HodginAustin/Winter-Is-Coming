@@ -1,6 +1,7 @@
 #include <map>
 
 #include <pistache/http.h>
+#include <pistache/mime.h>
 
 #include "./includes/API.hpp"
 #include "./includes/InternalState.hpp"
@@ -136,6 +137,12 @@ void API::api_shutdown(REQUEST, RESPONSE)
 void API::get_profiles(REQUEST, RESPONSE)
 {
     log_req(request);
+
+    // Json response
+    response.headers()
+            .add<Header::ContentType>(MIME(Application, Json));
+
+    
     response.send(Http::Code::Ok, "Error: not Implemented");
 }
 void API::post_profile(REQUEST, RESPONSE)
