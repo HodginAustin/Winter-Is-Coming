@@ -3,10 +3,14 @@
 #include <pistache/http.h>
 #include <pistache/mime.h>
 
+#include "./includes/json.hpp"
+
 #include "./includes/API.hpp"
 #include "./includes/InternalState.hpp"
+#include "./includes/Schedule.hpp"
 
-using namespace Pistache;
+using namespace Pistache; // REST API
+using json = nlohmann::json; // Json
 
 
 API::API(Address addr)
@@ -106,6 +110,15 @@ void API::setup_routes()
                             Routes::bind(&API::delete_schedule_daily_state, this));
 }
 
+
+// JSON ENCODE / DECODE EXAMPLES
+// Decode
+//auto j = json::parse("{ \"happy\": true, \"pi\": 3.141 }");
+// Encode
+// std::string s = j.dump();
+
+
+// Logging
 void API::log_req(REQUEST)
 {
     std::cout << "Received request!" << std::endl;
@@ -133,17 +146,24 @@ void API::api_shutdown(REQUEST, RESPONSE)
     shutdown();
 }
 
+
 // Profile CRUD routes
 void API::get_profiles(REQUEST, RESPONSE)
 {
     log_req(request);
 
-    // Json response
+    // Json response MIME
     response.headers()
-            .add<Header::ContentType>(MIME(Application, Json));
-
+            .add<Http::Header::ContentType>(MIME(Application, Json));
     
-    response.send(Http::Code::Ok, "Error: not Implemented");
+    // Build JSON from profiles vector
+    json j;
+    std::vector<Profile*> profiles = InternalState::get_profiles();
+    for (std::vector<Profile*>::iterator iter = profiles.begin(); iter < profiles.end(); iter++){
+        j.push_back(*(*iter));
+    }
+
+    response.send(Http::Code::Ok, j.dump());
 }
 void API::post_profile(REQUEST, RESPONSE)
 {

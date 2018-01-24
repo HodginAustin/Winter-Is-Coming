@@ -10,17 +10,17 @@ Profile::Profile(unsigned int id)
 
 
 // Accessors
-unsigned int Profile::get_id()
+unsigned int Profile::get_id() const
 {
     return id;
 }
 
-std::string Profile::get_name()
+std::string Profile::get_name() const
 {
     return name;
 }
 
-std::string Profile::get_description()
+std::string Profile::get_description() const
 {
     return description;
 }
@@ -57,4 +57,20 @@ std::vector<Zone*> Profile::get_zones()
 void Profile::delete_zone(Zone* zone)
 {
     zones.erase(std::remove(zones.begin(), zones.end(), zone), zones.end());
+}
+
+
+// JSON
+void to_json(json& j, const Profile& p) {
+    j = json{
+        {"id", p.get_id()},
+        {"name", p.get_name()},
+        {"description", p.get_description()}
+    };
+}
+
+void from_json(const json& j, Profile& p) {
+    //p.name = j.at("name").get<std::string>();
+    //p.address = j.at("address").get<std::string>();
+    //p.age = j.at("age").get<int>();
 }
