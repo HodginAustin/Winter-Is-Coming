@@ -14,4 +14,3 @@ int configure_profile();
 int Apply_config();
 
 string build_url();
-
