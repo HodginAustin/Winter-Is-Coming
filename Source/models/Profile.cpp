@@ -55,7 +55,7 @@ void Profile::add_zone(Zone* zone)
     zones.push_back(zone);
 }
 
-std::vector<Zone*> Profile::get_zones()
+std::vector<Zone*> Profile::get_zones() const
 {
     return zones;
 }
@@ -68,10 +68,20 @@ void Profile::delete_zone(Zone* zone)
 
 // JSON
 void to_json(json& j, const Profile& p) {
+    // Build JSON from zone vector
+    json zones_j = json::array(); // Empty JSON array []
+    std::vector<Zone*> zones = p.get_zones();
+    for (std::vector<Zone*>::iterator iter = zones.begin(); iter < zones.end(); iter++){
+        json zone_j;
+        zone_j["id"] = (*iter)->get_id();
+        zones_j.push_back(zone_j);
+    }
+
     j = json{
         {"id", p.get_id()},
         {"name", p.get_name()},
-        {"description", p.get_description()}
+        {"description", p.get_description()},
+        {"zones", zones_j}
     };
 }
 

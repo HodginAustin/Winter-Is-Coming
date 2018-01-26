@@ -1,4 +1,5 @@
 #include <algorithm>
+
 #include "../includes/Zone.hpp"
 
 
@@ -23,12 +24,12 @@ void Zone::copy(const Zone& z)
 
 
 // Accessors
-unsigned int Zone::get_id()
+unsigned int Zone::get_id() const
 {
     return id;
 }
 
-Schedule* Zone::get_schedule()
+Schedule* Zone::get_schedule() const
 {
     return schedule;
 }
@@ -52,7 +53,7 @@ void Zone::add_led(LED* led)
     leds.push_back(led);
 }
 
-std::vector<LED*> Zone::get_leds()
+std::vector<LED*> Zone::get_leds() const
 {
     return leds;
 }
@@ -70,7 +71,7 @@ void to_json(json& j, const Zone& z) {
     std::vector<LED*> leds = z.get_leds();
     for (std::vector<LED*>::iterator iter = leds.begin(); iter < leds.end(); iter++){
         json led_j;
-        led_j['id'] = (*iter)->get_id();
+        led_j["id"] = (*iter)->get_id();
         leds_j.push_back(led_j);
     }
     

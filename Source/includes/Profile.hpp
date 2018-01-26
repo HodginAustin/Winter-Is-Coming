@@ -41,7 +41,7 @@ public:
 
     // CRUD
     void add_zone(Zone* newZone);
-    std::vector<Zone*> get_zones();
+    std::vector<Zone*> get_zones() const;
     void delete_zone(Zone* zone);
 
 };

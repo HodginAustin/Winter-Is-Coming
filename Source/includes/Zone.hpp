@@ -5,8 +5,13 @@
 
 
 #include <vector>
+
+#include "./json.hpp"
+
 #include "./Schedule.hpp"
 #include "./LED.hpp"
+
+using nlohmann::json;
 
 class Zone
 {
@@ -20,9 +25,12 @@ public:
     Zone();
     Zone(const Zone& z);
 
+    // Copy
+    void copy(const Zone& z);
+
     // Accessors
-    unsigned int get_id();
-    Schedule* get_schedule();
+    unsigned int get_id() const;
+    Schedule* get_schedule() const;
 
     // Mutators
     void set_id(unsigned int);
@@ -30,7 +38,7 @@ public:
 
     // CRUD
     void add_led(LED* led);
-    std::vector<LED*> get_leds();
+    std::vector<LED*> get_leds() const;
     void delete_led(LED* led);
 };
 

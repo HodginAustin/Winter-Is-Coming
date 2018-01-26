@@ -73,7 +73,7 @@ void API::setup_routes()
     Routes::Put(router, "profiles/:profile_id/zones/:zone_id/leds/add/", Routes::bind(&API::put_zone_led, this));
     Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/leds/:led_id/delete",
                             Routes::bind(&API::delete_zone_led, this));
-
+    
     // Schedule routes
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/schedule/active_state", Routes::bind(&API::get_schedule_active_led_state, this));
     Routes::Put(router, "profiles/:profile_id/zones/:zone_id/schedule/day/:day_of_week/add/",
