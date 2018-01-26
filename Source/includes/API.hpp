@@ -48,43 +48,16 @@ private:
 
     // Top level objects (get all of a specific object without knowing what it belongs to)
     // add new objects which are not linked to any other objects yet
-    // Profile CRUD routes
-    void get_profiles(REQUEST, RESPONSE);          // Gets all profiles
-    void post_profile(REQUEST, RESPONSE);          // Adds a profile
-    void delete_profile(REQUEST, RESPONSE);        // Deletes a profile
-    // LED CRUD routes
-    void get_leds(REQUEST, RESPONSE);              // Gets all LEDs
-    void get_led(REQUEST, RESPONSE);               // Gets an LED by ID
-    void post_led(REQUEST, RESPONSE);              // Adds an LED
-    void delete_led(REQUEST, RESPONSE);            // Deletes an LED
-    void get_led_controller(REQUEST, RESPONSE);    // Gets an LED's controller
-    void put_led_controller(REQUEST, RESPONSE);    // Links an existing controller to an LED
-    void delete_led_controller(REQUEST, RESPONSE); // Unlinks an existing controller from an LED
-    // Controller CRUD routes
-    void get_controllers(REQUEST, RESPONSE);       // Gets all controllers
-    void get_controller(REQUEST, RESPONSE);        // Gets a controller by ID
-    void post_controller(REQUEST, RESPONSE);       // Adds a controller
-    void delete_controller(REQUEST, RESPONSE);     // Deletes a controller
-    // LEDState CRUD routes
-    void get_led_states(REQUEST, RESPONSE);        // Gets all LED states
-    void get_led_state(REQUEST, RESPONSE);     // Gets an LEDState by ID
-    void post_led_state(REQUEST, RESPONSE);        // Adds an LED state
-    void delete_led_state(REQUEST, RESPONSE);      // Deletes an LED state
-    // DailyState CRUD routes
-    void get_daily_states(REQUEST, RESPONSE);      // Gets all daily states
-    void get_daily_state(REQUEST, RESPONSE);              // Gets a dailyState by ID
-    void post_daily_state(REQUEST, RESPONSE);      // Adds a daily state
-    void delete_daily_state(REQUEST, RESPONSE);    // Deletes a daily state
-    void get_daily_state_led_states(REQUEST, RESPONSE);   // Gets a dailyState's LED states
-    void put_daily_state_led_state(REQUEST, RESPONSE);    // Links an existing LEDState to a dailyState
-    void delete_daily_state_led_state(REQUEST, RESPONSE); // Unlinks an existing LEDState from a dailyState
 
     // Profile routes
+    void get_profiles(REQUEST, RESPONSE);          // Gets all profiles
     void get_profile(REQUEST, RESPONSE);           // Gets a profile by ID
-    void get_current_profile(REQUEST, RESPONSE);   // Gets the active profile
     void get_profile_zones(REQUEST, RESPONSE);     // Gets a profile's zones
+    void get_current_profile(REQUEST, RESPONSE);   // Gets the active profile
+    void post_profile(REQUEST, RESPONSE);          // Adds a profile
     void post_profile_zone(REQUEST, RESPONSE);     // Adds a zone, links to a profile
     void delete_profile_zone(REQUEST, RESPONSE);   // Deletes a zone, unlinks from a profile
+    void delete_profile(REQUEST, RESPONSE);        // Deletes a profile
 
     // Zone routes
     void get_zone(REQUEST, RESPONSE);              // Gets a zone by ID
@@ -94,10 +67,39 @@ private:
     void delete_zone_led(REQUEST, RESPONSE);       // Unlinks an existing LED from a zone
 
     // Schedule routes
+    void get_schedule_active_led_state(REQUEST, RESPONSE); // Gets the currently active LEDState based on the system time
     void put_schedule_daily_state(REQUEST, RESPONSE);      // Links an existing dailyState to a schedule by day of week
     void delete_schedule_daily_state(REQUEST, RESPONSE);   // Unlinks an existing dailyState to a schedule
-    void get_schedule_active_led_state(REQUEST, RESPONSE); // Gets the currently active LEDState based on the system time
 
+    // LED routes
+    void get_leds(REQUEST, RESPONSE);              // Gets all LEDs
+    void get_led(REQUEST, RESPONSE);               // Gets an LED by ID
+    void get_led_controller(REQUEST, RESPONSE);    // Gets an LED's controller
+    void put_led_controller(REQUEST, RESPONSE);    // Links an existing controller to an LED
+    void post_led(REQUEST, RESPONSE);              // Adds an LED
+    void delete_led(REQUEST, RESPONSE);            // Deletes an LED
+    void delete_led_controller(REQUEST, RESPONSE); // Unlinks an existing controller from an LED
+
+    // Controller CRUD routes
+    void get_controllers(REQUEST, RESPONSE);       // Gets all controllers
+    void get_controller(REQUEST, RESPONSE);        // Gets a controller by ID
+    void post_controller(REQUEST, RESPONSE);       // Adds a controller
+    void delete_controller(REQUEST, RESPONSE);     // Deletes a controller
+
+    // LEDState CRUD routes
+    void get_led_states(REQUEST, RESPONSE);        // Gets all LED states
+    void get_led_state(REQUEST, RESPONSE);     // Gets an LEDState by ID
+    void post_led_state(REQUEST, RESPONSE);        // Adds an LED state
+    void delete_led_state(REQUEST, RESPONSE);      // Deletes an LED state
+
+    // DailyState CRUD routes
+    void get_daily_states(REQUEST, RESPONSE);      // Gets all daily states
+    void get_daily_state(REQUEST, RESPONSE);              // Gets a dailyState by ID
+    void get_daily_state_led_states(REQUEST, RESPONSE);   // Gets a dailyState's LED states
+    void put_daily_state_led_state(REQUEST, RESPONSE);    // Links an existing LEDState to a dailyState
+    void post_daily_state(REQUEST, RESPONSE);      // Adds a daily state
+    void delete_daily_state(REQUEST, RESPONSE);    // Deletes a daily state
+    void delete_daily_state_led_state(REQUEST, RESPONSE); // Unlinks an existing LEDState from a dailyState
 };
 
 #endif //__API_H_INCLUDED__
