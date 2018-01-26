@@ -51,5 +51,4 @@ void to_json(json& j, const Profile& p);
 void from_json(const json& j, Profile& p);
 
 
-
 #endif //__PROFILE_H_INCLUDED__

@@ -17,7 +17,8 @@ private:
 
 public:
     // Constructor
-    Zone(unsigned int id);
+    Zone();
+    Zone(const Zone& z);
 
     // Accessors
     unsigned int get_id();
@@ -32,5 +33,10 @@ public:
     std::vector<LED*> get_leds();
     void delete_led(LED* led);
 };
+
+// JSON
+void to_json(json& j, const Zone& p);
+void from_json(const json& j, Zone& p);
+
 
 #endif //__ZONE_H_INCLUDED__
