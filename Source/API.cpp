@@ -235,7 +235,9 @@ void API::post_profile(REQUEST, RESPONSE)
     // Data
     Profile p = j_in;
     p.set_id(DataParser::next_profile_id());
-    InternalState::add_profile(new Profile(p));
+    Profile* profile = new Profile(p);
+    profile->set_id(p.get_id());
+    InternalState::add_profile(profile);
     
     // Build response
     json j_out = json{{"id", p.get_id()}};
@@ -262,14 +264,18 @@ void API::patch_profile(REQUEST, RESPONSE)
 
     // Data
     Profile p = j_in;
-    Profile* existing = InternalState::get_profile(id);
-    existing->copy(p);
-
+    Profile* profile = InternalState::get_profile(id);
+    
     // Build response
-    json j_out = *existing;
+    json j_out;
+    Http::Code code = (profile != 0 ? Http::Code::Ok : Http::Code::Not_Found);
+    if (profile != 0) {
+        profile->copy(p);
+        j_out = *profile;
+    }
 
     // Send response
-    response.send(Http::Code::Ok, j_out.dump());
+    response.send(code, j_out.dump());
 }
 void API::delete_profile_zone(REQUEST, RESPONSE)
 {
