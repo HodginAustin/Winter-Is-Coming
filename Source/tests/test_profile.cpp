@@ -5,7 +5,8 @@
 
 bool test_profile()
 {
-    Profile* p = new Profile(9);
+    Profile* p = new Profile();
+    p->set_id(9);
     Zone* z1 = new Zone(1);
     Zone* z2 = new Zone(2);
     Zone* z3 = new Zone(3);

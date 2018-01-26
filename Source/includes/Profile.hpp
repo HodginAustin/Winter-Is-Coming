@@ -22,8 +22,12 @@ private:
     std::vector<Zone*> zones;
 
 public:
-    // Constructor
-    Profile(unsigned int id);
+    // Constructors
+    Profile();
+    Profile(const Profile& p);
+
+    // Copy
+    void copy(const Profile& p);
 
     // Accessors
     unsigned int get_id() const;

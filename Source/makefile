@@ -1,12 +1,14 @@
 GCC = g++ -std=c++14 -Wall -g
 INTERNAL_STATE_OBJECTS = ./out/internalstate.o ./out/led.o ./out/zone.o ./out/dailystate.o ./out/schedule.o ./out/ledstate.o ./out/controller.o ./out/profile.o
 API_OBJECTS = ./out/api.o
+DATA_PARSER_OBJECTS = ./out/dataparser.o
 
 default: directories
 	make internal_state_objects
 	make internal_state
 	make copy_api
 	make api
+	make data_parser
 	make control_service_main
 	make control_service
 	make tests
@@ -23,12 +25,7 @@ control_service_main:
 	$(GCC) -c ./main.cpp -o ./out/main.o -lpistache -lpthread 
 
 control_service:
-	$(GCC) -o ./out/plantergb ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) -lpistache -lpthread 
-
-
-# API
-api:
-	$(GCC) -c ./API.cpp -o ./out/api.o
+	$(GCC) -o ./out/plantergb ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) $(DATA_PARSER_OBJECTS) -lpistache -lpthread 
 
 
 # Internal State
@@ -57,6 +54,16 @@ controller:
 
 profile:
 	$(GCC) -c ./models/Profile.cpp -o ./out/profile.o
+
+
+# Data Parser
+data_parser:
+	$(GCC) -c ./DataParser.cpp -o ./out/dataparser.o
+
+
+# API
+api:
+	$(GCC) -c ./API.cpp -o ./out/api.o
 
 
 # Tests

@@ -38,6 +38,7 @@ private:
     // GET retrieves an object and group of objects globally or from a container
     // POST adds an object to the system and links it to its parent container
     // PUT links an already added object to its parent container
+    // PATCH for an existing item will update that item
 
     // System routes
     void index(REQUEST, RESPONSE);
@@ -56,6 +57,7 @@ private:
     void get_current_profile(REQUEST, RESPONSE);   // Gets the active profile
     void post_profile(REQUEST, RESPONSE);          // Adds a profile
     void post_profile_zone(REQUEST, RESPONSE);     // Adds a zone, links to a profile
+    void patch_profile(REQUEST, RESPONSE);         // Updates a profile
     void delete_profile_zone(REQUEST, RESPONSE);   // Deletes a zone, unlinks from a profile
     void delete_profile(REQUEST, RESPONSE);        // Deletes a profile
 
@@ -77,6 +79,7 @@ private:
     void get_led_controller(REQUEST, RESPONSE);    // Gets an LED's controller
     void put_led_controller(REQUEST, RESPONSE);    // Links an existing controller to an LED
     void post_led(REQUEST, RESPONSE);              // Adds an LED
+    void patch_led(REQUEST, RESPONSE);             // Updates an LED
     void delete_led(REQUEST, RESPONSE);            // Deletes an LED
     void delete_led_controller(REQUEST, RESPONSE); // Unlinks an existing controller from an LED
 
@@ -84,12 +87,14 @@ private:
     void get_controllers(REQUEST, RESPONSE);       // Gets all controllers
     void get_controller(REQUEST, RESPONSE);        // Gets a controller by ID
     void post_controller(REQUEST, RESPONSE);       // Adds a controller
+    void patch_controller(REQUEST, RESPONSE);      // Updates a controller
     void delete_controller(REQUEST, RESPONSE);     // Deletes a controller
 
     // LEDState CRUD routes
     void get_led_states(REQUEST, RESPONSE);        // Gets all LED states
-    void get_led_state(REQUEST, RESPONSE);     // Gets an LEDState by ID
+    void get_led_state(REQUEST, RESPONSE);         // Gets an LEDState by ID
     void post_led_state(REQUEST, RESPONSE);        // Adds an LED state
+    void patch_led_state(REQUEST, RESPONSE);       // Adds an LED state
     void delete_led_state(REQUEST, RESPONSE);      // Deletes an LED state
 
     // DailyState CRUD routes
@@ -98,6 +103,7 @@ private:
     void get_daily_state_led_states(REQUEST, RESPONSE);   // Gets a dailyState's LED states
     void put_daily_state_led_state(REQUEST, RESPONSE);    // Links an existing LEDState to a dailyState
     void post_daily_state(REQUEST, RESPONSE);      // Adds a daily state
+    void patch_daily_state(REQUEST, RESPONSE);     // Updates a daily state
     void delete_daily_state(REQUEST, RESPONSE);    // Deletes a daily state
     void delete_daily_state_led_state(REQUEST, RESPONSE); // Unlinks an existing LEDState from a dailyState
 };

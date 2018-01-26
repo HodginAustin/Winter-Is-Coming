@@ -3,9 +3,15 @@
 
 
 // Constructor
-Profile::Profile(unsigned int id)
+Profile::Profile() {}
+Profile::Profile(const Profile& p) { copy(p); }
+
+
+// Copy
+void Profile::copy(const Profile& p)
 {
-    set_id(id);
+    set_name(p.get_name());
+    set_description(p.get_description());
 }
 
 
@@ -70,7 +76,6 @@ void to_json(json& j, const Profile& p) {
 }
 
 void from_json(const json& j, Profile& p) {
-    //p.name = j.at("name").get<std::string>();
-    //p.address = j.at("address").get<std::string>();
-    //p.age = j.at("age").get<int>();
+    p.set_name(j.at("name").get<std::string>());
+    p.set_description(j.at("description").get<std::string>());
 }

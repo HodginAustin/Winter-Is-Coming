@@ -7,9 +7,9 @@ bool test_internal_state_manager()
 {
     InternalState::initialize();
 
-    Profile* p1 = new Profile(1);
-    Profile* p2 = new Profile(2);
-    Profile* p3 = new Profile(3);
+    Profile* p1 = new Profile();
+    Profile* p2 = new Profile();
+    Profile* p3 = new Profile();
 
     bool condTrue = true;
     bool condFalse = false;
