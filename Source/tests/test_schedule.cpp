@@ -5,18 +5,25 @@
 
 bool test_schedule()
 {
-    Schedule* s = new Schedule(4);
+    Schedule* s = new Schedule();
+    s->set_id(4);
 
-    LEDState* l1 = new LEDState(1);
-    LEDState* l2 = new LEDState(2);
-    LEDState* l3 = new LEDState(3);
+    LEDState* l1 = new LEDState();
+    l1->set_id(1);
+    LEDState* l2 = new LEDState();
+    l2->set_id(2);
+    LEDState* l3 = new LEDState();
+    l3->set_id(3);
 
-    DailyState* d1 = new DailyState(1);
+    DailyState* d1 = new DailyState();
+    d1->set_id(1);
     d1->add_state(61200, l3); // 5PM LED state l3
-    DailyState* d2 = new DailyState(2);
+    DailyState* d2 = new DailyState();
+    d2->set_id(2);
     d2->add_state(28800, l1); // 8AM LED state l1
     d2->add_state(30600, l2); // 8:30AM LED state l2
-    DailyState* d3 = new DailyState(3);
+    DailyState* d3 = new DailyState();
+    d3->set_id(3);
 
     bool condTrue = true;
     bool condFalse = false;

@@ -15,12 +15,16 @@ private:
 
 public:
     // Constructor
-    Schedule(unsigned int id);
+    Schedule();
+    Schedule(const Schedule& s);
+
+    // Copy
+    void copy(const Schedule& s);
 
     // Accessors
-    unsigned int get_id();
-    DailyState* get_daily_state(unsigned int day);
-    LEDState* get_active_state(unsigned int time, int day);
+    unsigned int get_id() const;
+    DailyState* get_daily_state(unsigned int day) const;
+    LEDState* get_active_state(unsigned int time, int day) const;
 
     // Mutators
     void set_id(unsigned int);

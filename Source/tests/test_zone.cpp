@@ -5,10 +5,14 @@
 
 bool test_zone()
 {
-    Zone* z = new Zone(9);
-    LED* led1 = new LED(1);
-    LED* led2 = new LED(2);
-    LED* led3 = new LED(3);
+    Zone* z = new Zone();
+    z->set_id(9);
+    LED* led1 = new LED();
+    led1->set_id(1);
+    LED* led2 = new LED();
+    led2->set_id(2);
+    LED* led3 = new LED();
+    led3->set_id(3);
 
     bool condTrue = true;
     bool condFalse = false;

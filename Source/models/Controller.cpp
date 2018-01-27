@@ -2,28 +2,46 @@
 
 
 // Constructor
-Controller::Controller(unsigned int id)
+Controller::Controller() {}
+
+Controller::Controller(const Controller& c)
 {
-    set_id(id);
+    copy(c);
 }
 
+
+// Copy
+void Controller::copy(const Controller& c)
+{
+    if (c.get_io() >= 0) {
+        set_io(c.get_io());
+    }
+    if (!c.get_address().empty()) {
+        set_address(c.get_address());
+    }
+    if (!c.get_details().empty()) {
+        set_details(c.get_details());
+    }
+}
+
+
 // Accessors
-unsigned int Controller::get_id()
+unsigned int Controller::get_id() const
 {
     return id;
 }
 
-unsigned int Controller::get_io()
+unsigned int Controller::get_io() const
 {
     return io;
 }
 
-std::string Controller::get_address()
+std::string Controller::get_address() const
 {
     return address;
 }
 
-std::string Controller::get_details()
+std::string Controller::get_details() const
 {
     return details;
 }

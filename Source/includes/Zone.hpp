@@ -5,32 +5,50 @@
 
 
 #include <vector>
+#include <string>
+
+#include "./json.hpp"
+
 #include "./Schedule.hpp"
 #include "./LED.hpp"
+
+using nlohmann::json;
 
 class Zone
 {
 private:
     unsigned int id;
+    std::string name;
     Schedule* schedule;
     std::vector<LED*> leds;
 
 public:
     // Constructor
-    Zone(unsigned int id);
+    Zone();
+    Zone(const Zone& z);
+
+    // Copy
+    void copy(const Zone& z);
 
     // Accessors
-    unsigned int get_id();
-    Schedule* get_schedule();
+    unsigned int get_id() const;
+    std::string get_name() const;
+    Schedule* get_schedule() const;
 
     // Mutators
     void set_id(unsigned int);
+    void set_name(std::string value);
     void set_schedule(Schedule*);
 
     // CRUD
     void add_led(LED* led);
-    std::vector<LED*> get_leds();
+    std::vector<LED*> get_leds() const;
     void delete_led(LED* led);
 };
+
+// JSON
+void to_json(json& j, const Zone& p);
+void from_json(const json& j, Zone& p);
+
 
 #endif //__ZONE_H_INCLUDED__

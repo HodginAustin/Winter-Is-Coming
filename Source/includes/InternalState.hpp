@@ -26,14 +26,15 @@ private:
     static std::vector<DailyState*> dailyStates;
 public:
     // Initialization
-    static void Initialize();
+    static bool initialize();
 
     // Accessors
-    Profile* get_current_profile();
+    static Profile* get_current_profile();
 
     // Profile CRUD
     static void add_profile(Profile* profile);
     static std::vector<Profile*> get_profiles();
+    static Profile* get_profile(unsigned int id);
     static void delete_profile(Profile* profile);
     // LED CRUD
     static void add_led(LED* led);

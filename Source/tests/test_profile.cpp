@@ -5,10 +5,14 @@
 
 bool test_profile()
 {
-    Profile* p = new Profile(9);
-    Zone* z1 = new Zone(1);
-    Zone* z2 = new Zone(2);
-    Zone* z3 = new Zone(3);
+    Profile* p = new Profile();
+    p->set_id(9);
+    Zone* z1 = new Zone();
+    z1->set_id(1);
+    Zone* z2 = new Zone();
+    z2->set_id(2);
+    Zone* z3 = new Zone();
+    z3->set_id(3);
 
     bool condTrue = true;
     bool condFalse = false;
