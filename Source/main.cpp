@@ -24,9 +24,11 @@ int main()
     p1->set_name("Test1");
     p1->set_description("Test Profile Number 1");
 
-    Schedule* s1 = new Schedule(1);
+    Schedule* s1 = new Schedule();
+    s1->set_id(1);
     
-    LED* l1 = new LED(1);
+    LED* l1 = new LED();
+    l1->set_id(1);
 
     Zone* z1 = new Zone();
     z1->set_id(1);

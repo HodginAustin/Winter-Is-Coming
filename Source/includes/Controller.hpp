@@ -16,7 +16,11 @@ private:
 
 public:
     // Constructor
-    Controller(unsigned int id);
+    Controller();
+    Controller(const Controller& c);
+
+    // Copy
+    void copy(const Controller& c);
 
     // Accessors
     unsigned int get_id() const;

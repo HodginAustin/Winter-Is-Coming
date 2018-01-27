@@ -6,8 +6,10 @@
 
 bool test_dailystate()
 {
-    DailyState* d = new DailyState(24);
-    LEDState* lds = new LEDState(1);
+    DailyState* d = new DailyState();
+    d->set_id(24);
+    LEDState* lds = new LEDState();
+    lds->set_id(1);
     std::unordered_map<unsigned int, LEDState*> time_state_map;
 
     bool condTrue = true;

@@ -2,9 +2,8 @@
 
 
 // Constructor
-Schedule::Schedule(unsigned int id)
+Schedule::Schedule()
 {
-    set_id(id);
     set_daily_state(0, 0);
     set_daily_state(1, 0);
     set_daily_state(2, 0);
@@ -12,6 +11,22 @@ Schedule::Schedule(unsigned int id)
     set_daily_state(4, 0);
     set_daily_state(5, 0);
     set_daily_state(6, 0);
+}
+Schedule::Schedule(const Schedule& s)
+{
+    copy(s);
+}
+
+// Copy
+void Schedule::copy(const Schedule& s)
+{
+    if (s.get_daily_state(0) != 0) { set_daily_state(0, s.get_daily_state(0)); }
+    if (s.get_daily_state(1) != 0) { set_daily_state(1, s.get_daily_state(1)); }
+    if (s.get_daily_state(2) != 0) { set_daily_state(2, s.get_daily_state(2)); }
+    if (s.get_daily_state(3) != 0) { set_daily_state(3, s.get_daily_state(3)); }
+    if (s.get_daily_state(4) != 0) { set_daily_state(4, s.get_daily_state(4)); }
+    if (s.get_daily_state(5) != 0) { set_daily_state(5, s.get_daily_state(5)); }
+    if (s.get_daily_state(6) != 0) { set_daily_state(6, s.get_daily_state(6)); }
 }
 
 

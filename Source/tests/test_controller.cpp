@@ -3,7 +3,8 @@
 
 bool test_controller()
 {
-    Controller* c = new Controller(1);
+    Controller* c = new Controller();
+    c->set_id(1);
 
     bool condTrue = true;
     bool condFalse = false;

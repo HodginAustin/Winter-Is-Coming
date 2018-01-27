@@ -4,9 +4,25 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 // Constructor
-DailyState::DailyState(unsigned int id)
+DailyState::DailyState() {}
+DailyState::DailyState(const DailyState& d)
 {
-    set_id(id);
+    copy(d);
+}
+
+
+// Copy
+void DailyState::copy(const DailyState& d)
+{
+    std::unordered_map<unsigned int, LEDState*> states = d.get_time_state_map();
+    if (!states.empty()) {
+        std::unordered_map<unsigned int, LEDState*>::iterator iter = states.begin();
+
+        // Iterate through all map pairs
+        while(iter != states.end()) {
+            add_state(iter->first, iter->second);
+        }
+    }
 }
 
 

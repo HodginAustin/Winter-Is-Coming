@@ -15,7 +15,11 @@ private:
 
 public:
     // Constructor
-    LED(unsigned int id);
+    LED();
+    LED(const LED& l);
+
+    // Copy
+    void copy(const LED& l);
 
     // Accessors
     unsigned int get_id() const;

@@ -15,7 +15,11 @@ private:
 
 public:
     // Constructor
-    Schedule(unsigned int id);
+    Schedule();
+    Schedule(const Schedule& s);
+
+    // Copy
+    void copy(const Schedule& s);
 
     // Accessors
     unsigned int get_id() const;

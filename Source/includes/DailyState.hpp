@@ -15,7 +15,11 @@ private:
 
 public:
     // Constructor
-    DailyState(unsigned int id);
+    DailyState();
+    DailyState(const DailyState& d);
+
+    // Copy
+    void copy(const DailyState& d);
 
     // Accessors
     unsigned int get_id() const;

@@ -14,11 +14,18 @@ Zone::Zone(const Zone& z)
 // Copy
 void Zone::copy(const Zone& z)
 {
-    set_schedule(z.get_schedule());
+    if (z.get_schedule() != 0){
+        set_schedule(z.get_schedule());
+    }
+    if (!z.get_name().empty()){
+        set_name(z.get_name());
+    }
 
     std::vector<LED*> leds = z.get_leds();
-    for (std::vector<LED*>::iterator iter = leds.begin(); iter < leds.end(); iter++){
-        add_led(*iter);
+    if (!leds.empty()) {
+        for (std::vector<LED*>::iterator iter = leds.begin(); iter < leds.end(); iter++){
+            add_led(*iter);
+        }
     }
 }
 
