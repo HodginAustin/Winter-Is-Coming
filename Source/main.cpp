@@ -30,6 +30,7 @@ int main()
 
     Zone* z1 = new Zone();
     z1->set_id(1);
+    z1->set_name("Squash");
     z1->set_schedule(s1);
     z1->add_led(l1);
 

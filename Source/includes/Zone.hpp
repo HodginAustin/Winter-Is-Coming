@@ -5,6 +5,7 @@
 
 
 #include <vector>
+#include <string>
 
 #include "./json.hpp"
 
@@ -17,6 +18,7 @@ class Zone
 {
 private:
     unsigned int id;
+    std::string name;
     Schedule* schedule;
     std::vector<LED*> leds;
 
@@ -30,10 +32,12 @@ public:
 
     // Accessors
     unsigned int get_id() const;
+    std::string get_name() const;
     Schedule* get_schedule() const;
 
     // Mutators
     void set_id(unsigned int);
+    void set_name(std::string value);
     void set_schedule(Schedule*);
 
     // CRUD

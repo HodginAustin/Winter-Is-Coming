@@ -29,6 +29,11 @@ unsigned int Zone::get_id() const
     return id;
 }
 
+std::string Zone::get_name() const
+{
+    return name;
+}
+
 Schedule* Zone::get_schedule() const
 {
     return schedule;
@@ -39,6 +44,11 @@ Schedule* Zone::get_schedule() const
 void Zone::set_id(unsigned int val)
 {
     id = val;
+}
+
+void Zone::set_name(std::string val)
+{
+    name = val;
 }
 
 void Zone::set_schedule(Schedule* newSchedule)
@@ -77,12 +87,14 @@ void to_json(json& j, const Zone& z) {
     
     j = json{
         {"id", z.get_id()},
+        {"name", z.get_name()},
         {"schedule", z.get_schedule()->get_id()},
         {"leds", leds_j}
     };
 }
 
 void from_json(const json& j, Zone& z) {
+    z.set_name(j.at("name").get<std::string>());
     //p.set_schedule(j.at("schedule").get<std::string>());
     //p.add_led(j.at("description").get<std::string>());
 }
