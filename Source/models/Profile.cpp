@@ -10,8 +10,12 @@ Profile::Profile(const Profile& p) { copy(p); }
 // Copy
 void Profile::copy(const Profile& p)
 {
-    set_name(p.get_name());
-    set_description(p.get_description());
+    if (!p.get_name().empty()) {
+        set_name(p.get_name());
+    }
+    if (!p.get_description().empty()) {
+        set_description(p.get_description());
+    }
 }
 
 
@@ -86,6 +90,10 @@ void to_json(json& j, const Profile& p) {
 }
 
 void from_json(const json& j, Profile& p) {
-    p.set_name(j.at("name").get<std::string>());
-    p.set_description(j.at("description").get<std::string>());
+    if (j.find("name") != j.end()){
+        p.set_name(j.at("name").get<std::string>());
+    }
+    if (j.find("description") != j.end()){
+        p.set_description(j.at("description").get<std::string>());
+    }
 }
