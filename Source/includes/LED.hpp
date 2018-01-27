@@ -18,9 +18,9 @@ public:
     LED(unsigned int id);
 
     // Accessors
-    unsigned int get_id();
-    unsigned int get_strip_idx();
-    Controller* get_controller();
+    unsigned int get_id() const;
+    unsigned int get_strip_idx() const;
+    Controller* get_controller() const;
 
     // Mutators
     void set_id(unsigned int);

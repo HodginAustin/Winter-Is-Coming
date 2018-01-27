@@ -16,12 +16,12 @@ Schedule::Schedule(unsigned int id)
 
 
 // Accessors
-unsigned int Schedule::get_id()
+unsigned int Schedule::get_id() const
 {
     return id;
 }
 
-DailyState* Schedule::get_daily_state(unsigned int day)
+DailyState* Schedule::get_daily_state(unsigned int day) const
 {
     if (day < 0 || day > 6) { return 0; }
 
@@ -34,7 +34,7 @@ LEDState* get_led_state_from_daily_state(unsigned int time, DailyState* ds)
     return ds->get_led_state(time);
 }
 
-LEDState* Schedule::get_active_state(unsigned int time, int day)
+LEDState* Schedule::get_active_state(unsigned int time, int day) const
 {
     if (day < 0 || day > 6) { return 0; }
     if (time < 0 || time > 24*60*60) { return 0; }

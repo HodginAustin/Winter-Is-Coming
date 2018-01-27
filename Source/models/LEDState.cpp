@@ -9,22 +9,22 @@ LEDState::LEDState(unsigned int id)
 
 
 // Accessors
-unsigned int LEDState::get_id()
+unsigned int LEDState::get_id() const
 {
     return id;
 }
 
-int LEDState::get_color()
+int LEDState::get_color() const
 {
     return color;
 }
 
-float LEDState::get_intensity()
+float LEDState::get_intensity() const
 {
     return intensity;
 }
 
-bool LEDState::get_power()
+bool LEDState::get_power() const
 {
     return power;
 }

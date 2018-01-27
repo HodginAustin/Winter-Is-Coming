@@ -19,10 +19,10 @@ public:
     Controller(unsigned int id);
 
     // Accessors
-    unsigned int get_id();
-    unsigned int get_io();
-    std::string get_address();
-    std::string get_details();
+    unsigned int get_id() const;
+    unsigned int get_io() const;
+    std::string get_address() const;
+    std::string get_details() const;
 
     // Mutators
     void set_id(unsigned int);

@@ -8,22 +8,22 @@ Controller::Controller(unsigned int id)
 }
 
 // Accessors
-unsigned int Controller::get_id()
+unsigned int Controller::get_id() const
 {
     return id;
 }
 
-unsigned int Controller::get_io()
+unsigned int Controller::get_io() const
 {
     return io;
 }
 
-std::string Controller::get_address()
+std::string Controller::get_address() const
 {
     return address;
 }
 
-std::string Controller::get_details()
+std::string Controller::get_details() const
 {
     return details;
 }

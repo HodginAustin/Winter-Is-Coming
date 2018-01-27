@@ -11,12 +11,12 @@ DailyState::DailyState(unsigned int id)
 
 
 // Accessors
-unsigned int DailyState::get_id()
+unsigned int DailyState::get_id() const
 {
     return id;
 }
 
-std::unordered_map<unsigned int, LEDState*> DailyState::get_time_state_map()
+std::unordered_map<unsigned int, LEDState*> DailyState::get_time_state_map() const
 {
     return timeStatePairs;
 }
@@ -40,7 +40,7 @@ bool DailyState::add_state(unsigned int time, LEDState* state)
     }
 }
 
-std::unordered_map<unsigned int, LEDState*> DailyState::get_led_states()
+std::unordered_map<unsigned int, LEDState*> DailyState::get_led_states() const
 {
     return timeStatePairs;
 }
@@ -82,7 +82,7 @@ bool DailyState::delete_state(unsigned int time)
     return timeStatePairs.count(time) == 0;
 }
 
-int DailyState::get_time_state_count()
+int DailyState::get_time_state_count() const
 {
     return timeStatePairs.size();
 }

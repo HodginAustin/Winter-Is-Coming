@@ -9,17 +9,17 @@ LED::LED(unsigned int id)
 
 
 // Accessors
-unsigned int LED::get_id()
+unsigned int LED::get_id() const
 {
     return id;
 }
 
-unsigned int LED::get_strip_idx()
+unsigned int LED::get_strip_idx() const
 {
     return strip_idx;
 }
 
-Controller* LED::get_controller()
+Controller* LED::get_controller() const
 {
     return controller;
 }

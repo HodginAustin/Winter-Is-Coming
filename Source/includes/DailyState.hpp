@@ -18,18 +18,18 @@ public:
     DailyState(unsigned int id);
 
     // Accessors
-    unsigned int get_id();
-    std::unordered_map<unsigned int, LEDState*> get_time_state_map();
+    unsigned int get_id() const;
+    std::unordered_map<unsigned int, LEDState*> get_time_state_map() const;
 
     // Mutators
     void set_id(unsigned int);
 
     // CRUD
     bool add_state(unsigned int time, LEDState* state);
-    std::unordered_map<unsigned int, LEDState*> get_led_states();
+    std::unordered_map<unsigned int, LEDState*> get_led_states() const;
     LEDState* get_led_state(unsigned int time);
     bool delete_state(unsigned int time);
-    int get_time_state_count();
+    int get_time_state_count() const;
 };
 
 #endif //__DAILYSTATE_H_INCLUDED__

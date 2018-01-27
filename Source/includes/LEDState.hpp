@@ -17,10 +17,10 @@ public:
     LEDState(unsigned int id);
 
     // Accessors
-    unsigned int get_id();
-    int get_color();
-    float get_intensity();
-    bool get_power();
+    unsigned int get_id() const;
+    int get_color() const;
+    float get_intensity() const;
+    bool get_power() const;
 
     // Mutators
     void set_id(unsigned int);
