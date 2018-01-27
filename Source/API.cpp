@@ -15,17 +15,14 @@ using namespace Pistache; // REST API
 using json = nlohmann::json; // Json
 
 // Required for static class members
-API* instance;
 std::shared_ptr<Http::Endpoint> httpEndpoint;
 Rest::Router router;
 
 
 API::API(Address addr) : httpEndpoint(std::make_shared<Http::Endpoint>(addr)) {}
 
-bool API::initialize(Address addr, size_t thr = 2)
+bool API::initialize(size_t thr = 2)
 {
-    instance = new API(addr); // Singleton instance
-
     auto opts = Http::Endpoint::options()
                 .threads(thr)
                 .flags(Tcp::Options::InstallSignalHandler);
@@ -44,9 +41,6 @@ void API::start()
     
     std::cout << "Shutting down" << std::endl;
     httpEndpoint->shutdown();
-
-    // Cleanup
-    free(instance);
 }
 
 void API::shutdown()
