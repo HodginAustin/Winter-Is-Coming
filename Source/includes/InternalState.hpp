@@ -29,7 +29,7 @@ public:
     static bool initialize();
 
     // Accessors
-    Profile* get_current_profile();
+    static Profile* get_current_profile();
 
     // Profile CRUD
     static void add_profile(Profile* profile);

@@ -45,18 +45,16 @@ int main()
     Port port(9080);
     Address addr(Ipv4::any(), port);
     int threads = 2;
-    API* api = new API(addr);
 
     std::cout << "Initalizing API...";
-    if (api->initialize(threads)) { std::cout << "done" << std::endl; }
+    if (API::initialize(addr, threads)) { std::cout << "done" << std::endl; }
     else { std::cout << "failed" << std::endl; return 0; }
 
     // Start listening
     std::cout << "Started listening on port " << port << std::endl;
-    api->start();
+    API::start();
 
     // Cleanup
-    free(api);
 
     return 0;
 }
