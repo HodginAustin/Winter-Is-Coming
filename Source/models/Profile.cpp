@@ -64,6 +64,14 @@ std::vector<Zone*> Profile::get_zones() const
     return zones;
 }
 
+Zone* Profile::get_zone(unsigned int id) const
+{
+    for (auto zone : zones) {
+        if (zone->get_id() == id){ return zone; }
+    }
+    return 0;
+}
+
 void Profile::delete_zone(Zone* zone)
 {
     zones.erase(std::remove(zones.begin(), zones.end(), zone), zones.end());

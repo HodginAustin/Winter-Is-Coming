@@ -42,6 +42,7 @@ public:
     // CRUD
     void add_zone(Zone* newZone);
     std::vector<Zone*> get_zones() const;
+    Zone* get_zone(unsigned int id) const;
     void delete_zone(Zone* zone);
 
 };
