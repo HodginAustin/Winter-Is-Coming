@@ -32,7 +32,7 @@ public:
     static Profile* get_current_profile();
 
     // Mutators
-    void set_current_profile(Profile* p);
+    static void set_current_profile(Profile* p);
 
     // Profile CRUD
     static void add_profile(Profile* profile);

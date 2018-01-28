@@ -96,10 +96,10 @@ void to_json(json& j, const Profile& p) {
 }
 
 void from_json(const json& j, Profile& p) {
-    if (j.find("name") != j.end()){
+    if (j.find("name") != j.end()) {
         p.set_name(j.at("name").get<std::string>());
     }
-    if (j.find("description") != j.end()){
+    if (j.find("description") != j.end()) {
         p.set_description(j.at("description").get<std::string>());
     }
 }

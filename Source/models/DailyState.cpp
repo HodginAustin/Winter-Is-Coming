@@ -127,13 +127,12 @@ void to_json(json& j, const DailyState& ds)
 
 void from_json(const json& j, DailyState& ds)
 {
-    if (j.find("timeStateMap") != j.end()){
+    if (j.find("timeStateMap") != j.end()) {
         json tsm_j = j.at("timeStateMap").get<json>();
         for (auto& element : tsm_j) {
             json ts_j = element;
             LEDState* ls = InternalState::get_led_state(ts_j["state"]);
             ds.add_state(ts_j["time"], ls);
         }
-
     }
 }

@@ -87,9 +87,7 @@ void to_json(json& j, const Zone& z) {
     json leds_j = json::array(); // Empty JSON array []
     std::vector<LED*> leds = z.get_leds();
     for (auto led : leds) {
-        json led_j;
-        led_j["id"] = led->get_id();
-        leds_j.push_back(led_j);
+        leds_j.push_back(led->get_id());
     }
     
     j = json{
