@@ -64,6 +64,7 @@ void API::setup_routes()
     Routes::Get(router, "profiles/:id", Routes::bind(&API::get_profile, this));
     Routes::Get(router, "profiles/:id/zones", Routes::bind(&API::get_profile_zones, this));
     Routes::Get(router, "current_profile", Routes::bind(&API::get_current_profile, this));
+    Routes::Post(router, "current_profile/:id", Routes::bind(&API::post_current_profile, this));
     Routes::Post(router, "profiles/add", Routes::bind(&API::post_profile, this));
     Routes::Post(router, "profiles/:id/zones/add", Routes::bind(&API::post_profile_zone, this));
     Routes::Patch(router, "profiles/:id/edit", Routes::bind(&API::patch_profile, this));
@@ -190,8 +191,8 @@ void API::get_profiles(REQUEST, RESPONSE)
     // Build JSON from profiles vector
     json j = json::array(); // Empty JSON array []
     std::vector<Profile*> profiles = InternalState::get_profiles();
-    for (std::vector<Profile*>::iterator iter = profiles.begin(); iter < profiles.end(); iter++){
-        j.push_back(*(*iter));
+    for (auto profile : profiles) {
+        j.push_back(*profile);
     }
 
     // Send response
@@ -231,8 +232,8 @@ void API::get_profile_zones(REQUEST, RESPONSE)
     json j = json::array(); // Empty JSON array []
     if (profile != 0) {
         std::vector<Zone*> zones = profile->get_zones();
-        for (std::vector<Zone*>::iterator iter = zones.begin(); iter < zones.end(); iter++){
-            j.push_back(*(*iter));
+        for (auto zone : zones) {
+            j.push_back(*zone);
         }
     }
    
@@ -245,7 +246,39 @@ void API::get_current_profile(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
-    response.send(Http::Code::Ok, "Error: not Implemented");
+    
+    // Data
+    Profile* profile = InternalState::get_current_profile();
+
+    // Build JSON
+    json j;
+    if (profile != 0){ j = *profile; }
+    Http::Code code = (profile != 0 ? Http::Code::Ok : Http::Code::Not_Found);
+    
+    // Send response
+    response.send(code, j.dump());
+}
+void API::post_current_profile(REQUEST, RESPONSE)
+{
+    // Log request
+    log_req(request);
+
+    // Parameters
+    auto id = request.param(":id").as<unsigned int>();
+
+    // Data
+    Profile* profile = InternalState::get_profile(id);
+    
+    // Build JSON
+    json j; 
+    if (profile != 0) {
+        InternalState::set_current_profile(profile);
+        j = *profile;
+    }
+    Http::Code code = (profile != 0 ? Http::Code::Ok : Http::Code::Not_Found);
+    
+    // Send response
+    response.send(code, j.dump());
 }
 void API::post_profile(REQUEST, RESPONSE)
 {
@@ -257,13 +290,12 @@ void API::post_profile(REQUEST, RESPONSE)
 
     // Data
     Profile p = j_in;
-    p.set_id(DataParser::next_profile_id());
     Profile* profile = new Profile(p);
-    profile->set_id(p.get_id());
+    profile->set_id(DataParser::next_profile_id());
     InternalState::add_profile(profile);
     
     // Build response
-    json j_out = json{{"id", p.get_id()}};
+    json j_out = json{{"id", profile->get_id()}};
 
     // Send response
     response.send(Http::Code::Ok, j_out.dump());
@@ -272,7 +304,37 @@ void API::post_profile_zone(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
-    response.send(Http::Code::Ok, "Error: not Implemented");
+
+    // Parameters
+    auto id = request.param(":id").as<unsigned int>();
+
+    // Data
+    Profile* profile = InternalState::get_profile(id);
+
+    // Response JSON
+    json j_out;
+
+    if (profile)
+    {
+        // Decode JSON
+        json j_in = json::parse(request.body());
+
+        // Data
+        Zone z = j_in;
+        Schedule* s = new Schedule();
+        s->set_id(DataParser::next_schedule_id());
+        z.set_schedule(s);
+        Zone* zone = new Zone(z);
+        zone->set_id(DataParser::next_zone_id());
+        profile->add_zone(zone);
+
+        // Build response
+        j_out = json{{"id", zone->get_id()}};
+    }
+    Http::Code code = (profile != 0 ? Http::Code::Ok : Http::Code::Not_Found);
+
+    // Send response
+    response.send(code, j_out.dump());
 }
 void API::patch_profile(REQUEST, RESPONSE)
 {
@@ -304,7 +366,27 @@ void API::delete_profile_zone(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
-    response.send(Http::Code::Ok, "Error: not Implemented");
+
+    // Parameters
+    auto profile_id = request.param(":profile_id").as<unsigned int>();
+    auto zone_id = request.param(":zone_id").as<unsigned int>();
+
+    // Data
+    Profile* profile = InternalState::get_profile(profile_id);
+    Http::Code code = Http::Code::Not_Found;
+
+    if (profile) {
+        Zone* zone = profile->get_zone(zone_id);
+
+        if (zone) {
+            profile->delete_zone(zone);
+            free(zone);
+            code = Http::Code::Ok;
+        }
+    }
+
+    // Send response
+    response.send(code, "");
 }
 void API::delete_profile(REQUEST, RESPONSE)
 {
@@ -315,11 +397,15 @@ void API::delete_profile(REQUEST, RESPONSE)
     auto id = request.param(":id").as<unsigned int>();
 
     // Data
-    Profile* p = InternalState::get_profile(id);
-    InternalState::delete_profile(p);
+    Profile* profile = InternalState::get_profile(id);
+    Http::Code code = (profile != 0 ? Http::Code::Ok : Http::Code::Not_Found);
+    InternalState::delete_profile(profile);
+
+    // Memory
+    free(profile);
 
     // Send response
-    response.send(Http::Code::Ok, "");
+    response.send(code, "");
 }
 
 // Zone routes
@@ -501,9 +587,8 @@ void API::get_daily_states(REQUEST, RESPONSE)
     // Build JSON from profiles vector
     json j = json::array(); // Empty JSON array []
     std::vector<DailyState*> dailyStates = InternalState::get_daily_states();
-    for (std::vector<DailyState*>::iterator iter = dailyStates.begin();
-         iter < dailyStates.end(); iter++){
-        j.push_back(*(*iter));
+    for (auto dailyState : dailyStates) {
+        j.push_back(*dailyState);
     }
 
     // Send response
