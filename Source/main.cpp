@@ -25,13 +25,13 @@ int main()
     p1->set_description("Test Profile Number 1");
 
     Schedule* s1 = new Schedule();
-    s1->set_id(1);
+    s1->set_id(DataParser::next_schedule_id());
     
     LED* l1 = new LED();
-    l1->set_id(1);
+    l1->set_id(DataParser::next_led_id());
 
     Zone* z1 = new Zone();
-    z1->set_id(1);
+    z1->set_id(DataParser::next_zone_id());
     z1->set_name("Squash");
     z1->set_schedule(s1);
     z1->add_led(l1);
@@ -39,6 +39,7 @@ int main()
     p1->add_zone(z1);
 
     InternalState::add_profile(p1);
+    InternalState::set_current_profile(p1);
 
     LEDState* ls1 = new LEDState();
     ls1->set_id(DataParser::next_led_state_id());
