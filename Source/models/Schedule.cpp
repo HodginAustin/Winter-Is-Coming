@@ -94,3 +94,21 @@ void Schedule::set_daily_state(unsigned int day, DailyState* state)
 
     weeklyState[day] = state;
 }
+
+
+// JSON
+void to_json(json& j, const Schedule& s) {
+    // Build JSON for all 7 days
+    json days_j = json::array(); // Empty JSON array []
+    for (int i = 0; i < 7; i++){
+        DailyState* day = s.get_daily_state(i);
+        json day_j;
+        day_j["id"] = day->get_id();
+        days_j.push_back(day_j);
+    }
+    
+    j = json{
+        {"id", s.get_id()},
+        {"days", days_j}
+    };
+}

@@ -6,6 +6,10 @@
 
 #include <string>
 
+#include "./json.hpp"
+
+using nlohmann::json;
+
 class Controller
 {
 private:
@@ -34,5 +38,10 @@ public:
     void set_address(std::string);
     void set_details(std::string);
 };
+
+// JSON
+void to_json(json& j, const Controller& c);
+void from_json(const json& j, Controller& c);
+
 
 #endif //__CONTROLLER_H_INCLUDED__

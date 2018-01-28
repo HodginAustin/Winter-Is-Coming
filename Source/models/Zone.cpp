@@ -101,7 +101,7 @@ void to_json(json& j, const Zone& z) {
 }
 
 void from_json(const json& j, Zone& z) {
-    z.set_name(j.at("name").get<std::string>());
-    //p.set_schedule(j.at("schedule").get<std::string>());
-    //p.add_led(j.at("description").get<std::string>());
+    if (j.find("name") != j.end()){
+        z.set_name(j.at("name").get<std::string>());
+    }
 }

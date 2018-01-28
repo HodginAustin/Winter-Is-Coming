@@ -3,9 +3,12 @@
 #define __DAILYSTATE_H_INCLUDED__
 //=================================
 
+#include "./json.hpp"
 
 #include <unordered_map>
 #include "./LEDState.hpp"
+
+using nlohmann::json;
 
 class DailyState
 {
@@ -35,5 +38,10 @@ public:
     bool delete_state(unsigned int time);
     int get_time_state_count() const;
 };
+
+// JSON
+void to_json(json& j, const DailyState& ds);
+void from_json(const json& j, DailyState& ds);
+
 
 #endif //__DAILYSTATE_H_INCLUDED__

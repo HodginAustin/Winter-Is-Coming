@@ -3,6 +3,9 @@
 #define __LEDSTATE_H_INCLUDED__
 //=================================
 
+#include "./json.hpp"
+
+using nlohmann::json;
 
 class LEDState
 {
@@ -34,5 +37,10 @@ public:
     void set_intensity(float);
     void set_power(bool);
 };
+
+// JSON
+void to_json(json& j, const LEDState& ls);
+void from_json(const json& j, LEDState& ls);
+
 
 #endif //__CONTROLLER_H_INCLUDED__
