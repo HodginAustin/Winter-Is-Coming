@@ -67,3 +67,26 @@ void Controller::set_details(std::string val)
 {
     details = val;
 }
+
+
+// JSON
+void to_json(json& j, const Controller& c) {    
+    j = json{
+        {"id", c.get_id()},
+        {"io", c.get_io()},
+        {"address", c.get_address()},
+        {"details", c.get_details()}
+    };
+}
+
+void from_json(const json& j, Controller& c) {
+    if (j.find("io") != j.end()){
+        c.set_io(j.at("io").get<unsigned int>());
+    }
+    if (j.find("address") != j.end()){
+        c.set_address(j.at("address").get<std::string>());
+    }
+    if (j.find("details") != j.end()){
+        c.set_details(j.at("details").get<std::string>());
+    }
+}

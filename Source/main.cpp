@@ -40,6 +40,19 @@ int main()
 
     InternalState::add_profile(p1);
 
+    LEDState* ls1 = new LEDState();
+    ls1->set_id(DataParser::next_led_state_id());
+    LEDState* ls2 = new LEDState();
+    ls2->set_id(DataParser::next_led_state_id());
+    InternalState::add_led_state(ls1);
+    InternalState::add_led_state(ls2);
+
+    DailyState* ds1 = new DailyState();
+    ds1->set_id(DataParser::next_daily_state_id());
+    //ds1->add_state(8000, ls1);
+    //ds1->add_state(9000, ls2);
+
+    InternalState::add_daily_state(ds1);
 
     // LED control system
 

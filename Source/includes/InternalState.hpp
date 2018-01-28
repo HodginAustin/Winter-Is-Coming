@@ -39,18 +39,22 @@ public:
     // LED CRUD
     static void add_led(LED* led);
     static std::vector<LED*> get_leds();
+    static LED* get_led(unsigned int id);
     static void delete_led(LED* led);
     // Controller CRUD
     static void add_controller(Controller* controller);
     static std::vector<Controller*> get_controllers();
+    static Controller* get_controller(unsigned int id);
     static void delete_controller(Controller* controller);
     // LEDState CRUD
     static void add_led_state(LEDState* ledState);
     static std::vector<LEDState*> get_led_states();
+    static LEDState* get_led_state(unsigned int id);
     static void delete_led_state(LEDState* ledState);
     // DailyState CRUD
     static void add_daily_state(DailyState* dailyState);
     static std::vector<DailyState*> get_daily_states();
+    static DailyState* get_daily_state(unsigned int id);
     static void delete_daily_state(DailyState* dailyState);
 };
 

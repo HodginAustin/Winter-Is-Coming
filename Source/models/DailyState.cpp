@@ -1,5 +1,6 @@
 #include <iterator>
 #include "../includes/DailyState.hpp"
+#include "../includes/InternalState.hpp"
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
@@ -16,11 +17,11 @@ void DailyState::copy(const DailyState& d)
 {
     std::unordered_map<unsigned int, LEDState*> states = d.get_time_state_map();
     if (!states.empty()) {
-        std::unordered_map<unsigned int, LEDState*>::iterator iter = states.begin();
-
         // Iterate through all map pairs
-        while(iter != states.end()) {
-            add_state(iter->first, iter->second);
+        for (auto& element : states) {
+            unsigned int t = element.first;
+            LEDState* s = element.second;
+            add_state(t, s);
         }
     }
 }
@@ -68,19 +69,14 @@ LEDState* DailyState::get_led_state(unsigned int time)
 
     // First check if no time<->state pairs exist
     if (timeStatePairs.count(time) == 0) {
-        std::unordered_map<unsigned int, LEDState*>::iterator iter = timeStatePairs.begin();
-
-        // Iterate through all map pairs
-        while(iter != timeStatePairs.end()) {
-            unsigned int t = iter->first;
+        for (auto& element : timeStatePairs) {
+            unsigned int t = element.first;
 
             // Only check times greater than or equal to the given time
             if (time >= t) {
                 // Find the greatest of the times listed for this day
                 nearest_time = MAX(t, nearest_time);
             }
-
-            iter++;
         }        
     } else {
         nearest_time = time;
@@ -101,4 +97,43 @@ bool DailyState::delete_state(unsigned int time)
 int DailyState::get_time_state_count() const
 {
     return timeStatePairs.size();
+}
+
+
+// JSON
+void to_json(json& j, const DailyState& ds)
+{
+    // Build JSON from timeState map
+    json tsm_j = json::array(); // Empty JSON array []
+    std::unordered_map<unsigned int, LEDState*> timeStateMap = ds.get_time_state_map();
+
+    // Iterate through all map pairs
+    for (auto& element : timeStateMap) {
+        unsigned int t = element.first;
+        LEDState* s = element.second;
+
+        json ts_j = json{
+            {"time", t},
+            {"state", s->get_id()}
+        };
+        tsm_j.push_back(ts_j);
+    }
+
+    j = json{
+        {"id", ds.get_id()},
+        {"timeStateMap", tsm_j},
+    };
+}
+
+void from_json(const json& j, DailyState& ds)
+{
+    if (j.find("timeStateMap") != j.end()){
+        json tsm_j = j.at("timeStateMap").get<json>();
+        for (auto& element : tsm_j) {
+            json ts_j = element;
+            LEDState* ls = InternalState::get_led_state(ts_j["state"]);
+            ds.add_state(ts_j["time"], ls);
+        }
+
+    }
 }

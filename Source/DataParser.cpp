@@ -15,7 +15,7 @@ unsigned int DataParser::controller_id;
 // Initialization
 bool DataParser::initialize()
 {
-    profile_id = 1;
+    profile_id = zone_id = schedule_id = led_id = led_state_id = daily_state_id = controller_id = 1;
     return true;
 }
 

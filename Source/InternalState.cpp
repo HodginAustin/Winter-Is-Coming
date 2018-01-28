@@ -68,6 +68,16 @@ std::vector<LED*> InternalState::get_leds()
     return leds;
 }
 
+LED* InternalState::get_led(unsigned int id)
+{
+    std::vector<LED*>::iterator iter;
+    for ( iter = InternalState::leds.begin(); iter < InternalState::leds.end(); ++iter )
+    {
+        if ((*iter)->get_id() == id){ return *iter; }
+    }
+    return 0;
+}
+
 void InternalState::delete_led(LED* led)
 {
     leds.erase(
@@ -84,6 +94,17 @@ void InternalState::add_controller(Controller* controller)
 std::vector<Controller*> InternalState::get_controllers()
 {
     return controllers;
+}
+
+Controller* InternalState::get_controller(unsigned int id)
+{
+    std::vector<Controller*>::iterator iter;
+    for ( iter = InternalState::controllers.begin();
+          iter < InternalState::controllers.end(); ++iter )
+    {
+        if ((*iter)->get_id() == id){ return *iter; }
+    }
+    return 0;
 }
 
 void InternalState::delete_controller(Controller* controller)
@@ -104,6 +125,17 @@ std::vector<LEDState*> InternalState::get_led_states()
     return ledStates;
 }
 
+LEDState* InternalState::get_led_state(unsigned int id)
+{
+    std::vector<LEDState*>::iterator iter;
+    for ( iter = InternalState::ledStates.begin();
+          iter < InternalState::ledStates.end(); ++iter )
+    {
+        if ((*iter)->get_id() == id){ return *iter; }
+    }
+    return 0;
+}
+
 void InternalState::delete_led_state(LEDState* ledState)
 {
     ledStates.erase(
@@ -120,6 +152,17 @@ void InternalState::add_daily_state(DailyState* dailyState)
 std::vector<DailyState*> InternalState::get_daily_states()
 {
     return dailyStates;
+}
+
+DailyState* InternalState::get_daily_state(unsigned int id)
+{
+    std::vector<DailyState*>::iterator iter;
+    for ( iter = InternalState::dailyStates.begin();
+          iter < InternalState::dailyStates.end(); ++iter )
+    {
+        if ((*iter)->get_id() == id){ return *iter; }
+    }
+    return 0;
 }
 
 void InternalState::delete_daily_state(DailyState* dailyState)

@@ -493,7 +493,21 @@ void API::get_daily_states(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
-    response.send(Http::Code::Ok, "Error: not Implemented");
+
+    // Json response MIME
+    response.headers()
+            .add<Http::Header::ContentType>(MIME(Application, Json));
+    
+    // Build JSON from profiles vector
+    json j = json::array(); // Empty JSON array []
+    std::vector<DailyState*> dailyStates = InternalState::get_daily_states();
+    for (std::vector<DailyState*>::iterator iter = dailyStates.begin();
+         iter < dailyStates.end(); iter++){
+        j.push_back(*(*iter));
+    }
+
+    // Send response
+    response.send(Http::Code::Ok, j.dump());
 }
 void API::get_daily_state(REQUEST, RESPONSE)
 {
@@ -517,7 +531,22 @@ void API::post_daily_state(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
-    response.send(Http::Code::Ok, "Error: not Implemented");
+
+    // Decode JSON
+    json j_in = json::parse(request.body());
+
+    // Data
+    DailyState ds = j_in;
+    ds.set_id(DataParser::next_daily_state_id());
+    DailyState* dailyState = new DailyState(ds);
+    dailyState->set_id(ds.get_id());
+    InternalState::add_daily_state(dailyState);
+    
+    // Build response
+    json j_out = json{{"id", ds.get_id()}};
+
+    // Send response
+    response.send(Http::Code::Ok, j_out.dump());
 }
 void API::patch_daily_state(REQUEST, RESPONSE)
 {
