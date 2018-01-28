@@ -29,6 +29,13 @@ Profile* InternalState::get_current_profile()
 }
 
 
+// Mutators
+void InternalState::set_current_profile(Profile* p)
+{
+    currentProfile = p;
+}
+
+
 // Profile CRUD
 void InternalState::add_profile(Profile* profile)
 {
@@ -42,10 +49,8 @@ std::vector<Profile*> InternalState::get_profiles()
 
 Profile* InternalState::get_profile(unsigned int id)
 {
-    std::vector<Profile*>::iterator iter;
-    for ( iter = InternalState::profiles.begin(); iter < InternalState::profiles.end(); ++iter )
-    {
-        if ((*iter)->get_id() == id){ return *iter; }
+    for (auto profile : profiles) {
+        if (profile->get_id() == id){ return profile; }
     }
     return 0;
 }
@@ -70,10 +75,8 @@ std::vector<LED*> InternalState::get_leds()
 
 LED* InternalState::get_led(unsigned int id)
 {
-    std::vector<LED*>::iterator iter;
-    for ( iter = InternalState::leds.begin(); iter < InternalState::leds.end(); ++iter )
-    {
-        if ((*iter)->get_id() == id){ return *iter; }
+    for (auto led : leds) {
+        if (led->get_id() == id){ return led; }
     }
     return 0;
 }
@@ -98,11 +101,8 @@ std::vector<Controller*> InternalState::get_controllers()
 
 Controller* InternalState::get_controller(unsigned int id)
 {
-    std::vector<Controller*>::iterator iter;
-    for ( iter = InternalState::controllers.begin();
-          iter < InternalState::controllers.end(); ++iter )
-    {
-        if ((*iter)->get_id() == id){ return *iter; }
+    for (auto controller : controllers) {
+        if (controller->get_id() == id){ return controller; }
     }
     return 0;
 }
@@ -127,11 +127,8 @@ std::vector<LEDState*> InternalState::get_led_states()
 
 LEDState* InternalState::get_led_state(unsigned int id)
 {
-    std::vector<LEDState*>::iterator iter;
-    for ( iter = InternalState::ledStates.begin();
-          iter < InternalState::ledStates.end(); ++iter )
-    {
-        if ((*iter)->get_id() == id){ return *iter; }
+    for (auto ledState : ledStates) {
+        if (ledState->get_id() == id){ return ledState; }
     }
     return 0;
 }
@@ -156,11 +153,8 @@ std::vector<DailyState*> InternalState::get_daily_states()
 
 DailyState* InternalState::get_daily_state(unsigned int id)
 {
-    std::vector<DailyState*>::iterator iter;
-    for ( iter = InternalState::dailyStates.begin();
-          iter < InternalState::dailyStates.end(); ++iter )
-    {
-        if ((*iter)->get_id() == id){ return *iter; }
+    for (auto dailyState : dailyStates) {
+        if (dailyState->get_id() == id){ return dailyState; }
     }
     return 0;
 }
