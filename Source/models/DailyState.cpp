@@ -68,7 +68,7 @@ LEDState* DailyState::get_led_state(unsigned int time_of_day)
     unsigned int nearest_time = 0;
 
     // First check if no time<->state pairs exist
-    if (timeStatePairs.count(time_of_day) == 0) {
+    if (timeStatePairs.count(time_of_day) != 0) {
         for (auto& element : timeStatePairs) {
             unsigned int t = element.first;
 

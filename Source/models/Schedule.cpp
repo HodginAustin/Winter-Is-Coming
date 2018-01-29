@@ -39,20 +39,21 @@ DailyState* Schedule::get_daily_state(unsigned int day) const
 
 LEDState* get_led_state_from_daily_state(unsigned int time, DailyState* ds)
 {
-    if (ds == 0) { return 0; }
+    if (!ds) { return 0; }
     return ds->get_led_state(time);
 }
 
-LEDState* Schedule::get_active_state(unsigned int time, int day) const
+LEDState* Schedule::get_active_state(unsigned int time_of_day, int day) const
 {
     if (day < 0 || day > 6) { return 0; }
-    if (time < 0 || time > 24*60*60) { return 0; }
+    if (time_of_day > 24*60*60) { return 0; }
 
     int dayToCheck = day;
-    unsigned int timeToCheck = time;
+    unsigned int timeToCheck = time_of_day;
 
     // Try to get closest active state initially
     DailyState* ds = weeklyState.at(dayToCheck);
+
     LEDState* ls = get_led_state_from_daily_state(timeToCheck, ds);
 
     // If the initial day does not exist or it has no daily states
@@ -84,7 +85,7 @@ void Schedule::set_id(unsigned int val)
 
 void Schedule::set_daily_state(unsigned int day, DailyState* state)
 {
-    if (day < 0 || day > 6 || state == 0) { return; }
+    if (day < 0 || day > 6) { return; }
 
     weeklyState[day] = state;
 }
