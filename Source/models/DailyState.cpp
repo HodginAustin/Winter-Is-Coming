@@ -96,6 +96,11 @@ int DailyState::get_time_state_count() const
     return timeStatePairs.size();
 }
 
+void DailyState::clear_led_states()
+{
+    timeStatePairs.clear();
+}
+
 
 // JSON
 void to_json(json& j, const DailyState& ds)
@@ -125,6 +130,9 @@ void to_json(json& j, const DailyState& ds)
 void from_json(const json& j, DailyState& ds)
 {
     if (j.find("timeStateMap") != j.end()) {
+        // Clear old map
+        ds.clear_led_states();
+
         json tsm_j = j.at("timeStateMap").get<json>();
         for (auto& element : tsm_j) {
             json ts_j = element;
