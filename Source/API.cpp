@@ -321,10 +321,10 @@ void API::post_profile_zone(REQUEST, RESPONSE)
 
         // Data
         Zone z = j_in;
+        Zone* zone = new Zone(z);
         Schedule* s = new Schedule();
         s->set_id(DataParser::next_schedule_id());
-        z.set_schedule(s);
-        Zone* zone = new Zone(z);
+        zone->set_schedule(s);
         zone->set_id(DataParser::next_zone_id());
         profile->add_zone(zone);
 
@@ -437,7 +437,7 @@ void API::get_zone(REQUEST, RESPONSE)
 }
 void API::get_zone_schedule(REQUEST, RESPONSE)
 {
-  // Log request
+    // Log request
     log_req(request);
     
     // Parameters
@@ -451,11 +451,12 @@ void API::get_zone_schedule(REQUEST, RESPONSE)
 
     if (profile) {
         Zone* zone = profile->get_zone(zone_id);
-        Schedule* schedule = zone->get_schedule();
-
-        if (zone && schedule) {
-            j_out = *schedule;         
-            code = Http::Code::Ok;
+        if (zone) {
+            Schedule* schedule = zone->get_schedule();
+            if (schedule) {
+                j_out = *schedule;         
+                code = Http::Code::Ok;
+            }
         }
     }
 
@@ -486,7 +487,35 @@ void API::get_schedule_active_led_state(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
-    response.send(Http::Code::Ok, "Error: not Implemented");
+    
+    // Parameters
+    auto profile_id = request.param(":profile_id").as<unsigned int>();
+    auto zone_id = request.param(":zone_id").as<unsigned int>();
+
+    // Data
+    Profile* profile = InternalState::get_profile(profile_id);
+    Http::Code code = Http::Code::Not_Found;
+    json j_out;
+
+    if (profile) {
+        Zone* zone = profile->get_zone(zone_id);
+        if (zone) {
+            Schedule* schedule = zone->get_schedule();
+            if (schedule) {
+                // Get time and day
+                unsigned int time_of_day = 0;
+                int day = 0;
+                LEDState* l = schedule->get_active_state(time_of_day, day);
+                if (l) {
+                    j_out = *l;
+                    code = Http::Code::Ok;
+                }
+            }
+        }
+    }
+
+    // Send response
+    response.send(code, j_out.dump());
 }
 void API::put_schedule_daily_state(REQUEST, RESPONSE)
 {

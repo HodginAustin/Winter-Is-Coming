@@ -54,6 +54,7 @@ int main()
     //ds1->add_state(9000, ls2);
 
     InternalState::add_daily_state(ds1);
+    s1->set_daily_state(0, ds1);
 
     // LED control system
 

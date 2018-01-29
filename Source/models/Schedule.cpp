@@ -52,7 +52,7 @@ LEDState* Schedule::get_active_state(unsigned int time, int day) const
     unsigned int timeToCheck = time;
 
     // Try to get closest active state initially
-    DailyState* ds = weeklyState[dayToCheck];
+    DailyState* ds = weeklyState.at(dayToCheck);
     LEDState* ls = get_led_state_from_daily_state(timeToCheck, ds);
 
     // If the initial day does not exist or it has no daily states
@@ -67,7 +67,7 @@ LEDState* Schedule::get_active_state(unsigned int time, int day) const
         if (dayToCheck == day) { return 0; }
 
         // Get the previous day of the week
-        ds = weeklyState[dayToCheck];
+        ds = weeklyState.at(dayToCheck);
         // Try to get the latest LED state
         ls = get_led_state_from_daily_state(timeToCheck, ds);
     }

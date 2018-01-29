@@ -62,18 +62,18 @@ std::unordered_map<unsigned int, LEDState*> DailyState::get_led_states() const
     return timeStatePairs;
 }
 
-LEDState* DailyState::get_led_state(unsigned int time)
+LEDState* DailyState::get_led_state(unsigned int time_of_day)
 {
     LEDState* nearest_state = 0;
     unsigned int nearest_time = 0;
 
     // First check if no time<->state pairs exist
-    if (timeStatePairs.count(time) == 0) {
+    if (timeStatePairs.count(time_of_day) == 0) {
         for (auto& element : timeStatePairs) {
             unsigned int t = element.first;
 
             // Only check times greater than or equal to the given time
-            if (time >= t) {
+            if (time_of_day >= t) {
                 // Find the greatest of the times listed for this day
                 nearest_time = MAX(t, nearest_time);
             }
