@@ -25,7 +25,7 @@ control_service_main:
 	$(GCC) -c ./main.cpp -o ./out/main.o -lpistache -lpthread 
 
 control_service:
-	$(GCC) -o ./out/plantergb ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) $(DATA_PARSER_OBJECTS) -lpistache -lpthread 
+	$(GCC) -o ./out/plantergb -L/usr/local/lib ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) $(DATA_PARSER_OBJECTS) -lpistache -lpthread
 
 
 # Internal State
@@ -74,9 +74,11 @@ tests: directories
 
 # Install
 copy_api:
-	# Move API library to appropriate place
-	sudo cp ./environment/usr/local/lib/libpistache.a /usr/local/lib/
-	sudo cp -r ./environment/usr/local/include/* /usr/local/include/
+	# Copy API library if it doesn't exist
+	if [ ! -f /usr/local/lib/libpistache.a ]; then \
+		sudo cp ./environment/usr/local/lib/libpistache.a /usr/local/lib/ ; \
+		sudo cp -r ./environment/usr/local/include/* /usr/local/include/ ; \
+	fi
 
 # Download and build the API from source (only to be used for unix systems other than the Raspberry Pi Zero W)
 build_api:
