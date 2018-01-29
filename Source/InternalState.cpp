@@ -29,6 +29,13 @@ Profile* InternalState::get_current_profile()
 }
 
 
+// Mutators
+void InternalState::set_current_profile(Profile* p)
+{
+    currentProfile = p;
+}
+
+
 // Profile CRUD
 void InternalState::add_profile(Profile* profile)
 {
@@ -42,10 +49,8 @@ std::vector<Profile*> InternalState::get_profiles()
 
 Profile* InternalState::get_profile(unsigned int id)
 {
-    std::vector<Profile*>::iterator iter;
-    for ( iter = InternalState::profiles.begin(); iter < InternalState::profiles.end(); ++iter )
-    {
-        if ((*iter)->get_id() == id){ return *iter; }
+    for (auto profile : profiles) {
+        if (profile->get_id() == id){ return profile; }
     }
     return 0;
 }
@@ -68,6 +73,14 @@ std::vector<LED*> InternalState::get_leds()
     return leds;
 }
 
+LED* InternalState::get_led(unsigned int id)
+{
+    for (auto led : leds) {
+        if (led->get_id() == id){ return led; }
+    }
+    return 0;
+}
+
 void InternalState::delete_led(LED* led)
 {
     leds.erase(
@@ -84,6 +97,14 @@ void InternalState::add_controller(Controller* controller)
 std::vector<Controller*> InternalState::get_controllers()
 {
     return controllers;
+}
+
+Controller* InternalState::get_controller(unsigned int id)
+{
+    for (auto controller : controllers) {
+        if (controller->get_id() == id){ return controller; }
+    }
+    return 0;
 }
 
 void InternalState::delete_controller(Controller* controller)
@@ -104,6 +125,14 @@ std::vector<LEDState*> InternalState::get_led_states()
     return ledStates;
 }
 
+LEDState* InternalState::get_led_state(unsigned int id)
+{
+    for (auto ledState : ledStates) {
+        if (ledState->get_id() == id){ return ledState; }
+    }
+    return 0;
+}
+
 void InternalState::delete_led_state(LEDState* ledState)
 {
     ledStates.erase(
@@ -120,6 +149,14 @@ void InternalState::add_daily_state(DailyState* dailyState)
 std::vector<DailyState*> InternalState::get_daily_states()
 {
     return dailyStates;
+}
+
+DailyState* InternalState::get_daily_state(unsigned int id)
+{
+    for (auto dailyState : dailyStates) {
+        if (dailyState->get_id() == id){ return dailyState; }
+    }
+    return 0;
 }
 
 void InternalState::delete_daily_state(DailyState* dailyState)

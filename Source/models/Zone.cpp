@@ -23,8 +23,8 @@ void Zone::copy(const Zone& z)
 
     std::vector<LED*> leds = z.get_leds();
     if (!leds.empty()) {
-        for (std::vector<LED*>::iterator iter = leds.begin(); iter < leds.end(); iter++){
-            add_led(*iter);
+        for (auto led : leds) {
+            add_led(led);
         }
     }
 }
@@ -86,10 +86,8 @@ void to_json(json& j, const Zone& z) {
     // Build JSON from led vector
     json leds_j = json::array(); // Empty JSON array []
     std::vector<LED*> leds = z.get_leds();
-    for (std::vector<LED*>::iterator iter = leds.begin(); iter < leds.end(); iter++){
-        json led_j;
-        led_j["id"] = (*iter)->get_id();
-        leds_j.push_back(led_j);
+    for (auto led : leds) {
+        leds_j.push_back(led->get_id());
     }
     
     j = json{
@@ -101,7 +99,7 @@ void to_json(json& j, const Zone& z) {
 }
 
 void from_json(const json& j, Zone& z) {
-    z.set_name(j.at("name").get<std::string>());
-    //p.set_schedule(j.at("schedule").get<std::string>());
-    //p.add_led(j.at("description").get<std::string>());
+    if (j.find("name") != j.end()){
+        z.set_name(j.at("name").get<std::string>());
+    }
 }

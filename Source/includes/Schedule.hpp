@@ -3,15 +3,20 @@
 #define __SCHEDULE_H_INCLUDED__
 //=================================
 
+#include <array>
+
+#include "./json.hpp"
 
 #include "./DailyState.hpp"
 #include "./LEDState.hpp"
+
+using nlohmann::json;
 
 class Schedule
 {
 private:
     unsigned int id;
-    DailyState* weeklyState[7];
+    std::array<DailyState*, 7> weeklyState;
 
 public:
     // Constructor
@@ -30,5 +35,8 @@ public:
     void set_id(unsigned int);
     void set_daily_state(unsigned int day, DailyState* state);
 };
+
+// JSON
+void to_json(json& j, const Schedule& s);
 
 #endif //__SCHEDULE_H_INCLUDED__

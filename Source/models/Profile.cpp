@@ -64,6 +64,14 @@ std::vector<Zone*> Profile::get_zones() const
     return zones;
 }
 
+Zone* Profile::get_zone(unsigned int id) const
+{
+    for (auto zone : zones) {
+        if (zone->get_id() == id){ return zone; }
+    }
+    return 0;
+}
+
 void Profile::delete_zone(Zone* zone)
 {
     zones.erase(std::remove(zones.begin(), zones.end(), zone), zones.end());
@@ -75,10 +83,8 @@ void to_json(json& j, const Profile& p) {
     // Build JSON from zone vector
     json zones_j = json::array(); // Empty JSON array []
     std::vector<Zone*> zones = p.get_zones();
-    for (std::vector<Zone*>::iterator iter = zones.begin(); iter < zones.end(); iter++){
-        json zone_j;
-        zone_j["id"] = (*iter)->get_id();
-        zones_j.push_back(zone_j);
+    for (auto zone : zones) {
+        zones_j.push_back(zone->get_id());
     }
 
     j = json{
@@ -90,10 +96,10 @@ void to_json(json& j, const Profile& p) {
 }
 
 void from_json(const json& j, Profile& p) {
-    if (j.find("name") != j.end()){
+    if (j.find("name") != j.end()) {
         p.set_name(j.at("name").get<std::string>());
     }
-    if (j.find("description") != j.end()){
+    if (j.find("description") != j.end()) {
         p.set_description(j.at("description").get<std::string>());
     }
 }

@@ -55,6 +55,7 @@ private:
     void get_profile(REQUEST, RESPONSE);           // Gets a profile by ID
     void get_profile_zones(REQUEST, RESPONSE);     // Gets a profile's zones
     void get_current_profile(REQUEST, RESPONSE);   // Gets the active profile
+    void post_current_profile(REQUEST, RESPONSE);  // Sets the active profile
     void post_profile(REQUEST, RESPONSE);          // Adds a profile
     void post_profile_zone(REQUEST, RESPONSE);     // Adds a zone, links to a profile
     void patch_profile(REQUEST, RESPONSE);         // Updates a profile
