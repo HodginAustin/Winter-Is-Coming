@@ -15,6 +15,7 @@ private:
     float intensity;
     bool power;
 
+
 public:
     // Constructor
     LEDState();
@@ -36,6 +37,9 @@ public:
     void set_color(int r, int g, int b);
     void set_intensity(float);
     void set_power(bool);
+
+    // Static states
+    static LEDState* off;
 };
 
 // JSON

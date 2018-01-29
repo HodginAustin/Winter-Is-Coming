@@ -413,13 +413,54 @@ void API::get_zone(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
-    response.send(Http::Code::Ok, "Error: not Implemented");
+    
+    // Parameters
+    auto profile_id = request.param(":profile_id").as<unsigned int>();
+    auto zone_id = request.param(":zone_id").as<unsigned int>();
+
+    // Data
+    Profile* profile = InternalState::get_profile(profile_id);
+    Http::Code code = Http::Code::Not_Found;
+    json j_out;
+
+    if (profile) {
+        Zone* zone = profile->get_zone(zone_id);
+
+        if (zone) {
+            j_out = *zone;         
+            code = Http::Code::Ok;
+        }
+    }
+
+    // Send response
+    response.send(code, j_out.dump());
 }
 void API::get_zone_schedule(REQUEST, RESPONSE)
 {
-    // Log request
+  // Log request
     log_req(request);
-    response.send(Http::Code::Ok, "Error: not Implemented");
+    
+    // Parameters
+    auto profile_id = request.param(":profile_id").as<unsigned int>();
+    auto zone_id = request.param(":zone_id").as<unsigned int>();
+
+    // Data
+    Profile* profile = InternalState::get_profile(profile_id);
+    Http::Code code = Http::Code::Not_Found;
+    json j_out;
+
+    if (profile) {
+        Zone* zone = profile->get_zone(zone_id);
+        Schedule* schedule = zone->get_schedule();
+
+        if (zone && schedule) {
+            j_out = *schedule;         
+            code = Http::Code::Ok;
+        }
+    }
+
+    // Send response
+    response.send(code, j_out.dump());
 }
 void API::get_zone_leds(REQUEST, RESPONSE)
 {

@@ -103,7 +103,7 @@ void to_json(json& j, const Schedule& s) {
     for (int i = 0; i < 7; i++){
         DailyState* day = s.get_daily_state(i);
         json day_j;
-        day_j["id"] = day->get_id();
+        if (day) { day_j["id"] = day->get_id(); }
         days_j.push_back(day_j);
     }
     

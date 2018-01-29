@@ -78,12 +78,11 @@ LEDState* DailyState::get_led_state(unsigned int time)
                 nearest_time = MAX(t, nearest_time);
             }
         }        
+        nearest_state = timeStatePairs[nearest_time];
+        return nearest_state;
     } else {
-        nearest_time = time;
+        return LEDState::off;
     }
-
-    nearest_state = timeStatePairs[nearest_time];
-    return nearest_state;
 }
 
 #include <iostream>

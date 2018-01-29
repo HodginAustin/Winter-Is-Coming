@@ -1,6 +1,10 @@
 #include "../includes/LEDState.hpp"
 
 
+// Static objects
+LEDState* LEDState::off = new LEDState();
+
+
 // Constructor
 LEDState::LEDState() {
     r = g = b = intensity = power = 0;
