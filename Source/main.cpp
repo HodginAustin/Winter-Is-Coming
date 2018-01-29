@@ -27,14 +27,19 @@ int main()
     Schedule* s1 = new Schedule();
     s1->set_id(DataParser::next_schedule_id());
     
+    Controller* c1 = new Controller();
+    c1->set_id(DataParser::next_controller_id());
+
     LED* l1 = new LED();
     l1->set_id(DataParser::next_led_id());
+    l1->set_controller(c1);
+    InternalState::add_led(l1);
 
     Zone* z1 = new Zone();
     z1->set_id(DataParser::next_zone_id());
     z1->set_name("Squash");
     z1->set_schedule(s1);
-    z1->add_led(l1);
+    //z1->add_led(l1);
 
     p1->add_zone(z1);
 

@@ -75,7 +75,7 @@ void API::setup_routes()
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id", Routes::bind(&API::get_zone, this));
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/schedule", Routes::bind(&API::get_zone_schedule, this));
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/leds", Routes::bind(&API::get_zone_leds, this));
-    Routes::Put(router, "profiles/:profile_id/zones/:zone_id/leds/add/", Routes::bind(&API::put_zone_led, this));
+    Routes::Put(router, "profiles/:profile_id/zones/:zone_id/leds/add/:led_id", Routes::bind(&API::put_zone_led, this));
     Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/leds/:led_id/delete",
                             Routes::bind(&API::delete_zone_led, this));
     
@@ -467,19 +467,87 @@ void API::get_zone_leds(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
-    response.send(Http::Code::Ok, "Error: not Implemented");
+    
+    // Parameters
+    auto profile_id = request.param(":profile_id").as<unsigned int>();
+    auto zone_id = request.param(":zone_id").as<unsigned int>();
+
+
+    // Data
+    Profile* profile = InternalState::get_profile(profile_id);
+    Http::Code code = Http::Code::Not_Found;
+    json j_out = json::array(); // Empty JSON array []
+
+    if (profile) {
+        Zone* zone = profile->get_zone(zone_id);
+        if (zone) {
+            std::vector<LED*> leds = zone->get_leds();
+            for (auto led : leds) {
+                json j = *led;
+                j_out.push_back(j);
+            }
+            code = Http::Code::Ok;
+        }
+    }
+
+    // Send response
+    response.send(code, j_out.dump());
 }
 void API::put_zone_led(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
-    response.send(Http::Code::Ok, "Error: not Implemented");
+
+    // Parameters
+    auto profile_id = request.param(":profile_id").as<unsigned int>();
+    auto zone_id = request.param(":zone_id").as<unsigned int>();
+    auto led_id = request.param(":led_id").as<unsigned int>();
+
+    // Data
+    Profile* profile = InternalState::get_profile(profile_id);
+    Http::Code code = Http::Code::Not_Found;
+
+    if (profile) {
+        Zone* zone = profile->get_zone(zone_id);
+        if (zone) {
+            LED* led = InternalState::get_led(led_id);
+            if (led) {
+                zone->add_led(led);
+                code = Http::Code::Ok;
+            }
+        }
+    }
+
+    // Send response
+    response.send(code, "");
 }
 void API::delete_zone_led(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
-    response.send(Http::Code::Ok, "Error: not Implemented");
+
+    // Parameters
+    auto profile_id = request.param(":profile_id").as<unsigned int>();
+    auto zone_id = request.param(":zone_id").as<unsigned int>();
+    auto led_id = request.param(":led_id").as<unsigned int>();
+
+    // Data
+    Profile* profile = InternalState::get_profile(profile_id);
+    Http::Code code = Http::Code::Not_Found;
+
+    if (profile) {
+        Zone* zone = profile->get_zone(zone_id);
+        if (zone) {
+            LED* led = InternalState::get_led(led_id);
+            if (led) {
+                zone->delete_led(led);
+                code = Http::Code::Ok;
+            }
+        }
+    }
+
+    // Send response
+    response.send(code, "");
 }
 
 // Schedule routes

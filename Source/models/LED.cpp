@@ -4,7 +4,10 @@
 
 
 // Constructor
-LED::LED() {}
+LED::LED() {
+    strip_idx = 0;
+    controller = 0;
+}
 
 LED::LED(const LED& l)
 {
@@ -59,11 +62,14 @@ void LED::set_controller(Controller* newController)
 
 
 // JSON
-void to_json(json& j, const LED& l) {    
+void to_json(json& j, const LED& l) {
+    Controller* c = l.get_controller();
+    unsigned int c_id = (c ? c->get_id() : 0);
+
     j = json{
         {"id", l.get_id()},
         {"strip_idx", l.get_strip_idx()},
-        {"controller", l.get_controller()->get_id()},
+        {"controller", c_id},
     };
 }
 

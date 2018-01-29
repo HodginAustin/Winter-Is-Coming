@@ -85,8 +85,6 @@ LEDState* DailyState::get_led_state(unsigned int time_of_day)
     }
 }
 
-#include <iostream>
-
 bool DailyState::delete_state(unsigned int time)
 {
     timeStatePairs.erase(time);
