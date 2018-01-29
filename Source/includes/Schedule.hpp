@@ -3,6 +3,8 @@
 #define __SCHEDULE_H_INCLUDED__
 //=================================
 
+#include <array>
+
 #include "./json.hpp"
 
 #include "./DailyState.hpp"
@@ -14,7 +16,7 @@ class Schedule
 {
 private:
     unsigned int id;
-    DailyState* weeklyState[7];
+    std::array<DailyState*, 7> weeklyState;
 
 public:
     // Constructor

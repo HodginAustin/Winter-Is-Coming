@@ -4,13 +4,7 @@
 // Constructor
 Schedule::Schedule()
 {
-    set_daily_state(0, 0);
-    set_daily_state(1, 0);
-    set_daily_state(2, 0);
-    set_daily_state(3, 0);
-    set_daily_state(4, 0);
-    set_daily_state(5, 0);
-    set_daily_state(6, 0);
+    weeklyState = {0,0,0,0,0,0,0};
 }
 Schedule::Schedule(const Schedule& s)
 {
@@ -36,11 +30,11 @@ unsigned int Schedule::get_id() const
     return id;
 }
 
+#include <iostream>
 DailyState* Schedule::get_daily_state(unsigned int day) const
 {
     if (day < 0 || day > 6) { return 0; }
-
-    return weeklyState[day];
+    return weeklyState.at(day);
 }
 
 LEDState* get_led_state_from_daily_state(unsigned int time, DailyState* ds)
