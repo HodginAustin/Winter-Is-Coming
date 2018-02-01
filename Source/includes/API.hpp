@@ -68,9 +68,7 @@ private:
     void get_zone_leds(REQUEST, RESPONSE);         // Gets a zone's LEDs
     void put_zone_led(REQUEST, RESPONSE);          // Links a list of existing LEDs to a zone
                                                         // IN: list of LED IDs [1,4,9,40]
-                                                        // OUT: list of LED IDs that do not exist
-                                                        //      ["profile"] if profile not found
-                                                        //      ["zone"] if zone not found
+                                                        // OUT: list of things that were not found, or nothing on success
     void delete_zone_led(REQUEST, RESPONSE);       // Unlinks an existing LED from a zone
 
     // Schedule routes
@@ -107,6 +105,8 @@ private:
     void get_daily_state(REQUEST, RESPONSE);              // Gets a dailyState by ID
     void get_daily_state_led_states(REQUEST, RESPONSE);   // Gets a dailyState's LED states
     void put_daily_state_led_state(REQUEST, RESPONSE);    // Links an existing LEDState to a dailyState
+                                                                // IN: list of objects containing time and state [{"time":8000,"state":5},{"time":23003,"state":1}]
+                                                                // OUT: list of things that were not found, or nothing on success
     void post_daily_state(REQUEST, RESPONSE);      // Adds a daily state
     void patch_daily_state(REQUEST, RESPONSE);     // Updates a daily state
     void delete_daily_state(REQUEST, RESPONSE);    // Deletes a daily state
