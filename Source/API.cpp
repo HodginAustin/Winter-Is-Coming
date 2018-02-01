@@ -75,7 +75,7 @@ void API::setup_routes()
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id", Routes::bind(&API::get_zone, this));
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/schedule", Routes::bind(&API::get_zone_schedule, this));
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/leds", Routes::bind(&API::get_zone_leds, this));
-    Routes::Put(router, "profiles/:profile_id/zones/:zone_id/leds/add/:led_id", Routes::bind(&API::put_zone_led, this));
+    Routes::Put(router, "profiles/:profile_id/zones/:zone_id/leds/add", Routes::bind(&API::put_zone_led, this));
     Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/leds/:led_id/delete",
                 Routes::bind(&API::delete_zone_led, this));
     
@@ -505,26 +505,35 @@ void API::put_zone_led(REQUEST, RESPONSE)
     // Parameters
     auto profile_id = request.param(":profile_id").as<unsigned int>();
     auto zone_id = request.param(":zone_id").as<unsigned int>();
-    auto led_id = request.param(":led_id").as<unsigned int>();
+
+    // Request data
+    json j_in = json::parse(request.body());
 
     // Data
     Profile* profile = InternalState::get_profile(profile_id);
     Http::Code code = Http::Code::Not_Found;
-    std::string out = "";
+    json j_out = json::array();
 
     if (profile) {
         Zone* zone = profile->get_zone(zone_id);
         if (zone) {
-            LED* led = InternalState::get_led(led_id);
-            if (led) {
-                zone->add_led(led);
-                code = Http::Code::Ok;
-            } else { out = "led"; }
-        } else { out = "zone"; }
-    } else { out = "profile"; }
+            for (auto json_id : j_in) {
+                int led_id = json_id.get<int>();
+                LED* led = InternalState::get_led(led_id);
+                // Check if LED exists
+                if (led) {
+                    // Check if zone does not have LED already
+                    if (!zone->has_led(led)) {
+                        zone->add_led(led);
+                        code = Http::Code::Ok;
+                    }
+                } else { j_out.push_back(led_id); }
+            }
+        } else { j_out.push_back("zone"); }
+    } else { j_out.push_back("profile"); }
 
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }
 void API::delete_zone_led(REQUEST, RESPONSE)
 {

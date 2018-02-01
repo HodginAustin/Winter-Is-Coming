@@ -43,6 +43,7 @@ public:
     // CRUD
     void add_led(LED* led);
     std::vector<LED*> get_leds() const;
+    bool has_led(LED* led) const;
     void delete_led(LED* led);
 };
 
