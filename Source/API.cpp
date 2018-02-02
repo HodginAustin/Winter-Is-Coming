@@ -75,7 +75,7 @@ void API::setup_routes()
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id", Routes::bind(&API::get_zone, this));
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/schedule", Routes::bind(&API::get_zone_schedule, this));
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/leds", Routes::bind(&API::get_zone_leds, this));
-    Routes::Put(router, "profiles/:profile_id/zones/:zone_id/leds/add/:led_id", Routes::bind(&API::put_zone_led, this));
+    Routes::Put(router, "profiles/:profile_id/zones/:zone_id/leds/add", Routes::bind(&API::put_zone_led, this));
     Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/leds/:led_id/delete",
                 Routes::bind(&API::delete_zone_led, this));
     
@@ -114,7 +114,7 @@ void API::setup_routes()
     Routes::Get(router, "daily_states", Routes::bind(&API::get_daily_states, this));
     Routes::Get(router, "daily_states/:id", Routes::bind(&API::get_daily_state, this));
     Routes::Get(router, "daily_states/:id/led_states", Routes::bind(&API::get_daily_state_led_states, this));
-    Routes::Put(router, "daily_states/:daily_state_id/led_states/add/:led_state_id/:time_of_day",
+    Routes::Put(router, "daily_states/:daily_state_id/led_states/add",
                 Routes::bind(&API::put_daily_state_led_state, this));
     Routes::Post(router, "daily_states/add", Routes::bind(&API::post_daily_state, this));
     Routes::Patch(router, "daily_states/:id/edit", Routes::bind(&API::patch_daily_state, this));
@@ -185,19 +185,19 @@ void API::get_profiles(REQUEST, RESPONSE)
     // Log request
     log_req(request);
 
-    // Json response MIME
-    response.headers()
-            .add<Http::Header::ContentType>(MIME(Application, Json));
+    // Json response MIME ( Implicit at this point, include this at all? )
+    //response.headers()
+    //        .add<Http::Header::ContentType>(MIME(Application, Json));
     
     // Build JSON from profiles vector
-    json j = json::array(); // Empty JSON array []
+    json j_out = json::array(); // Empty JSON array []
     std::vector<Profile*> profiles = InternalState::get_profiles();
     for (auto profile : profiles) {
-        j.push_back(*profile);
+        j_out.push_back(*profile);
     }
 
     // Send response
-    response.send(Http::Code::Ok, j.dump());
+    response.send(Http::Code::Ok, j_out.dump());
 }
 void API::get_profile(REQUEST, RESPONSE)
 {
@@ -211,12 +211,12 @@ void API::get_profile(REQUEST, RESPONSE)
     Profile* profile = InternalState::get_profile(id);
 
     // Build JSON
-    json j; 
-    if (profile){ j = *profile; }
+    json j_out; 
+    if (profile){ j_out = *profile; }
     Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
     
     // Send response
-    response.send(code, j.dump());
+    response.send(code, j_out.dump());
 }
 void API::get_profile_zones(REQUEST, RESPONSE)
 {
@@ -230,18 +230,18 @@ void API::get_profile_zones(REQUEST, RESPONSE)
     Profile* profile = InternalState::get_profile(id);
 
     // Build JSON from zones vector
-    json j = json::array(); // Empty JSON array []
+    json j_out = json::array(); // Empty JSON array []
     if (profile) {
         std::vector<Zone*> zones = profile->get_zones();
         for (auto zone : zones) {
-            j.push_back(*zone);
+            j_out.push_back(*zone);
         }
     }
    
     Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
     
     // Send response
-    response.send(code, j.dump());
+    response.send(code, j_out.dump());
 }
 void API::get_current_profile(REQUEST, RESPONSE)
 {
@@ -252,12 +252,12 @@ void API::get_current_profile(REQUEST, RESPONSE)
     Profile* profile = InternalState::get_current_profile();
 
     // Build JSON
-    json j;
-    if (profile){ j = *profile; }
+    json j_out;
+    if (profile){ j_out = *profile; }
     Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
     
     // Send response
-    response.send(code, j.dump());
+    response.send(code, j_out.dump());
 }
 void API::post_current_profile(REQUEST, RESPONSE)
 {
@@ -271,15 +271,15 @@ void API::post_current_profile(REQUEST, RESPONSE)
     Profile* profile = InternalState::get_profile(id);
     
     // Build JSON
-    json j; 
+    json j_out; 
     if (profile) {
         InternalState::set_current_profile(profile);
-        j = *profile;
+        j_out = *profile;
     }
     Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
     
     // Send response
-    response.send(code, j.dump());
+    response.send(code, j_out.dump());
 }
 void API::post_profile(REQUEST, RESPONSE)
 {
@@ -375,7 +375,7 @@ void API::delete_profile_zone(REQUEST, RESPONSE)
     // Data
     Profile* profile = InternalState::get_profile(profile_id);
     Http::Code code = Http::Code::Not_Found;
-    std::string out = "";
+    json j_out;
 
     if (profile) {
         Zone* zone = profile->get_zone(zone_id);
@@ -384,11 +384,11 @@ void API::delete_profile_zone(REQUEST, RESPONSE)
             profile->delete_zone(zone);
             free(zone);
             code = Http::Code::Ok;
-        } else { out = "zone"; }
-    } else { out = "profile"; }
+        } else { j_out.push_back(json{"zone", zone_id}); }
+    } else { j_out.push_back(json{"profile", profile_id}); }
 
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }
 void API::delete_profile(REQUEST, RESPONSE)
 {
@@ -400,15 +400,20 @@ void API::delete_profile(REQUEST, RESPONSE)
 
     // Data
     Profile* profile = InternalState::get_profile(id);
-    Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
-    std::string out = (profile ? "" : "profile");
-    InternalState::delete_profile(profile);
-
-    // Memory
-    free(profile);
+    json j_out;
+    Http::Code code = Http::Code::Not_Found;
+    
+    if (profile) {
+        InternalState::delete_profile(profile);
+        
+        // Memory
+        free(profile);
+    
+        code = Http::Code::Ok;
+    } else { j_out.push_back(json{"profile", id}); }
 
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }
 
 
@@ -505,26 +510,35 @@ void API::put_zone_led(REQUEST, RESPONSE)
     // Parameters
     auto profile_id = request.param(":profile_id").as<unsigned int>();
     auto zone_id = request.param(":zone_id").as<unsigned int>();
-    auto led_id = request.param(":led_id").as<unsigned int>();
+
+    // Request data
+    json j_in = json::parse(request.body());
 
     // Data
     Profile* profile = InternalState::get_profile(profile_id);
     Http::Code code = Http::Code::Not_Found;
-    std::string out = "";
+    json j_out; j_out["leds"] = json::array();
 
     if (profile) {
         Zone* zone = profile->get_zone(zone_id);
         if (zone) {
-            LED* led = InternalState::get_led(led_id);
-            if (led) {
-                zone->add_led(led);
-                code = Http::Code::Ok;
-            } else { out = "led"; }
-        } else { out = "zone"; }
-    } else { out = "profile"; }
+            for (auto json_id : j_in) {
+                int led_id = json_id.get<int>();
+                LED* led = InternalState::get_led(led_id);
+                // Check if LED exists
+                if (led) {
+                    // Check if zone does not have LED already
+                    if (!zone->has_led(led)) {
+                        zone->add_led(led);
+                        code = Http::Code::Ok;
+                    }
+                } else { j_out["leds"].push_back(led_id); }
+            }
+        } else { j_out.push_back(json{"zone", zone_id}); }
+    } else { j_out.push_back(json{"profile", profile_id}); }
 
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }
 void API::delete_zone_led(REQUEST, RESPONSE)
 {
@@ -539,7 +553,7 @@ void API::delete_zone_led(REQUEST, RESPONSE)
     // Data
     Profile* profile = InternalState::get_profile(profile_id);
     Http::Code code = Http::Code::Not_Found;
-    std::string out = "";
+    json j_out;
 
     if (profile) {
         Zone* zone = profile->get_zone(zone_id);
@@ -548,12 +562,12 @@ void API::delete_zone_led(REQUEST, RESPONSE)
             if (led) {
                 zone->delete_led(led);
                 code = Http::Code::Ok;
-            } else { out = "led"; }
-        } else { out = "zone"; }
-    } else { out = "profile"; }
+            } else { j_out.push_back(json{"led", led_id}); }
+        } else { j_out.push_back(json{"zone", zone_id}); }
+    } else { j_out.push_back(json{"profile", profile_id}); }
 
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }
 
 
@@ -606,7 +620,7 @@ void API::put_schedule_daily_state(REQUEST, RESPONSE)
     // Data
     Profile* profile = InternalState::get_profile(profile_id);
     Http::Code code = Http::Code::Not_Found;
-    std::string out = "";
+    json j_out;
 
     if (profile) {
         Zone* zone = profile->get_zone(zone_id);
@@ -617,13 +631,13 @@ void API::put_schedule_daily_state(REQUEST, RESPONSE)
                 if (ds) {
                     schedule->set_daily_state(day_of_week, ds);
                     code = Http::Code::Ok;
-                } else { out = "daily_state"; }
-            } else { out = "schedule"; }
-        } else { out = "zone"; }
-    } else { out = "profile"; }
+                } else { j_out.push_back(json{"daily_state", daily_state_id}); }
+            } else { j_out.push_back(json{"schedule_for_zone", zone_id}); }
+        } else { j_out.push_back(json{"zone", zone_id}); }
+    } else { j_out.push_back(json{"profile", profile_id}); }
 
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }
 void API::delete_schedule_daily_state(REQUEST, RESPONSE)
 {
@@ -638,21 +652,23 @@ void API::delete_schedule_daily_state(REQUEST, RESPONSE)
     // Data
     Profile* profile = InternalState::get_profile(profile_id);
     Http::Code code = Http::Code::Not_Found;
-    std::string out = "";
+    json j_out;
 
     if (profile) {
         Zone* zone = profile->get_zone(zone_id);
         if (zone) {
             Schedule* schedule = zone->get_schedule();
             if (schedule) {
-                schedule->set_daily_state(day_of_week, 0);
-                code = Http::Code::Ok;
-            } else { out = "schedule"; }
-        } else { out = "zone"; }
-    } else { out = "profile"; }
+                if (day_of_week >= 0 && day_of_week <= 6) {
+                    schedule->set_daily_state(day_of_week, 0);
+                    code = Http::Code::Ok;
+                } else { j_out["day_out_of_bounds"] = { {"min:", 0}, {"max:", 6}, {"given:", day_of_week} }; }
+            } else { j_out.push_back(json{"schedule_for_zone", zone_id}); }
+        } else { j_out.push_back(json{"zone", zone_id}); }
+    } else { j_out.push_back(json{"profile", profile_id}); }
 
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }
 
 
@@ -667,14 +683,14 @@ void API::get_leds(REQUEST, RESPONSE)
             .add<Http::Header::ContentType>(MIME(Application, Json));
     
     // Build JSON from leds vector
-    json j = json::array(); // Empty JSON array []
+    json j_out = json::array(); // Empty JSON array []
     std::vector<LED*> leds = InternalState::get_leds();
     for (auto led : leds) {
-        j.push_back(*led);
+        j_out.push_back(*led);
     }
 
     // Send response
-    response.send(Http::Code::Ok, j.dump());
+    response.send(Http::Code::Ok, j_out.dump());
 }
 void API::get_led(REQUEST, RESPONSE)
 {
@@ -688,12 +704,16 @@ void API::get_led(REQUEST, RESPONSE)
     LED* led = InternalState::get_led(id);
 
     // Build JSON
-    json j; 
-    if (led){ j = *led; }
-    Http::Code code = (led ? Http::Code::Ok : Http::Code::Not_Found);
+    json j_out; 
+    Http::Code code = Http::Code::Not_Found;
+
+    if (led) {
+        j_out = *led;
+        code = Http::Code::Ok;
+    }
     
     // Send response
-    response.send(code, j.dump());
+    response.send(code, j_out.dump());
 }
 void API::get_led_controller(REQUEST, RESPONSE)
 {
@@ -708,17 +728,17 @@ void API::get_led_controller(REQUEST, RESPONSE)
     Http::Code code = Http::Code::Not_Found;
 
     // Build JSON
-    json j; 
+    json j_out; 
     if (led) {
         Controller* controller = led->get_controller();
         if (controller) {
-            j = *controller;
+            j_out = *controller;
             code = Http::Code::Ok;
         }
     }
     
     // Send response
-    response.send(code, j.dump());
+    response.send(code, j_out.dump());
 }
 void API::put_led_controller(REQUEST, RESPONSE)
 {
@@ -732,7 +752,7 @@ void API::put_led_controller(REQUEST, RESPONSE)
     // Data
     LED* led = InternalState::get_led(led_id);
     Http::Code code = Http::Code::Not_Found;
-    std::string out = "";
+    json j_out;
 
     // Build JSON
     if (led) {
@@ -740,11 +760,11 @@ void API::put_led_controller(REQUEST, RESPONSE)
         if (controller) {
             led->set_controller(controller);
             code = Http::Code::Ok;
-        } else { out = "controller"; }
-    } else { out = "led"; }
+        } else { j_out.push_back(json{"controller", controller_id}); }
+    } else { j_out.push_back(json{"led", led_id}); }
     
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }
 void API::post_led(REQUEST, RESPONSE)
 {
@@ -802,15 +822,20 @@ void API::delete_led(REQUEST, RESPONSE)
 
     // Data
     LED* led = InternalState::get_led(id);
-    Http::Code code = (led ? Http::Code::Ok : Http::Code::Not_Found);
-    std::string out = (led ? "" : "led");
-    InternalState::delete_led(led);
+    json j_out;
+    Http::Code code = Http::Code::Not_Found;
+    
+    if (led) { 
+        InternalState::delete_led(led);
 
-    // Memory
-    free(led);
+        // Memory
+        free(led);
+
+        code = Http::Code::Ok;
+    } else { j_out.push_back(json{"led", id}); }
 
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }
 void API::delete_led_controller(REQUEST, RESPONSE)
 {
@@ -823,16 +848,16 @@ void API::delete_led_controller(REQUEST, RESPONSE)
     // Data
     LED* led = InternalState::get_led(led_id);
     Http::Code code = Http::Code::Not_Found;
-    std::string out = "";
+    json j_out;
 
     // Build JSON
     if (led) {
         led->set_controller(0);
         code = Http::Code::Ok;
-    } else { out = "led"; }
+    } else { j_out.push_back(json{"led", led_id}); }
     
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }
 
 
@@ -847,14 +872,14 @@ void API::get_controllers(REQUEST, RESPONSE)
             .add<Http::Header::ContentType>(MIME(Application, Json));
     
     // Build JSON from vector
-    json j = json::array(); // Empty JSON array []
+    json j_out = json::array(); // Empty JSON array []
     std::vector<Controller*> controllers = InternalState::get_controllers();
     for (auto controller : controllers) {
-        j.push_back(*controller);
+        j_out.push_back(*controller);
     }
 
     // Send response
-    response.send(Http::Code::Ok, j.dump());
+    response.send(Http::Code::Ok, j_out.dump());
 }
 void API::get_controller(REQUEST, RESPONSE)
 {
@@ -868,12 +893,16 @@ void API::get_controller(REQUEST, RESPONSE)
     Controller* controller = InternalState::get_controller(id);
 
     // Build JSON
-    json j; 
-    if (controller){ j = *controller; }
-    Http::Code code = (controller ? Http::Code::Ok : Http::Code::Not_Found);
+    json j_out; 
+    Http::Code code = Http::Code::Not_Found;
+
+    if (controller) {
+        j_out = *controller;
+        code = Http::Code::Ok;
+    }
     
     // Send response
-    response.send(code, j.dump());
+    response.send(code, j_out.dump());
 }
 void API::post_controller(REQUEST, RESPONSE)
 {
@@ -931,15 +960,25 @@ void API::delete_controller(REQUEST, RESPONSE)
 
     // Data
     Controller* controller = InternalState::get_controller(id);
-    Http::Code code = (controller ? Http::Code::Ok : Http::Code::Not_Found);
-    std::string out = (controller ? "" : "controller");
-    InternalState::delete_controller(controller);
+    Http::Code code = Http::Code::Ok;
 
-    // Memory
-    free(controller);
+    // Build JSON
+    json j_out;
+
+    // Validate
+    if (controller) {
+        InternalState::delete_controller(controller);
+
+        // Memory
+        free(controller);
+
+    } else {
+        code = Http::Code::Not_Found;
+        j_out.push_back(json{"controller", id});
+    }
 
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }
 
 
@@ -954,14 +993,14 @@ void API::get_led_states(REQUEST, RESPONSE)
             .add<Http::Header::ContentType>(MIME(Application, Json));
     
     // Build JSON from vector
-    json j = json::array(); // Empty JSON array []
+    json j_out = json::array(); // Empty JSON array []
     std::vector<LEDState*> led_states = InternalState::get_led_states();
     for (auto led_state : led_states) {
-        j.push_back(*led_state);
+        j_out.push_back(*led_state);
     }
 
     // Send response
-    response.send(Http::Code::Ok, j.dump());
+    response.send(Http::Code::Ok, j_out.dump());
 }
 void API::get_led_state(REQUEST, RESPONSE)
 {
@@ -975,12 +1014,16 @@ void API::get_led_state(REQUEST, RESPONSE)
     LEDState* ledState = InternalState::get_led_state(id);
 
     // Build JSON
-    json j; 
-    if (ledState){ j = *ledState; }
-    Http::Code code = (ledState ? Http::Code::Ok : Http::Code::Not_Found);
+    json j_out; 
+    Http::Code code = Http::Code::Not_Found;
+    
+    if (ledState) {
+        j_out = *ledState;
+        code = Http::Code::Ok;
+    }
     
     // Send response
-    response.send(code, j.dump());
+    response.send(code, j_out.dump());
 }
 void API::post_led_state(REQUEST, RESPONSE)
 {
@@ -1038,15 +1081,20 @@ void API::delete_led_state(REQUEST, RESPONSE)
 
     // Data
     LEDState* ledState = InternalState::get_led_state(id);
-    Http::Code code = (ledState ? Http::Code::Ok : Http::Code::Not_Found);
-    std::string out = (ledState ? "" : "led_state");
-    InternalState::delete_led_state(ledState);
+    json j_out;
+    Http::Code code = Http::Code::Not_Found;
 
-    // Memory
-    free(ledState);
+    if (ledState) {
+        InternalState::delete_led_state(ledState);
+
+        // Memory
+        free(ledState);
+
+        code = Http::Code::Ok;
+    } else { j_out.push_back(json{"led_state", id}); }
 
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }
 
 
@@ -1061,14 +1109,14 @@ void API::get_daily_states(REQUEST, RESPONSE)
             .add<Http::Header::ContentType>(MIME(Application, Json));
     
     // Build JSON from profiles vector
-    json j = json::array(); // Empty JSON array []
+    json j_out = json::array(); // Empty JSON array []
     std::vector<DailyState*> dailyStates = InternalState::get_daily_states();
     for (auto dailyState : dailyStates) {
-        j.push_back(*dailyState);
+        j_out.push_back(*dailyState);
     }
 
     // Send response
-    response.send(Http::Code::Ok, j.dump());
+    response.send(Http::Code::Ok, j_out.dump());
 }
 void API::get_daily_state(REQUEST, RESPONSE)
 {
@@ -1082,12 +1130,16 @@ void API::get_daily_state(REQUEST, RESPONSE)
     DailyState* dailyState = InternalState::get_daily_state(id);
 
     // Build JSON
-    json j; 
-    if (dailyState){ j = *dailyState; }
-    Http::Code code = (dailyState ? Http::Code::Ok : Http::Code::Not_Found);
+    json j_out; 
+    Http::Code code = Http::Code::Not_Found;
+
+    if (dailyState) {
+        j_out = *dailyState;
+        code = Http::Code::Ok;
+    }
     
     // Send response
-    response.send(code, j.dump());
+    response.send(code, j_out.dump());
 }
 void API::get_daily_state_led_states(REQUEST, RESPONSE)
 {
@@ -1101,7 +1153,9 @@ void API::get_daily_state_led_states(REQUEST, RESPONSE)
     DailyState* dailyState = InternalState::get_daily_state(id);
 
     // Build JSON from zones vector
-    json j = json::array(); // Empty JSON array []
+    json j_out = json::array(); // Empty JSON array []
+    Http::Code code = Http::Code::Not_Found;
+
     if (dailyState) {
          std::unordered_map<unsigned int, LEDState*> timeStateMap = dailyState->get_time_state_map();
 
@@ -1116,14 +1170,13 @@ void API::get_daily_state_led_states(REQUEST, RESPONSE)
                 {"time", t},
                 {"state", s_j}
             };
-            j.push_back(ts_j);
+            j_out.push_back(ts_j);
         }
+        code = Http::Code::Ok;
     }
    
-    Http::Code code = (dailyState ? Http::Code::Ok : Http::Code::Not_Found);
-    
     // Send response
-    response.send(code, j.dump());
+    response.send(code, j_out.dump());
 }
 void API::put_daily_state_led_state(REQUEST, RESPONSE)
 {
@@ -1132,26 +1185,38 @@ void API::put_daily_state_led_state(REQUEST, RESPONSE)
     
     // Parameters
     auto daily_state_id = request.param(":daily_state_id").as<unsigned int>();
-    auto led_state_id = request.param(":led_state_id").as<unsigned int>();
-    auto time_of_day = request.param(":time_of_day").as<unsigned int>();
+
+    // Request data
+    json j_in = json::parse(request.body());
 
     // Data
     DailyState* dailyState = InternalState::get_daily_state(daily_state_id);
     Http::Code code = Http::Code::Not_Found;
-    std::string out = "";
     
     // Build JSON
-    json j; 
+    json j_out;
+    
+    // Validate
     if (dailyState) {
-        LEDState* ledState = InternalState::get_led_state(led_state_id);
-        if (ledState) {
-            dailyState->add_state(time_of_day, ledState);
-            code = Http::Code::Ok;
-        } else { out = "led_state"; }
-    } else { out = "daily_state"; }
+        LEDState* ledState;
+
+        for (auto json_time_state : j_in) {
+            int time_of_day = json_time_state.at("time").get<int>();
+            unsigned int s = json_time_state.at("state").get<unsigned int>();
+
+            ledState = InternalState::get_led_state(s);
+            
+            if (ledState) {
+                if (time_of_day >= 0 && time_of_day <= 24*60*60) {
+                    dailyState->add_state(time_of_day, ledState);
+                    code = Http::Code::Ok;
+                } else { j_out["time_out_of_bounds"] = { {"min:", 0}, {"max:", 24*60*60}, {"given:", time_of_day} }; }
+            } else { j_out.push_back(json{"led_state", s}); }
+        }
+    } else { j_out.push_back(json{"daily_state", daily_state_id}); }
     
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }
 void API::post_daily_state(REQUEST, RESPONSE)
 {
@@ -1209,15 +1274,21 @@ void API::delete_daily_state(REQUEST, RESPONSE)
 
     // Data
     DailyState* dailyState = InternalState::get_daily_state(id);
-    Http::Code code = (dailyState ? Http::Code::Ok : Http::Code::Not_Found);
-    std::string out = (dailyState ? "" : "led_state");
-    InternalState::delete_daily_state(dailyState);
+    json j_out;
+    Http::Code code = Http::Code::Not_Found;
 
-    // Memory
-    free(dailyState);
+    if (dailyState) {
+        InternalState::delete_daily_state(dailyState);
+
+        // Memory
+        free(dailyState);
+
+        code = Http::Code::Ok;
+    } else { j_out.push_back(json{"daily_state", id}); }
+    
 
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }
 void API::delete_daily_state_led_state(REQUEST, RESPONSE)
 {
@@ -1231,15 +1302,14 @@ void API::delete_daily_state_led_state(REQUEST, RESPONSE)
     // Data
     DailyState* dailyState = InternalState::get_daily_state(daily_state_id);
     Http::Code code = Http::Code::Not_Found;
-    std::string out = "";
+    json j_out;
     
     // Build JSON
-    json j; 
     if (dailyState) {
         dailyState->delete_state(time_of_day);
         code = Http::Code::Ok;
-    } else { out = "daily_state"; }
+    } else { j_out.push_back(json{"daily_state", daily_state_id});}
     
     // Send response
-    response.send(code, out);
+    response.send(code, j_out.dump());
 }

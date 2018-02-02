@@ -75,6 +75,11 @@ std::vector<LED*> Zone::get_leds() const
     return leds;
 }
 
+bool Zone::has_led(LED* led) const
+{
+    return std::find(leds.begin(), leds.end(), led) != leds.end();
+}
+
 void Zone::delete_led(LED* led)
 {
     leds.erase(std::remove(leds.begin(), leds.end(), led), leds.end());
