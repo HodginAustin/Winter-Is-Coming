@@ -212,7 +212,9 @@ void API::get_profile(REQUEST, RESPONSE)
 
     // Build JSON
     json j_out; 
-    if (profile){ j_out = *profile; }
+    if (profile){
+        j_out = *profile;
+    } else { j_out.push_back(json{"profile", id}); }
     Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
     
     // Send response
@@ -236,7 +238,7 @@ void API::get_profile_zones(REQUEST, RESPONSE)
         for (auto zone : zones) {
             j_out.push_back(*zone);
         }
-    }
+    } else { j_out.push_back(json{"profile", id}); }
    
     Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
     
@@ -253,7 +255,9 @@ void API::get_current_profile(REQUEST, RESPONSE)
 
     // Build JSON
     json j_out;
-    if (profile){ j_out = *profile; }
+    if (profile){
+        j_out = *profile;
+    } else { j_out.push_back(json{"profile", -1}); }
     Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
     
     // Send response
@@ -331,7 +335,7 @@ void API::post_profile_zone(REQUEST, RESPONSE)
 
         // Build response
         j_out = json{{"id", zone->get_id()}};
-    }
+    } else { j_out.push_back(json{"profile", id}); }
     Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
 
     // Send response
@@ -358,7 +362,7 @@ void API::patch_profile(REQUEST, RESPONSE)
     if (profile) {
         profile->copy(p);
         j_out = *profile;
-    }
+    } else { j_out.push_back(json{"profile", id}); }
 
     // Send response
     response.send(code, j_out.dump());
