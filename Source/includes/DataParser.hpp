@@ -22,9 +22,15 @@ private:
     static unsigned int led_state_id;
     static unsigned int daily_state_id;
     static unsigned int controller_id;
+
+    // Database object
+    storage_t<Ts...> storage;
+
 public:
     // Initialization
     static bool initialize();
+
+    static storage_t<Ts...> make_storage();
 
     // Accessors
     static unsigned int next_profile_id();
