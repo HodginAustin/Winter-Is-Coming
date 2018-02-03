@@ -6,6 +6,7 @@ DATA_PARSER_OBJECTS = ./out/dataparser.o
 default: directories
 	make internal_state_objects
 	make internal_state
+	make install_sqlite
 	make copy_api
 	make api
 	make data_parser
@@ -25,7 +26,7 @@ control_service_main:
 	$(GCC) -c ./main.cpp -o ./out/main.o -lpistache -lpthread 
 
 control_service:
-	$(GCC) -o ./out/plantergb -L/usr/local/lib ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) $(DATA_PARSER_OBJECTS) -lpistache -lpthread
+	$(GCC) -o ./out/plantergb -L/usr/local/lib ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) $(DATA_PARSER_OBJECTS) -lpistache -lpthread -lsqlite3
 
 
 # Internal State
@@ -79,6 +80,10 @@ copy_api:
 		sudo cp ./environment/usr/local/lib/libpistache.a /usr/local/lib/ ; \
 		sudo cp -r ./environment/usr/local/include/* /usr/local/include/ ; \
 	fi
+
+install_sqlite:
+	sudo apt-get install libsqlite3-dev
+
 
 # Download and build the API from source (only to be used for unix systems other than the Raspberry Pi Zero W)
 build_api:
