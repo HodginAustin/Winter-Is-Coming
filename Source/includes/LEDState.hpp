@@ -9,14 +9,13 @@ using nlohmann::json;
 
 class LEDState
 {
-private:
+public:
+    // USE ACCESSORS AND MUTATORS
     unsigned int id;
     int r, g, b;
     float intensity;
     bool power;
 
-
-public:
     // Constructor
     LEDState();
     LEDState(const LEDState& ls);

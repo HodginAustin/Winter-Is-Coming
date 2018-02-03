@@ -17,12 +17,14 @@ using nlohmann::json;
 class Zone
 {
 private:
-    unsigned int id;
-    std::string name;
     Schedule* schedule;
     std::vector<LED*> leds;
 
 public:
+    // USE ACCESSORS AND MUTATORS
+    unsigned int id;
+    std::string name;
+
     // Constructor
     Zone();
     Zone(const Zone& z);

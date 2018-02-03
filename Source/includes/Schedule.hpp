@@ -15,10 +15,12 @@ using nlohmann::json;
 class Schedule
 {
 private:
-    unsigned int id;
     std::array<DailyState*, 7> weeklyState;
 
 public:
+    // USE ACCESSORS AND MUTATORS
+    unsigned int id;
+
     // Constructor
     Schedule();
     Schedule(const Schedule& s);

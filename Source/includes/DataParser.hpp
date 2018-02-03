@@ -12,6 +12,10 @@
 #include "./LEDState.hpp"
 #include "./DailyState.hpp"
 
+
+#include "./sqlite_orm.hpp"
+
+
 class DataParser
 {
 private:
@@ -24,13 +28,14 @@ private:
     static unsigned int controller_id;
 
     // Database object
-    storage_t<Ts...> storage;
+    //sqlite_orm::storage_t storage;
 
 public:
     // Initialization
     static bool initialize();
 
-    static storage_t<Ts...> make_storage();
+    //static sqlite_orm::storage_t make_storage();
+    static void build();
 
     // Accessors
     static unsigned int next_profile_id();

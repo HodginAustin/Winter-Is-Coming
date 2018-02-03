@@ -12,11 +12,13 @@ using nlohmann::json;
 class LED
 {
 private:
-    unsigned int id;
-    unsigned int strip_idx;
     Controller* controller;
 
 public:
+    // USE ACCESSORS AND MUTATORS
+    unsigned int id;
+    unsigned int strip_idx;
+
     // Constructor
     LED();
     LED(const LED& l);
