@@ -19,7 +19,7 @@ private:
         unsigned char red;
         unsigned char green;
         unsigned char blue;
-    };
+    } RGBColor;
     // Log actions flag
     static bool logEnable;    
     // Composer's current state:

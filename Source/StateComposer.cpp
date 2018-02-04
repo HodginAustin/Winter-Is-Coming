@@ -5,7 +5,7 @@
 bool StateComposer::initialize(bool log)
 {
     logEnable = log;
-    color = 0;
+    RGBColor = 0;
     composerState = 'C';
     return true;
 }
@@ -38,7 +38,7 @@ void StateComposer::compose()
                 continue;
             }
 
-            currentZoneActiveState = currentZoneSchedule->get_active_state(time, week_day);
+            currentZoneActiveState = currentZoneSchedule->get_active_state(time, weekDay);
             if (currentZoneActiveState == NULL) {
                 // Error to log
                 continue;
@@ -47,7 +47,7 @@ void StateComposer::compose()
             currentZoneLEDs = currentZone->get_leds();
 
             // Will only loop over returned vector of LEDs (if none, skip)
-            for (auto currentLED : zone_leds) {
+            for (auto currentLED : currentZoneLEDs) {
 
                 currentLEDController = currentLED->get_controller();
                 if (currentLEDController == NULL) {
@@ -56,13 +56,13 @@ void StateComposer::compose()
                 }
 
                 ioPort = currentLEDController->get_io();
-                if (ioPort == NULL) {
+                if (ioPort <= 0) {
                     // Error to log
                     continue;
                 }
 
                 stripIndex = currentLED->get_strip_idx();
-                if (stripIndex == NULL) {
+                if (stripIndex <= 0) {
                     // Error to log
                     continue;
                 }
