@@ -29,7 +29,7 @@ private:
     static char composerState;
     // Timing objects
     static time_t sysTime;
-    static char weekDay;
+    static unsigned int weekDay;
     // Communication objects
     static char acknowledge;
     static char retransmit;

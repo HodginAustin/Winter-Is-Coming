@@ -37,7 +37,7 @@ void StateComposer::compose()
                 continue;
             }
 
-            currentZoneActiveState = currentZoneSchedule->get_active_state(time, weekDay);
+            currentZoneActiveState = currentZoneSchedule->get_active_state(time, [unsigned int]weekDay);
             if (currentZoneActiveState == NULL) {
                 // Error to log
                 continue;
