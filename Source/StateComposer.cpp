@@ -5,7 +5,6 @@
 bool StateComposer::initialize(bool log)
 {
     logEnable = log;
-    RGBColor = 0;
     composerState = 'C';
     return true;
 }
