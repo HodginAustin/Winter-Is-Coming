@@ -12,15 +12,16 @@ bool StateComposer::initialize(bool log)
 // Main composer function
 void StateComposer::compose()
 {
+    tm* timeInfo;
+
     while(1) {
 
         composerState = 'C';
 
-        tm* timeInfo;
         time(&sysTime);
         timeInfo=localtime(&sysTime);
-        weekDay = timeInfo->tm_wday;
-        // Further get time values for logging and scheduling
+        [int]weekDay = timeInfo->tm_wday;
+        int seconds = ( (timeInfo->tm_hour * 3600) + (timeInfo->tm_minute * 60) + (timeInfo->tm_sec) );
 
         currentProfile = InternalState::get_current_profile();
         if (currentProfile == NULL) {
@@ -37,7 +38,7 @@ void StateComposer::compose()
                 continue;
             }
 
-            currentZoneActiveState = currentZoneSchedule->get_active_state(time, [unsigned int]weekDay);
+            currentZoneActiveState = currentZoneSchedule->get_active_state(seconds, weekDay);
             if (currentZoneActiveState == NULL) {
                 // Error to log
                 continue;
