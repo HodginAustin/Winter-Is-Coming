@@ -13,7 +13,7 @@
 void* thr_compose_call(void*)
 {
     std::cout << "Starting State Composer...";
-    StateComposer::compose(SC_LOG);
+    StateComposer::compose();
     pthread_exit(NULL);
 }
 
@@ -36,7 +36,7 @@ int main()
 
     // LED control system
     std::cout << "Initializing State Composer...";
-    if (StateComposer::initialize()) { std::cout << "done" << std::endl; }
+    if (StateComposer::initialize(SC_LOG)) { std::cout << "done" << std::endl; }
     else { std::cout << "failed" << std::endl; return 0; }
 
     std::cout << "Spinning thread for State Composer...";

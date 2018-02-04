@@ -1,6 +1,21 @@
 #include "./includes/StateComposer.hpp"
 
 
+// Required for static class members
+StateComposer::logEnable;
+StateComposer::composerState;
+
+StateComposer::sysTime;
+StateComposer::weekDay;
+StateComposer::currentProfile;
+StateComposer::currentZoneSchedule;
+StateComposer::currentZoneActiveState;
+StateComposer::currentZoneLEDs;
+StateComposer::currentLEDController;
+StateComposer::ioPort;
+StateComposer::stripIndex;
+
+
 // Initialization
 bool StateComposer::initialize(bool log)
 {
@@ -20,8 +35,8 @@ void StateComposer::compose()
 
         time(&sysTime);
         timeInfo=localtime(&sysTime);
-        [int]weekDay = timeInfo->tm_wday;
-        int seconds = ( (timeInfo->tm_hour * 3600) + (timeInfo->tm_minute * 60) + (timeInfo->tm_sec) );
+        weekDay = timeInfo->tm_wday;
+        unsigned int seconds = ( (timeInfo->tm_hour * 3600) + (timeInfo->tm_min * 60) + (timeInfo->tm_sec) );
 
         currentProfile = InternalState::get_current_profile();
         if (currentProfile == NULL) {
