@@ -15,6 +15,7 @@
 
 #include "./sqlite_orm.hpp"
 
+using namespace sqlite_orm;
 
 class DataParser
 {
@@ -27,17 +28,15 @@ private:
     static unsigned int daily_state_id;
     static unsigned int controller_id;
 
-    // Database object
-    //sqlite_orm::storage_t storage;
-
 public:
     // Initialization
     static bool initialize();
 
-    //static sqlite_orm::storage_t make_storage();
-    static void build();
+    // CRUD operations
+    static unsigned int insert(Zone* z);
+    static unsigned int insert(Profile* p);
 
-    // Accessors
+    // ID Accessors
     static unsigned int next_profile_id();
     static unsigned int next_zone_id();
     static unsigned int next_schedule_id();
@@ -45,6 +44,7 @@ public:
     static unsigned int next_led_state_id();
     static unsigned int next_daily_state_id();
     static unsigned int next_controller_id();
+
 };
 
 #endif //__DATA_PARSER_H_INCLUDED__
