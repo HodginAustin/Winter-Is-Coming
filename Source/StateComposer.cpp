@@ -2,7 +2,7 @@
 
 
 // Initialization
-StateComposer::initialize(bool log)
+bool StateComposer::initialize(bool log)
 {
     logEnable = log;
     color = 0;
@@ -11,7 +11,7 @@ StateComposer::initialize(bool log)
 }
 
 // Main composer function
-StateComposer::compose()
+void StateComposer::compose()
 {
     while(1) {
 
