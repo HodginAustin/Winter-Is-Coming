@@ -7,8 +7,13 @@
 #include <iostream>
 #include <string>
 
+#include "./Controller.hpp"
 #include "./InternalState.hpp"
+#include "./LED.hpp"
+#include "./LEDState.hpp"
+#include "./Profile.hpp"
 #include "./Schedule.hpp"
+#include "./Zone.hpp"
 
 class StateComposer
 {

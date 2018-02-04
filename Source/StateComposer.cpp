@@ -2,18 +2,18 @@
 
 
 // Required for static class members
-StateComposer::logEnable;
-StateComposer::composerState;
+bool StateComposer::logEnable;
+char StateComposer::composerState;
 
-StateComposer::sysTime;
-StateComposer::weekDay;
-StateComposer::currentProfile;
-StateComposer::currentZoneSchedule;
-StateComposer::currentZoneActiveState;
-StateComposer::currentZoneLEDs;
-StateComposer::currentLEDController;
-StateComposer::ioPort;
-StateComposer::stripIndex;
+time_t StateComposer::sysTime;
+int StateComposer::weekDay;
+Profile* StateComposer::currentProfile;
+Schedule* StateComposer::currentZoneSchedule;
+LEDState* StateComposer::currentZoneActiveState;
+std::vector<LED*> StateComposer::currentZoneLEDs;
+Controller* StateComposer::currentLEDController;
+unsigned int StateComposer::ioPort;
+unsigned int StateComposer::stripIndex;
 
 
 // Initialization

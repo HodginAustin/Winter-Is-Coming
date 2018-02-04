@@ -13,7 +13,7 @@
 void* thr_compose_call(void*)
 {
     std::cout << "Starting State Composer...";
-    StateComposer::compose();
+    //StateComposer::compose();
     pthread_exit(NULL);
 }
 
