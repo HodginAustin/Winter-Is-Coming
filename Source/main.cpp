@@ -68,11 +68,11 @@ int main()
 
     // Cleanup
     composeEnable = false;
-    std::cout << "Joining composer thread back to main...";
+    std::cout << "Joining composer thread back to main... ";
     pthread_join(composerThread, NULL);
-    std::cout << "Joined! Freeing API..." << std::endl;
+    std::cout << "Joined! Freeing API... " << std::endl;
     free(api);
-    cout << "done. Exiting..." << std::endl;
+    std::cout << "done. Exiting..." << std::endl;
 
     return 0;
 }
