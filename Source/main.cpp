@@ -13,7 +13,7 @@ bool composeEnable = true;
 
 void* thr_compose_call(void*)
 {
-    std::cout << "Starting State Composer...";
+    std::cout << "Starting State Composer..." << std::endl;
     while (composeEnable) {
         StateComposer::compose();
     }    
