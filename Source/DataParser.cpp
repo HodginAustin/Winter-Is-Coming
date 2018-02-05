@@ -20,12 +20,85 @@ inline auto init_storage(const std::string& path)
 {
     // Build schema
     return make_storage(path,
+        // Profiles
+        make_table("profiles",
+            make_column("id",
+                        &Profile::id,
+                        primary_key()),
+            make_column("name",
+                        &Profile::name),
+            make_column("description",
+                        &Profile::description)
+        ),
+
+        // Zones
         make_table("zones",
             make_column("id",
                         &Zone::id,
                         primary_key()),
             make_column("name",
-                        &Zone::name)));
+                        &Zone::name)//,
+            //make_column("schedule",
+            //            &Zone::schedule)
+        ),
+        //foreign_key(&Zone::schedule).references(&Schedule::id),
+
+        // Schedule
+        make_table("schedules",
+            make_column("id",
+                        &Schedule::id,
+                        primary_key())
+        ),
+
+        // LED
+        make_table("led",
+            make_column("id",
+                        &LED::id,
+                        primary_key()),
+            make_column("strip_idx",
+                        &LED::strip_idx)//,
+            //make_column("controller",
+            //            &LED::controller)
+        ),
+        //foreign_key(&LED::controller).references(&Controller::id),
+
+        // Controller
+        make_table("controllers",
+            make_column("id",
+                        &Controller::id,
+                        primary_key()),
+            make_column("io",
+                        &Controller::io),
+            make_column("address",
+                        &Controller::address),
+            make_column("details",
+                        &Controller::details)
+        ),
+
+        // LED State
+        make_table("led_state",
+            make_column("id",
+                        &LEDState::id,
+                        primary_key()),
+            make_column("r",
+                        &LEDState::r),
+            make_column("g",
+                        &LEDState::g),
+            make_column("intensity",
+                        &LEDState::intensity),
+            make_column("power",
+                        &LEDState::power)
+        ),
+
+        // Daily State
+        make_table("daily_state",
+            make_column("id",
+                        &DailyState::id,
+                        primary_key())
+        )
+
+        // Relationship tables
+    );
 }
 
 typedef decltype(init_storage("")) Storage;

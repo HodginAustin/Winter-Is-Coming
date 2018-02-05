@@ -36,7 +36,7 @@ int LEDState::get_r() const { return r; }
 int LEDState::get_g() const { return g; }
 int LEDState::get_b() const { return b; }
 
-float LEDState::get_intensity() const
+int LEDState::get_intensity() const
 {
     return intensity;
 }
@@ -60,7 +60,7 @@ void LEDState::set_color(int red, int green, int blue)
     if (blue >= 0) { b = blue; }
 }
 
-void LEDState::set_intensity(float val)
+void LEDState::set_intensity(int val)
 {
     intensity = val;
 }

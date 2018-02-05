@@ -13,7 +13,7 @@ public:
     // USE ACCESSORS AND MUTATORS
     unsigned int id;
     int r, g, b;
-    float intensity;
+    int intensity;
     bool power;
 
     // Constructor
@@ -28,13 +28,13 @@ public:
     int get_r() const;
     int get_g() const;
     int get_b() const;
-    float get_intensity() const;
+    int get_intensity() const;
     bool get_power() const;
 
     // Mutators
     void set_id(unsigned int);
     void set_color(int r, int g, int b);
-    void set_intensity(float);
+    void set_intensity(int);
     void set_power(bool);
 
     // Static states
