@@ -9,11 +9,14 @@
 // State Composer Logging
 #define SC_LOG true
 
+bool composeEnable = true;
 
 void* thr_compose_call(void*)
 {
     std::cout << "Starting State Composer...";
-    //StateComposer::compose();
+    while (composeEnable) {
+        StateComposer::compose();
+    }    
     pthread_exit(NULL);
 }
 
@@ -24,29 +27,30 @@ int main()
     int thrStatus = -57;
 
     // Internal state
-    std::cout << "Initalizing Internal State...";
+    std::cout << "Initalizing Internal State... ";
     if (InternalState::initialize()) { std::cout << "done" << std::endl; }
     else { std::cout << "failed" << std::endl; return 0; }
 
     // Data parser
-    std::cout << "Initalizing Data Parser...";
+    std::cout << "Initalizing Data Parser... ";
     if (DataParser::initialize()) { std::cout << "done" << std::endl; }
     else { std::cout << "failed" << std::endl; return 0; }
 
 
     // LED control system
-    std::cout << "Initializing State Composer...";
+    std::cout << "Initializing State Composer... ";
     if (StateComposer::initialize(SC_LOG)) { std::cout << "done" << std::endl; }
     else { std::cout << "failed" << std::endl; return 0; }
 
-    std::cout << "Spinning thread for State Composer...";
+    std::cout << "Spinning thread for State Composer... ";
     pthread_t composerThread;
     thrStatus = pthread_create(&composerThread, NULL, thr_compose_call, NULL);
 
     if (thrStatus) {
-        std::cerr << "ERROR: Unable to create thread! Exiting --- " << thrStatus << std::endl;
+        std::cerr << "   ERROR: Unable to create thread! Exiting --- " << thrStatus << std::endl;
         exit(-1);
     }
+    else {std::cout << " spun" << std::cout;}
 
     // API (needs to be the last thing in this function)
     Port port(9080);
@@ -54,7 +58,7 @@ int main()
     int threads = 2;
     API* api = new API(addr);
 
-    std::cout << "Initalizing API...";
+    std::cout << "Initalizing API... ";
     if (api->initialize(threads)) { std::cout << "done" << std::endl; }
     else { std::cout << "failed" << std::endl; return 0; }
 
@@ -63,9 +67,13 @@ int main()
     api->start();
 
     // Cleanup
+    composeEnable = false;
+    std::cout << "Supposedly, killing compose loop..." << std::endl;
+    std::cout << "Joining composer thread back to main...";
     pthread_join(composerThread, NULL);
+    std::cout << "Joined! Freeing API..." << std::endl;
     free(api);
-
+    cout << "done. Exiting..." << std::endl;
 
     return 0;
 }
