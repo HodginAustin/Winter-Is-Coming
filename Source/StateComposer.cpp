@@ -39,7 +39,7 @@ void StateComposer::compose()
     currentProfile = InternalState::get_current_profile();
     if (currentProfile == NULL) {
         // Error to log
-        continue;
+        return;
     }
 
     // Will only loop over returned vector of zones (if none, skip)

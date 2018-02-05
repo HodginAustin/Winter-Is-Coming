@@ -50,7 +50,7 @@ int main()
         std::cerr << "   ERROR: Unable to create thread! Exiting --- " << thrStatus << std::endl;
         exit(-1);
     }
-    else {std::cout << " spun" << std::cout;}
+    else {std::cout << " spun" << std::endl;}
 
     // API (needs to be the last thing in this function)
     Port port(9080);
@@ -68,7 +68,6 @@ int main()
 
     // Cleanup
     composeEnable = false;
-    std::cout << "Supposedly, killing compose loop..." << std::endl;
     std::cout << "Joining composer thread back to main...";
     pthread_join(composerThread, NULL);
     std::cout << "Joined! Freeing API..." << std::endl;
