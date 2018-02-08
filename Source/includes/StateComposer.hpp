@@ -7,6 +7,10 @@
 #include <iostream>
 #include <string>
 
+#include <unistd.h>     //Used for UART
+#include <fcntl.h>		//Used for UART
+#include <termios.h>	//Used for UART
+
 #include "./Controller.hpp"
 #include "./InternalState.hpp"
 #include "./LED.hpp"
@@ -25,6 +29,9 @@ private:
         unsigned char green;
         unsigned char blue;
     } RGBColor;
+    // UART
+    static int uartFilestream;
+    static struct termios options;
     // Log actions flag
     static bool logEnable;    
     // Composer's current state:
