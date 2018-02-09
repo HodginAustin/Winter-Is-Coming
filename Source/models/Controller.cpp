@@ -26,24 +26,24 @@ void Controller::copy(const Controller& c)
 
 
 // Accessors
-unsigned int Controller::get_id() const
+const unsigned int& Controller::get_id() const
 {
-    return id;
+    return ithis->d;
 }
 
-unsigned int Controller::get_io() const
+const unsigned int& Controller::get_io() const
 {
-    return io;
+    return this->io;
 }
 
-std::string Controller::get_address() const
+const std::string& Controller::get_address() const
 {
-    return address;
+    return this->address;
 }
 
-std::string Controller::get_details() const
+const std::string& Controller::get_details() const
 {
-    return details;
+    return this->details;
 }
 
 

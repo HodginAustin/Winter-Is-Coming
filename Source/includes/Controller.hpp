@@ -12,13 +12,12 @@ using nlohmann::json;
 
 class Controller
 {
-public:
-    // USE ACCESSORS AND MUTATORS
+private:
     unsigned int id;
     unsigned int io;
     std::string address;
     std::string details;
-
+public:
     // Constructor
     Controller();
     Controller(const Controller& c);
@@ -27,10 +26,10 @@ public:
     void copy(const Controller& c);
 
     // Accessors
-    unsigned int get_id() const;
-    unsigned int get_io() const;
-    std::string get_address() const;
-    std::string get_details() const;
+    const unsigned int& get_id() const;
+    const unsigned int& get_io() const;
+    const std::string& get_address() const;
+    const std::string& get_details() const;
 
     // Mutators
     void set_id(unsigned int);

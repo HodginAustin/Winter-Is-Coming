@@ -64,14 +64,18 @@ inline auto init_storage(const std::string& path)
         // Controller
         make_table("controllers",
             make_column("id",
-                        &Controller::id,
+                        &Controller::get_id,
+                        &Controller::set_id,
                         primary_key()),
             make_column("io",
-                        &Controller::io),
+                        &Controller::get_io
+                        &Controller::set_io),
             make_column("address",
-                        &Controller::address),
+                        &Controller::get_address,
+                        &Controller::set_address),
             make_column("details",
-                        &Controller::details)
+                        &Controller::get_details,
+                        &Controller::set_details)
         ),
         // LED State
         make_table("led_state",
