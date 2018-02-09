@@ -22,13 +22,11 @@
 class StateComposer
 {
 private:
-    
-    static struct color {
-        // u-char : values from 0 - 255
-        unsigned char red;
-        unsigned char green;
-        unsigned char blue;
-    } RGBColor;
+
+    // RGB color values
+    static char red;
+    static char green;
+    static char blue;
     // UART
     static int uartFilestream;
     static struct termios options;
@@ -60,7 +58,7 @@ private:
                     static unsigned int stripIndex;
 
     // Simple function that sends color state to a controller with target LED
-    static bool send_serial(Controller*, color, unsigned int);
+    static bool r_t_serial(Controller*, char, char, char, unsigned int);
     // Log particular messages / actions
     static void log(const std::string &text);
 

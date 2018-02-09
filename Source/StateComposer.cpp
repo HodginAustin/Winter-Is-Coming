@@ -3,6 +3,10 @@
 
 // Required for static class members
 
+char StateComposer::red;
+char StateComposer::green;
+char StateComposer::blue;
+
 int StateComposer::uartFilestream;
 struct termios StateComposer::options;
 
@@ -56,10 +60,10 @@ bool StateComposer::initialize(bool log)
     return true;
 }
 
-bool send_serial(Controller* ctrlr, struct color color, unsigned int idx)
+bool r_t_serial(Controller* ctrlr, char r, char g, char b, unsigned int idx)
 {
 
-
+	return true;
 }
 
 
