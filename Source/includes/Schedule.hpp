@@ -15,11 +15,10 @@ using nlohmann::json;
 class Schedule
 {
 private:
+    unsigned int id;
     std::array<DailyState*, 7> weeklyState;
 
 public:
-    // USE ACCESSORS AND MUTATORS
-    unsigned int id;
 
     // Constructor
     Schedule();
@@ -29,8 +28,9 @@ public:
     void copy(const Schedule& s);
 
     // Accessors
-    unsigned int get_id() const;
+    const unsigned int& get_id() const;
     DailyState* get_daily_state(unsigned int day) const;
+    //const unsigned int& get_daily_state_id(unsigned int day) const;
     LEDState* get_active_state(unsigned int time, int day) const;
 
     // Mutators
