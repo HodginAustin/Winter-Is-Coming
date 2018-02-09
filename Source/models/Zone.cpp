@@ -31,14 +31,14 @@ void Zone::copy(const Zone& z)
 
 
 // Accessors
-unsigned int Zone::get_id() const
+const unsigned int& Zone::get_id() const
 {
-    return id;
+    return this->id;
 }
 
-std::string Zone::get_name() const
+const std::string& Zone::get_name() const
 {
-    return name;
+    return this->name;
 }
 
 Schedule* Zone::get_schedule() const

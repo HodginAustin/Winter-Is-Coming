@@ -17,6 +17,8 @@ using nlohmann::json;
 class Zone
 {
 private:
+    unsigned int id;
+    std::string name;
     Schedule* schedule;
     std::vector<LED*> leds;
 
@@ -24,8 +26,6 @@ public:
     // USE ACCESSORS AND MUTATORS
     std::shared_ptr<unsigned int> profile_id;
     std::shared_ptr<unsigned int> schedule_id;
-    unsigned int id;
-    std::string name;
 
     // Constructor
     Zone();
@@ -35,8 +35,8 @@ public:
     void copy(const Zone& z);
 
     // Accessors
-    unsigned int get_id() const;
-    std::string get_name() const;
+    const unsigned int& get_id() const;
+    const std::string& get_name() const;
     Schedule* get_schedule() const;
 
     // Mutators
