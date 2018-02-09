@@ -28,7 +28,7 @@ void Controller::copy(const Controller& c)
 // Accessors
 const unsigned int& Controller::get_id() const
 {
-    return this->d;
+    return this->id;
 }
 
 const unsigned int& Controller::get_io() const
