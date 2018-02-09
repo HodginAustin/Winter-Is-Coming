@@ -42,7 +42,10 @@ inline auto init_storage(const std::string& path)
                         primary_key()),
             make_column("name",
                         &Zone::name),
-            make_column("schedule",
+            make_column("profile_id",
+                        &Zone::profile_id),
+            foreign_key(&Zone::profile_id).references(&Profile::id),
+            make_column("schedule_id",
                         &Zone::schedule_id),
             foreign_key(&Zone::schedule_id).references(&Schedule::id)
         ),
@@ -53,7 +56,7 @@ inline auto init_storage(const std::string& path)
                         primary_key()),
             make_column("strip_idx",
                         &LED::strip_idx),
-            make_column("controller",
+            make_column("controller_id",
                         &LED::controller_id),
             foreign_key(&LED::controller_id).references(&Controller::id)
         ),

@@ -22,6 +22,7 @@ private:
 
 public:
     // USE ACCESSORS AND MUTATORS
+    std::shared_ptr<unsigned int> profile_id;
     std::shared_ptr<unsigned int> schedule_id;
     unsigned int id;
     std::string name;
