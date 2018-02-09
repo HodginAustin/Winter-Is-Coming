@@ -59,7 +59,7 @@ inline auto init_storage(const std::string& path)
                         &LED::strip_idx),
             make_column("controller_id",
                         &LED::controller_id),
-            foreign_key(&LED::controller_id).references(&Controller::id)
+            foreign_key(&LED::controller_id).references(&Controller::get_id)
         ),
         // Controller
         make_table("controllers",
@@ -68,7 +68,7 @@ inline auto init_storage(const std::string& path)
                         &Controller::set_id,
                         primary_key()),
             make_column("io",
-                        &Controller::get_io
+                        &Controller::get_io,
                         &Controller::set_io),
             make_column("address",
                         &Controller::get_address,
@@ -94,7 +94,8 @@ inline auto init_storage(const std::string& path)
         // Daily State
         make_table("daily_state",
             make_column("id",
-                        &DailyState::id,
+                        &DailyState::get_id,
+                        &DailyState::set_id,
                         primary_key())
         )
 

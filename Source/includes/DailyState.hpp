@@ -13,11 +13,10 @@ using nlohmann::json;
 class DailyState
 {
 private:
+    unsigned int id;
     std::unordered_map<unsigned int, LEDState*> timeStatePairs;
 
 public:
-    // USE ACCESSORS AND MUTATORS
-    unsigned int id;
     
     // Constructor
     DailyState();
@@ -27,7 +26,7 @@ public:
     void copy(const DailyState& d);
 
     // Accessors
-    unsigned int get_id() const;
+    const unsigned int& get_id() const;
     std::unordered_map<unsigned int, LEDState*> get_time_state_map() const;
 
     // Mutators

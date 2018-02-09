@@ -28,9 +28,9 @@ void DailyState::copy(const DailyState& d)
 
 
 // Accessors
-unsigned int DailyState::get_id() const
+const unsigned int& DailyState::get_id() const
 {
-    return id;
+    return this->id;
 }
 
 std::unordered_map<unsigned int, LEDState*> DailyState::get_time_state_map() const
