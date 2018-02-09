@@ -7,6 +7,7 @@
 #include <vector>
 #include "./Profile.hpp"
 #include "./Zone.hpp"
+#include "./Schedule.hpp"
 #include "./LED.hpp"
 #include "./Controller.hpp"
 #include "./LEDState.hpp"

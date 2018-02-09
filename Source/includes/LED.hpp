@@ -16,6 +16,7 @@ private:
 
 public:
     // USE ACCESSORS AND MUTATORS
+    std::shared_ptr<unsigned int> controller_id;
     unsigned int id;
     unsigned int strip_idx;
 

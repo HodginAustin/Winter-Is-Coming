@@ -1,7 +1,6 @@
 #include <algorithm>
 #include "./includes/DataParser.hpp"
 
-
 using namespace sqlite_orm;
 
 
@@ -30,38 +29,34 @@ inline auto init_storage(const std::string& path)
             make_column("description",
                         &Profile::description)
         ),
-
-        // Zones
-        make_table("zones",
-            make_column("id",
-                        &Zone::id,
-                        primary_key()),
-            make_column("name",
-                        &Zone::name)//,
-            //make_column("schedule",
-            //            &Zone::schedule)
-        ),
-        //foreign_key(&Zone::schedule).references(&Schedule::id),
-
         // Schedule
         make_table("schedules",
             make_column("id",
                         &Schedule::id,
                         primary_key())
         ),
-
+        // Zones
+        make_table("zones",
+            make_column("id",
+                        &Zone::id,
+                        primary_key()),
+            make_column("name",
+                        &Zone::name),
+            make_column("schedule",
+                        &Zone::schedule_id),
+            foreign_key(&Zone::schedule_id).references(&Schedule::id)
+        ),
         // LED
         make_table("led",
             make_column("id",
                         &LED::id,
                         primary_key()),
             make_column("strip_idx",
-                        &LED::strip_idx)//,
-            //make_column("controller",
-            //            &LED::controller)
+                        &LED::strip_idx),
+            make_column("controller",
+                        &LED::controller_id),
+            foreign_key(&LED::controller_id).references(&Controller::id)
         ),
-        //foreign_key(&LED::controller).references(&Controller::id),
-
         // Controller
         make_table("controllers",
             make_column("id",
@@ -74,7 +69,6 @@ inline auto init_storage(const std::string& path)
             make_column("details",
                         &Controller::details)
         ),
-
         // LED State
         make_table("led_state",
             make_column("id",
@@ -89,7 +83,6 @@ inline auto init_storage(const std::string& path)
             make_column("power",
                         &LEDState::power)
         ),
-
         // Daily State
         make_table("daily_state",
             make_column("id",
