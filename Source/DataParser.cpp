@@ -32,7 +32,8 @@ inline auto init_storage(const std::string& path)
         // Schedule
         make_table("schedules",
             make_column("id",
-                        &Schedule::id,
+                        &Schedule::get_id,
+                        &Schedule::set_id,
                         primary_key())
         ),
         // Zones
