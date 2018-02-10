@@ -1,5 +1,6 @@
 #include <algorithm>
 #include "./includes/DataParser.hpp"
+#include "./includes/InternalState.hpp"
 #include "./includes/relationships.hpp"
 
 using namespace sqlite_orm;
@@ -19,6 +20,11 @@ inline auto init_storage(const std::string& path)
 {
     // Build schema
     return make_storage(path,
+        // Settings
+        //make_table("settings",
+        //    make_column("current_profile",
+        //                &InternalState::currentProfileId)
+        //),
         // Profiles
         make_table("profiles",
             make_column("id",
@@ -104,7 +110,6 @@ inline auto init_storage(const std::string& path)
                         &DailyState::set_id,
                         primary_key())
         ),
-
         // Relationship tables //
         // Zone's 7 daily states
         make_table("zone_to_led",
@@ -136,7 +141,7 @@ inline auto init_storage(const std::string& path)
     );
 }
 
-typedef decltype(init_storage("")) Storage;
+using Storage = decltype(init_storage(""));
 static std::shared_ptr<Storage> db;
 
 
@@ -150,63 +155,106 @@ bool DataParser::initialize()
 
     // Create DB file
     db->sync_schema();
+
+    // Load all existing data
+    get_all();
     
     return true;
 }
 
 
-// CRUD operations
-unsigned int DataParser::insert(Zone* z)
-{
-    return 0;
-    //return db->insert(*z);
-}
+// INSERT
 unsigned int DataParser::insert(Profile* p)
 {
-    return 0;
-    //return db->insert(*p);
+    unsigned int id = db->insert(*p);
+    p->set_id(id);
+    return id;
+}
+unsigned int insert(Zone* z)
+{
+    unsigned int id = db->insert(*z);
+    z->set_id(id);
+    return id;
+}
+unsigned int insert(LED* l)
+{
+    unsigned int id = db->insert(*l);
+    l->set_id(id);
+    return id;
+}
+unsigned int insert(LEDState* ls)
+{
+    unsigned int id = db->insert(*ls);
+    ls->set_id(id);
+    return id;
+}
+unsigned int insert(DailyState* ds)
+{
+    unsigned int id = db->insert(*ds);
+    ds->set_id(id);
+    return id;
+}
+unsigned int insert(Controller* c)
+{
+    unsigned int id = db->insert(*c);
+    c->set_id(id);
+    return id;
 }
 
 
-// ID Accessors
-unsigned int DataParser::next_profile_id()
+// UPDATE
+void update(Profile* p)
 {
-    unsigned int tmp = profile_id;
-    profile_id++;
-    return tmp;
+
+}
+void update(Zone* z)
+{
+    
+}
+void update(LED* l)
+{
+
+}
+void update(LEDState* ls)
+{
+
+}
+void update(DailyState* ds)
+{
+
+}
+void update(Controller* c)
+{
+
 }
 
-unsigned int DataParser::next_zone_id()
-{
-    unsigned int tmp = zone_id;
-    zone_id++;
-    return tmp;
-}
 
-unsigned int DataParser::next_led_id()
-{
-    unsigned int tmp = led_id;
-    led_id++;
-    return tmp;
-}
+// SELECT
+void get_all() {}
 
-unsigned int DataParser::next_led_state_id()
-{
-    unsigned int tmp = led_state_id;
-    led_state_id++;
-    return tmp;
-}
 
-unsigned int DataParser::next_daily_state_id()
+// DELETE
+void remove(Profile* p)
 {
-    unsigned int tmp = daily_state_id;
-    daily_state_id++;
-    return tmp;
-}
 
-unsigned int DataParser::next_controller_id()
+}
+void remove(Zone* z)
 {
-    unsigned int tmp = controller_id;
-    controller_id++;
-    return tmp;
+
+}
+void remove(LED* l)
+{
+
+}
+void remove(LEDState* ls)
+{
+
+}
+void remove(DailyState* ds)
+{
+
+}
+void remove(Controller* c)
+{
+
 }
