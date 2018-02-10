@@ -43,6 +43,11 @@ Controller* LED::get_controller() const
     return controller;
 }
 
+const unsigned int& LED::get_controller_id() const
+{
+    if (controller) { return controller->get_id(); } else { return -1; }
+}
+
 
 // Mutators
 void LED::set_id(unsigned int val)
@@ -58,6 +63,11 @@ void LED::set_strip_idx(unsigned int val)
 void LED::set_controller(Controller* newController)
 {
     controller = newController;
+}
+
+void LED::set_controller_id(unsigned int id)
+{
+    set_controller(InternalState::get_controller(id));
 }
 
 

@@ -65,8 +65,9 @@ inline auto init_storage(const std::string& path)
                         &LED::get_strip_idx,
                         &LED::set_strip_idx),
             make_column("controller_id",
-                        &LED::controller_id),
-            foreign_key(&LED::controller_id).references(&Controller::get_id)
+                        &LED::get_controller_id,
+                        &LED::set_controller_id),
+            foreign_key(&LED::get_controller_id).references(&Controller::get_id)
         ),
         // Controller
         make_table("controllers",
