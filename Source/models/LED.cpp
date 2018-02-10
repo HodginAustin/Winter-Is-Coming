@@ -45,7 +45,7 @@ Controller* LED::get_controller() const
 
 const unsigned int& LED::get_controller_id() const
 {
-    if (controller) { return controller->get_id(); } else { return -1; }
+    if (controller) { return controller->get_id(); } else { return 0; }
 }
 
 
