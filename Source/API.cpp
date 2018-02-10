@@ -505,8 +505,8 @@ void API::get_zone_active_led_state(REQUEST, RESPONSE)
                 j_out = *l;
                 code = Http::Code::Ok;
             }
-        }
-    }
+        } else { j_out.push_back(json{"zone", zone_id}); }
+    } else { j_out.push_back(json{"profile", profile_id}); }
 
     // Send response
     response.send(code, j_out.dump());

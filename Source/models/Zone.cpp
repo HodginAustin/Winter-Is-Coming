@@ -111,23 +111,25 @@ LEDState* Zone::get_active_state(unsigned int time_of_day, int day) const
     LEDState* ls = get_led_state_from_daily_state(timeToCheck, ds);
 
     // If the initial day does not exist or it has no daily states
-    while (ds == 0 || ls == 0){
+    while (ls == 0){
+
         // Look to the previous day
         dayToCheck--;
         // If we had to look back at the previous day, set the time to the end of the day
         timeToCheck = 24 * 60 * 60;
+
         // Loop backwards from sunday to saturday
         if (dayToCheck < 0) { dayToCheck = 6; }
         // If we loop backwards all the way to the day we started at, return null
-        if (dayToCheck == day) { return 0; }
+        if (dayToCheck == day) { return 0;}
 
         // Get the previous day of the week
         ds = weeklyState.at(dayToCheck);
         // Try to get the latest LED state
         ls = get_led_state_from_daily_state(timeToCheck, ds);
     }
-
-    return ls;
+    
+    if (!ls) { return LEDState::off; } else { return ls; }
 }
 
 void Zone::set_daily_state(unsigned int day, DailyState* state)
@@ -152,8 +154,8 @@ void to_json(json& j, const Zone& z) {
     for (int i = 0; i < 7; i++){
         DailyState* day = z.get_daily_state(i);
         json day_j;
-        if (day) { day_j["id"] = day->get_id(); }
-        days_j.push_back(day_j);
+        if (day) { days_j.push_back(day->get_id()); }
+        else { days_j.push_back(0); }
     }
         
     j = json{
