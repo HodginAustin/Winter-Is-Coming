@@ -4,7 +4,6 @@
 #include "./test_controller.cpp"
 #include "./test_dailystate.cpp"
 #include "./test_profile.cpp"
-#include "./test_schedule.cpp"
 #include "./test_zone.cpp"
 #include "./test_internal_state_manager.cpp"
 #include "./test_data_parser.cpp"
@@ -32,7 +31,6 @@ int main()
     run_test(GET_VAR_NAME(test_controller), test_controller);
     run_test(GET_VAR_NAME(test_dailystate), test_dailystate);
     run_test(GET_VAR_NAME(test_profile), test_profile);
-    run_test(GET_VAR_NAME(test_schedule), test_schedule);
     run_test(GET_VAR_NAME(test_zone), test_zone);
 
     // Data parser tests

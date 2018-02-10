@@ -20,19 +20,19 @@ void Profile::copy(const Profile& p)
 
 
 // Accessors
-unsigned int Profile::get_id() const
+const unsigned int& Profile::get_id() const
 {
-    return id;
+    return this->id;
 }
 
-std::string Profile::get_name() const
+const std::string& Profile::get_name() const
 {
-    return name;
+    return this->name;
 }
 
-std::string Profile::get_description() const
+const std::string& Profile::get_description() const
 {
-    return description;
+    return this->description;
 }
 
 

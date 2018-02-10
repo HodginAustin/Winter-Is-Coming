@@ -28,19 +28,24 @@ void LED::copy(const LED& l)
 
 
 // Accessors
-unsigned int LED::get_id() const
+const unsigned int& LED::get_id() const
 {
-    return id;
+    return this->id;
 }
 
-unsigned int LED::get_strip_idx() const
+const unsigned int& LED::get_strip_idx() const
 {
-    return strip_idx;
+    return this->strip_idx;
 }
 
 Controller* LED::get_controller() const
 {
     return controller;
+}
+
+const unsigned int& LED::get_controller_id() const
+{
+    if (controller) { return controller->get_id(); } else { return 0; }
 }
 
 
@@ -58,6 +63,11 @@ void LED::set_strip_idx(unsigned int val)
 void LED::set_controller(Controller* newController)
 {
     controller = newController;
+}
+
+void LED::set_controller_id(unsigned int id)
+{
+    set_controller(InternalState::get_controller(id));
 }
 
 

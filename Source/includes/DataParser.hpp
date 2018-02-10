@@ -12,24 +12,32 @@
 #include "./LEDState.hpp"
 #include "./DailyState.hpp"
 
+
+#include "./sqlite_orm.hpp"
+
+using namespace sqlite_orm;
+
 class DataParser
 {
 private:
     static unsigned int profile_id;
     static unsigned int zone_id;
-    static unsigned int schedule_id;
     static unsigned int led_id;
     static unsigned int led_state_id;
     static unsigned int daily_state_id;
     static unsigned int controller_id;
+
 public:
     // Initialization
     static bool initialize();
 
-    // Accessors
+    // CRUD operations
+    static unsigned int insert(Zone* z);
+    static unsigned int insert(Profile* p);
+
+    // ID Accessors
     static unsigned int next_profile_id();
     static unsigned int next_zone_id();
-    static unsigned int next_schedule_id();
     static unsigned int next_led_id();
     static unsigned int next_led_state_id();
     static unsigned int next_daily_state_id();

@@ -17,6 +17,7 @@ private:
     std::unordered_map<unsigned int, LEDState*> timeStatePairs;
 
 public:
+    
     // Constructor
     DailyState();
     DailyState(const DailyState& d);
@@ -25,7 +26,7 @@ public:
     void copy(const DailyState& d);
 
     // Accessors
-    unsigned int get_id() const;
+    const unsigned int& get_id() const;
     std::unordered_map<unsigned int, LEDState*> get_time_state_map() const;
 
     // Mutators

@@ -25,14 +25,16 @@ public:
     void copy(const LED& l);
 
     // Accessors
-    unsigned int get_id() const;
-    unsigned int get_strip_idx() const;
+    const unsigned int& get_id() const;
+    const unsigned int& get_strip_idx() const;
     Controller* get_controller() const;
+    const unsigned int& get_controller_id() const;
 
     // Mutators
     void set_id(unsigned int);
     void set_strip_idx(unsigned int);
     void set_controller(Controller*);
+    void set_controller_id(unsigned int id);
 };
 
 // JSON

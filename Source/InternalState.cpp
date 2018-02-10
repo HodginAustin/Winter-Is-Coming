@@ -1,9 +1,11 @@
 #include <algorithm>
+#include <ctime>
+
 #include "./includes/InternalState.hpp"
 
 
 // Required for static class members
-// Abstract relationship objects (also zones and schedules inside profiles)
+// Abstract relationship objects (also zones inside profiles)
 std::vector<Profile*> InternalState::profiles;
 Profile* InternalState::currentProfile;
 // Physically based objects
@@ -163,4 +165,24 @@ void InternalState::delete_daily_state(DailyState* dailyState)
 {
     dailyStates.erase(
         std::remove(dailyStates.begin(), dailyStates.end(), dailyState), dailyStates.end());
+}
+
+
+// Helpers
+unsigned int InternalState::get_time()
+{
+    time_t sysTime;
+    time(&sysTime);
+
+    tm* timeInfo = localtime(&sysTime);
+    return (timeInfo->tm_hour * 3600) + (timeInfo->tm_min * 60) + (timeInfo->tm_sec);
+}
+
+int InternalState::get_day()
+{
+    time_t sysTime;
+    time(&sysTime);
+    
+    tm* timeInfo = localtime(&sysTime);
+    return timeInfo->tm_wday;
 }

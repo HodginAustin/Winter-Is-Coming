@@ -25,17 +25,21 @@ void Schedule::copy(const Schedule& s)
 
 
 // Accessors
-unsigned int Schedule::get_id() const
+const unsigned int& Schedule::get_id() const
 {
-    return id;
+    return this->id;
 }
 
-#include <iostream>
 DailyState* Schedule::get_daily_state(unsigned int day) const
 {
     if (day < 0 || day > 6) { return 0; }
     return weeklyState.at(day);
 }
+
+//const unsigned int& Schedule::get_daily_state_id(unsigned int day) const
+//{
+//}
+
 
 LEDState* get_led_state_from_daily_state(unsigned int time, DailyState* ds)
 {

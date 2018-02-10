@@ -30,9 +30,9 @@ public:
     void copy(const Profile& p);
 
     // Accessors
-    unsigned int get_id() const;
-    std::string get_name() const;
-    std::string get_description() const;
+    const unsigned int& get_id() const;
+    const std::string& get_name() const;
+    const std::string& get_description() const;
 
     // Mutators
     void set_id(unsigned int);

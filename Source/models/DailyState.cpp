@@ -28,9 +28,9 @@ void DailyState::copy(const DailyState& d)
 
 
 // Accessors
-unsigned int DailyState::get_id() const
+const unsigned int& DailyState::get_id() const
 {
-    return id;
+    return this->id;
 }
 
 std::unordered_map<unsigned int, LEDState*> DailyState::get_time_state_map() const
@@ -68,7 +68,11 @@ LEDState* DailyState::get_led_state(unsigned int time_of_day)
     unsigned int nearest_time = 0;
 
     // First check if no time<->state pairs exist
-    if (timeStatePairs.count(time_of_day) != 0) {
+    if (timeStatePairs.count(time_of_day) == 0) {
+        if (timeStatePairs.size() == 0) {
+            return 0;
+        }
+
         for (auto& element : timeStatePairs) {
             unsigned int t = element.first;
 
@@ -77,11 +81,11 @@ LEDState* DailyState::get_led_state(unsigned int time_of_day)
                 // Find the greatest of the times listed for this day
                 nearest_time = MAX(t, nearest_time);
             }
-        }        
+        }
         nearest_state = timeStatePairs[nearest_time];
         return nearest_state;
     } else {
-        return LEDState::off;
+        return timeStatePairs[time_of_day];
     }
 }
 
