@@ -3,21 +3,25 @@
 
 // Required for static class members
 
-char StateComposer::red;
-char StateComposer::green;
-char StateComposer::blue;
-
+// UART
 int StateComposer::uartFilestream;
 struct termios StateComposer::options;
 
+// Composer variables
 bool StateComposer::logEnable;
 char StateComposer::composerState;
 
+// Internal State variables
 time_t StateComposer::sysTime;
 int StateComposer::weekDay;
 Profile* StateComposer::currentProfile;
 Schedule* StateComposer::currentZoneSchedule;
 LEDState* StateComposer::currentZoneActiveState;
+char StateComposer::red;
+char StateComposer::green;
+char StateComposer::blue;
+int  StateComposer::intensity;
+bool StateComposer::power;
 std::vector<LED*> StateComposer::currentZoneLEDs;
 Controller* StateComposer::currentLEDController;
 unsigned int StateComposer::ioPort;
@@ -30,7 +34,7 @@ bool StateComposer::initialize(bool log)
     logEnable = log;
     composerState = 'C';
 
-    // @TODO Need to check dev file for the Pi 0 W
+    // TODO: Need to check dev file for the Pi 0 W
     uartFilestream = open("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NDELAY);		//Open in non blocking read/write mode
 	if (uartFilestream == -1)
 	{
@@ -74,6 +78,7 @@ void StateComposer::compose()
     tm* timeInfo;
 
     composerState = 'C';
+    float scalar = 0.0;
 
     time(&sysTime);
     timeInfo=localtime(&sysTime);
@@ -105,7 +110,9 @@ void StateComposer::compose()
 
         // Will only loop over returned vector of LEDs (if none, skip)
         for (auto currentLED : currentZoneLEDs) {
+        
 
+            // Get controller info
             currentLEDController = currentLED->get_controller();
             if (currentLEDController == NULL) {
                 // Error to log
@@ -118,14 +125,35 @@ void StateComposer::compose()
                 continue;
             }
 
+            // Get LED index
             stripIndex = currentLED->get_strip_idx();
             if (stripIndex <= 0) {
                 // Error to log
                 continue;
             }
 
-            // Gather and compute color data 
+            // Gather and compute color data
+            intensity = currentZoneActiveState->get_intensity();
+            power = currentZoneActiveState->get_power();
+
+            scalar = (float)(((float)intensity / 100.0) * (float)power);
+
+            red = (int ( ((float)currentZoneActiveState->get_r()) * scalar)); 
+            green = (int ( ((float)currentZoneActiveState->get_g()) * scalar));
+            blue = (int ( ((float)currentZoneActiveState->get_b()) * scalar));
+
+
+
             // Call serial send
+            composerState = 'S';
+            if (r_t_serial(currentLEDController, red, green, blue, stripIndex)) {
+                // Error to log
+            } 
+            composerState = 'C';
+            // END OF LEDS LOOP
         }
+
+        // END OF ZONES LOOP
     }
+
 }

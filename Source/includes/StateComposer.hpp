@@ -27,6 +27,8 @@ private:
     static char red;
     static char green;
     static char blue;
+    static int intensity;
+    static bool power;
     // UART
     static int uartFilestream;
     static struct termios options;
@@ -34,8 +36,7 @@ private:
     static bool logEnable;    
     // Composer's current state:
     //  C == computing on current internal state
-    //  T == transmitting data to nano
-    //  R == waiting for reply from nano
+    //  S == Communicating Serial 
     static char composerState;
     // Timing objects
     static time_t sysTime;
