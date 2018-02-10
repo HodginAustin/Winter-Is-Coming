@@ -64,7 +64,7 @@ bool StateComposer::initialize(bool log)
     return true;
 }
 
-bool r_t_serial(Controller* ctrlr, char r, char g, char b, unsigned int idx)
+bool StateComposer::r_t_serial(Controller* ctrlr, char r, char g, char b, unsigned int idx)
 {
 
 	return true;
