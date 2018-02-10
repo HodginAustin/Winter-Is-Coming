@@ -27,23 +27,23 @@ void LEDState::copy(const LEDState& ls)
 
 
 // Accessors
-unsigned int LEDState::get_id() const
+const unsigned int& LEDState::get_id() const
 {
-    return id;
+    return this->id;
 }
 
-int LEDState::get_r() const { return r; }
-int LEDState::get_g() const { return g; }
-int LEDState::get_b() const { return b; }
+const int& LEDState::get_r() const { return this->r; }
+const int& LEDState::get_g() const { return this->g; }
+const int& LEDState::get_b() const { return this->b; }
 
-int LEDState::get_intensity() const
+const int& LEDState::get_intensity() const
 {
-    return intensity;
+    return this->intensity;
 }
 
-bool LEDState::get_power() const
+const bool& LEDState::get_power() const
 {
-    return power;
+    return this->power;
 }
 
 
@@ -59,6 +59,9 @@ void LEDState::set_color(int red, int green, int blue)
     if (green >= 0) { g = green; }
     if (blue >= 0) { b = blue; }
 }
+void LEDState::set_r(int r) { this->r = r; }
+void LEDState::set_g(int g) { this->g = g; }
+void LEDState::set_b(int b) { this->b = b; }
 
 void LEDState::set_intensity(int val)
 {

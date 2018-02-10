@@ -9,12 +9,12 @@ using nlohmann::json;
 
 class LEDState
 {
-public:
-    // USE ACCESSORS AND MUTATORS
+private:
     unsigned int id;
     int r, g, b;
     int intensity;
     bool power;
+public:
 
     // Constructor
     LEDState();
@@ -24,16 +24,19 @@ public:
     void copy(const LEDState& ls);
 
     // Accessors
-    unsigned int get_id() const;
-    int get_r() const;
-    int get_g() const;
-    int get_b() const;
-    int get_intensity() const;
-    bool get_power() const;
+    const unsigned int& get_id() const;
+    const int& get_r() const;
+    const int& get_g() const;
+    const int& get_b() const;
+    const int& get_intensity() const;
+    const bool& get_power() const;
 
     // Mutators
     void set_id(unsigned int);
     void set_color(int r, int g, int b);
+    void set_r(int r);
+    void set_g(int g);
+    void set_b(int b);
     void set_intensity(int);
     void set_power(bool);
 
