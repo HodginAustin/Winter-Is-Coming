@@ -1,5 +1,6 @@
 #include <algorithm>
 #include "./includes/DataParser.hpp"
+#include "./includes/relationships.hpp"
 
 using namespace sqlite_orm;
 
@@ -102,9 +103,36 @@ inline auto init_storage(const std::string& path)
                         &DailyState::get_id,
                         &DailyState::set_id,
                         primary_key())
-        )
+        ),
 
-        // Relationship tables
+        // Relationship tables //
+        // Zone's 7 daily states
+        make_table("zone_to_led",
+            make_column("zone_id", &ZoneToLED::zone_id),
+            make_column("led_id", &ZoneToLED::led_id),
+            primary_key(&ZoneToLED::zone_id, &ZoneToLED::led_id)
+        ),
+        // Zone has many LEDs, LEDS are in one zone per profile, but can be in many zones
+        make_table("zone_daily_states",
+            make_column("zone_id", &ZoneDOW::zone_id),
+            make_column("ds_sun_id", &ZoneDOW::ds_sun_id),
+            make_column("ds_mon_id", &ZoneDOW::ds_mon_id),
+            make_column("ds_tue_id", &ZoneDOW::ds_tue_id),
+            make_column("ds_wed_id", &ZoneDOW::ds_wed_id),
+            make_column("ds_thu_id", &ZoneDOW::ds_thu_id),
+            make_column("ds_fri_id", &ZoneDOW::ds_fri_id),
+            make_column("ds_sat_id", &ZoneDOW::ds_sat_id)
+        ),
+        // DailyState has many LEDStates in a map of time<->state pairs
+        make_table("daily_state_to_led_state",
+            make_column("time",
+                        &DailyStateToLEDState::time,
+                        primary_key()),
+            make_column("daily_state_id",
+                        &DailyStateToLEDState::daily_state_id),
+            make_column("led_state_id",
+                        &DailyStateToLEDState::led_state_id)
+        )
     );
 }
 
