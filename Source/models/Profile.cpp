@@ -57,6 +57,7 @@ void Profile::set_description(std::string val)
 void Profile::add_zone(Zone* zone)
 {
     zones.push_back(zone);
+    zone->profile_id = std::make_shared<unsigned int>(this->get_id());
 }
 
 std::vector<Zone*> Profile::get_zones() const
