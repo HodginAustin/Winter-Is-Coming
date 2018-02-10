@@ -22,12 +22,15 @@ inline auto init_storage(const std::string& path)
         // Profiles
         make_table("profiles",
             make_column("id",
-                        &Profile::id,
+                        &Profile::get_id,
+                        &Profile::set_id,
                         primary_key()),
             make_column("name",
-                        &Profile::name),
+                        &Profile::get_name,
+                        &Profile::set_name),
             make_column("description",
-                        &Profile::description)
+                        &Profile::get_description,
+                        &Profile::set_description)
         ),
         // Schedule
         make_table("schedules",

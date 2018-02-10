@@ -16,14 +16,12 @@ using nlohmann::json;
 class Profile
 {
 private:
-    std::vector<Zone*> zones;
-
-public:
-    // USE ACCESSORS AND MUTATORS
     unsigned int id;
     std::string name;
     std::string description;
+    std::vector<Zone*> zones;
 
+public:
     // Constructors
     Profile();
     Profile(const Profile& p);
@@ -32,9 +30,9 @@ public:
     void copy(const Profile& p);
 
     // Accessors
-    unsigned int get_id() const;
-    std::string get_name() const;
-    std::string get_description() const;
+    const unsigned int& get_id() const;
+    const std::string& get_name() const;
+    const std::string& get_description() const;
 
     // Mutators
     void set_id(unsigned int);
