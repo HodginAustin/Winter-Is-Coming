@@ -50,9 +50,9 @@ inline auto init_storage(const std::string& path)
                         &Zone::set_name),
             make_column("profile_id",
                         &Zone::profile_id),
-            foreign_key(&Zone::profile_id).references(&Profile::id),
             make_column("schedule_id",
                         &Zone::schedule_id),
+            foreign_key(&Zone::profile_id).references(&Profile::get_id),
             foreign_key(&Zone::schedule_id).references(&Schedule::get_id)
         ),
         // LED
