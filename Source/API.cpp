@@ -299,8 +299,8 @@ void API::post_profile(REQUEST, RESPONSE)
     // Data
     Profile p = j_in;
     Profile* profile = new Profile(p);
-    profile->set_id(DataParser::next_profile_id());
     InternalState::add_profile(profile);
+    DataParser::insert(profile);
     
     // Build response
     json j_out = json{{"id", profile->get_id()}};
@@ -331,8 +331,9 @@ void API::post_profile_zone(REQUEST, RESPONSE)
         // Data
         Zone z = j_in;
         Zone* zone = new Zone(z);
-        zone->set_id(DataParser::next_zone_id());
         profile->add_zone(zone);
+        DataParser::insert(zone);
+
         code = Http::Code::Ok;
 
         // Build response
@@ -743,8 +744,8 @@ void API::post_led(REQUEST, RESPONSE)
     // Data
     LED l = j_in;
     LED* led = new LED(l);
-    led->set_id(DataParser::next_led_id());
     InternalState::add_led(led);
+    DataParser::insert(led);
     
     // Build response
     json j_out = json{{"id", led->get_id()}};
@@ -881,8 +882,8 @@ void API::post_controller(REQUEST, RESPONSE)
     // Data
     Controller c = j_in;
     Controller* controller = new Controller(c);
-    controller->set_id(DataParser::next_controller_id());
     InternalState::add_controller(controller);
+    DataParser::insert(controller);
     
     // Build response
     json j_out = json{{"id", controller->get_id()}};
@@ -1002,8 +1003,8 @@ void API::post_led_state(REQUEST, RESPONSE)
     // Data
     LEDState l = j_in;
     LEDState* ledState = new LEDState(l);
-    ledState->set_id(DataParser::next_led_state_id());
     InternalState::add_led_state(ledState);
+    DataParser::insert(ledState);
     
     // Build response
     json j_out = json{{"id", ledState->get_id()}};
@@ -1195,8 +1196,8 @@ void API::post_daily_state(REQUEST, RESPONSE)
     // Data
     DailyState ds = j_in;
     DailyState* dailyState = new DailyState(ds);
-    dailyState->set_id(DataParser::next_daily_state_id());
     InternalState::add_daily_state(dailyState);
+    DataParser::insert(dailyState);
     
     // Build response
     json j_out = json{{"id", dailyState->get_id()}};
