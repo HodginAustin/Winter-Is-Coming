@@ -59,6 +59,10 @@ public:
     static std::vector<DailyState*> get_daily_states();
     static DailyState* get_daily_state(unsigned int id);
     static void delete_daily_state(DailyState* dailyState);
+
+    // Helpers
+    static unsigned int get_time();
+    static int get_day();
 };
 
 #endif //__INTERNALSTATE_H_INCLUDED__

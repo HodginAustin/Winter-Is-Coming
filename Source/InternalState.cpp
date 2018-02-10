@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <ctime>
+
 #include "./includes/InternalState.hpp"
 
 
@@ -163,4 +165,24 @@ void InternalState::delete_daily_state(DailyState* dailyState)
 {
     dailyStates.erase(
         std::remove(dailyStates.begin(), dailyStates.end(), dailyState), dailyStates.end());
+}
+
+
+// Helpers
+unsigned int InternalState::get_time()
+{
+    time_t sysTime;
+    time(&sysTime);
+
+    tm* timeInfo = localtime(&sysTime);
+    return (timeInfo->tm_hour * 3600) + (timeInfo->tm_min * 60) + (timeInfo->tm_sec);
+}
+
+int InternalState::get_day()
+{
+    time_t sysTime;
+    time(&sysTime);
+    
+    tm* timeInfo = localtime(&sysTime);
+    return timeInfo->tm_wday;
 }

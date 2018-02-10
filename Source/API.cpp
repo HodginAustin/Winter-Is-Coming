@@ -498,8 +498,8 @@ void API::get_zone_active_led_state(REQUEST, RESPONSE)
         Zone* zone = profile->get_zone(zone_id);
         if (zone) {
             // Get time and day
-            unsigned int time_of_day = 0;
-            int day = 0;
+            unsigned int time_of_day = InternalState::get_time();
+            int day = InternalState::get_day();
             LEDState* l = zone->get_active_state(time_of_day, day);
             if (l) {
                 j_out = *l;
