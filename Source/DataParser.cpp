@@ -7,7 +7,6 @@ using namespace sqlite_orm;
 // Required for static class members
 unsigned int DataParser::profile_id;
 unsigned int DataParser::zone_id;
-unsigned int DataParser::schedule_id;
 unsigned int DataParser::led_id;
 unsigned int DataParser::led_state_id;
 unsigned int DataParser::daily_state_id;
@@ -32,13 +31,6 @@ inline auto init_storage(const std::string& path)
                         &Profile::get_description,
                         &Profile::set_description)
         ),
-        // Schedule
-        make_table("schedules",
-            make_column("id",
-                        &Schedule::get_id,
-                        &Schedule::set_id,
-                        primary_key())
-        ),
         // Zones
         make_table("zones",
             make_column("id",
@@ -50,10 +42,7 @@ inline auto init_storage(const std::string& path)
                         &Zone::set_name),
             make_column("profile_id",
                         &Zone::profile_id),
-            make_column("schedule_id",
-                        &Zone::schedule_id),
-            foreign_key(&Zone::profile_id).references(&Profile::get_id),
-            foreign_key(&Zone::schedule_id).references(&Schedule::get_id)
+            foreign_key(&Zone::profile_id).references(&Profile::get_id)
         ),
         // LED
         make_table("led",
@@ -126,7 +115,7 @@ static std::shared_ptr<Storage> db;
 // Initialization
 bool DataParser::initialize()
 {
-    profile_id = zone_id = schedule_id = led_id = led_state_id = daily_state_id = controller_id = 1;
+    profile_id = zone_id = led_id = led_state_id = daily_state_id = controller_id = 1;
 
     // Get database object
     db = std::make_shared<Storage>(init_storage("db.sqlite"));
@@ -163,13 +152,6 @@ unsigned int DataParser::next_zone_id()
 {
     unsigned int tmp = zone_id;
     zone_id++;
-    return tmp;
-}
-
-unsigned int DataParser::next_schedule_id()
-{
-    unsigned int tmp = schedule_id;
-    schedule_id++;
     return tmp;
 }
 

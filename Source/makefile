@@ -1,5 +1,5 @@
 GCC = g++ -std=c++14 -Wall -g
-INTERNAL_STATE_OBJECTS = ./out/internalstate.o ./out/led.o ./out/zone.o ./out/dailystate.o ./out/schedule.o ./out/ledstate.o ./out/controller.o ./out/profile.o
+INTERNAL_STATE_OBJECTS = ./out/internalstate.o ./out/led.o ./out/zone.o ./out/dailystate.o ./out/ledstate.o ./out/controller.o ./out/profile.o
 API_OBJECTS = ./out/api.o
 DATA_PARSER_OBJECTS = ./out/dataparser.o
 
@@ -30,7 +30,7 @@ control_service:
 
 
 # Internal State
-internal_state_objects: led zone schedule daily_state led_state controller profile
+internal_state_objects: led zone daily_state led_state controller profile
 
 internal_state:
 	$(GCC) -c ./InternalState.cpp -o ./out/internalstate.o
@@ -40,9 +40,6 @@ led:
 
 zone:
 	$(GCC) -c ./models/Zone.cpp -o ./out/zone.o
-
-schedule:
-	$(GCC) -c ./models/Schedule.cpp -o ./out/schedule.o
 
 daily_state:
 	$(GCC) -c ./models/DailyState.cpp -o ./out/dailystate.o

@@ -15,7 +15,7 @@
 class InternalState
 {
 private:
-    // Abstract relationship objects (also zones and schedules inside profiles)
+    // Abstract relationship objects (also zones inside profiles)
     static std::vector<Profile*> profiles;
     static Profile* currentProfile;
     // Physically based objects

@@ -3,7 +3,7 @@
 
 
 // Required for static class members
-// Abstract relationship objects (also zones and schedules inside profiles)
+// Abstract relationship objects (also zones inside profiles)
 std::vector<Profile*> InternalState::profiles;
 Profile* InternalState::currentProfile;
 // Physically based objects

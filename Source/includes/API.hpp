@@ -64,17 +64,14 @@ private:
 
     // Zone routes
     void get_zone(REQUEST, RESPONSE);              // Gets a zone by ID
-    void get_zone_schedule(REQUEST, RESPONSE);     // Gets a zone's schedule (includes its 7 dailyStates)
     void get_zone_leds(REQUEST, RESPONSE);         // Gets a zone's LEDs
+    void get_zone_active_led_state(REQUEST, RESPONSE); // Gets the currently active LEDState based on the system time
     void put_zone_led(REQUEST, RESPONSE);          // Links a list of existing LEDs to a zone
                                                         // IN: list of LED IDs [1,4,9,40]
                                                         // OUT: list of things that were not found, or nothing on success
+    void put_zone_daily_state(REQUEST, RESPONSE);      // Links an existing dailyState to a zone by day of week
     void delete_zone_led(REQUEST, RESPONSE);       // Unlinks an existing LED from a zone
-
-    // Schedule routes
-    void get_schedule_active_led_state(REQUEST, RESPONSE); // Gets the currently active LEDState based on the system time
-    void put_schedule_daily_state(REQUEST, RESPONSE);      // Links an existing dailyState to a schedule by day of week
-    void delete_schedule_daily_state(REQUEST, RESPONSE);   // Unlinks an existing dailyState to a schedule
+    void delete_zone_daily_state(REQUEST, RESPONSE);   // Unlinks an existing dailyState to a zone
 
     // LED routes
     void get_leds(REQUEST, RESPONSE);              // Gets all LEDs

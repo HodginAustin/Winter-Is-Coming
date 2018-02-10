@@ -8,7 +8,6 @@
 
 #include "./includes/API.hpp"
 #include "./includes/InternalState.hpp"
-#include "./includes/Schedule.hpp"
 #include "./includes/DataParser.hpp"
 
 using namespace Pistache; // REST API
@@ -73,18 +72,15 @@ void API::setup_routes()
     
     // Zone routes
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id", Routes::bind(&API::get_zone, this));
-    Routes::Get(router, "profiles/:profile_id/zones/:zone_id/schedule", Routes::bind(&API::get_zone_schedule, this));
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/leds", Routes::bind(&API::get_zone_leds, this));
+    Routes::Get(router, "profiles/:profile_id/zones/:zone_id/active_state", Routes::bind(&API::get_zone_active_led_state, this));
     Routes::Put(router, "profiles/:profile_id/zones/:zone_id/leds/add", Routes::bind(&API::put_zone_led, this));
+    Routes::Put(router, "profiles/:profile_id/zones/:zone_id/day/:day_of_week/add/:daily_state_id",
+                Routes::bind(&API::put_zone_daily_state, this));
     Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/leds/:led_id/delete",
                 Routes::bind(&API::delete_zone_led, this));
-    
-    // Schedule routes
-    Routes::Get(router, "profiles/:profile_id/zones/:zone_id/schedule/active_state", Routes::bind(&API::get_schedule_active_led_state, this));
-    Routes::Put(router, "profiles/:profile_id/zones/:zone_id/schedule/day/:day_of_week/add/:daily_state_id",
-                Routes::bind(&API::put_schedule_daily_state, this));
-    Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/schedule/day/:day_of_week/delete",
-                Routes::bind(&API::delete_schedule_daily_state, this));
+    Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/day/:day_of_week/delete",
+                Routes::bind(&API::delete_zone_daily_state, this));
     
     // LED routes
     Routes::Get(router, "leds", Routes::bind(&API::get_leds, this));
@@ -211,11 +207,13 @@ void API::get_profile(REQUEST, RESPONSE)
     Profile* profile = InternalState::get_profile(id);
 
     // Build JSON
-    json j_out; 
+    json j_out;
+    Http::Code code = Http::Code::Not_Found;
+
     if (profile){
         j_out = *profile;
+        code = Http::Code::Ok;
     } else { j_out.push_back(json{"profile", id}); }
-    Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
     
     // Send response
     response.send(code, j_out.dump());
@@ -233,15 +231,16 @@ void API::get_profile_zones(REQUEST, RESPONSE)
 
     // Build JSON from zones vector
     json j_out = json::array(); // Empty JSON array []
+    Http::Code code = Http::Code::Not_Found;
+
     if (profile) {
         std::vector<Zone*> zones = profile->get_zones();
         for (auto zone : zones) {
             j_out.push_back(*zone);
         }
+        code = Http::Code::Ok;
     } else { j_out.push_back(json{"profile", id}); }
-   
-    Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
-    
+       
     // Send response
     response.send(code, j_out.dump());
 }
@@ -255,10 +254,12 @@ void API::get_current_profile(REQUEST, RESPONSE)
 
     // Build JSON
     json j_out;
+    Http::Code code = Http::Code::Not_Found;
+
     if (profile){
         j_out = *profile;
+        code = Http::Code::Ok;
     } else { j_out.push_back(json{"profile", -1}); }
-    Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
     
     // Send response
     response.send(code, j_out.dump());
@@ -275,12 +276,14 @@ void API::post_current_profile(REQUEST, RESPONSE)
     Profile* profile = InternalState::get_profile(id);
     
     // Build JSON
-    json j_out; 
+    json j_out;
+    Http::Code code = Http::Code::Not_Found;
+
     if (profile) {
         InternalState::set_current_profile(profile);
         j_out = *profile;
+        code = Http::Code::Ok;
     }
-    Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
     
     // Send response
     response.send(code, j_out.dump());
@@ -318,6 +321,7 @@ void API::post_profile_zone(REQUEST, RESPONSE)
 
     // Response JSON
     json j_out;
+    Http::Code code = Http::Code::Not_Found;
 
     if (profile)
     {
@@ -327,16 +331,13 @@ void API::post_profile_zone(REQUEST, RESPONSE)
         // Data
         Zone z = j_in;
         Zone* zone = new Zone(z);
-        Schedule* s = new Schedule();
-        s->set_id(DataParser::next_schedule_id());
-        zone->set_schedule(s);
         zone->set_id(DataParser::next_zone_id());
         profile->add_zone(zone);
+        code = Http::Code::Ok;
 
         // Build response
         j_out = json{{"id", zone->get_id()}};
     } else { j_out.push_back(json{"profile", id}); }
-    Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
 
     // Send response
     response.send(code, j_out.dump());
@@ -358,10 +359,11 @@ void API::patch_profile(REQUEST, RESPONSE)
     
     // Build response
     json j_out;
-    Http::Code code = (profile ? Http::Code::Ok : Http::Code::Not_Found);
+    Http::Code code = Http::Code::Not_Found;
     if (profile) {
         profile->copy(p);
         j_out = *profile;
+        code = Http::Code::Ok;
     } else { j_out.push_back(json{"profile", id}); }
 
     // Send response
@@ -448,34 +450,6 @@ void API::get_zone(REQUEST, RESPONSE)
     // Send response
     response.send(code, j_out.dump());
 }
-void API::get_zone_schedule(REQUEST, RESPONSE)
-{
-    // Log request
-    log_req(request);
-    
-    // Parameters
-    auto profile_id = request.param(":profile_id").as<unsigned int>();
-    auto zone_id = request.param(":zone_id").as<unsigned int>();
-
-    // Data
-    Profile* profile = InternalState::get_profile(profile_id);
-    Http::Code code = Http::Code::Not_Found;
-    json j_out;
-
-    if (profile) {
-        Zone* zone = profile->get_zone(zone_id);
-        if (zone) {
-            Schedule* schedule = zone->get_schedule();
-            if (schedule) {
-                j_out = *schedule;         
-                code = Http::Code::Ok;
-            }
-        }
-    }
-
-    // Send response
-    response.send(code, j_out.dump());
-}
 void API::get_zone_leds(REQUEST, RESPONSE)
 {
     // Log request
@@ -506,6 +480,37 @@ void API::get_zone_leds(REQUEST, RESPONSE)
     // Send response
     response.send(code, j_out.dump());
 }
+void API::get_zone_active_led_state(REQUEST, RESPONSE)
+{
+    // Log request
+    log_req(request);
+    
+    // Parameters
+    auto profile_id = request.param(":profile_id").as<unsigned int>();
+    auto zone_id = request.param(":zone_id").as<unsigned int>();
+
+    // Data
+    Profile* profile = InternalState::get_profile(profile_id);
+    Http::Code code = Http::Code::Not_Found;
+    json j_out;
+
+    if (profile) {
+        Zone* zone = profile->get_zone(zone_id);
+        if (zone) {
+            // Get time and day
+            unsigned int time_of_day = 0;
+            int day = 0;
+            LEDState* l = zone->get_active_state(time_of_day, day);
+            if (l) {
+                j_out = *l;
+                code = Http::Code::Ok;
+            }
+        }
+    }
+
+    // Send response
+    response.send(code, j_out.dump());
+}
 void API::put_zone_led(REQUEST, RESPONSE)
 {
     // Log request
@@ -521,7 +526,7 @@ void API::put_zone_led(REQUEST, RESPONSE)
     // Data
     Profile* profile = InternalState::get_profile(profile_id);
     Http::Code code = Http::Code::Not_Found;
-    json j_out; j_out["leds"] = json::array();
+    json j_out;
 
     if (profile) {
         Zone* zone = profile->get_zone(zone_id);
@@ -536,8 +541,38 @@ void API::put_zone_led(REQUEST, RESPONSE)
                         zone->add_led(led);
                         code = Http::Code::Ok;
                     }
-                } else { j_out["leds"].push_back(led_id); }
+                } else { j_out.push_back(json{"led", led_id}); }
             }
+        } else { j_out.push_back(json{"zone", zone_id}); }
+    } else { j_out.push_back(json{"profile", profile_id}); }
+
+    // Send response
+    response.send(code, j_out.dump());
+}
+void API::put_zone_daily_state(REQUEST, RESPONSE)
+{
+    // Log request
+    log_req(request);
+
+    // Parameters
+    auto profile_id = request.param(":profile_id").as<unsigned int>();
+    auto zone_id = request.param(":zone_id").as<unsigned int>();
+    auto daily_state_id = request.param(":daily_state_id").as<unsigned int>();
+    auto day_of_week = request.param(":day_of_week").as<int>();
+    
+    // Data
+    Profile* profile = InternalState::get_profile(profile_id);
+    Http::Code code = Http::Code::Not_Found;
+    json j_out;
+
+    if (profile) {
+        Zone* zone = profile->get_zone(zone_id);
+        if (zone) {
+            DailyState* ds = InternalState::get_daily_state(daily_state_id);
+            if (ds) {
+                zone->set_daily_state(day_of_week, ds);
+                code = Http::Code::Ok;
+            } else { j_out.push_back(json{"daily_state", daily_state_id}); }
         } else { j_out.push_back(json{"zone", zone_id}); }
     } else { j_out.push_back(json{"profile", profile_id}); }
 
@@ -573,77 +608,7 @@ void API::delete_zone_led(REQUEST, RESPONSE)
     // Send response
     response.send(code, j_out.dump());
 }
-
-
-// Schedule routes
-void API::get_schedule_active_led_state(REQUEST, RESPONSE)
-{
-    // Log request
-    log_req(request);
-    
-    // Parameters
-    auto profile_id = request.param(":profile_id").as<unsigned int>();
-    auto zone_id = request.param(":zone_id").as<unsigned int>();
-
-    // Data
-    Profile* profile = InternalState::get_profile(profile_id);
-    Http::Code code = Http::Code::Not_Found;
-    json j_out;
-
-    if (profile) {
-        Zone* zone = profile->get_zone(zone_id);
-        if (zone) {
-            Schedule* schedule = zone->get_schedule();
-            if (schedule) {
-                // Get time and day
-                unsigned int time_of_day = 0;
-                int day = 0;
-                LEDState* l = schedule->get_active_state(time_of_day, day);
-                if (l) {
-                    j_out = *l;
-                    code = Http::Code::Ok;
-                }
-            }
-        }
-    }
-
-    // Send response
-    response.send(code, j_out.dump());
-}
-void API::put_schedule_daily_state(REQUEST, RESPONSE)
-{
-    // Log request
-    log_req(request);
-
-    // Parameters
-    auto profile_id = request.param(":profile_id").as<unsigned int>();
-    auto zone_id = request.param(":zone_id").as<unsigned int>();
-    auto daily_state_id = request.param(":daily_state_id").as<unsigned int>();
-    auto day_of_week = request.param(":day_of_week").as<int>();
-    
-    // Data
-    Profile* profile = InternalState::get_profile(profile_id);
-    Http::Code code = Http::Code::Not_Found;
-    json j_out;
-
-    if (profile) {
-        Zone* zone = profile->get_zone(zone_id);
-        if (zone) {
-            Schedule* schedule = zone->get_schedule();
-            if (schedule) {
-                DailyState* ds = InternalState::get_daily_state(daily_state_id);
-                if (ds) {
-                    schedule->set_daily_state(day_of_week, ds);
-                    code = Http::Code::Ok;
-                } else { j_out.push_back(json{"daily_state", daily_state_id}); }
-            } else { j_out.push_back(json{"schedule_for_zone", zone_id}); }
-        } else { j_out.push_back(json{"zone", zone_id}); }
-    } else { j_out.push_back(json{"profile", profile_id}); }
-
-    // Send response
-    response.send(code, j_out.dump());
-}
-void API::delete_schedule_daily_state(REQUEST, RESPONSE)
+void API::delete_zone_daily_state(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
@@ -661,13 +626,10 @@ void API::delete_schedule_daily_state(REQUEST, RESPONSE)
     if (profile) {
         Zone* zone = profile->get_zone(zone_id);
         if (zone) {
-            Schedule* schedule = zone->get_schedule();
-            if (schedule) {
-                if (day_of_week >= 0 && day_of_week <= 6) {
-                    schedule->set_daily_state(day_of_week, 0);
-                    code = Http::Code::Ok;
-                } else { j_out["day_out_of_bounds"] = { {"min:", 0}, {"max:", 6}, {"given:", day_of_week} }; }
-            } else { j_out.push_back(json{"schedule_for_zone", zone_id}); }
+            if (day_of_week >= 0 && day_of_week <= 6) {
+                zone->set_daily_state(day_of_week, 0);
+                code = Http::Code::Ok;
+            } else { j_out["day_out_of_bounds"] = { {"min:", 0}, {"max:", 6}, {"given:", day_of_week} }; }
         } else { j_out.push_back(json{"zone", zone_id}); }
     } else { j_out.push_back(json{"profile", profile_id}); }
 
