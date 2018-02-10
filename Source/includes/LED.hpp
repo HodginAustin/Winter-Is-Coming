@@ -12,13 +12,13 @@ using nlohmann::json;
 class LED
 {
 private:
+    unsigned int id;
+    unsigned int strip_idx;
     Controller* controller;
 
 public:
     // USE ACCESSORS AND MUTATORS
     std::shared_ptr<unsigned int> controller_id;
-    unsigned int id;
-    unsigned int strip_idx;
 
     // Constructor
     LED();
@@ -28,8 +28,8 @@ public:
     void copy(const LED& l);
 
     // Accessors
-    unsigned int get_id() const;
-    unsigned int get_strip_idx() const;
+    const unsigned int& get_id() const;
+    const unsigned int& get_strip_idx() const;
     Controller* get_controller() const;
 
     // Mutators

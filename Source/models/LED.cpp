@@ -28,14 +28,14 @@ void LED::copy(const LED& l)
 
 
 // Accessors
-unsigned int LED::get_id() const
+const unsigned int& LED::get_id() const
 {
-    return id;
+    return this->id;
 }
 
-unsigned int LED::get_strip_idx() const
+const unsigned int& LED::get_strip_idx() const
 {
-    return strip_idx;
+    return this->strip_idx;
 }
 
 Controller* LED::get_controller() const
