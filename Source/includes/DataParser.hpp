@@ -12,6 +12,8 @@
 #include "./LEDState.hpp"
 #include "./DailyState.hpp"
 
+#include "./relationships.hpp"
+
 
 #include "./sqlite_orm.hpp"
 
@@ -30,6 +32,9 @@ public:
     static unsigned int insert(LEDState*);
     static unsigned int insert(DailyState*);
     static unsigned int insert(Controller*);
+    static void insert(ZoneDOW);
+    static void insert(ZoneToLED);
+    static void insert(DailyStateToLEDState);
     
     // UPDATE
     static void update(Profile*);

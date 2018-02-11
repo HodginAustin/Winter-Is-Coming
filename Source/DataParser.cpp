@@ -4,7 +4,6 @@
 
 #include "./includes/DataParser.hpp"
 #include "./includes/InternalState.hpp"
-#include "./includes/relationships.hpp"
 
 using namespace sqlite_orm;
 
@@ -192,6 +191,18 @@ unsigned int DataParser::insert(Controller* c)
     c->set_id(id);
     return id;
 }
+void DataParser::insert(ZoneDOW dow)
+{
+    db->replace(dow);
+}
+void DataParser::insert(ZoneToLED ztl)
+{
+    db->replace(ztl);
+}
+void DataParser::insert(DailyStateToLEDState dsl)
+{
+    db->replace(dsl);
+}
 
 
 // UPDATE
@@ -261,8 +272,12 @@ void DataParser::get_all()
     LED* led;
     for (auto& l : db->iterate<LED>()) {
         led = new LED(l);
-        controller = InternalState::get_controller(led->get_controller_id());
-        led->set_controller(controller);
+        if (led) {
+            controller = InternalState::get_controller(led->get_controller_id());
+            led->set_controller(controller);
+        } else {
+            std::cout << "DB Error: could not find led with id " << l.get_id() << std::endl;
+        }
     }
 
     // Get LEDStates
@@ -291,17 +306,43 @@ void DataParser::get_all()
                 zone->set_daily_state(i, dailyState);
             }
         } else {
-            std::cout << "Warning: could not find zone with id " << dow.zone_id << std::endl;
+            std::cout << "DB Error: could not find zone with id " << dow.zone_id << std::endl;
         }
     }
 
     // Get ZoneToLEDs
+    for (auto& ztl : db->iterate<ZoneToLED>()) {
+        zone = get_zone(tmp_zones, ztl.zone_id);
+        led = InternalState::get_led(ztl.led_id);
+        
+        if (!zone) {
+            std::cout << "DB Error: could not find zone with id " << ztl.zone_id << std::endl;
+            continue;
+        }
+        if (!led) {
+            std::cout << "DB Error: could not find led with id " << ztl.led_id << std::endl;
+            continue;
+        }
+
+        zone->add_led(led);
+    }
 
     // Get DailyStateToLEDStates
-    //dailyState = InternalState::get_daily_state(dow.daily_state_id);
-    //ledState = InternalState::get_led_state(dow.led_state_id);
+    for (auto& dtl : db->iterate<DailyStateToLEDState>()) {
+        dailyState = InternalState::get_daily_state(dtl.daily_state_id);
+        ledState = InternalState::get_led_state(dtl.led_state_id);
 
-    //dailyState->add_state(dow.time, ledState);
+        if (!dailyState) {
+            std::cout << "DB Error: could not find daily state with id " << dtl.daily_state_id << std::endl;
+            continue;
+        }
+        if (!ledState) {
+            std::cout << "DB Error: could not find led state with id " << dtl.led_state_id << std::endl;
+            continue;
+        }
+
+        dailyState->add_state(dtl.time, ledState);
+    }
 }
 
 

@@ -40,7 +40,7 @@ def main():
     r = requests.post(base + "/led_states/add", json=j, headers=h, timeout=timeout_ms)
     print_request(r)
 
-    # Add anotheg LED state
+    # Add another LED state
     print("Add LED State 2")
     j = {
         "r": 0,
