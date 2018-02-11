@@ -6,15 +6,6 @@
 using namespace sqlite_orm;
 
 
-// Required for static class members
-unsigned int DataParser::profile_id;
-unsigned int DataParser::zone_id;
-unsigned int DataParser::led_id;
-unsigned int DataParser::led_state_id;
-unsigned int DataParser::daily_state_id;
-unsigned int DataParser::controller_id;
-
-
 // Build database schema
 inline auto init_storage(const std::string& path)
 {
@@ -148,8 +139,6 @@ static std::shared_ptr<Storage> db;
 // Initialization
 bool DataParser::initialize()
 {
-    profile_id = zone_id = led_id = led_state_id = daily_state_id = controller_id = 1;
-
     // Get database object
     db = std::make_shared<Storage>(init_storage("db.sqlite"));
 
@@ -205,7 +194,7 @@ unsigned int DataParser::insert(Controller* c)
 // UPDATE
 void DataParser::update(Profile* p)
 {
-
+    db->update(*p);
 }
 void DataParser::update(Zone* z)
 {
@@ -230,13 +219,14 @@ void DataParser::update(Controller* c)
 
 
 // SELECT
-#include <iostream>
 void DataParser::get_all()
 {
     // Get profiles
-    auto profiles = db->get_all<Profile>();
-    for (auto profile : profiles) {
-        InternalState::add_profile(new Profile(profile));
+    Profile* profile;
+    for (auto& p : db->iterate<Profile>()) {
+        profile = new Profile(p);
+        profile->set_id(p.get_id());
+        InternalState::add_profile(profile);
     }
 
     // Get zones
@@ -260,7 +250,7 @@ void DataParser::get_all()
 // DELETE
 void DataParser::remove(Profile* p)
 {
-
+    db->remove<Profile>(p->get_id());
 }
 void DataParser::remove(Zone* z)
 {
@@ -281,4 +271,21 @@ void DataParser::remove(DailyState* ds)
 void DataParser::remove(Controller* c)
 {
 
+}
+
+
+// Clear
+void DataParser::clear()
+{
+    // Entities
+    db->remove_all<Profile>();
+    //db->remove_all<Zone>();
+    //db->remove_all<LED>();
+    //db->remove_all<LEDState>();
+    //db->remove_all<DailyState>();
+    //db->remove_all<Controller>();
+    // Relationships
+    //db->remove_all<ZoneDOW>();
+    //db->remove_all<ZoneToLED>();
+    //db->remove_all<DailyStateToLEDState>();    
 }

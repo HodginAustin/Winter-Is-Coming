@@ -19,14 +19,6 @@ using namespace sqlite_orm;
 
 class DataParser
 {
-private:
-    static unsigned int profile_id;
-    static unsigned int zone_id;
-    static unsigned int led_id;
-    static unsigned int led_state_id;
-    static unsigned int daily_state_id;
-    static unsigned int controller_id;
-
 public:
     // Initialization
     static bool initialize();
@@ -57,6 +49,8 @@ public:
     static void remove(LEDState*);
     static void remove(DailyState*);
     static void remove(Controller*);
+
+    static void clear();
 };
 
 #endif //__DATA_PARSER_H_INCLUDED__

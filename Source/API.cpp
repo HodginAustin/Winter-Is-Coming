@@ -379,6 +379,7 @@ void API::patch_profile(REQUEST, RESPONSE)
     Http::Code code = Http::Code::Not_Found;
     if (profile) {
         profile->copy(p);
+        DataParser::update(profile);
         j_out = *profile;
         code = Http::Code::Ok;
     } else { j_out.push_back(json{"profile", id}); }
@@ -427,6 +428,7 @@ void API::delete_profile(REQUEST, RESPONSE)
     Http::Code code = Http::Code::Not_Found;
     
     if (profile) {
+        DataParser::remove(profile);
         InternalState::delete_profile(profile);
      
         code = Http::Code::Ok;
