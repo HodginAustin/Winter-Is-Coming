@@ -61,6 +61,8 @@ void InternalState::delete_profile(Profile* profile)
 {
     profiles.erase(
         std::remove(profiles.begin(), profiles.end(), profile), profiles.end());
+
+    free(profile);
 }
 
 
@@ -87,6 +89,8 @@ void InternalState::delete_led(LED* led)
 {
     leds.erase(
         std::remove(leds.begin(), leds.end(), led), leds.end());
+
+    free(led);
 }
 
 
@@ -113,6 +117,8 @@ void InternalState::delete_controller(Controller* controller)
 {
     controllers.erase(
         std::remove(controllers.begin(), controllers.end(), controller), controllers.end());
+
+    free(controller);
 }
 
 
@@ -139,6 +145,8 @@ void InternalState::delete_led_state(LEDState* ledState)
 {
     ledStates.erase(
         std::remove(ledStates.begin(), ledStates.end(), ledState), ledStates.end());
+
+    free(ledState);
 }
 
 
@@ -165,6 +173,50 @@ void InternalState::delete_daily_state(DailyState* dailyState)
 {
     dailyStates.erase(
         std::remove(dailyStates.begin(), dailyStates.end(), dailyState), dailyStates.end());
+}
+
+
+// Clear
+void InternalState::clear()
+{
+    // Profiles
+    for (auto profile : profiles)
+    {
+        for (auto zone : profile->get_zones())
+        {
+            free(zone);
+        }
+        free(profile);
+    }
+    profiles.clear();
+
+    currentProfile = 0;
+
+    // Physically based objects
+    for (auto led : leds)
+    {
+        free(led);
+    }
+    leds.clear();
+
+    for (auto controller : controllers)
+    {
+        free(controller);
+    }
+    controllers.clear();
+
+    // State objects
+    for (auto ledState : ledStates)
+    {
+        free(ledState);
+    }
+    ledStates.clear();
+
+    for (auto dailyState : dailyStates)
+    {
+        free(dailyState);
+    }
+    dailyStates.clear();
 }
 
 
