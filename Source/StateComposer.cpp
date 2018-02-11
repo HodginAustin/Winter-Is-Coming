@@ -112,13 +112,7 @@ void StateComposer::compose()
     // Will only loop over returned vector of zones (if none, skip)
     for (auto currentZone : currentProfile->get_zones()) {
 
-        currentZoneSchedule = currentZone->get_schedule();
-        if (currentZoneSchedule == NULL) {
-            // Error to log
-            continue;
-        }
-
-        currentZoneActiveState = currentZoneSchedule->get_active_state(seconds, weekDay);
+        currentZoneActiveState = currentZone->get_active_state(seconds, weekDay);
         if (currentZoneActiveState == NULL) {
             // Error to log
             continue;
