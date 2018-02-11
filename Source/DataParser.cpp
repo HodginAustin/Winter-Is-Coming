@@ -1,4 +1,7 @@
 #include <algorithm>
+#include <map>
+#include <iostream>
+
 #include "./includes/DataParser.hpp"
 #include "./includes/InternalState.hpp"
 #include "./includes/relationships.hpp"
@@ -198,27 +201,33 @@ void DataParser::update(Profile* p)
 }
 void DataParser::update(Zone* z)
 {
-
+    db->update(*z);
 }
 void DataParser::update(LED* l)
 {
-
+    db->update(*l);
 }
 void DataParser::update(LEDState* ls)
 {
-
+    db->update(*ls);
 }
 void DataParser::update(DailyState* ds)
 {
-
+    db->update(*ds);
 }
 void DataParser::update(Controller* c)
 {
-
+    db->update(*c);
 }
 
 
 // SELECT
+Zone* get_zone(std::map<unsigned int, Zone*> tmp, unsigned int id) {
+    if (tmp.count(id) > 0) {
+        return tmp[id];
+    }
+    return 0;
+}
 void DataParser::get_all()
 {
     // Get profiles
@@ -230,20 +239,69 @@ void DataParser::get_all()
     }
 
     // Get zones
+    Zone* zone;
+    std::map<unsigned int, Zone*> tmp_zones;
+    for (auto& z : db->iterate<Zone>()) {
+        zone = new Zone(z);
 
-    // Get ZoneDOWs (Day of weeks)
+        tmp_zones.insert(std::make_pair(zone->get_id(), zone));
 
-    // Get LEDs
+        profile = InternalState::get_profile(zone->profile_id);
+        profile->add_zone(zone);
+    }
 
     // Get Controllers
+    Controller* controller;
+    for (auto& c : db->iterate<Controller>()) {
+        controller = new Controller(c);
+        InternalState::add_controller(controller);
+    }
+    
+    // Get LEDs
+    LED* led;
+    for (auto& l : db->iterate<LED>()) {
+        led = new LED(l);
+        controller = InternalState::get_controller(led->get_controller_id());
+        led->set_controller(controller);
+    }
 
     // Get LEDStates
+    LEDState* ledState;
+    for (auto& ls : db->iterate<LEDState>()) {
+        ledState = new LEDState(ls);
+        InternalState::add_led_state(ledState);
+    }
 
     // Get DailyStates
+    DailyState* dailyState;
+    for (auto& ds : db->iterate<DailyState>()) {
+        dailyState = new DailyState(ds);
+        InternalState::add_daily_state(dailyState);
+    }
+
+    // Get ZoneDOWs (Day of weeks)
+    std::array<int, 7> days;
+    for (auto& dow : db->iterate<ZoneDOW>()) {
+        zone = get_zone(tmp_zones, dow.zone_id);
+        
+        if (zone) {
+            days = dow.get_days();
+            for (std::size_t i = 0, max = days.size(); i != max; ++i) {
+                dailyState = InternalState::get_daily_state(days.at(i));
+                zone->set_daily_state(i, dailyState);
+            }
+        } else {
+            std::cout << "Warning: could not find zone with id " << dow.zone_id << std::endl;
+        }
+    }
 
     // Get ZoneToLEDs
 
     // Get DailyStateToLEDStates
+    //dailyState = InternalState::get_daily_state(dow.daily_state_id);
+    //ledState = InternalState::get_led_state(dow.led_state_id);
+
+    //dailyState->add_state(dow.time, ledState);
 }
 
 
@@ -254,23 +312,23 @@ void DataParser::remove(Profile* p)
 }
 void DataParser::remove(Zone* z)
 {
-
+    db->remove<Profile>(z->get_id());
 }
 void DataParser::remove(LED* l)
 {
-
+    db->remove<Profile>(l->get_id());
 }
 void DataParser::remove(LEDState* ls)
 {
-
+    db->remove<Profile>(ls->get_id());
 }
 void DataParser::remove(DailyState* ds)
 {
-
+    db->remove<Profile>(ds->get_id());
 }
 void DataParser::remove(Controller* c)
 {
-
+    db->remove<Profile>(c->get_id());
 }
 
 
@@ -279,11 +337,11 @@ void DataParser::clear()
 {
     // Entities
     db->remove_all<Profile>();
-    //db->remove_all<Zone>();
-    //db->remove_all<LED>();
-    //db->remove_all<LEDState>();
-    //db->remove_all<DailyState>();
-    //db->remove_all<Controller>();
+    db->remove_all<Zone>();
+    db->remove_all<LED>();
+    db->remove_all<LEDState>();
+    db->remove_all<DailyState>();
+    db->remove_all<Controller>();
     // Relationships
     //db->remove_all<ZoneDOW>();
     //db->remove_all<ZoneToLED>();

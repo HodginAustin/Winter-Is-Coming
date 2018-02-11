@@ -1,4 +1,3 @@
-#include <iterator>
 #include "../includes/DailyState.hpp"
 #include "../includes/InternalState.hpp"
 

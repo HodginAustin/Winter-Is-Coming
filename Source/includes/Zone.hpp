@@ -25,7 +25,7 @@ private:
 
 public:
     // USE ACCESSORS AND MUTATORS
-    std::shared_ptr<unsigned int> profile_id;
+    unsigned int profile_id;
 
     // Constructor
     Zone();
