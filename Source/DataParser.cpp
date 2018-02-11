@@ -170,31 +170,31 @@ unsigned int DataParser::insert(Profile* p)
     p->set_id(id);
     return id;
 }
-unsigned int insert(Zone* z)
+unsigned int DataParser::insert(Zone* z)
 {
     unsigned int id = db->insert(*z);
     z->set_id(id);
     return id;
 }
-unsigned int insert(LED* l)
+unsigned int DataParser::insert(LED* l)
 {
     unsigned int id = db->insert(*l);
     l->set_id(id);
     return id;
 }
-unsigned int insert(LEDState* ls)
+unsigned int DataParser::insert(LEDState* ls)
 {
     unsigned int id = db->insert(*ls);
     ls->set_id(id);
     return id;
 }
-unsigned int insert(DailyState* ds)
+unsigned int DataParser::insert(DailyState* ds)
 {
     unsigned int id = db->insert(*ds);
     ds->set_id(id);
     return id;
 }
-unsigned int insert(Controller* c)
+unsigned int DataParser::insert(Controller* c)
 {
     unsigned int id = db->insert(*c);
     c->set_id(id);
@@ -203,58 +203,82 @@ unsigned int insert(Controller* c)
 
 
 // UPDATE
-void update(Profile* p)
+void DataParser::update(Profile* p)
 {
 
 }
-void update(Zone* z)
-{
-    
-}
-void update(LED* l)
+void DataParser::update(Zone* z)
 {
 
 }
-void update(LEDState* ls)
+void DataParser::update(LED* l)
 {
 
 }
-void update(DailyState* ds)
+void DataParser::update(LEDState* ls)
 {
 
 }
-void update(Controller* c)
+void DataParser::update(DailyState* ds)
+{
+
+}
+void DataParser::update(Controller* c)
 {
 
 }
 
 
 // SELECT
-void get_all() {}
+#include <iostream>
+void DataParser::get_all()
+{
+    // Get profiles
+    auto profiles = db->get_all<Profile>();
+    for (auto profile : profiles) {
+        InternalState::add_profile(new Profile(profile));
+    }
+
+    // Get zones
+
+    // Get ZoneDOWs (Day of weeks)
+
+    // Get LEDs
+
+    // Get Controllers
+
+    // Get LEDStates
+
+    // Get DailyStates
+
+    // Get ZoneToLEDs
+
+    // Get DailyStateToLEDStates
+}
 
 
 // DELETE
-void remove(Profile* p)
+void DataParser::remove(Profile* p)
 {
 
 }
-void remove(Zone* z)
+void DataParser::remove(Zone* z)
 {
 
 }
-void remove(LED* l)
+void DataParser::remove(LED* l)
 {
 
 }
-void remove(LEDState* ls)
+void DataParser::remove(LEDState* ls)
 {
 
 }
-void remove(DailyState* ds)
+void DataParser::remove(DailyState* ds)
 {
 
 }
-void remove(Controller* c)
+void DataParser::remove(Controller* c)
 {
 
 }
