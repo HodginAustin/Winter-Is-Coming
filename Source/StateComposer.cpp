@@ -66,6 +66,24 @@ bool StateComposer::initialize(bool log)
 
 bool StateComposer::r_t_serial(Controller* ctrlr, char r, char g, char b, unsigned int idx)
 {
+    //----- TX BYTES -----
+	unsigned char tx_buffer[4];
+	unsigned char *p_tx_buffer;
+	
+	p_tx_buffer = &tx_buffer[0];
+	*p_tx_buffer++ = idx;
+    *p_tx_buffer++ = r;
+    *p_tx_buffer++ = g;
+    *p_tx_buffer++ = b;
+	
+	if (uartFilestream != -1)
+	{
+		int count = write(uartFilestream, &tx_buffer[0], (p_tx_buffer - &tx_buffer[0]));    // Filestream, bytes to write, number of bytes to write
+		if (count < 0)
+		{
+			printf("UART TX error\n");
+		}
+	}
 
 	return true;
 }
@@ -141,8 +159,6 @@ void StateComposer::compose()
             red = (int ( ((float)currentZoneActiveState->get_r()) * scalar)); 
             green = (int ( ((float)currentZoneActiveState->get_g()) * scalar));
             blue = (int ( ((float)currentZoneActiveState->get_b()) * scalar));
-
-
 
             // Call serial send
             composerState = 'S';
