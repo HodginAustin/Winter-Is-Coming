@@ -54,6 +54,7 @@ void API::setup_routes()
     // System routes
     Routes::Get(router, "/", Routes::bind(&API::index, this));
     Routes::Get(router, "/restart", Routes::bind(&API::system_restart, this));
+    Routes::Delete(router, "/nuke_from_orbit", Routes::bind(&API::nuke_from_orbit, this));
 
     // API Actions
     Routes::Get(router, "/shutdown", Routes::bind(&API::api_shutdown, this));
@@ -172,6 +173,21 @@ void API::api_shutdown(REQUEST, RESPONSE)
 
     response.send(Http::Code::Ok, "Shutting down");
     shutdown();
+}
+
+void API::nuke_from_orbit(REQUEST, RESPONSE)
+{
+    // Log request
+    log_req(request);
+
+    // Wipe out internal state
+    InternalState::clear();
+
+    // Wipe out database
+    DataParser::clear();
+
+    response.send(Http::Code::Ok,
+        "This is just a thing... and things can be replaced. Lives cannot. - Data");
 }
 
 
@@ -412,10 +428,7 @@ void API::delete_profile(REQUEST, RESPONSE)
     
     if (profile) {
         InternalState::delete_profile(profile);
-        
-        // Memory
-        free(profile);
-    
+     
         code = Http::Code::Ok;
     } else { j_out.push_back(json{"profile", id}); }
 
@@ -795,9 +808,6 @@ void API::delete_led(REQUEST, RESPONSE)
     if (led) { 
         InternalState::delete_led(led);
 
-        // Memory
-        free(led);
-
         code = Http::Code::Ok;
     } else { j_out.push_back(json{"led", id}); }
 
@@ -927,20 +937,16 @@ void API::delete_controller(REQUEST, RESPONSE)
 
     // Data
     Controller* controller = InternalState::get_controller(id);
-    Http::Code code = Http::Code::Ok;
+    Http::Code code = Http::Code::Not_Found;
 
     // Build JSON
     json j_out;
 
     // Validate
     if (controller) {
+        code = Http::Code::Ok;
         InternalState::delete_controller(controller);
-
-        // Memory
-        free(controller);
-
     } else {
-        code = Http::Code::Not_Found;
         j_out.push_back(json{"controller", id});
     }
 
@@ -1053,10 +1059,6 @@ void API::delete_led_state(REQUEST, RESPONSE)
 
     if (ledState) {
         InternalState::delete_led_state(ledState);
-
-        // Memory
-        free(ledState);
-
         code = Http::Code::Ok;
     } else { j_out.push_back(json{"led_state", id}); }
 
@@ -1246,10 +1248,6 @@ void API::delete_daily_state(REQUEST, RESPONSE)
 
     if (dailyState) {
         InternalState::delete_daily_state(dailyState);
-
-        // Memory
-        free(dailyState);
-
         code = Http::Code::Ok;
     } else { j_out.push_back(json{"daily_state", id}); }
     
