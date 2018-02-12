@@ -65,9 +65,6 @@ bool test_zone()
     DailyState* d3 = new DailyState();
     d3->set_id(3);
 
-    bool condTrue = true;
-    bool condFalse = false;
-    
     // DailyState list empty initially
     condTrue &= assertTrue(z->get_daily_state(0) == 0);
     condTrue &= assertTrue(z->get_daily_state(3) == 0);

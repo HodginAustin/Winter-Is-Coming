@@ -35,7 +35,7 @@ bool StateComposer::initialize(bool log)
     composerState = 'C';
 
     // TODO: Need to check dev file for the Pi 0 W
-    uartFilestream = open("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NDELAY);		//Open in non blocking read/write mode
+    uartFilestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);		//Open in non blocking read/write mode
 	if (uartFilestream == -1)
 	{
 		// ERROR - CAN'T OPEN SERIAL PORT

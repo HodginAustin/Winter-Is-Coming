@@ -53,7 +53,7 @@ int main()
     else {std::cout << " spun" << std::endl;}
 
     // API (needs to be the last thing in this function)
-    Port port(9080);
+    Port port(9090);
     Address addr(Ipv4::any(), port);
     int threads = 2;
     API* api = new API(addr);
