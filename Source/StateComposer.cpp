@@ -12,6 +12,7 @@ struct termios StateComposer::options;
 
 // Composer variables
 bool StateComposer::logEnable;
+std::ofstream StateComposer::logFile;
 char StateComposer::composerState;
 
 // Internal State variables
@@ -41,7 +42,7 @@ bool StateComposer::initialize(bool log)
     time(&sysTime);
     timeInfo = localtime(&sysTime);
     char timeBuffer[30];
-    strftime(timeBuffer, 30, "%c", timeInfo)
+    strftime(timeBuffer, 30, "%c", timeInfo);
 
     if (logEnable) {
         logFile.open("composer.log");
@@ -95,11 +96,12 @@ bool StateComposer::serial_send(Controller* ctrlr, char r, char g, char b, unsig
 		if (count < 0)
 		{
 			std::cerr << "   UART Tx error!\n" << std::endl;
+            return true;
             
 		}
 	}
 
-	return true;
+	return false;
 }
 
 
@@ -120,7 +122,7 @@ void StateComposer::compose()
     char timeBuffer[30];
 
     if (logEnable)
-        strftime(timeBuffer, 30, "%c", timeInfo)
+        strftime(timeBuffer, 30, "%c", timeInfo);
 
     currentProfile = InternalState::get_current_profile();
     if (currentProfile == NULL) {
@@ -151,13 +153,13 @@ void StateComposer::compose()
             }
 
             ioPort = currentLEDController->get_io();
-            if ( (ioPort <= 0) || (ioPort == NULL) ) {
+            if (ioPort <= 0) {
                 continue;
             }
 
             // Get LED index
             stripIndex = currentLED->get_strip_idx();
-            if ( (stripIndex <= 0) || (stripIndex == NULL) ) {
+            if (stripIndex <= 0) {
                 continue;
             }
 
@@ -188,7 +190,7 @@ void StateComposer::compose()
             composerState = 'S';
 
             if (serial_send(currentLEDController, red, green, blue, stripIndex)) {
-                logFile << "[" << timeBuffer << "] " << ""
+                logFile << "[" << timeBuffer << "] " << "Error transmitting serial\n";
             } 
             composerState = 'C';
             // END OF LEDS LOOP
