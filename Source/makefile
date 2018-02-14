@@ -2,6 +2,7 @@ GCC = g++ -std=c++14 -Wall -g
 INTERNAL_STATE_OBJECTS = ./out/internalstate.o ./out/led.o ./out/zone.o ./out/dailystate.o ./out/ledstate.o ./out/controller.o ./out/profile.o
 API_OBJECTS = ./out/api.o
 DATA_PARSER_OBJECTS = ./out/dataparser.o
+STATE_COMPOSER = ./out/statecomposer.o
 
 default: directories
 	make internal_state_objects
@@ -10,6 +11,7 @@ default: directories
 	make copy_api
 	make api
 	make data_parser
+	make state_composer
 	make control_service_main
 	make control_service
 	make tests
@@ -26,7 +28,7 @@ control_service_main:
 	$(GCC) -c ./main.cpp -o ./out/main.o -lpistache -lpthread 
 
 control_service:
-	$(GCC) -o ./out/plantergb -L/usr/local/lib ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) $(DATA_PARSER_OBJECTS) -lpistache -lpthread -lsqlite3
+	$(GCC) -o ./out/plantergb -L/usr/local/lib ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) $(DATA_PARSER_OBJECTS) $(STATE_COMPOSER) -lpistache -lpthread -lsqlite3
 
 
 # Internal State
@@ -64,6 +66,11 @@ api:
 	$(GCC) -c ./API.cpp -o ./out/api.o
 
 
+# State Composer
+state_composer:
+	$(GCC) -c ./StateComposer.cpp -o ./out/statecomposer.o
+
+
 # Tests
 tests: directories
 	$(GCC) -c ./tests/run_tests.cpp -o ./out/tests/run_tests.o
@@ -97,3 +104,6 @@ build_api:
 # Clean up
 clean:
 	rm -rf ./out/*
+	if [ -f ./composer.log]; then \
+		rm ./composer.log; \
+	fi
