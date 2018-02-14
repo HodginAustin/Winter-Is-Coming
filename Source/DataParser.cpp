@@ -295,7 +295,7 @@ void DataParser::get_all()
     }
 
     // Get ZoneDOWs (Day of weeks)
-    std::array<int, 7> days;
+    std::array<unsigned int, 7> days;
     for (auto& dow : db->iterate<ZoneDOW>()) {
         zone = get_zone(tmp_zones, dow.zone_id);
         

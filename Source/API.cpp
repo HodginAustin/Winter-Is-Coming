@@ -70,7 +70,7 @@ void API::setup_routes()
     Routes::Patch(router, "profiles/:id/edit", Routes::bind(&API::patch_profile, this));
     Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/delete", Routes::bind(&API::delete_profile_zone, this));
     Routes::Delete(router, "profiles/:id/delete", Routes::bind(&API::delete_profile, this));
-    
+
     // Zone routes
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id", Routes::bind(&API::get_zone, this));
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/leds", Routes::bind(&API::get_zone_leds, this));
@@ -82,7 +82,7 @@ void API::setup_routes()
                 Routes::bind(&API::delete_zone_led, this));
     Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/day/:day_of_week/delete",
                 Routes::bind(&API::delete_zone_daily_state, this));
-    
+
     // LED routes
     Routes::Get(router, "leds", Routes::bind(&API::get_leds, this));
     Routes::Get(router, "leds/:id", Routes::bind(&API::get_led, this));
@@ -547,14 +547,19 @@ void API::put_zone_led(REQUEST, RESPONSE)
     if (profile) {
         Zone* zone = profile->get_zone(zone_id);
         if (zone) {
+            ZoneToLED ztl;
             for (auto json_id : j_in) {
-                int led_id = json_id.get<int>();
+                unsigned int led_id = json_id.get<unsigned int>();
                 LED* led = InternalState::get_led(led_id);
                 // Check if LED exists
                 if (led) {
                     // Check if zone does not have LED already
                     if (!zone->has_led(led)) {
                         zone->add_led(led);
+
+                        ztl = {zone_id, led_id};
+                        DataParser::insert(ztl);
+
                         code = Http::Code::Ok;
                     }
                 } else { j_out.push_back(json{"led", led_id}); }
