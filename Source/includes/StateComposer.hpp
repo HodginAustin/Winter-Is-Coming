@@ -6,6 +6,7 @@
 #include <ctime>
 #include <iostream>
 #include <string>
+#include <fstream>
 
 #include <unistd.h>     //Used for UART
 #include <fcntl.h>		//Used for UART
@@ -32,7 +33,8 @@ private:
     // UART
     static int uartFilestream;
     static struct termios options;
-    // Log actions flag
+    // Log actions
+    static std::ofstream logFile;
     static bool logEnable;    
     // Composer's current state:
     //  C == computing on current internal state
@@ -59,9 +61,7 @@ private:
                     static unsigned int stripIndex;
 
     // Simple function that sends color state to a controller with target LED
-    static bool r_t_serial(Controller*, char, char, char, unsigned int);
-    // Log particular messages / actions
-    static void log(const std::string &text);
+    static bool serial_send(Controller*, char, char, char, unsigned int);
 
 public:
     // Initialization
@@ -72,6 +72,9 @@ public:
 
     // Start compositioning of the internal state to the hardware state
     static void compose();
+
+    // Clean up
+    static void clean_up();
 
     // Accessors
     static char get_composer_state();

@@ -1,5 +1,8 @@
 #include "./includes/StateComposer.hpp"
 
+// The serial RxTx device in the linux system
+#define SERIAL_DEV "/dev/serial0"
+
 
 // Required for static class members
 
@@ -34,12 +37,22 @@ bool StateComposer::initialize(bool log)
     logEnable = log;
     composerState = 'C';
 
+    tm* timeInfo;
+    time(&sysTime);
+    timeInfo = localtime(&sysTime);
+    char timeBuffer[30];
+    strftime(timeBuffer, 30, "%c", timeInfo)
+
+    if (logEnable) {
+        logFile.open("composer.log");
+        logFile << "[" << timeBuffer << "] StateComposer transcript started\n";
+    }
+
     // TODO: Need to check dev file for the Pi 0 W
-    uartFilestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);		//Open in non blocking read/write mode
-	if (uartFilestream == -1)
-	{
-		// ERROR - CAN'T OPEN SERIAL PORT
-		printf("ERROR: Unable to open UART!\nEnsure it is not in use by another application.\n");
+    uartFilestream = open(SERIAL_DEV, O_RDWR | O_NOCTTY | O_NDELAY);		//Open in non blocking read/write mode
+
+	if (uartFilestream == -1) { // ERROR - CAN'T OPEN SERIAL PORT
+		std::cerr << "ERROR: Unable to open UART on " << SERIAL_DEV << "! \nEnsure it is not in use by another application.\n" << std::endl;
         return false;
 	}
 
@@ -64,7 +77,7 @@ bool StateComposer::initialize(bool log)
     return true;
 }
 
-bool StateComposer::r_t_serial(Controller* ctrlr, char r, char g, char b, unsigned int idx)
+bool StateComposer::serial_send(Controller* ctrlr, char r, char g, char b, unsigned int idx)
 {
     //----- TX BYTES -----
 	unsigned char tx_buffer[4];
@@ -81,7 +94,8 @@ bool StateComposer::r_t_serial(Controller* ctrlr, char r, char g, char b, unsign
 		int count = write(uartFilestream, &tx_buffer[0], (p_tx_buffer - &tx_buffer[0]));    // Filestream, bytes to write, number of bytes to write
 		if (count < 0)
 		{
-			printf("UART TX error\n");
+			std::cerr << "   UART Tx error!\n" << std::endl;
+            
 		}
 	}
 
@@ -93,19 +107,26 @@ bool StateComposer::r_t_serial(Controller* ctrlr, char r, char g, char b, unsign
 // Main composer function
 void StateComposer::compose()
 {
-    tm* timeInfo;
-
     composerState = 'C';
     float scalar = 0.0;
 
+    tm* timeInfo;
     time(&sysTime);
     timeInfo=localtime(&sysTime);
+
     weekDay = timeInfo->tm_wday;
     unsigned int seconds = ( (timeInfo->tm_hour * 3600) + (timeInfo->tm_min * 60) + (timeInfo->tm_sec) );
 
+    char timeBuffer[30];
+
+    if (logEnable)
+        strftime(timeBuffer, 30, "%c", timeInfo)
+
     currentProfile = InternalState::get_current_profile();
     if (currentProfile == NULL) {
-        // Error to log
+        if (logEnable) {
+            logFile << "[" << timeBuffer << "] No profiles to loop on. Exiting composer\n";
+        }
         return;
     }
 
@@ -114,7 +135,6 @@ void StateComposer::compose()
 
         currentZoneActiveState = currentZone->get_active_state(seconds, weekDay);
         if (currentZoneActiveState == NULL) {
-            // Error to log
             continue;
         }
 
@@ -127,20 +147,17 @@ void StateComposer::compose()
             // Get controller info
             currentLEDController = currentLED->get_controller();
             if (currentLEDController == NULL) {
-                // Error to log
                 continue;
             }
 
             ioPort = currentLEDController->get_io();
-            if (ioPort <= 0) {
-                // Error to log
+            if ( (ioPort <= 0) || (ioPort == NULL) ) {
                 continue;
             }
 
             // Get LED index
             stripIndex = currentLED->get_strip_idx();
-            if (stripIndex <= 0) {
-                // Error to log
+            if ( (stripIndex <= 0) || (stripIndex == NULL) ) {
                 continue;
             }
 
@@ -150,14 +167,28 @@ void StateComposer::compose()
 
             scalar = (float)(((float)intensity / 100.0) * (float)power);
 
+            if (logEnable)
+                logFile << "[" << timeBuffer << "] Power Scalar: " << scalar << "\n";
+
             red = (int ( ((float)currentZoneActiveState->get_r()) * scalar)); 
             green = (int ( ((float)currentZoneActiveState->get_g()) * scalar));
             blue = (int ( ((float)currentZoneActiveState->get_b()) * scalar));
 
+            if (logEnable) {
+                logFile << "[" << timeBuffer << "] "
+                        << "Attempting serial send:\n"
+                        << "  IO Port:" << ioPort << "\n"
+                        << "  R:" << red << "\n"
+                        << "  G:" << green << "\n"
+                        << "  B:" << blue << "\n"
+                        << "  Idx:" << stripIndex << "\n";
+            }
+
             // Call serial send
             composerState = 'S';
-            if (r_t_serial(currentLEDController, red, green, blue, stripIndex)) {
-                // Error to log
+
+            if (serial_send(currentLEDController, red, green, blue, stripIndex)) {
+                logFile << "[" << timeBuffer << "] " << ""
             } 
             composerState = 'C';
             // END OF LEDS LOOP
@@ -166,4 +197,22 @@ void StateComposer::compose()
         // END OF ZONES LOOP
     }
 
+    // END OF CURRENT STATE ORCHESTRATION
+}
+
+
+
+void StateComposer::clean_up() 
+{
+    if (logEnable)
+        logFile.close();
+
+    close(uartFilestream);
+}
+
+
+
+char StateComposer::get_composer_state() 
+{
+    return composerState;
 }

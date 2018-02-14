@@ -16,7 +16,9 @@ void* thr_compose_call(void*)
     std::cout << "Starting State Composer..." << std::endl;
     while (composeEnable) {
         StateComposer::compose();
-    }    
+        usleep(250000000);  // Sleep for .25 seconds, give the core a break during no state
+    }
+    StateComposer::clean_up();
     pthread_exit(NULL);
 }
 
@@ -50,7 +52,7 @@ int main()
         std::cerr << "   ERROR: Unable to create thread! Exiting --- " << thrStatus << std::endl;
         exit(-1);
     }
-    else {std::cout << " spun" << std::endl;}
+    else { std::cout << " spun" << std::endl; }
 
     // API (needs to be the last thing in this function)
     Port port(9090);
@@ -70,9 +72,9 @@ int main()
     composeEnable = false;
     std::cout << "Joining composer thread back to main... ";
     pthread_join(composerThread, NULL);
-    std::cout << "Joined! Freeing API... " << std::endl;
+    std::cout << "Joined!\nFreeing API... " << std::endl;
     free(api);
-    std::cout << "done. Exiting..." << std::endl;
+    std::cout << "done\n\nExiting..." << std::endl;
 
     return 0;
 }
