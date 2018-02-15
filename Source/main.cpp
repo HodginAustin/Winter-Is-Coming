@@ -16,7 +16,7 @@ void* thr_compose_call(void*)
     std::cout << "Starting State Composer..." << std::endl;
     while (composeEnable) {
         StateComposer::compose();
-        usleep(250000000);  // Sleep for .25 seconds, give the core a break during no state
+        usleep(250000);  // Sleep for .25 seconds, give the core a break during no state
     }
     StateComposer::clean_up();
     pthread_exit(NULL);
