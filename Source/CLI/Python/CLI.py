@@ -17,6 +17,11 @@ def initialize(url, header):
     if(str(r.status_code) == "200"):
         print("Add Successful")
 
+    print("Set current profile")
+    j = requests.post(url + "/current_profile/1","", timeout=200)
+
+    if(str(r.status_code) == "200"):
+        print("Set current profile successful")
 
     print("Add Zone to  Default profile 1")
     j = {"name": "Zone 1"}
@@ -34,12 +39,12 @@ def initialize(url, header):
 
     print("Creating 10 LED's")
 
-    for i  in range(10):
+    for i in range(10):
         print("Add LEDS")
         j = {"strip_idx": i, "controller": 1}
         r = requests.post(url + "/leds/add", json=j, headers=header)
         if(str(r.status_code) == "200"):
-            print("Add Successful")
+            print("Add Successful for %i" % i)
 
     print("Adding  LEDS to Zone1")
     j = range(1,11)
@@ -50,7 +55,7 @@ def initialize(url, header):
     now = datetime.now()
     seconds_since_midnight = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
 
-    print("Adding White Daily state 100 intensity")
+    print("Adding White LED state 100 intensity")
     j = {
         "r": 255,
         "g": 255,
@@ -66,11 +71,16 @@ def initialize(url, header):
     seconds_since_midnight = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
 
     print("Add White Daily State To Zone Starting Now")
-    j = [{"time":seconds_since_midnight, "state":1}]
+    j={}
     r = requests.post(url + "/daily_states/add", json=j, headers=header)
     if(str(r.status_code) == "200"):
         print("Add Successful")
 
+    print("Add Daily State Time mapping")
+    j = [{"time":seconds_since_midnight, "state":1}]
+    r = requests.put(url + "/daily_states/1/led_states/add", json=j, headers=header)
+    if(str(r.status_code) == "200"):
+        print("Add successful")
 
     print("Assign daily state to zone For Sunday")
     r = requests.put(url + "/profiles/1/zones/1/day/0/add/1")
