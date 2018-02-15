@@ -176,8 +176,8 @@ def createDemo(url, header):
         "power": True
         }
     r = requests.post(url + "/led_states/add", json=j, headers=header)
-     if(str(r.status_code) == "200"):
-         print("Add Successful")
+    if(str(r.status_code) == "200"):
+        print("Add Successful")
 
 
     #Will be state 2
@@ -190,8 +190,8 @@ def createDemo(url, header):
         "power": True
         }
     r = requests.post(url + "/led_states/add", json=j, headers=header)
-     if(str(r.status_code) == "200"):
-         print("Add Successful")
+    if(str(r.status_code) == "200"):
+        print("Add Successful")
     #will be state 3
     print("Adding Blue Daily state 100 intensity")
     j = {
@@ -202,7 +202,7 @@ def createDemo(url, header):
         "power": True
         }
     r = requests.post(url + "/led_states/add", json=j, headers=header)
-     if(str(r.status_code) == "200"):
+    if(str(r.status_code) == "200"):
         print("Add Successful")
 
     while time != oneHourLater:
