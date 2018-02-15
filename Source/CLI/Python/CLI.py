@@ -10,27 +10,27 @@ def print_request(r):
 
 def initialize(url, header):
 
-	 print("Adding Default Profile")
-     j = {"name": "Default Profile", "description": "Default Profile"}
-     r = requests.post(url + "/profiles/add", json=j, headers=header, timeout=200)
+	print("Adding Default Profile")
+    j = {"name": "Default Profile", "description": "Default Profile"}
+    r = requests.post(url + "/profiles/add", json=j, headers=header, timeout=200)
 
-     if(str(r.status_code) == "200"):
-         print("Add Successful")
+    if(str(r.status_code) == "200"):
+        print("Add Successful")
 
 
-     print("Add Zone to  Default profile 1")
-     j = {"name": "Zone 1"}
-     r = requests.post(url + "/profiles/1/zones/add", json=j, headers=header, timeout=200)
+    print("Add Zone to  Default profile 1")
+    j = {"name": "Zone 1"}
+    r = requests.post(url + "/profiles/1/zones/add", json=j, headers=header, timeout=200)
 
-      if(str(r.status_code) == "200"):
-          print("Add Successful")
+    if(str(r.status_code) == "200"):
+        print("Add Successful")
 
-     print("Add 1 Controler To Default Controller")
-     j = {"io": 1}
-     r = requests.post(url +"/controllers/add", json=j, headers=header)
+    print("Add 1 Controler To Default Controller")
+    j = {"io": 1}
+    r = requests.post(url +"/controllers/add", json=j, headers=header)
 
-     if(str(r.status_code) == "200"):
-         print("Add Successful")
+    if(str(r.status_code) == "200"):
+        print("Add Successful")
 
     print("Creating 10 LED's")
 
@@ -41,29 +41,29 @@ def initialize(url, header):
         if(str(r.status_code) == "200"):
             print("Add Successful")
 
-     print("Adding  LEDS to Zone1")
-     j = range(1,11)
-     r = requests.put(url + "/profiles/1/zones/1/leds/add", json=j, headers=header)
-     if(str(r.status_code) == "200"):
-         print("Add Successful")
+    print("Adding  LEDS to Zone1")
+    j = range(1,11)
+    r = requests.put(url + "/profiles/1/zones/1/leds/add", json=j, headers=header)
+    if(str(r.status_code) == "200"):
+        print("Add Successful")
 
-     now = datetime.now()
-     seconds_since_midnight = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
+    now = datetime.now()
+    seconds_since_midnight = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
 
-     print("Adding White Daily state 100 intensity")
-     j = {
-         "r": 255,
-         "g": 255,
-         "b": 255,
-         "intensity": 100,
-         "power": True
-         }
-     r = requests.post(url + "/led_states/add", json=j, headers=header)
-      if(str(r.status_code) == "200"):
-          print("Add Successful")
+    print("Adding White Daily state 100 intensity")
+    j = {
+        "r": 255,
+        "g": 255,
+        "b": 255,
+        "intensity": 100,
+        "power": True
+        }
+    r = requests.post(url + "/led_states/add", json=j, headers=header)
+    if(str(r.status_code) == "200"):
+        print("Add Successful")
 
-     now = datetime.now()
-     seconds_since_midnight = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
+    now = datetime.now()
+    seconds_since_midnight = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
 
     print("Add White Daily State To Zone Starting Now")
     j = [{"time":seconds_since_midnight, "state":1}]
@@ -75,7 +75,7 @@ def initialize(url, header):
     print("Assign daily state to zone For Sunday")
     r = requests.put(url + "/profiles/1/zones/1/day/0/add/1")
     if(str(r.status_code) == "200"):
-         print("Add Successful")
+        print("Add Successful")
 
     print("Current Active state")
     r = requests.get(url + "/profiles/1/zones/1/active_state")
@@ -203,7 +203,7 @@ def createDemo(url, header):
         }
     r = requests.post(url + "/led_states/add", json=j, headers=header)
      if(str(r.status_code) == "200"):
-         print("Add Successful")
+        print("Add Successful")
 
     while time != oneHourLater:
 
@@ -251,7 +251,7 @@ def main():
 	scheduleJson = {}
 	profilesJoson = {}
 
-	option = 0;
+	option = 0
 
 	while option != 6:
 		#os.system('cls' if os.name == 'nt' else 'clear')
