@@ -1,6 +1,7 @@
 #include "./includes/StateComposer.hpp"
 
 // The serial RxTx device in the linux system
+// TODO: Verify the correct port is in use for the Pi model
 #define SERIAL_DEV "/dev/serial0"
 
 
@@ -49,7 +50,6 @@ bool StateComposer::initialize(bool log)
         logFile << "[" << timeBuffer << "] StateComposer transcript started\n";
     }
 
-    // TODO: Need to check dev file for the Pi 0 W
     uartFilestream = open(SERIAL_DEV, O_RDWR | O_NOCTTY | O_NDELAY);		//Open in non blocking read/write mode
 
 	if (uartFilestream == -1) { // ERROR - CAN'T OPEN SERIAL PORT
@@ -57,7 +57,7 @@ bool StateComposer::initialize(bool log)
         return false;
 	}
 
-    //CONFIGURE THE UART
+    // CONFIGURE THE UART
 	//	Baud rate:- B1200, B2400, B4800, B9600, B19200, B38400, B57600, B115200, B230400, B460800, B500000, B576000, B921600, B1000000, B1152000, B1500000, B2000000, B2500000, B3000000, B3500000, B4000000
 	//	CSIZE:- CS5, CS6, CS7, CS8
 	//	CLOCAL - Ignore modem status lines
@@ -97,7 +97,6 @@ bool StateComposer::serial_send(Controller* ctrlr, char r, char g, char b, unsig
 		{
 			std::cerr << "   UART Tx error!\n" << std::endl;
             return true;
-            
 		}
 	}
 
@@ -121,15 +120,21 @@ void StateComposer::compose()
 
     char timeBuffer[30];
 
-    if (logEnable)
+    if (logEnable) {
         strftime(timeBuffer, 30, "%c", timeInfo);
-
+        logFile << "[" << timeBuffer << "] Starting composition of internal state to hardware\n";
+    }
+    
     currentProfile = InternalState::get_current_profile();
     if (currentProfile == NULL) {
         if (logEnable) {
             logFile << "[" << timeBuffer << "] No profiles to loop on. Exiting composer\n";
         }
         return;
+    }
+
+    if (logEnable) {
+        logFile << "[" << timeBuffer << "] Looping on active profile zones\n";
     }
 
     // Will only loop over returned vector of zones (if none, skip)
@@ -142,10 +147,13 @@ void StateComposer::compose()
 
         currentZoneLEDs = currentZone->get_leds();
 
+        if (logEnable) {
+            logFile << "[" << timeBuffer << "] Looping on zone '" << currentZone->get_name() << "' LEDs\n";
+        }
+
         // Will only loop over returned vector of LEDs (if none, skip)
         for (auto currentLED : currentZoneLEDs) {
         
-
             // Get controller info
             currentLEDController = currentLED->get_controller();
             if (currentLEDController == NULL) {
@@ -159,7 +167,7 @@ void StateComposer::compose()
 
             // Get LED index
             stripIndex = currentLED->get_strip_idx();
-            if (stripIndex <= 0) {
+            if (stripIndex < 0) {
                 continue;
             }
 
@@ -170,7 +178,7 @@ void StateComposer::compose()
             scalar = (float)(((float)intensity / 100.0) * (float)power);
 
             if (logEnable)
-                logFile << "[" << timeBuffer << "] Power Scalar: " << scalar << "\n";
+                logFile << "[" << timeBuffer << "] Power Scalar for current LED: " << scalar << "\n";
 
             red = (int ( ((float)currentZoneActiveState->get_r()) * scalar)); 
             green = (int ( ((float)currentZoneActiveState->get_g()) * scalar));
@@ -190,7 +198,7 @@ void StateComposer::compose()
             composerState = 'S';
 
             if (serial_send(currentLEDController, red, green, blue, stripIndex)) {
-                logFile << "[" << timeBuffer << "] " << "Error transmitting serial\n";
+                logFile << "[" << timeBuffer << "] " << "Error transmitting serial!\n";
             } 
             composerState = 'C';
             // END OF LEDS LOOP
