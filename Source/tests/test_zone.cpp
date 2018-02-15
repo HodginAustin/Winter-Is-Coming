@@ -18,7 +18,7 @@ bool test_zone()
 
     bool condTrue = true;
     bool condFalse = false;
-    
+
     // ID
     condTrue &= assertTrue(z->get_id() == 9);
 

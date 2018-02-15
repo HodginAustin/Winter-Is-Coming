@@ -1,2 +1,2 @@
 default:
-	python3 CLI.py
+	python CLI.py
