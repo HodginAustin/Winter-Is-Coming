@@ -10,7 +10,7 @@ def print_request(r):
 
 def initialize(url, header):
 
-	print("Adding Default Profile")
+    print("Adding Default Profile")
     j = {"name": "Default Profile", "description": "Default Profile"}
     r = requests.post(url + "/profiles/add", json=j, headers=header, timeout=200)
 
@@ -86,75 +86,75 @@ def initialize(url, header):
 
 def getProfiles(url, header):
 
-	r = requests.get(url + "/profiles", "")
-	if (str(r.status_code) == "200"):
-		return r.json()
+    r = requests.get(url + "/profiles", "")
+    if (str(r.status_code) == "200"):
+        return r.json()
 
 
 def shutdown(url, header):
-	os.system('cls' if os.name == 'nt' else 'clear')
-	print("Shutting down PlanteRGB Service.....")
-	r = requests.get(url + "/shutdown")
-	if str(r.status_code) == "200":
-		print("Shut down Successful!")
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print("Shutting down PlanteRGB Service.....")
+    r = requests.get(url + "/shutdown")
+    if str(r.status_code) == "200":
+        print("Shut down Successful!")
 
 def configure_Zones(url, zoneJson):
-	#os.system('cls' if os.name == 'nt' else 'clear')
-	print("|------------------------Zone Menu------------------------|")
-	option = input("Which Zone would you like to configure (1-4): ")
+    #os.system('cls' if os.name == 'nt' else 'clear')
+    print("|------------------------Zone Menu------------------------|")
+    option = input("Which Zone would you like to configure (1-4): ")
 
-	return zoneJson
+    return zoneJson
 
 
 
 def configure_Schedule(url, header):
-	os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def configure_profiles(url,header,profilesJoson):
 
-	os.system('cls' if os.name == 'nt' else 'clear')
-	r = getProfiles(url, header)
+    os.system('cls' if os.name == 'nt' else 'clear')
+    r = getProfiles(url, header)
 
-	print(r)
+    print(r)
 
-	option = 0
-	numProfiles = 0
-	results = []
+    option = 0
+    numProfiles = 0
+    results = []
 
 
-	for val in r:
-		numProfiles = numProfiles + 1
+    for val in r:
+        numProfiles = numProfiles + 1
 
-	if numProfiles > 0:
-		while option != 3:
-			print("|---------------------------Profile Menu---------------------------|")
-			option = input("Add New Profile(1) | Edit Existing Profile (2) | Exit Profile(3) ")
+    if numProfiles > 0:
+        while option != 3:
+            print("|---------------------------Profile Menu---------------------------|")
+            option = input("Add New Profile(1) | Edit Existing Profile (2) | Exit Profile(3) ")
 
-			if option == 1:
-				name = raw_input("Enter in profile name: ")
-				description = raw_input("Enter description for new profile: ")
-				profilesJoson = {"name" : str(name), "description": str(description)}
-			elif option == 2:
-				print("Will add later!")
-				numEdit = input("Which Profile would you like to edit? (1-" + str(numProfiles) + "): ")
-	else:
-		print("Please run the initialize option to set default profiles")
+            if option == 1:
+                name = raw_input("Enter in profile name: ")
+                description = raw_input("Enter description for new profile: ")
+                profilesJoson = {"name" : str(name), "description": str(description)}
+            elif option == 2:
+                print("Will add later!")
+                numEdit = input("Which Profile would you like to edit? (1-" + str(numProfiles) + "): ")
+    else:
+        print("Please run the initialize option to set default profiles")
 
-	return profilesJoson
+    return profilesJoson
 
 def sendToServer(url, zoneJson, scheduleJson, profilesJoson):
 
-	#check to see if anything has changed in zones
-	if zoneJson:
-		return zoneJson
-	#check to see if anything has changed in schedule
-	if scheduleJson:
-		return scheduleJson
+    #check to see if anything has changed in zones
+    if zoneJson:
+        return zoneJson
+    #check to see if anything has changed in schedule
+    if scheduleJson:
+        return scheduleJson
 
-	#checking to see if anything has changed in profiles
-	if profilesJoson:
-		return profilesJoson
+    #checking to see if anything has changed in profiles
+    if profilesJoson:
+        return profilesJoson
 
 
 def createDemo(url, header):
@@ -242,43 +242,43 @@ def createDemo(url, header):
 
 
 def main():
-	#URL
-	url = "http://localhost:9080"
-	# Headers
-	header = {'Content-type': 'application/json'}
+    #URL
+    url = "http://localhost:9080"
+    # Headers
+    header = {'Content-type': 'application/json'}
 
-	zoneJson = {}
-	scheduleJson = {}
-	profilesJoson = {}
+    zoneJson = {}
+    scheduleJson = {}
+    profilesJoson = {}
 
-	option = 0
+    option = 0
 
-	while option != 6:
-		#os.system('cls' if os.name == 'nt' else 'clear')
-		print("|------------------Welcome to PlanteRGB Lighting System------------------|")
+    while option != 6:
+        #os.system('cls' if os.name == 'nt' else 'clear')
+        print("|------------------Welcome to PlanteRGB Lighting System------------------|")
 
-		print("|---------------------------Configuration Menu---------------------------|")
+        print("|---------------------------Configuration Menu---------------------------|")
 
-		option = input("Zones(1) | Scheduling(2) | Profiles(3) | Initialize (4)| Apply Changes(5) | Shutdown(6): ")
+        option = input("Zones(1) | Scheduling(2) | Profiles(3) | Initialize (4)| Apply Changes(5) | Shutdown(6): ")
 
-		if option == 1:
-			print("Selected Zones")
-			configure_Zones(url, header,zoneJson)
-		elif  option == 2:
-			print("Selected Scheduling")
-			configure_Schedule(url,header, scheduleJson)
-		elif  option == 3:
-			print("Profiles Selected")
-			configure_profiles(url, header, profilesJoson)
-		elif option == 4:
-			print("Setting up default Zones, Profiles, and Schedules")
-			initialize(url, header)
-		elif  option == 5:
-			print("Changes Applied")
-			sendToServer(url, header, zoneJson, scheduleJson, profilesJoson)
-		elif option == 6:
-			shutdown(url, header)
+        if option == 1:
+            print("Selected Zones")
+            configure_Zones(url, header,zoneJson)
+        elif  option == 2:
+            print("Selected Scheduling")
+            configure_Schedule(url,header, scheduleJson)
+        elif  option == 3:
+            print("Profiles Selected")
+            configure_profiles(url, header, profilesJoson)
+        elif option == 4:
+            print("Setting up default Zones, Profiles, and Schedules")
+            initialize(url, header)
+        elif  option == 5:
+            print("Changes Applied")
+            sendToServer(url, header, zoneJson, scheduleJson, profilesJoson)
+        elif option == 6:
+            shutdown(url, header)
 
 
 if __name__ == "__main__":
-	main() #Startng the main function
+    main() #Startng the main function
