@@ -156,6 +156,68 @@
 	\section{Travis Hodgin}
 	\section{Max Schmidt}
 	\section{Zach Lerew}
+	For my portion of the project’s ALPHA, I wrote the API, Internal State, and started the Data Parser.
+	The API is a RESTful http endpoint which spawns a series of child listeners and defines a set of routes which map to action functions.
+	The library I chose to implement this is called Pistache, an element C++ REST framework.
+	Each of these routes use a different http verb, depending on the type of CRUD operation the route implements.
+	For example, adding a profile to the system uses a POST request because the request introduces new data.
+	Adding an existing LED to an existing zone uses a PUT request because it links existing items.
+	Viewing information uses the GET verb, and deleting it uses the DELETE verb.
+	Each API route maps to an action, much like the ASP.NET framework.
+	The action methods take JSON data as input and make changes to the internal state.
+	For example, a call to http://localhost:9080/profiles/add with the JSON data
+	\begin{lstlisting}
+	{“name”:”Test Profile”, “description”: “Winter herbs”}
+	\end{lstlisting}
+	will create an internal state Profile object with a name and description set.
+	The request will return the ID of the newly created object, or an error if the operation was not successful.
+	Afterwards, a call to http://localhost:9080/profiles/1 will return the JSON data
+	\begin{lstlisting}
+	{“name”:”Test Profile”, “description”:”Winter herbs”, “id”:1, “zones”:[]}
+	\end{lstlisting}
+	When retrieving data, the API uses the Nlohmann JSON library to convert between objects and their text representations. The library has a useful feature that allows me to define from\_json and to\_json functions for each of the internal state objects. These methods are called automatically when implicitly converting the internal state objects into JSON.
+	\begin{lstlisting}
+	json j_out = *profile;
+	\end{lstlisting}
+	The conversion works in the opposite direction too, by calling
+	\begin{lstlisting}
+	json::parse(request.body())
+	\end{lstlisting}
+	and implicitly casting it to a Profile object. The JSON library also provides numerous methods for easy parsing of JSON objects and lists.
+	The API is the entry point for the system as a whole, and is the primary method by which data is entered into the system.
+	The command line interface as well as the web interface connect to the API by calling its routes and passing JSON data, so it is essential that the API is well documented and provides all necessary actions.
+
+	After a request is processed by the API, the internal state takes over by providing a series of object methods which are called in order to add new data or link existing data together.
+	The internal state is the in memory representation of the system and all of its settings.
+	It has six types of objects. Two of the objects are virtual representations of the physical system, the LED and its associated Controller.
+	Two of the objects represent unique permutations of a set of possible states. The first of those is the LEDState, which is a combination of red, green, blue, intensity, and power status.
+	The second unique object is the Daily State which represents all led states which occur in a day.
+	A single daily state can be used for multiple days of the week, allowing a single daily schedule object to be used every day of the week without creating more data.
+	The daily state contains a dictionary of mappings between a time (in seconds after midnight) and pointers to LED states.
+	The fourth object is the Zone, which contains a set of 7 daily states and a list of LEDs.
+	The Zone has an algorithm in it which looks through the set of 7 daily states and finds a pointer to the current LED state which should be active based on the system's day and time.
+	If an LED state cannot be found anywhere in the week, the zero LED state is returned, which represents an state of no color, no intensity, and no power.
+	The final object is the Profile, which contains a name, description, and set of zones.
+	Each profile represents an overall state of the system, a unique combination of a schedule and a set of LEDs.
+	One possible user story would be a series of four profiles, one for each season.
+	During different seasons the user may grow different vegetables depending on seed availability and preference. Changes made to the internal state exist only in memory, and are lost when the system resets, or in the case of our alpha, crashes.
+
+	The data parser exists to save the data within the internal state into the file system and later retrieve it back into memory.
+	The chosen library is sqlite\_orm by fnc12 on github.
+	This library is likely the most flexible database Object Relational Mapping system available for C++ while still being quick to learn.
+	This system allows you to build the database schema using objects by passing the results of a make\_table call to a make\_storage function.
+	The make\_table function takes a series of make\_column calls which in turn take pointers to accessor and mutator functions for each of the objects in the system.
+	Once the storage object is created on the file system and the schema defined in memory, the ORM provides a series of SQL like functions such as insert, update, replace, remove, and so on.
+	These functions take an instance of an object such as a Zone, and automatically generate and call the appropriate SQL code.
+	The ORM also provides lamba style functions which replicate SQL functions like JOIN, WHICH, and aggregate functions such as COUNT or SUM.
+	In a similar manner as the JSON library, the sqlite\_orm library takes a heavy amount of setup for schema definition, after which subsequent operations are quick and painless.
+	Once the data is stored on the file system, it can be loaded in the dataParser’s initialize function.
+	The ORM library provides a series of select functions which allow a direct translation into standard C++ STL container containing objects.
+	My favorite part of this ORM library is the insert functions which take an internal state object and returns the ID of the newly created object.
+	This allows me to keep object IDs unique easily as well as pass them around in the API as objects are created, modified, and deleted.
+	During the project so far, I have been responsible for a lot of the middle parts of the system, and as such have been responsible for making sure my team understands what data to give me, and what data they are getting from me.
+
+
 
 	\section{Problems}
 		\subsection{Problem name}
