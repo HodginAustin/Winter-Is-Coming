@@ -150,7 +150,12 @@
 	LEDs on up to twenty light strips can be grouped into zones and controlled on a schedule with a local web interface.
 
 	\section{Status}
-	The project is now in an alpha state.
+	The project is now in an alpha state. The team's definition of an alpha state is full chain communication.
+	This involves sending data from the CLI, through the API, into the internal state, then to the state composer, and finally to the LED control program on the Arduino Nano which lights the LEDs.
+	Currently the system handles multiple profiles, zones, daily states, and LED states.
+	It does not yet handle multiple controllers and/or LED strips.
+	The database currently stores some values, but does not load, update, or delete data.
+	These changes are coming before beta, along with bug fixes and improvements.
 
 	\section{Austin Hodgin}
 	\section{Travis Hodgin}
@@ -282,7 +287,7 @@
 	The API is the entry point for the system as a whole, and is the primary method by which data is entered into the system.
 	The command line interface as well as the web interface connect to the API by calling its routes and passing JSON data, so it is essential that the API is well documented and provides all necessary actions.
 
-	After a request is processed by the API, the internal state takes over by providing a series of object methods which are called in order to add new data or link existing data together.
+	\noindent After a request is processed by the API, the internal state takes over by providing a series of object methods which are called in order to add new data or link existing data together.
 	The internal state is the in memory representation of the system and all of its settings.
 	It has six types of objects. Two of the objects are virtual representations of the physical system, the LED and its associated Controller.
 	Two of the objects represent unique permutations of a set of possible states. The first of those is the LEDState, which is a combination of red, green, blue, intensity, and power status.
@@ -297,7 +302,7 @@
 	One possible user story would be a series of four profiles, one for each season.
 	During different seasons the user may grow different vegetables depending on seed availability and preference. Changes made to the internal state exist only in memory, and are lost when the system resets, or in the case of our alpha, crashes.
 
-	The data parser exists to save the data within the internal state into the file system and later retrieve it back into memory.
+	\noindent The data parser exists to save the data within the internal state into the file system and later retrieve it back into memory.
 	The chosen library is sqlite\_orm by fnc12 on github.
 	This library is likely the most flexible database Object Relational Mapping system available for C++ while still being quick to learn.
 	This system allows you to build the database schema using objects by passing the results of a make\_table call to a make\_storage function.
@@ -315,15 +320,24 @@
 
 
 	\section{Problems}
-		\subsection{Problem name}
-			Problem description
+		\subsection{C++ is a terrible language for web development}
+			C++ is a language not intended to be used for serious web development or API writing.
+			Therefore, many libraries are small, difficult to use, and have few contributors.
+			This creates a more difficult learning curve, but was ultimately necessary due to hardware communication.
 		\subsubsection{Solution}
-				Problem solution
+			We spent extra time doing research into libraries and solutions in order to give us the best chance of success given the circumstances. We also chose to write the CLI in Python to speed up development.
 	\subsection{Libraries Not well documented}
-      Problem description
+      Many open source or non-supported libraries include limited or non existent documentation.
+			This can be a hindrance when developing and issues come up, as support is limited.
   	\subsubsection{Solution}
-	    Problem solution
-	 	\subsection{Five Person Scheduling}
+	    In a few cases we were able to communicate with the library developer and get in depth answers,
+			otherwise we were forced to look through source code and make educated guesses.
+	\subsection{Database many-to-many relationships}
+      The database ORM chosen does not have an included method of supporting many-to-many relationships.
+			The system has two of these relationships.
+  	\subsubsection{Solution}
+	    We were able to post a question to the development GitHub and receive a response from the developer with a suggestion on how to solve the problem. A set of three temporary relationship objects were created, which only exist when saving and loading data.
+	 	\subsection{Five Person Scheduling and communication}
 		 Seeing that the group consists of four members, and our client's schedule contains busy times similar to ours, scheduling times that worked for everyone
 		 forced compromises in meeting times.
   	\subsubsection{Solution}
