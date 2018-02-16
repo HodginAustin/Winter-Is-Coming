@@ -1,0 +1,193 @@
+\documentclass[onecolumn, draftclsnofoot,10pt, compsoc]{IEEEtran}
+
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{etoolbox}
+\usepackage{pdflscape}
+
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{}
+
+\geometry{textheight=9.5in, textwidth=7in}
+
+% 1. Fill in these details
+\def \CapstoneTeamName{			              			 PlanteR-GB}
+\def \CapstoneTeamNumber{					           			 Group 64}
+\def \GroupMemberOne{				           				Austin Hodgin}
+\def \GroupMemberTwo{				           				Travis Hodgin}
+\def \GroupMemberThree{			            Maximillian Schmidt}
+\def\GroupMemberFour{		        	               Zach Lerew}
+\def \CapstoneProjectName{	      	    Winter is Coming...}
+\def \CapstoneSponsorCompany{		    Oregon State University}
+\def \CapstoneSponsorPerson{		 			  				 Victor Hsu}
+
+% 2. Uncomment the appropriate line below so that the document type works
+\def \DocType{		%Problem Statement
+				%Requirements Document
+				%Technology Review
+				%Design Document
+				%Fall Progress Report
+				Winter Midterm Progress Report
+				}
+
+\newcommand{\NameSigPair}[1]{\par
+\makebox[2.75in][r]{#1} \hfil 	\makebox[3.25in]{\makebox[2.25in]{\hrulefill} \hfill		\makebox[.75in]{\hrulefill}}
+\par\vspace{-12pt} \textit{\tiny\noindent
+\makebox[2.75in]{} \hfil		\makebox[3.25in]{\makebox[2.25in][r]{Signature} \hfill	\makebox[.75in][r]{Date}}}}
+% 3. If the document is not to be signed, uncomment the RENEWcommand below
+\renewcommand{\NameSigPair}[1]{#1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{titlepage}
+    \pagenumbering{gobble}
+    \begin{singlespace}
+    	%\includegraphics[height=4cm]{coe_v_spot1}
+        \hfill
+
+        % 4. If you have a logo, use this includegraphics command to put it on the coversheet.
+        \includegraphics[height=4cm]{logo.png}
+
+        \par\vspace{.2in}
+        \centering
+        \scshape{
+            \huge CS Capstone \DocType \par
+            {\large\today}\par
+            \vspace{.5in}
+            \textbf{\Huge\CapstoneProjectName}\par
+
+            %\vfill
+						\vspace{1in}
+
+            {\large Prepared for}\par
+            \Huge \CapstoneSponsorCompany\par
+            \vspace{5pt}
+            {\Large\NameSigPair{\CapstoneSponsorPerson}\par}
+
+						\vspace{1in}
+
+            {\large Prepared by}\par
+						{\huge \CapstoneTeamNumber}\par
+            \CapstoneTeamName\par
+            \vspace{5pt}
+
+            {
+							\Large
+							\NameSigPair{\GroupMemberOne}\par
+							\NameSigPair{\GroupMemberTwo}\par
+							\NameSigPair{\GroupMemberThree}\par
+							\NameSigPair{\GroupMemberFour}\par
+            }
+
+            \vspace{20pt}
+        }
+%\textbf{\textsuperscript{citation needed}}
+				\newpage
+        \begin{abstract}
+				\noindent This document details what the team has accomplished for the second stage of the project.
+				It covers the progress made on the programming portion of the project,
+				as well as problems we faced and the solutions implemented.
+				This document contains four sections written be each of the team's members.
+				These sections explain the individual work accomplished by each of us.
+        \end{abstract}
+    \end{singlespace}
+\end{titlepage}
+
+\newpage
+
+\pagenumbering{arabic}
+\tableofcontents
+% 7. uncomment this (if applicable). Consider adding a page break.
+%\listoffigures
+%\listoftables
+\clearpage
+\singlespace
+
+\newpage
+
+
+% Syntax highlighting
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  backgroundcolor=\color{white},   % choose the background color
+  basicstyle=\footnotesize,        % size of fonts used for the code
+  breaklines=true,                 % automatic line breaking only at whitespace
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  keywordstyle=\color{blue},       % keyword style
+  stringstyle=\color{mymauve},     % string literal style
+	frame = single,                  % code framing
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%% NOTES %%%%%%%%%%%%%%%%%%%%%%%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+	% Introduction
+	\section{Purpose}
+	The PlanteR-GB project is a configurable LED strip control system run by microcontrollers.
+	The system intends to make growing plants easy and configurable by giving the user control over the state of every LED connected to the system.
+	Through a local web interface, the system groups LEDs across multiple light strips into zones.
+	Zones set the color, intensity, and power state of their LEDs based on a configurable schedule.
+	Existing plant lighting systems offer little to no configuration options and cost between \$70 and \$100. \cite{expensive1} \cite{expensive2} \cite{expensive3}
+	Our team is building an LED plant growing system from the ground up to offer configuration options and affordability.
+	The trade off made for a lower price is more involvement during setup. Our team intends to release the project as open source software for the DIY community.
+	Initially the project will require users to purchase the specific micro controllers used by the system, flash the control software, and wire the system together.
+	Our stretch goals include purchasable kits which include all of the necessary parts and instructions to build the system for yourself, and possibly custom enclosures that are sold as pre-made working systems.
+
+	\section{Goals}
+	The PlanteR-GB lighting system will allow users to change individual LEDs to a specific color and intensity at any time throughout the day or week.
+	LEDs on up to twenty light strips can be grouped into zones and controlled on a schedule with a local web interface.
+
+	\section{Status}
+	The project is now in an alpha state.
+
+	\section{Austin Hodgin}
+	\section{Travis Hodgin}
+	\section{Max Schmidt}
+	\section{Zach Lerew}
+
+	\section{Problems}
+		\subsection{Problem name}
+			Problem description
+		\subsubsection{Solution}
+				Problem solution
+	\subsection{Libraries Not well documented}
+      Problem description
+  	\subsubsection{Solution}
+	    Problem solution
+	 	\subsection{Five Person Scheduling}
+		 Seeing that the group consists of four members, and our client's schedule contains busy times similar to ours, scheduling times that worked for everyone
+		 forced compromises in meeting times.
+  	\subsubsection{Solution}
+		  With no "perfect" times aligning in anyone's schedules, some group members had to cut time from work, other class work, or personal time to work on the project.
+		  There was no "clean" solution to the scheduling issue.
+
+
+	\section{Remaining work}
+	Data parser
+	CLI Multi zones, colors
+	Web interface
+	State composer multiple microcontrollers
+	Large system tests
+
+
+	\section{References}
+			\begingroup
+				\renewcommand{\addcontentsline}[3]{}% Remove functionality of \addcontentsline
+				\renewcommand{\section}[2]{}% Remove functionality of \section
+				%\cite[Sec 3.8]{sourceName}
+				\bibliography{ref}
+				\bibliographystyle{IEEEtran}
+			\endgroup
+\end{document}
