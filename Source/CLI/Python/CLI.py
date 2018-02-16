@@ -38,7 +38,7 @@ def initialize(url, header):
 
     print("Creating 10 LED's")
 
-    for i in range(30):
+    for i in range(24):
         print("Add LEDS")
         j = {"strip_idx": i, "controller": 1}
         r = requests.post(url + "/leds/add", json=j, headers=header)
@@ -46,7 +46,7 @@ def initialize(url, header):
             print("Add Successful for %i" % i)
 
     print("Adding  LEDS to Zone1")
-    j = range(1,31)
+    j = range(1,24)
     r = requests.put(url + "/profiles/1/zones/1/leds/add", json=j, headers=header)
     if(str(r.status_code) == "200"):
         print("Add Successful")
@@ -211,8 +211,6 @@ def createDemo1(url, header):
     if(str(r.status_code) == "200"):
         print("Add Successful")
 
-
-
     while time != oneHourLater:
         j = []
         print("Adding Red")
@@ -259,7 +257,7 @@ def createDemo2(url, header):
         print("Add Successful")
 
 	print("Adding  LEDS to Zone1")
-    j = range(1,15)
+    j = range(1,12)
     r = requests.put(url + "/profiles/2/zones/2/leds/add", json=j, headers=header)
     if(str(r.status_code) == "200"):
         print("Add Successful")
@@ -290,7 +288,7 @@ def createDemo2(url, header):
     r = requests.post(url + "/profiles/2/zones/add", json=j, headers=header, timeout=200)
 
     print("Adding  LEDS to Zone2")
-    j = range(15,31)
+    j = range(12,24)
     r = requests.put(url + "/profiles/2/zones/3/leds/add", json=j, headers=header)
     if(str(r.status_code) == "200"):
         print("Add Successful")
