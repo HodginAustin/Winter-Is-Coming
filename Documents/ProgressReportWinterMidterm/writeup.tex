@@ -154,6 +154,101 @@
 
 	\section{Austin Hodgin}
 	\section{Travis Hodgin}
+	An Arduino Nano is used to control the LEDs. The nano is the device that
+	changes the registers attached to the each LED to a specific red, green,
+	and blue value. To do this we use the FastLED library, which makes setting
+	values fairly painless. We create an LED object based on a static defined
+	number of LEDS. The object allows us to change each color value
+	per LED.
+	\begin{lstlisting}
+	#define NUM_LEDS 12 /* adjust to your length of LED */
+	#define DATA_PIN 2 /* adjust to the used pin (Arduino nano pin 2 = D2*/
+	#define rxPin 0 /* Reciever pin */
+	#define txPin 1 /* Transmitter pin */
+	CRGB leds[NUM_LEDS]; /*color object */
+	\end{lstlisting}
+	The Nano is then connected to a Raspberry pi via its RX (receiver)
+	and TX (transmitter) pins with a common ground. The connection starts by
+	connecting the RX pin of the Pi to the TX pin of the Nano, and the RX pin on
+	the Nano to the TX pin on the Pi. Since there is a voltage difference between
+	the Pi’s RX and the Nano’s TX we need to use some sort of voltage divider, or
+	logic level converter. The Pi uses 3.3V, while the nano uses 5V. To fix this
+	we use two resistors, a 1.6KΩ and a 3kΩ to drop the voltage of the nano to
+	match the Pi’s, so we don’t fry any components. Once connected, the state composer
+	takes care of communication on the pi’s end, as well as getting information to
+	pass to the Nano. On the nano, communication is set up by setting up both the
+	RX and TX pins depending on the pin number of the specific controller. In this
+	case, on the Nano, the TX pin is pin 1, and RX is pin 0. We then set up the pins to be RX to input,
+	and TX to output. We then set the baud rate and begin listening.
+	\begin{lstlisting}
+	void setup() {
+  	FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS); /* initialize LEDs */
+  	pinMode(rxPin, INPUT);
+  	pinMode(txPin, OUTPUT);
+  	Serial.begin(57600); /* serial port */
+  	FastLED.show();
+	}
+	\end{lstlisting}
+	\\\\
+	\noindent Arduino uses a loop function as its main function. Everytime this function
+	ends, it will return to the top and start over.  This allows for an easy check.
+	During each loop we check the serial buffer for entries. If the serial buffer
+	is not empty we then start reading. The first byte contains the LED index used
+	to change that specific LED, the second is the red value, third is the green
+	value, and finally the fourth has the blue value.  Once we set each value for
+	the specified LED index, we call FastLED.show() which will turn the LED on.
+	After this we flush the buffer to make sure it no longer contains lingering characters.
+ 	\\\\
+	\noindent Each time we read from the serial buffer we are looking for a character. These
+	characters will be typecasted into an integer based on their ascii value.
+	This is done as parsing an integer using the native Serial.parseInt() function
+	would take to long to set values with the current setup of the state composer.
+	ParseInt blocks all other processes until parsing is complete. This was done
+	initially, however was moved over to a system using Serial.read() instead
+	Serial.read() parses byte by byte rather than reading until a delimiter is
+	reached. This allows for faster reading from the serial buffer, which is
+	needed for the state composer. Efficiency is a key in the system, we need to
+	make sure data from the serial buffer gets read, before its overwritten by the
+	following data sent by the state composer.
+	\\\\
+	\noindent The state composer continuously sends data about the current profile to the
+	Nano. This is the main reason efficiency on the Nano is so important. If data
+	gets overwritten before the Nano has a chance to grab that, that data may be
+	lost. There is, however a failsafe. Because we are continuously sending data
+	to the Nano, if data is lost, it will most likely be recovered on the next
+	loop. This means that for any given profile, most data loss issues will be
+	cleared up fairly quickly, depending on the size of the given zone and profile.
+	That being said, our goal is to minimize as many potential data loss situations
+	as possible, to make it as seamless as possible for the user.
+	\\\\
+	\noindent The Nano, also has a limited amount of given space and RAM, which limited our
+	potential solutions to the efficiency problem. If we were to take in the entire
+	serial buffer as a String, and parse it ourselves, we would run into space
+	issues, as Strings take up a lot of space. Reading in a single byte for each
+	color and index values is more efficient than parsing either Strings, or
+	integers, our testing has found.
+	\\\\
+	\noindent Code written on the Nano can easily be ported to most types of devices capable
+	of running the Arduino coding language. Changes between devices include, LED
+	data pin number, RX pin number, TX pin number, as well as changing the
+	specific type in the Arduino IDE. Different devices may handle different baud
+	rates, however this would need to be changed on the Pi as well, as they need to
+	match. Different styles of LEDs different to the NEOPIXEL used in this project
+	may also be used, if the FastLED library supports it, by changing the type in
+	the initial FastLED setup. All of this means that the arduino code is portable
+	to many different hardware styles.
+	\\\\
+	\noindent In future iterations of the project, as we add more LED controllers, we will
+	be implementing a read check system. This involves setting up another pin on
+	the Nano, and a separate pin for each controller on the Pi. We need a way to
+	communicate between several different controllers at once, however we are
+	stuck with only one set of RX and TX pins on the Pi. This means we need to
+	“daisy-chain” them together to be able to use the same pins. Because of this
+	we have decided to use a pin setup, that will let each individual controller
+	know, whether or not the code being sent out is meant for. This may cause a
+	problem depending on the number of LED controllers per Pi, as the pi has a
+	limited number of usable pins, however this is only a problem for large setups.
+	\\\\
 	\section{Max Schmidt}
 	\section{Zach Lerew}
 	For my portion of the project’s ALPHA, I wrote the API, Internal State, and started the Data Parser.
