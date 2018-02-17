@@ -216,8 +216,7 @@ def createDemo1(url, header):
         }
     r = requests.post(url + "/led_states/add", json=j, headers=header)
     if(str(r.status_code) == "200"):
-        print("Add Successf
-        ul")
+        print("Add Successful")
 
     while time < oneHourLater:
         j = []
