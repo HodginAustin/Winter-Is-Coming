@@ -202,7 +202,7 @@ The main disadvantage of running the command line interface in python is that it
   	FastLED.show();
 	}
 	\end{lstlisting}
-	\\\\
+
 	\noindent Arduino uses a loop function as its main function. Everytime this function
 	ends, it will return to the top and start over.  This allows for an easy check.
 	During each loop we check the serial buffer for entries. If the serial buffer
@@ -211,7 +211,7 @@ The main disadvantage of running the command line interface in python is that it
 	value, and finally the fourth has the blue value.  Once we set each value for
 	the specified LED index, we call FastLED.show() which will turn the LED on.
 	After this we flush the buffer to make sure it no longer contains lingering characters.
- 	\\\\
+
 	\noindent Each time we read from the serial buffer we are looking for a character. These
 	characters will be typecasted into an integer based on their ascii value.
 	This is done as parsing an integer using the native Serial.parseInt() function
@@ -223,7 +223,7 @@ The main disadvantage of running the command line interface in python is that it
 	needed for the state composer. Efficiency is a key in the system, we need to
 	make sure data from the serial buffer gets read, before its overwritten by the
 	following data sent by the state composer.
-	\\\\
+
 	\noindent The state composer continuously sends data about the current profile to the
 	Nano. This is the main reason efficiency on the Nano is so important. If data
 	gets overwritten before the Nano has a chance to grab that, that data may be
@@ -233,14 +233,14 @@ The main disadvantage of running the command line interface in python is that it
 	cleared up fairly quickly, depending on the size of the given zone and profile.
 	That being said, our goal is to minimize as many potential data loss situations
 	as possible, to make it as seamless as possible for the user.
-	\\\\
+
 	\noindent The Nano, also has a limited amount of given space and RAM, which limited our
 	potential solutions to the efficiency problem. If we were to take in the entire
 	serial buffer as a String, and parse it ourselves, we would run into space
 	issues, as Strings take up a lot of space. Reading in a single byte for each
 	color and index values is more efficient than parsing either Strings, or
 	integers, our testing has found.
-	\\\\
+
 	\noindent Code written on the Nano can easily be ported to most types of devices capable
 	of running the Arduino coding language. Changes between devices include, LED
 	data pin number, RX pin number, TX pin number, as well as changing the
@@ -250,7 +250,7 @@ The main disadvantage of running the command line interface in python is that it
 	may also be used, if the FastLED library supports it, by changing the type in
 	the initial FastLED setup. All of this means that the arduino code is portable
 	to many different hardware styles.
-	\\\\
+
 	\noindent In future iterations of the project, as we add more LED controllers, we will
 	be implementing a read check system. This involves setting up another pin on
 	the Nano, and a separate pin for each controller on the Pi. We need a way to
@@ -261,43 +261,43 @@ The main disadvantage of running the command line interface in python is that it
 	know, whether or not the code being sent out is meant for. This may cause a
 	problem depending on the number of LED controllers per Pi, as the pi has a
 	limited number of usable pins, however this is only a problem for large setups.
-	\\\\
+
 	\section{Max Schmidt}
-	After the internal state has been completed by the user's inputs to the API, the state must find its way onto the physical hardware. 
-	While the internal state contains all the proper zones, scheduling, and virtualized controllers and LEDs, the only true pieces of 
-	the puzzle that reflect that mass of data are the RGB LEDs. In the internal virtual state, each physical LED can belong to any number 
-	of zones, and any number of profiles. However, the LEDs only should reflect what the current active state of the system is. In this 
-	regard, they must be able to switch on scheduling changes in the internal state.  
+	After the internal state has been completed by the user's inputs to the API, the state must find its way onto the physical hardware.
+	While the internal state contains all the proper zones, scheduling, and virtualized controllers and LEDs, the only true pieces of
+	the puzzle that reflect that mass of data are the RGB LEDs. In the internal virtual state, each physical LED can belong to any number
+	of zones, and any number of profiles. However, the LEDs only should reflect what the current active state of the system is. In this
+	regard, they must be able to switch on scheduling changes in the internal state.
 
-	\noindent The translation of the internal state onto the physical hardware is done by the subsystem called the State Composer. This 
+	\noindent The translation of the internal state onto the physical hardware is done by the subsystem called the State Composer. This
 	system maps virtual LEDs in zones on a schedule, to LED indexes on the strip of RGBs. Since this process involves processing through
-	a section of the Internal State class, it needs direct access to the Internal State class accessor functions, and the accessor functions 
-	of each virtual model. This class is also static, similarly to the Internal State.  This is because there can only be one instance of it 
-	running at any given point, due to the single set of RxTx pins.  
+	a section of the Internal State class, it needs direct access to the Internal State class accessor functions, and the accessor functions
+	of each virtual model. This class is also static, similarly to the Internal State.  This is because there can only be one instance of it
+	running at any given point, due to the single set of RxTx pins.
 
-	\noindent Since assigned schedules can vary, and thus the state of the zones’ LEDs, the State Composer needs to be able to check the 
-	Internal State constantly by checking the schedule against the current system time. This could have led to needless pausing of the code 
-	to run the State Composer, causing the user interface to temporarily not accept input. To avoid this delay, the State Composer needed to 
-	have its own separate execution thread to continuously perform the time check and read from the Internal State. In hind sight, the team 
+	\noindent Since assigned schedules can vary, and thus the state of the zones’ LEDs, the State Composer needs to be able to check the
+	Internal State constantly by checking the schedule against the current system time. This could have led to needless pausing of the code
+	to run the State Composer, causing the user interface to temporarily not accept input. To avoid this delay, the State Composer needed to
+	have its own separate execution thread to continuously perform the time check and read from the Internal State. In hind sight, the team
 	is grateful that we selected a multicore controller able to execute multiple threads of execution.
 
-	\noindent In the main thread we have split off a separate thread solely for the State Composer to have an isolated execution routine. 
-	Because of the POSIX threading method used, this thread gets assigned to a separate core than the threads of execution in the API and main. 
-	This also ensures that the State Composer has amble computational resources available to it, as composition of the Internal State can be 
-	quite lengthy and stressful depending on the virtualized state, amount of LED controllers, and number of LEDs.  
+	\noindent In the main thread we have split off a separate thread solely for the State Composer to have an isolated execution routine.
+	Because of the POSIX threading method used, this thread gets assigned to a separate core than the threads of execution in the API and main.
+	This also ensures that the State Composer has amble computational resources available to it, as composition of the Internal State can be
+	quite lengthy and stressful depending on the virtualized state, amount of LED controllers, and number of LEDs.
 
-	\noindent This threading was also carefully put into place as to not over use the core that it is assigned to. 
-	Thus, the thread is halted for a relatively short time to a person, but a long time to the processor, after every return from the State 
-	Composer function. This is especially seen when the Internal State hasn’t been initialized. With no current active profile on the system, 
-	the thread will continuously and rapidly call the State Composer, which will immediately return. When there is an active state available, 
-	the real orchestration from virtual to physical states happens.  
+	\noindent This threading was also carefully put into place as to not over use the core that it is assigned to.
+	Thus, the thread is halted for a relatively short time to a person, but a long time to the processor, after every return from the State
+	Composer function. This is especially seen when the Internal State hasn’t been initialized. With no current active profile on the system,
+	the thread will continuously and rapidly call the State Composer, which will immediately return. When there is an active state available,
+	the real orchestration from virtual to physical states happens.
 
-	\noindent Looking into the algorithm behind the State Composer, one can see it is quite simple once they understand the structure of the 
-	Internal State. The first thing that the algorithm must get is the current active profile on the system.  This profile has a list of zones. 
-	Each zone contains an active state, which lists the color values for red, green, and blue, as well as the intensity and on/off status. Once 
-	we gather the previous elements, we get the list of virtual LEDs assigned to each zone. Each LED will be assigned to a physical controller 
-	and have an index on that controller. With the controller in mind, and the index on the strip attached to that controller, we have everything 
-	needed to tell the controller to update that LED. The following pseudo code details the previous steps: 
+	\noindent Looking into the algorithm behind the State Composer, one can see it is quite simple once they understand the structure of the
+	Internal State. The first thing that the algorithm must get is the current active profile on the system.  This profile has a list of zones.
+	Each zone contains an active state, which lists the color values for red, green, and blue, as well as the intensity and on/off status. Once
+	we gather the previous elements, we get the list of virtual LEDs assigned to each zone. Each LED will be assigned to a physical controller
+	and have an index on that controller. With the controller in mind, and the index on the strip attached to that controller, we have everything
+	needed to tell the controller to update that LED. The following pseudo code details the previous steps:
 
 	\begin{lstlisting}
 	Get the CURRENT_ACTIVE_PROFILE:
@@ -314,26 +314,26 @@ The main disadvantage of running the command line interface in python is that it
 				Send IO_PORT, RGB colors, and STRIP_INDEX to serializer
 	\end{lstlisting}
 
-	\noindent At the end of each deepest nested for loop (on the LED list), the State Composer calls a function to send the data out over UART 
-	Serial communications to the LED controller. Currently this function does nothing with the controller IO port, because the current alpha build 
-	only uses a single LED controller. Currently, disregarding the selectable IO port, this function takes the RGB color values, the LED’s index, 
-	and sends it to the UART file stream file descriptor. This descriptor is set to open the Raspberry Pi’s ‘/dev/serial0’, with the proper baud rate 
-	and UART options. To open this file stream, one must previously have set the Raspberry’s serial settings up to allow the device to be used. This 
-	configuration setup is left until the end of this section.  
+	\noindent At the end of each deepest nested for loop (on the LED list), the State Composer calls a function to send the data out over UART
+	Serial communications to the LED controller. Currently this function does nothing with the controller IO port, because the current alpha build
+	only uses a single LED controller. Currently, disregarding the selectable IO port, this function takes the RGB color values, the LED’s index,
+	and sends it to the UART file stream file descriptor. This descriptor is set to open the Raspberry Pi’s ‘/dev/serial0’, with the proper baud rate
+	and UART options. To open this file stream, one must previously have set the Raspberry’s serial settings up to allow the device to be used. This
+	configuration setup is left until the end of this section.
 
-	\noindent In future releases, the following will be crucial implementations to improve the composer and serialization routines. When multiple LED 
-	controllers are available and the given controller IO port available, the serialization function will determine the proper Pi GPIO pin to enable. 
-	This will allow the State Composer to select LED controllers that can read the data coming over a shared serial “bus”. Along with multiple 
-	controllers, the team is looking at a bug in the color data transfer where LEDs are not consecutively set along the strips or are set to incorrect 
-	colors. The team believes this could be a timing issue between the State Composer and the LED controllers. To potentially resolve this, we believe 
+	\noindent In future releases, the following will be crucial implementations to improve the composer and serialization routines. When multiple LED
+	controllers are available and the given controller IO port available, the serialization function will determine the proper Pi GPIO pin to enable.
+	This will allow the State Composer to select LED controllers that can read the data coming over a shared serial “bus”. Along with multiple
+	controllers, the team is looking at a bug in the color data transfer where LEDs are not consecutively set along the strips or are set to incorrect
+	colors. The team believes this could be a timing issue between the State Composer and the LED controllers. To potentially resolve this, we believe
 	a set of send and acknowledges between the Pi and the LED controllers may be necessary.
 
-	\noindent Regarding the set up the Pi correctly for the PlanteR-GB LED service, there are a few things that the team has tried to automate for the 
-	end user. The Raspbian OS must release control of the ‘/dev/serial0’ file. At boot this device is used as a kernel boot message console, and after 
-	the OS is loaded it is locked. There are interactive methods of making most of these changes, but the team decided a single interface for these 
-	changes would be more useful. Thus, the team has worked on a single automated script to select the user’s keyboard layout, time zone, username, 
-	password, WiFi setup, python web requests, and installation of system updates and necessary packages. This script is still under heavy development 
-	and is not quite as complete as the rest of the alpha build. It has been a last-minute addition to make a complete “out of box” configuration for the Pi.  
+	\noindent Regarding the set up the Pi correctly for the PlanteR-GB LED service, there are a few things that the team has tried to automate for the
+	end user. The Raspbian OS must release control of the ‘/dev/serial0’ file. At boot this device is used as a kernel boot message console, and after
+	the OS is loaded it is locked. There are interactive methods of making most of these changes, but the team decided a single interface for these
+	changes would be more useful. Thus, the team has worked on a single automated script to select the user’s keyboard layout, time zone, username,
+	password, WiFi setup, python web requests, and installation of system updates and necessary packages. This script is still under heavy development
+	and is not quite as complete as the rest of the alpha build. It has been a last-minute addition to make a complete “out of box” configuration for the Pi.
 
 	\section{Zach Lerew}
 	For my portion of the project’s ALPHA, I wrote the API, Internal State, and started the Data Parser.
