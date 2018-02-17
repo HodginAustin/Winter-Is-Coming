@@ -2,11 +2,23 @@ from datetime import datetime
 import requests
 import json
 import os
+import sys
+
+
+def get_time():
+    now = datetime.now()
+    return (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
+
+
+def get_dow():
+    d = datetime.today().weekday() + 1
+    return d if d <= 6 else 0
 
 
 def print_request(r):
     print("    status:" + str(r.status_code))
     print("    text:" + r.text)
+
 
 def initialize(url, header):
 
@@ -51,9 +63,6 @@ def initialize(url, header):
     if(str(r.status_code) == "200"):
         print("Add Successful")
 
-    now = datetime.now()
-    seconds_since_midnight = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
-
     print("Adding White LED state 100 intensity")
     j = {
         "r": 255,
@@ -66,9 +75,6 @@ def initialize(url, header):
     if(str(r.status_code) == "200"):
         print("Add Successful")
 
-    now = datetime.now()
-    seconds_since_midnight = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
-
     print("Add Blank Daily State To Zone Starting Now")
     j={}
     r = requests.post(url + "/daily_states/add", json=j, headers=header)
@@ -76,7 +82,7 @@ def initialize(url, header):
         print("Add Successful")
 
     print("Add Daily State Time Mapping")
-    j = [{"time":seconds_since_midnight, "state":1}]
+    j = [{"time":get_time(), "state":1}]
     r = requests.put(url + "/daily_states/1/led_states/add", json=j, headers=header)
     if(str(r.status_code) == "200"):
         print("Add successful")
@@ -107,13 +113,13 @@ def shutdown(url, header):
     if str(r.status_code) == "200":
         print("Shut down Successful!")
 
+
 def configure_Zones(url, header, zoneJson):
     #os.system('cls' if os.name == 'nt' else 'clear')
     print("|------------------------Zone Menu------------------------|")
     option = input("Which Zone would you like to configure (1-4): ")
 
     return zoneJson
-
 
 
 def configure_Schedule(url, header):
@@ -151,6 +157,7 @@ def configure_profiles(url,header,profilesJoson):
 
     return profilesJoson
 
+
 def sendToServer(url, zoneJson, scheduleJson, profilesJoson):
 
     #check to see if anything has changed in zones
@@ -164,10 +171,10 @@ def sendToServer(url, zoneJson, scheduleJson, profilesJoson):
     if profilesJoson:
         return profilesJoson
 
+
 def createDemo1(url, header):
 
-    now = datetime.now()
-    seconds_since_midnight = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
+    seconds_since_midnight = get_time()
 
     oneHourLater = seconds_since_midnight + 3600
 
@@ -213,7 +220,7 @@ def createDemo1(url, header):
 
 
 
-    while time != oneHourLater:
+    while time < oneHourLater:
         j = []
         print("Adding Red")
         j.append({"time": time, "state":2})
@@ -229,13 +236,12 @@ def createDemo1(url, header):
             print("Add Successful")
 
     print("Assign daily state to zone")
-    r = requests.put(url + "/profiles/1/zones/1/day/4/add/1")
+    r = requests.put(url + "/profiles/1/zones/1/day/%i/add/1" % get_dow())
     print_request(r)
 
-def createDemo2(url, header):
 
-    now = datetime.now()
-    seconds_since_midnight = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
+def createDemo2(url, header):
+    seconds_since_midnight = get_time()
 
     print("Creating Profile 2")
 
@@ -278,7 +284,7 @@ def createDemo2(url, header):
         print("Add Successful")
 
     print("Assign daily state to zone")
-    r = requests.put(url + "/profiles/2/zones/2/day/4/add/2")
+    r = requests.put(url + "/profiles/2/zones/2/day/%i/add/2" % get_dow())
     print_request(r)
 
     j = []
@@ -323,14 +329,15 @@ def createDemo2(url, header):
         print("Add Successful")
 
     print("Assign daily state to zone")
-    r = requests.put(url + "/profiles/2/zones/3/day/4/add/3")
+    r = requests.put(url + "/profiles/2/zones/3/day/%i/add/3" % get_dow())
     if(str(r.status_code) == "200"):
         print("Add Successful")
 
 
 def main():
     #URL
-    url = "http://localhost:9080"
+    port = sys.argv[1] if len(sys.argv)>1 else "9080"
+    url = "http://localhost:" + port
     # Headers
     header = {'Content-type': 'application/json'}
 
@@ -341,7 +348,7 @@ def main():
     option = 0
 
     while option != 6:
-        #os.system('cls' if os.name == 'nt' else 'clear')
+        #os.system('cls' if os.name == 'nt' else 'clear') #use subprocess, not os.system (it's deprecated)
         print("|------------------Welcome to PlanteRGB Lighting System------------------|")
 
         print("|---------------------------Configuration Menu---------------------------|")
