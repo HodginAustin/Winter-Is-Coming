@@ -16,17 +16,29 @@ void* thr_compose_call(void*)
     std::cout << "Starting State Composer..." << std::endl;
     while (composeEnable) {
         StateComposer::compose();
-        usleep(250000000);  // Sleep for .25 seconds, give the core a break during no state
+        usleep(250000);  // Sleep for .25 seconds, give the core a break during no state
     }
     StateComposer::clean_up();
     pthread_exit(NULL);
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
 
     int thrStatus = -57;
+
+    unsigned int port_num = 0;
+
+    if (argc > 1) {
+
+        port_num = atoi(argv[1]);
+    }
+    else {
+
+        port_num = 9080;
+    }
+
 
     // Internal state
     std::cout << "Initalizing Internal State... ";
@@ -55,7 +67,7 @@ int main()
     else { std::cout << " spun" << std::endl; }
 
     // API (needs to be the last thing in this function)
-    Port port(9080);
+    Port port(port_num);
     Address addr(Ipv4::any(), port);
     int threads = 2;
     API* api = new API(addr);
