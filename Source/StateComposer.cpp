@@ -4,6 +4,19 @@
 // TODO: Verify the correct port is in use for the Pi model
 #define SERIAL_DEV "/dev/serial0"
 
+// Required LED intensity scalar to use all 60 
+// LEDs at full white, off of the Arduino 5V rail
+// 5V rail can drive a maximum of 500mA
+// 60 * .2 * .033 = .396A (396mA)
+
+// We All Didn't Know Any Better Stupidity Inhibitor
+// TODO: Update once better power system is found
+#define WADKABSI 0.2
+
+// The amount of microseconds to wait for the 
+// Arduino Nano to send it's ACK and catch up
+#define WAIT_ACK 12000
+
 
 // Required for static class members
 
@@ -31,6 +44,7 @@ std::vector<LED*> StateComposer::currentZoneLEDs;
 Controller* StateComposer::currentLEDController;
 unsigned int StateComposer::ioPort;
 unsigned int StateComposer::stripIndex;
+
 
 
 // Initialization
@@ -68,8 +82,8 @@ bool StateComposer::initialize(bool log)
 	//	PARODD - Odd parity (else even)
 
     tcgetattr(uartFilestream, &options);
-	options.c_cflag = B57600 | CS8 | CLOCAL | CREAD;		// Set baud rate
-	options.c_iflag = IGNPAR;
+	options.c_cflag = B57600 | CS8 | CLOCAL | CREAD;		// Set baud rate, bits in-transmission, etc
+	options.c_iflag = IGNPAR;                               // Ignore parity
 	options.c_oflag = 0;
 	options.c_lflag = 0;
 	tcflush(uartFilestream, TCIFLUSH);
@@ -78,27 +92,66 @@ bool StateComposer::initialize(bool log)
     return true;
 }
 
-bool StateComposer::serial_send(Controller* ctrlr, char r, char g, char b, unsigned int idx)
+
+
+// Send and receive serial over uart w/ correct timings
+bool StateComposer::serial_send(unsigned int io, char r, char g, char b, unsigned int idx)
 {
-    //----- TX BYTES -----
+    // Tx Bytes - Send LED data to proper controller
 	unsigned char tx_buffer[4];
 	unsigned char *p_tx_buffer;
-	
-	p_tx_buffer = &tx_buffer[0];
-	*p_tx_buffer++ = idx;
+    char timeBuffer[30];
+
+    tm* timeInfo;
+    time(&sysTime);
+    timeInfo=localtime(&sysTime);
+
+    if (logEnable) {
+        strftime(timeBuffer, 30, "%c", timeInfo);
+        logFile << "[" << timeBuffer << "] "
+                        << "Attempting serial send:\n"
+                        << "  IO Port:" << io << "\n"
+                        << "  R:" << (int)r << "\n"
+                        << "  G:" << (int)g << "\n"
+                        << "  B:" << (int)b << "\n"
+                        << "  Idx:" << idx << "\n";
+    }
+
+	p_tx_buffer = &tx_buffer[0]; // Reset pointer to head of array
+	*p_tx_buffer++ = idx;        // Build with values
     *p_tx_buffer++ = r;
     *p_tx_buffer++ = g;
     *p_tx_buffer++ = b;
 	
-	if (uartFilestream != -1)
-	{
+	if (uartFilestream != -1) {
+
 		int count = write(uartFilestream, &tx_buffer[0], (p_tx_buffer - &tx_buffer[0]));    // Filestream, bytes to write, number of bytes to write
-		if (count < 0)
-		{
+		if (count < 0) {
+
 			std::cerr << "   UART Tx error!\n" << std::endl;
             return true;
 		}
+        
+        usleep(WAIT_ACK); // Let Arduino catch up
 	}
+
+
+
+    // Rx Bytes - Receive Acknowledge
+    unsigned char rx_buffer[5];
+    int rx_length = read(uartFilestream, (void*)rx_buffer, 4);		//Filestream, buffer to store in, number of bytes to read (max)
+    if (rx_length < 0) {
+        //An error occured (will occur if there are no bytes)
+        logFile << "[" << timeBuffer << "] ERROR: Incorrect/no repsonse from Nano!\n";
+    }
+    else if (rx_length == 0) {
+        //No data waiting
+    }
+    else {
+        //Bytes received
+        rx_buffer[rx_length] = '\0';
+        logFile << "[" << timeBuffer << "] Received response: " << rx_buffer << std::endl;
+    }
 
 	return false;
 }
@@ -110,6 +163,7 @@ void StateComposer::compose()
 {
     composerState = 'C';
     float scalar = 0.0;
+    char timeBuffer[30];
 
     tm* timeInfo;
     time(&sysTime);
@@ -117,8 +171,6 @@ void StateComposer::compose()
 
     weekDay = timeInfo->tm_wday;
     unsigned int seconds = ( (timeInfo->tm_hour * 3600) + (timeInfo->tm_min * 60) + (timeInfo->tm_sec) );
-
-    char timeBuffer[30];
 
     if (logEnable) {
         strftime(timeBuffer, 30, "%c", timeInfo);
@@ -144,6 +196,19 @@ void StateComposer::compose()
         if (currentZoneActiveState == NULL) {
             continue;
         }
+
+        // Gather and compute color data
+        intensity = currentZoneActiveState->get_intensity();
+        power = currentZoneActiveState->get_power();
+
+        scalar = (float)( ((float)intensity / 100.0) * (float)power * WADKABSI );
+
+        if (logEnable)
+            logFile << "[" << timeBuffer << "] Power Scalar for current zone: " << scalar << "\n";
+
+        red = (int ( ((float)currentZoneActiveState->get_r()) * scalar)); 
+        green = (int ( ((float)currentZoneActiveState->get_g()) * scalar));
+        blue = (int ( ((float)currentZoneActiveState->get_b()) * scalar));
 
         currentZoneLEDs = currentZone->get_leds();
 
@@ -171,33 +236,10 @@ void StateComposer::compose()
                 continue;
             }
 
-            // Gather and compute color data
-            intensity = currentZoneActiveState->get_intensity();
-            power = currentZoneActiveState->get_power();
-
-            scalar = (float)(((float)intensity / 100.0) * (float)power);
-
-            if (logEnable)
-                logFile << "[" << timeBuffer << "] Power Scalar for current LED: " << scalar << "\n";
-
-            red = (int ( ((float)currentZoneActiveState->get_r()) * scalar)); 
-            green = (int ( ((float)currentZoneActiveState->get_g()) * scalar));
-            blue = (int ( ((float)currentZoneActiveState->get_b()) * scalar));
-
-            if (logEnable) {
-                logFile << "[" << timeBuffer << "] "
-                        << "Attempting serial send:\n"
-                        << "  IO Port:" << ioPort << "\n"
-                        << "  R:" << red << "\n"
-                        << "  G:" << green << "\n"
-                        << "  B:" << blue << "\n"
-                        << "  Idx:" << stripIndex << "\n";
-            }
-
             // Call serial send
             composerState = 'S';
 
-            if (serial_send(currentLEDController, red, green, blue, stripIndex)) {
+            if (serial_send(ioPort, red, green, blue, stripIndex)) {
                 logFile << "[" << timeBuffer << "] " << "Error transmitting serial!\n";
             } 
             composerState = 'C';
