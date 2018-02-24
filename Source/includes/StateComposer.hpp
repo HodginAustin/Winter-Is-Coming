@@ -60,8 +60,8 @@ private:
                     static unsigned int ioPort;
                     static unsigned int stripIndex;
 
-    // Simple function that sends color state to a controller with target LED
-    static bool serial_send(Controller*, char, char, char, unsigned int);
+    // Sends color state to a target controller with target LED
+    static bool serial_send(unsigned int, char, char, char, unsigned int);
 
 public:
     // Initialization
