@@ -45,7 +45,7 @@ inline auto init_storage(const std::string& path)
             foreign_key(&Zone::profile_id).references(&Profile::get_id)
         ),
         // LED
-        make_table("led",
+        make_table("leds",
             make_column("id",
                         &LED::get_id,
                         &LED::set_id,
@@ -75,7 +75,7 @@ inline auto init_storage(const std::string& path)
                         &Controller::set_details)
         ),
         // LED State
-        make_table("led_state",
+        make_table("led_states",
             make_column("id",
                         &LEDState::get_id,
                         &LEDState::set_id,
@@ -97,20 +97,22 @@ inline auto init_storage(const std::string& path)
                         &LEDState::set_power)
         ),
         // Daily State
-        make_table("daily_state",
+        make_table("daily_states",
             make_column("id",
                         &DailyState::get_id,
                         &DailyState::set_id,
-                        primary_key())
+                        primary_key()),
+            make_column("other",
+                        &DailyState::other)
         ),
         // Relationship tables //
-        // Zone's 7 daily states
+        // Zone has many LEDs, LEDS are in one zone per profile, but can be in many zones
         make_table("zone_to_led",
             make_column("zone_id", &ZoneToLED::zone_id),
             make_column("led_id", &ZoneToLED::led_id),
             primary_key(&ZoneToLED::zone_id, &ZoneToLED::led_id)
         ),
-        // Zone has many LEDs, LEDS are in one zone per profile, but can be in many zones
+        // Zone's 7 daily states
         make_table("zone_daily_states",
             make_column("zone_id", &ZoneDOW::zone_id),
             make_column("ds_sun_id", &ZoneDOW::ds_sun_id),
@@ -134,6 +136,7 @@ inline auto init_storage(const std::string& path)
     );
 }
 
+// Local database object
 using Storage = decltype(init_storage(""));
 static std::shared_ptr<Storage> db;
 

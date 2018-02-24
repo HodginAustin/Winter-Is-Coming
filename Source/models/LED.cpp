@@ -87,8 +87,8 @@ void from_json(const json& j, LED& l) {
     if (j.find("strip_idx") != j.end()){
         l.set_strip_idx(j.at("strip_idx").get<unsigned int>());
     }
-    if (j.find("controller") != j.end()){
-        unsigned int id = j.at("controller").get<unsigned int>();
-        l.set_controller(InternalState::get_controller(id));
-    }
+
+    // Not optional parameter
+    unsigned int id = j.at("controller").get<unsigned int>();
+    l.set_controller(InternalState::get_controller(id));
 }

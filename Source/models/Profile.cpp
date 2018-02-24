@@ -56,8 +56,8 @@ void Profile::set_description(std::string val)
 // CRUD
 void Profile::add_zone(Zone* zone)
 {
-    zones.push_back(zone);
     zone->profile_id = this->get_id();
+    zones.push_back(zone);
 }
 
 std::vector<Zone*> Profile::get_zones() const

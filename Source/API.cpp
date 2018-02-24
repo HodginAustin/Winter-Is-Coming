@@ -475,7 +475,6 @@ void API::get_zone_leds(REQUEST, RESPONSE)
     auto profile_id = request.param(":profile_id").as<unsigned int>();
     auto zone_id = request.param(":zone_id").as<unsigned int>();
 
-
     // Data
     Profile* profile = InternalState::get_profile(profile_id);
     Http::Code code = Http::Code::Not_Found;
@@ -558,7 +557,7 @@ void API::put_zone_led(REQUEST, RESPONSE)
                         zone->add_led(led);
 
                         ztl = {zone_id, led_id};
-                        DataParser::insert(ztl);
+                        //DataParser::insert(ztl);
 
                         code = Http::Code::Ok;
                     }
@@ -763,15 +762,21 @@ void API::post_led(REQUEST, RESPONSE)
 
     // Data
     LED l = j_in;
-    LED* led = new LED(l);
-    InternalState::add_led(led);
-    DataParser::insert(led);
-    
+
     // Build response
-    json j_out = json{{"id", led->get_id()}};
+    json j_out;
+    Http::Code code = Http::Code::Not_Found;
+
+    // Validation
+    if (l.get_controller()) {
+        LED* led = new LED(l);
+        InternalState::add_led(led);
+        DataParser::insert(led);
+        j_out = json{{"id", led->get_id()}};
+    } else { j_out.push_back(json{"controller", j_in["controller"]}); }
 
     // Send response
-    response.send(Http::Code::Ok, j_out.dump());
+    response.send(code, j_out.dump());
 }
 void API::patch_led(REQUEST, RESPONSE)
 {
@@ -1194,6 +1199,7 @@ void API::put_daily_state_led_state(REQUEST, RESPONSE)
     // Send response
     response.send(code, j_out.dump());
 }
+
 void API::post_daily_state(REQUEST, RESPONSE)
 {
     // Log request
@@ -1207,7 +1213,7 @@ void API::post_daily_state(REQUEST, RESPONSE)
     DailyState* dailyState = new DailyState(ds);
     InternalState::add_daily_state(dailyState);
     DataParser::insert(dailyState);
-    
+
     // Build response
     json j_out = json{{"id", dailyState->get_id()}};
 
