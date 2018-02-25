@@ -5,8 +5,9 @@
 
 
 // Required for static class members
-// Abstract relationship objects (also zones inside profiles)
+// Abstract relationship objects
 std::vector<Profile*> InternalState::profiles;
+std::vector<Zone*> InternalState::zones;
 Profile* InternalState::currentProfile;
 // Physically based objects
 std::vector<LED*> InternalState::leds;
@@ -63,6 +64,43 @@ void InternalState::delete_profile(Profile* profile)
         std::remove(profiles.begin(), profiles.end(), profile), profiles.end());
 
     free(profile);
+}
+
+
+// Zone CRUD
+void InternalState::add_zone(Zone* zone)
+{
+    zones.push_back(zone);
+}
+
+std::vector<Zone*> InternalState::get_zones()
+{
+    return zones;
+}
+
+Zone* InternalState::get_zone(unsigned int id)
+{
+    for (auto zone : zones) {
+        if (zone->get_id() == id){ return zone; }
+    }
+    return 0;
+}
+
+void InternalState::delete_zone(Zone* zone)
+{
+    unsigned int profile_id = zone->profile_id;
+
+    Profile* profile = get_profile(profile_id);
+
+    if (profile) {
+        profile->delete_zone(zone);
+
+        zones.erase(
+            std::remove(zones.begin(), zones.end(), zone), zones.end());
+
+        free(zone);
+    }
+
 }
 
 

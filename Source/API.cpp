@@ -348,6 +348,7 @@ void API::post_profile_zone(REQUEST, RESPONSE)
         Zone z = j_in;
         Zone* zone = new Zone(z);
         profile->add_zone(zone);
+        InternalState::add_zone(zone);
         DataParser::insert(zone);
 
         code = Http::Code::Ok;
@@ -773,6 +774,7 @@ void API::post_led(REQUEST, RESPONSE)
         InternalState::add_led(led);
         DataParser::insert(led);
         j_out = json{{"id", led->get_id()}};
+        code = Http::Code::Ok;
     } else { j_out.push_back(json{"controller", j_in["controller"]}); }
 
     // Send response
