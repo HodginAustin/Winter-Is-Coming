@@ -25,9 +25,9 @@ class StateComposer
 private:
 
     // RGB color values
-    static char red;
-    static char green;
-    static char blue;
+    static unsigned char red;
+    static unsigned char green;
+    static unsigned char blue;
     static int intensity;
     static bool power;
     // UART
@@ -58,10 +58,10 @@ private:
                 // For each LED, get: 
                 static Controller* currentLEDController;
                     static unsigned int ioPort;
-                    static unsigned int stripIndex;
+                    static unsigned char stripIndex;
 
     // Sends color state to a target controller with target LED
-    static bool serial_send(unsigned int, char, char, char, unsigned int);
+    static bool serial_send(unsigned int, unsigned char, unsigned char, unsigned char, unsigned char);
 
 public:
     // Initialization

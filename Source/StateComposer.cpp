@@ -15,6 +15,7 @@
 
 // The amount of microseconds to wait for the 
 // Arduino Nano to send it's ACK and catch up
+// last updated to: 12000
 #define WAIT_ACK 12000
 
 
@@ -35,15 +36,15 @@ int StateComposer::weekDay;
 Profile* StateComposer::currentProfile;
 Schedule* StateComposer::currentZoneSchedule;
 LEDState* StateComposer::currentZoneActiveState;
-char StateComposer::red;
-char StateComposer::green;
-char StateComposer::blue;
+unsigned char StateComposer::red;
+unsigned char StateComposer::green;
+unsigned char StateComposer::blue;
 int  StateComposer::intensity;
 bool StateComposer::power;
 std::vector<LED*> StateComposer::currentZoneLEDs;
 Controller* StateComposer::currentLEDController;
 unsigned int StateComposer::ioPort;
-unsigned int StateComposer::stripIndex;
+unsigned char StateComposer::stripIndex;
 
 
 
@@ -95,7 +96,7 @@ bool StateComposer::initialize(bool log)
 
 
 // Send and receive serial over uart w/ correct timings
-bool StateComposer::serial_send(unsigned int io, char r, char g, char b, unsigned int idx)
+bool StateComposer::serial_send(unsigned int io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
 {
     // Tx Bytes - Send LED data to proper controller
 	unsigned char tx_buffer[4];
@@ -138,8 +139,8 @@ bool StateComposer::serial_send(unsigned int io, char r, char g, char b, unsigne
 
 
     // Rx Bytes - Receive Acknowledge
-    unsigned char rx_buffer[5];
-    int rx_length = read(uartFilestream, (void*)rx_buffer, 4);		//Filestream, buffer to store in, number of bytes to read (max)
+    unsigned char rx_buffer[4];
+    int rx_length = read(uartFilestream, (void*)rx_buffer, 3);		//Filestream, buffer to store in, number of bytes to read (max)
     if (rx_length < 0) {
         //An error occured (will occur if there are no bytes)
         logFile << "[" << timeBuffer << "] ERROR: Incorrect/no repsonse from Nano!\n";
@@ -206,9 +207,9 @@ void StateComposer::compose()
         if (logEnable)
             logFile << "[" << timeBuffer << "] Power Scalar for current zone: " << scalar << "\n";
 
-        red = (int ( ((float)currentZoneActiveState->get_r()) * scalar)); 
-        green = (int ( ((float)currentZoneActiveState->get_g()) * scalar));
-        blue = (int ( ((float)currentZoneActiveState->get_b()) * scalar));
+        red = ((unsigned char) ( ((float)currentZoneActiveState->get_r()) * scalar)); 
+        green = ((unsigned char) ( ((float)currentZoneActiveState->get_g()) * scalar));
+        blue = ((unsigned char) ( ((float)currentZoneActiveState->get_b()) * scalar));
 
         currentZoneLEDs = currentZone->get_leds();
 
