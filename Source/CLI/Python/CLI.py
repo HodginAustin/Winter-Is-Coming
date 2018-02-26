@@ -4,6 +4,7 @@ import json
 import os
 import sys
 
+NUM_LEDS = 60
 
 def get_time():
     now = datetime.now()
@@ -16,8 +17,12 @@ def get_dow():
 
 
 def print_request(r):
-    print("    status:" + str(r.status_code))
-    print("    text:" + r.text)
+    if(str(r.status_code) == "200"):
+        print("Success")
+    else:
+        print("ERROR:")
+        print("    status:" + str(r.status_code))
+        print("    text:" + r.text)
 
 
 def initialize(url, header):
@@ -25,45 +30,35 @@ def initialize(url, header):
     print("Adding Default Profile")
     j = {"name": "Default Profile", "description": "Default Profile"}
     r = requests.post(url + "/profiles/add", json=j, headers=header, timeout=200)
+    print_request(r)
 
-    if(str(r.status_code) == "200"):
-        print("Add Successful")
-
-    print("Set current profile")
+    print("\nSet current profile")
     j = requests.post(url + "/current_profile/1","", timeout=200)
-    if(str(r.status_code) == "200"):
-        print("Set current profile successful")
+    print_request(r)
 
-    print("Add Zone to  Default profile 1")
+    print("\nAdd Zone to  Default profile 1")
     j = {"name": "Zone 1"}
     r = requests.post(url + "/profiles/1/zones/add", json=j, headers=header, timeout=200)
+    print_request(r)
 
-    if(str(r.status_code) == "200"):
-        print("Add Successful")
-
-    print("Add 1 Controler To Default Controller")
+    print("\nAdd 1 Controller")
     j = {"io": 1}
     r = requests.post(url +"/controllers/add", json=j, headers=header)
+    print_request(r)
 
-    if(str(r.status_code) == "200"):
-        print("Add Successful")
-
-    print("Creating 10 LED's")
-
-    for i in range(24):
-        print("Add LEDS")
+    print("\nCreating LEDs")
+    for i in range(NUM_LEDS):
+        print("Adding LED #%i" % i)
         j = {"strip_idx": i, "controller": 1}
         r = requests.post(url + "/leds/add", json=j, headers=header)
-        if(str(r.status_code) == "200"):
-            print("Add Successful for %i" % i)
+        print_request(r)
 
-    print("Adding  LEDS to Zone1")
-    j = range(1,24)
+    print("\nAdding LEDS to Zone1")
+    j = range(1,NUM_LEDS+1)
     r = requests.put(url + "/profiles/1/zones/1/leds/add", json=j, headers=header)
-    if(str(r.status_code) == "200"):
-        print("Add Successful")
+    print_request(r)
 
-    print("Adding White LED state 100 intensity")
+    print("\nAdding White LED state 100 intensity")
     j = {
         "r": 255,
         "g": 255,
@@ -72,31 +67,27 @@ def initialize(url, header):
         "power": True
         }
     r = requests.post(url + "/led_states/add", json=j, headers=header)
-    if(str(r.status_code) == "200"):
-        print("Add Successful")
+    print_request(r)
 
-    print("Add Blank Daily State To Zone Starting Now")
+    print("\nAdd Blank Daily State To Zone Starting Now")
     j={}
     r = requests.post(url + "/daily_states/add", json=j, headers=header)
-    if(str(r.status_code) == "200"):
-        print("Add Successful")
+    print_request(r)
 
-    print("Add Daily State Time Mapping")
+    print("\nAdd Daily State Time Mapping")
     j = [{"time":get_time(), "state":1}]
     r = requests.put(url + "/daily_states/1/led_states/add", json=j, headers=header)
-    if(str(r.status_code) == "200"):
-        print("Add successful")
+    print_request(r)
 
-    print("Assign daily state to zone For Sunday")
+    print("\nAssign daily state to zone For Sunday")
     r = requests.put(url + "/profiles/1/zones/1/day/0/add/1")
-    if(str(r.status_code) == "200"):
-        print("Add Successful")
+    print_request(r)
 
-    print("Current Active state")
+    print("\nCurrent Active state")
     r = requests.get(url + "/profiles/1/zones/1/active_state")
     print_request(r)
 
-    print("Initialization Complete")
+    print("\nInitialization Complete")
 
 
 def getProfiles(url, header):
@@ -176,7 +167,7 @@ def createDemo1(url, header):
 
     seconds_since_midnight = get_time()
 
-    oneHourLater = seconds_since_midnight + 3600
+    halfHourLater = seconds_since_midnight + 1800
 
     time = seconds_since_midnight
 
@@ -218,7 +209,7 @@ def createDemo1(url, header):
     if(str(r.status_code) == "200"):
         print("Add Successful")
 
-    while time < oneHourLater:
+    while time < halfHourLater:
         j = []
         print("Adding Red")
         j.append({"time": time, "state":2})
@@ -262,8 +253,8 @@ def createDemo2(url, header):
     if(str(r.status_code) == "200"):
         print("Add Successful")
 
-	print("Adding  LEDS to Zone1")
-    j = range(1,12)
+    print("Adding  LEDS to Zone1")
+    j = range(1,NUM_LEDS/2)
     r = requests.put(url + "/profiles/2/zones/2/leds/add", json=j, headers=header)
     if(str(r.status_code) == "200"):
         print("Add Successful")
@@ -294,7 +285,7 @@ def createDemo2(url, header):
     r = requests.post(url + "/profiles/2/zones/add", json=j, headers=header, timeout=200)
 
     print("Adding  LEDS to Zone2")
-    j = range(12,24)
+    j = range(NUM_LEDS/2,NUM_LEDS+1)
     r = requests.put(url + "/profiles/2/zones/3/leds/add", json=j, headers=header)
     if(str(r.status_code) == "200"):
         print("Add Successful")
@@ -345,7 +336,7 @@ def main():
 
     option = 0
 
-    while option != 6:
+    while option != 8:
         #os.system('cls' if os.name == 'nt' else 'clear') #use subprocess, not os.system (it's deprecated)
         print("|------------------Welcome to PlanteRGB Lighting System------------------|")
 
