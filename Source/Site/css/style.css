@@ -18,7 +18,7 @@
   right: 50%
 }
 
-#navbarLowerThirds{
+#lowerThirds{
   overflow: auto;
   background-color: black;
   color:white;
@@ -27,22 +27,15 @@
   text-align: right;
   padding-right: 10px;
 }
+<<<<<<< HEAD
 
 #navbar{
   height: 84px;
+#navbar{
   background-color: grey;
 }
 
-.table{
-  display: table;
-  margin: 0 auto;
-}
-
-ul#navBarElements{
-  min-width: 696px;
-  list-style: none;
-  padding-top: 20px;
-}
-ul#navbar li{
+#navBarElements{
+>>>>>>> a8ba22d... Started HTML/CSS and request functions
   display: inline;
 }
