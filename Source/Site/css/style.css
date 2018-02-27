@@ -1,0 +1,40 @@
+#titleCard {
+  overflow: auto;
+  background-color: rgb(129,170,97);
+  color:white;
+  outline: black
+  }
+
+#logo{
+  float: left;
+  margin: auto;
+  display: run-in
+
+}
+
+#Name{
+  top: 10%;
+  left: 50%;
+  right: 50%
+}
+
+#lowerThirds{
+  overflow: auto;
+  background-color: black;
+  color:white;
+}
+#current{
+  text-align: right;
+  padding-right: 10px;
+}
+#thirdsElements{
+  display: inline;
+}
+
+#navbar{
+  background-color: grey;
+}
+
+#navBarElements{
+  display: inline;
+}
