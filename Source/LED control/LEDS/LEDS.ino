@@ -25,7 +25,7 @@ void setup() {
   pinMode(txPin, OUTPUT);
   Serial.begin(57600); /* serial port */
 
-  /* Fancy setup animation */
+  /* Fancy setup animation 
   for (int i = 0; i < NUM_LEDS; i++){
     leds[i].red = 10;
     leds[i].green = 0;
@@ -52,7 +52,8 @@ void setup() {
     FastLED.show();
     delay(10);
   }
-  
+  delay(1000);
+  */
 }
 
 void loop() {
