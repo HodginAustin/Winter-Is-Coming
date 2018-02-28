@@ -25,7 +25,7 @@ void setup() {
   pinMode(txPin, OUTPUT);
   Serial.begin(57600); /* serial port */
 
-  /* Fancy setup animation 
+  /* Fancy setup animation */
   for (int i = 0; i < NUM_LEDS; i++){
     leds[i].red = 10;
     leds[i].green = 0;
@@ -50,27 +50,26 @@ void setup() {
   for (int i = 0; i < NUM_LEDS; i++){
     leds[i] = CRGB::Black;
     FastLED.show();
-    delay(10);
+    delay(5);
   }
-  delay(1000);
-  */
+  delay(1000);  
 }
 
 void loop() {
   while (Serial.available() > 0) {
     readVal = Serial.read();
     readBuffer += readVal;
+  }
+  
+  if (readBuffer.length() >= 4) {   
+    led_idx = readBuffer[0];
+    leds[led_idx].red = readBuffer[1];
+    leds[led_idx].green = readBuffer[2];
+    leds[led_idx].blue = readBuffer[3];  
+    FastLED.show();
     
-    if (readBuffer.length() == 4) {
-      /* Serial.println(readString); */
-      
-      led_idx = readBuffer[0];
-      leds[led_idx].red = readBuffer[1];
-      leds[led_idx].green = readBuffer[2];
-      leds[led_idx].blue = readBuffer[3];  
-      FastLED.show();
-      
-      readBuffer="";
-    }
+    readBuffer="";
+
+    Serial.write("ACK");
   }
 }
