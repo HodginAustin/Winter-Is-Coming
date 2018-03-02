@@ -61,20 +61,20 @@ void loop() {
   while (Serial.available() > 0) {
     readVal = Serial.read();
     readBuffer += readVal;
-    
-    if (readBuffer.length() >= 5) {
-      io_port = readBuffer[0];
+  }
+
+  if (readBuffer.length() >= 5) {
+    io_port = readBuffer[0];
       if (io_port == DEVICE_ID) {
         led_idx = readBuffer[1];
         leds[led_idx].red = readBuffer[2];
         leds[led_idx].green = readBuffer[3];
         leds[led_idx].blue = readBuffer[4];  
         FastLED.show();
+        
+        Serial.write("ACK");
       }
       
       readBuffer="";
-  
-      Serial.write("ACK");
     }
-  }
 }
