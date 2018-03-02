@@ -217,6 +217,9 @@ void API::nuke_from_orbit(REQUEST, RESPONSE)
     // Wipe out database
     DataParser::clear();
 
+    // State composer LED blackout
+    StateComposer::led_shutdown();
+
     response.send(Http::Code::Ok,
         "This is just a thing... and things can be replaced. Lives cannot. - Lt. Cmdr. Data");
 }
