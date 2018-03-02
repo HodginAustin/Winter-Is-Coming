@@ -10,6 +10,7 @@
 #include "./includes/API.hpp"
 #include "./includes/InternalState.hpp"
 #include "./includes/DataParser.hpp"
+#include "./includes/StateComposer.hpp"
 
 #include "./includes/setting.hpp"
 
@@ -167,7 +168,15 @@ void API::system_shutdown(REQUEST, RESPONSE)
 
     response.send(Http::Code::Ok, "Shutting down");
 
+    // Stop state composer and turn LEDs off
+    StateComposer::composeEnable = false;
+    StateComposer::led_shutdown();
+
+    // Shutdown system
     std::system("sudo halt");
+
+    // API shutdown (usually wont happen before hardware reboot)
+    shutdown();
 }
 void API::system_restart(REQUEST, RESPONSE)
 {
@@ -176,7 +185,15 @@ void API::system_restart(REQUEST, RESPONSE)
 
     response.send(Http::Code::Ok, "Restarting");
 
+    // Stop state composer and turn LEDs off
+    StateComposer::composeEnable = false;
+    StateComposer::led_shutdown();
+
+    // System reboot
     std::system("sudo reboot");
+
+    // API shutdown (usually wont happen before hardware reboot)
+    shutdown();
 }
 
 // Actions
