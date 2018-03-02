@@ -94,6 +94,15 @@ bool DailyState::delete_state(unsigned int time)
     return timeStatePairs.count(time) == 0;
 }
 
+void DailyState::delete_state(LEDState* ledState)
+{
+    for (auto& element : timeStatePairs) {
+        if (element.second->get_id() == ledState->get_id()) {
+            delete_state(element.first);
+        }
+    }
+}
+
 int DailyState::get_time_state_count() const
 {
     return timeStatePairs.size();
