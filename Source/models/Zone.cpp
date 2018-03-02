@@ -28,6 +28,8 @@ void Zone::copy(const Zone& z)
         }
     }
 
+    set_profile_id(z.get_profile_id());
+
     set_daily_state(0, z.get_daily_state(0));
     set_daily_state(1, z.get_daily_state(1));
     set_daily_state(2, z.get_daily_state(2));
@@ -49,6 +51,11 @@ const std::string& Zone::get_name() const
     return this->name;
 }
 
+const unsigned int& Zone::get_profile_id() const
+{
+    return profile_id;
+}
+
 
 // Mutators
 void Zone::set_id(unsigned int val)
@@ -59,6 +66,11 @@ void Zone::set_id(unsigned int val)
 void Zone::set_name(std::string val)
 {
     name = val;
+}
+
+void Zone::set_profile_id(unsigned int id)
+{
+    profile_id = id;
 }
 
 

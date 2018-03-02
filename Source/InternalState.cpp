@@ -88,7 +88,7 @@ Zone* InternalState::get_zone(unsigned int id)
 
 void InternalState::delete_zone(Zone* zone)
 {
-    unsigned int profile_id = zone->profile_id;
+    unsigned int profile_id = zone->get_profile_id();
 
     Profile* profile = get_profile(profile_id);
 
