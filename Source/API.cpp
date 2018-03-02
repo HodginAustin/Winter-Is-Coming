@@ -772,21 +772,28 @@ void API::post_led(REQUEST, RESPONSE)
     // Decode JSON
     json j_in = json::parse(request.body());
 
-    // Data
-    LED l = j_in;
-
     // Build response
     json j_out;
+    j_out["id"] = json::array();
     Http::Code code = Http::Code::Not_Found;
 
-    // Validation
-    if (l.get_controller()) {
-        LED* led = new LED(l);
-        InternalState::add_led(led);
-        DataParser::insert(led);
-        j_out = json{{"id", led->get_id()}};
-        code = Http::Code::Ok;
-    } else { j_out.push_back(json{"controller", j_in["controller"]}); }
+    // Data
+    for (auto json_led : j_in) {
+        LED l = json_led;
+
+        // Validation
+        if (l.get_controller()) {
+            LED* led = new LED(l);
+
+            InternalState::add_led(led);
+
+            DataParser::insert(led);
+            
+            j_out["id"].push_back(led->get_id());
+
+            code = Http::Code::Ok;
+        } else { j_out.push_back(json{"controller", j_in["controller"]}); }
+    }  
 
     // Send response
     response.send(code, j_out.dump());
