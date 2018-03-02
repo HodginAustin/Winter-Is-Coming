@@ -1,5 +1,6 @@
 #include <map>
 #include <ctime>
+#include <cstdlib>
 
 #include <pistache/http.h>
 #include <pistache/mime.h>
@@ -56,7 +57,8 @@ void API::setup_routes()
 
     // System routes
     Routes::Get(router, "/", Routes::bind(&API::index, this));
-    Routes::Get(router, "/restart", Routes::bind(&API::system_restart, this));
+    Routes::Get(router, "/system_shutdown", Routes::bind(&API::system_shutdown, this));
+    Routes::Get(router, "/system_restart", Routes::bind(&API::system_restart, this));
     Routes::Delete(router, "/nuke_from_orbit", Routes::bind(&API::nuke_from_orbit, this));
 
     // API Actions
@@ -156,7 +158,16 @@ void API::index(REQUEST, RESPONSE)
     // Log request
     log_req(request);
 
-    response.send(Http::Code::Ok, "Welcome to PlanteRGB!");
+    response.send(Http::Code::Ok, "Welcome to PlanteRGB!\n");
+}
+void API::system_shutdown(REQUEST, RESPONSE)
+{
+    // Log request
+    log_req(request);
+
+    response.send(Http::Code::Ok, "Shutting down");
+
+    std::system("sudo halt");
 }
 void API::system_restart(REQUEST, RESPONSE)
 {
@@ -164,6 +175,8 @@ void API::system_restart(REQUEST, RESPONSE)
     log_req(request);
 
     response.send(Http::Code::Ok, "Restarting");
+
+    std::system("sudo reboot");
 }
 
 // Actions
@@ -172,7 +185,7 @@ void API::api_shutdown(REQUEST, RESPONSE)
     // Log request
     log_req(request);
 
-    response.send(Http::Code::Ok, "Shutting down");
+    response.send(Http::Code::Ok, "API Shutdown");
     shutdown();
 }
 

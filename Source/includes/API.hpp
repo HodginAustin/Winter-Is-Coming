@@ -42,6 +42,7 @@ private:
 
     // System routes
     void index(REQUEST, RESPONSE);
+    void system_shutdown(REQUEST, RESPONSE);
     void system_restart(REQUEST, RESPONSE);
 
     // API Actions
