@@ -41,8 +41,9 @@ inline auto init_storage(const std::string& path)
                         &Zone::get_name,
                         &Zone::set_name),
             make_column("profile_id",
-                        &Zone::profile_id),
-            foreign_key(&Zone::profile_id).references(&Profile::get_id)
+                        &Zone::get_profile_id,
+                        &Zone::set_profile_id),
+            foreign_key(&Zone::get_profile_id).references(&Profile::get_id)
         ),
         // LED
         make_table("leds",
@@ -114,7 +115,9 @@ inline auto init_storage(const std::string& path)
         ),
         // Zone's 7 daily states
         make_table("zone_daily_states",
-            make_column("zone_id", &ZoneDOW::zone_id),
+            make_column("zone_id", 
+                        &ZoneDOW::zone_id,
+                        primary_key()),
             make_column("ds_sun_id", &ZoneDOW::ds_sun_id),
             make_column("ds_mon_id", &ZoneDOW::ds_mon_id),
             make_column("ds_tue_id", &ZoneDOW::ds_tue_id),
@@ -125,13 +128,15 @@ inline auto init_storage(const std::string& path)
         ),
         // DailyState has many LEDStates in a map of time<->state pairs
         make_table("daily_state_to_led_state",
-            make_column("time",
-                        &DailyStateToLEDState::time,
-                        primary_key()),
             make_column("daily_state_id",
                         &DailyStateToLEDState::daily_state_id),
             make_column("led_state_id",
-                        &DailyStateToLEDState::led_state_id)
+                        &DailyStateToLEDState::led_state_id),
+            make_column("time",
+                        &DailyStateToLEDState::time),
+            primary_key(&DailyStateToLEDState::daily_state_id,
+                        &DailyStateToLEDState::led_state_id,
+                        &DailyStateToLEDState::time)
         )
     );
 }
@@ -151,9 +156,7 @@ bool DataParser::initialize()
     db->sync_schema();
 
     // Load all existing data
-    get_all();
-    
-    return true;
+    return get_all();
 }
 
 
@@ -242,7 +245,8 @@ Zone* get_zone(std::map<unsigned int, Zone*> tmp, unsigned int id) {
     }
     return 0;
 }
-void DataParser::get_all()
+
+bool DataParser::get_all()
 {
     // Get profiles
     Profile* profile;
@@ -251,16 +255,18 @@ void DataParser::get_all()
         profile->set_id(p.get_id());
         InternalState::add_profile(profile);
     }
+    profile = 0;
 
     // Get zones
     Zone* zone;
     std::map<unsigned int, Zone*> tmp_zones;
     for (auto& z : db->iterate<Zone>()) {
         zone = new Zone(z);
+        zone->set_id(z.get_id());
 
         tmp_zones.insert(std::make_pair(zone->get_id(), zone));
 
-        profile = InternalState::get_profile(zone->profile_id);
+        profile = InternalState::get_profile(zone->get_profile_id());
         profile->add_zone(zone);
     }
 
@@ -268,6 +274,8 @@ void DataParser::get_all()
     Controller* controller;
     for (auto& c : db->iterate<Controller>()) {
         controller = new Controller(c);
+        controller->set_id(c.get_id());
+
         InternalState::add_controller(controller);
     }
     
@@ -275,18 +283,25 @@ void DataParser::get_all()
     LED* led;
     for (auto& l : db->iterate<LED>()) {
         led = new LED(l);
-        if (led) {
-            controller = InternalState::get_controller(led->get_controller_id());
+        led->set_id(l.get_id());
+        
+        controller = InternalState::get_controller(led->get_controller_id());
+        if (controller) {
             led->set_controller(controller);
+            InternalState::add_led(led);
         } else {
-            std::cout << "DB Error: could not find led with id " << l.get_id() << std::endl;
+            std::cout << "DB Error: could not find controller (for LED) with id " << l.get_controller_id() << std::endl;
         }
     }
+        
+
 
     // Get LEDStates
     LEDState* ledState;
     for (auto& ls : db->iterate<LEDState>()) {
         ledState = new LEDState(ls);
+        ledState->set_id(ls.get_id());
+
         InternalState::add_led_state(ledState);
     }
 
@@ -294,9 +309,28 @@ void DataParser::get_all()
     DailyState* dailyState;
     for (auto& ds : db->iterate<DailyState>()) {
         dailyState = new DailyState(ds);
+        dailyState->set_id(ds.get_id());
+
         InternalState::add_daily_state(dailyState);
     }
 
+    // Get ZoneToLEDs
+    for (auto& ztl : db->iterate<ZoneToLED>()) {
+        zone = get_zone(tmp_zones, ztl.zone_id);
+        led = InternalState::get_led(ztl.led_id);
+        
+        if (!zone) {
+            std::cout << "DB relationship Error: could not find zone with id " << ztl.zone_id << std::endl;
+            continue;
+        }
+        if (!led) {
+            std::cout << "DB relationship Error: could not find led with id " << ztl.led_id << std::endl;
+            continue;
+        }
+
+        zone->add_led(led);
+    }
+    
     // Get ZoneDOWs (Day of weeks)
     std::array<unsigned int, 7> days;
     for (auto& dow : db->iterate<ZoneDOW>()) {
@@ -309,25 +343,8 @@ void DataParser::get_all()
                 zone->set_daily_state(i, dailyState);
             }
         } else {
-            std::cout << "DB Error: could not find zone with id " << dow.zone_id << std::endl;
+            std::cout << "DB relationship Error: could not find zone with id " << dow.zone_id << std::endl;
         }
-    }
-
-    // Get ZoneToLEDs
-    for (auto& ztl : db->iterate<ZoneToLED>()) {
-        zone = get_zone(tmp_zones, ztl.zone_id);
-        led = InternalState::get_led(ztl.led_id);
-        
-        if (!zone) {
-            std::cout << "DB Error: could not find zone with id " << ztl.zone_id << std::endl;
-            continue;
-        }
-        if (!led) {
-            std::cout << "DB Error: could not find led with id " << ztl.led_id << std::endl;
-            continue;
-        }
-
-        zone->add_led(led);
     }
 
     // Get DailyStateToLEDStates
@@ -336,16 +353,18 @@ void DataParser::get_all()
         ledState = InternalState::get_led_state(dtl.led_state_id);
 
         if (!dailyState) {
-            std::cout << "DB Error: could not find daily state with id " << dtl.daily_state_id << std::endl;
+            std::cout << "DB relationship Error: could not find daily state with id " << dtl.daily_state_id << std::endl;
             continue;
         }
         if (!ledState) {
-            std::cout << "DB Error: could not find led state with id " << dtl.led_state_id << std::endl;
+            std::cout << "DB relationship Error: could not find led state with id " << dtl.led_state_id << std::endl;
             continue;
         }
 
         dailyState->add_state(dtl.time, ledState);
     }
+
+    return true;
 }
 
 
@@ -374,6 +393,22 @@ void DataParser::remove(Controller* c)
 {
     db->remove<Profile>(c->get_id());
 }
+void DataParser::remove(Zone* zone, LED* led)
+{
+    db->remove_all<ZoneToLED>(where(
+                            c(&ZoneToLED::zone_id) == zone->get_id() and
+                            c(&ZoneToLED::led_id) == led->get_id()
+                            ));
+}
+void DataParser::remove(Zone*, int)
+{
+    
+}
+/*
+    db->update_all(set(c(&ZoneToLED::) = "Hardey",
+                       c(&User::typeId) = 2),
+                   where(c(&User::firstName) == "Tom"));
+*/
 
 
 // Clear

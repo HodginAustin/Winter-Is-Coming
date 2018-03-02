@@ -51,6 +51,7 @@ void API::shutdown()
 void API::setup_routes()
 {
     using namespace Rest;
+
     // System routes
     Routes::Get(router, "/", Routes::bind(&API::index, this));
     Routes::Get(router, "/restart", Routes::bind(&API::system_restart, this));
@@ -406,8 +407,13 @@ void API::delete_profile_zone(REQUEST, RESPONSE)
         Zone* zone = profile->get_zone(zone_id);
 
         if (zone) {
+            // Delete from DB
+            DataParser::remove(zone);
+
             profile->delete_zone(zone);
+
             free(zone);
+
             code = Http::Code::Ok;
         } else { j_out.push_back(json{"zone", zone_id}); }
     } else { j_out.push_back(json{"profile", profile_id}); }
@@ -429,7 +435,9 @@ void API::delete_profile(REQUEST, RESPONSE)
     Http::Code code = Http::Code::Not_Found;
     
     if (profile) {
+        // Delete from DB
         DataParser::remove(profile);
+
         InternalState::delete_profile(profile);
      
         code = Http::Code::Ok;
@@ -558,7 +566,7 @@ void API::put_zone_led(REQUEST, RESPONSE)
                         zone->add_led(led);
 
                         ztl = {zone_id, led_id};
-                        //DataParser::insert(ztl);
+                        DataParser::insert(ztl);
 
                         code = Http::Code::Ok;
                     }
@@ -592,6 +600,12 @@ void API::put_zone_daily_state(REQUEST, RESPONSE)
             DailyState* ds = InternalState::get_daily_state(daily_state_id);
             if (ds) {
                 zone->set_daily_state(day_of_week, ds);
+
+                // Insert in DB
+                ZoneDOW dow;
+                dow.set(zone);
+                DataParser::insert(dow);
+
                 code = Http::Code::Ok;
             } else { j_out.push_back(json{"daily_state", daily_state_id}); }
         } else { j_out.push_back(json{"zone", zone_id}); }
@@ -620,7 +634,11 @@ void API::delete_zone_led(REQUEST, RESPONSE)
         if (zone) {
             LED* led = InternalState::get_led(led_id);
             if (led) {
+                // Delete from DB
+                DataParser::remove(zone, led);
+            
                 zone->delete_led(led);
+                
                 code = Http::Code::Ok;
             } else { j_out.push_back(json{"led", led_id}); }
         } else { j_out.push_back(json{"zone", zone_id}); }
@@ -648,7 +666,11 @@ void API::delete_zone_daily_state(REQUEST, RESPONSE)
         Zone* zone = profile->get_zone(zone_id);
         if (zone) {
             if (day_of_week >= 0 && day_of_week <= 6) {
+                // Delete from DB
+                DataParser::remove(zone, day_of_week);
+
                 zone->set_daily_state(day_of_week, 0);
+
                 code = Http::Code::Ok;
             } else { j_out["day_out_of_bounds"] = { {"min:", 0}, {"max:", 6}, {"given:", day_of_week} }; }
         } else { j_out.push_back(json{"zone", zone_id}); }
@@ -1192,6 +1214,14 @@ void API::put_daily_state_led_state(REQUEST, RESPONSE)
             if (ledState) {
                 if (time_of_day >= 0 && time_of_day <= 24*60*60) {
                     dailyState->add_state(time_of_day, ledState);
+
+                    // Insert in DB
+                    DailyStateToLEDState DStoLS;
+                    DStoLS.daily_state_id = dailyState->get_id();
+                    DStoLS.led_state_id = ledState->get_id();
+                    DStoLS.time = time_of_day;
+                    DataParser::insert(DStoLS);
+
                     code = Http::Code::Ok;
                 } else { j_out["time_out_of_bounds"] = { {"min:", 0}, {"max:", 24*60*60}, {"given:", time_of_day} }; }
             } else { j_out.push_back(json{"led_state", s}); }

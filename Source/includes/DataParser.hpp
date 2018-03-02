@@ -45,7 +45,7 @@ public:
     static void update(Controller*);
 
     // SELECT
-    static void get_all();
+    static bool get_all();
 
     // DELETE
     static void remove(Profile*);
@@ -54,6 +54,8 @@ public:
     static void remove(LEDState*);
     static void remove(DailyState*);
     static void remove(Controller*);
+    static void remove(Zone*, LED*);
+    static void remove(Zone*, int);
 
     static void clear();
 };
