@@ -56,6 +56,7 @@ public:
     static void remove(Controller*);
     static void remove(Zone*, LED*);
     static void remove(Zone*, int);
+    static void remove(DailyState*, int);
 
     static void clear();
 };

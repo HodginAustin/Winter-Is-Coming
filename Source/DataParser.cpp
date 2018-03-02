@@ -115,16 +115,11 @@ inline auto init_storage(const std::string& path)
         ),
         // Zone's 7 daily states
         make_table("zone_daily_states",
-            make_column("zone_id", 
-                        &ZoneDOW::zone_id,
-                        primary_key()),
-            make_column("ds_sun_id", &ZoneDOW::ds_sun_id),
-            make_column("ds_mon_id", &ZoneDOW::ds_mon_id),
-            make_column("ds_tue_id", &ZoneDOW::ds_tue_id),
-            make_column("ds_wed_id", &ZoneDOW::ds_wed_id),
-            make_column("ds_thu_id", &ZoneDOW::ds_thu_id),
-            make_column("ds_fri_id", &ZoneDOW::ds_fri_id),
-            make_column("ds_sat_id", &ZoneDOW::ds_sat_id)
+            make_column("zone_id", &ZoneDOW::zone_id),
+            make_column("day_of_week", &ZoneDOW::day_of_week),
+            make_column("daily_state_id", &ZoneDOW::daily_state_id),
+            primary_key(&ZoneDOW::zone_id,
+                        &ZoneDOW::day_of_week)
         ),
         // DailyState has many LEDStates in a map of time<->state pairs
         make_table("daily_state_to_led_state",
@@ -236,6 +231,99 @@ void DataParser::update(Controller* c)
 {
     db->update(*c);
 }
+/*
+    db->update_all(set(c(&ZoneToLED::) = "Hardey",
+                       c(&User::typeId) = 2),
+                   where(c(&User::firstName) == "Tom"));
+*/
+
+
+// DELETE
+void DataParser::remove(Profile* p)
+{
+    // ON CASCADE DELETE
+    for (auto zone : p->get_zones()) {
+        remove(zone);
+    }
+
+    db->remove<Profile>(p->get_id());
+}
+void DataParser::remove(Zone* z)
+{
+    // ON CASCADE DELETE
+    db->remove_all<ZoneDOW>(where(
+        c(&ZoneDOW::zone_id) == z->get_id()
+    ));
+
+    db->remove_all<ZoneToLED>(where(
+        c(&ZoneToLED::zone_id) == z->get_id()
+    ));
+
+    db->remove<Zone>(z->get_id());
+}
+void DataParser::remove(LED* l)
+{
+    // ON CASCADE DELETE
+    db->remove_all<ZoneToLED>(where(
+        c(&ZoneToLED::led_id) == l->get_id()
+    ));
+
+    db->remove<LED>(l->get_id());
+}
+void DataParser::remove(LEDState* ls)
+{
+    // ON CASCADE DELETE
+    db->remove_all<DailyStateToLEDState>(where(
+        c(&DailyStateToLEDState::led_state_id) == ls->get_id()
+    ));
+
+    db->remove<LEDState>(ls->get_id());
+}
+void DataParser::remove(DailyState* ds)
+{
+    // ON CASCADE DELETE
+    db->remove_all<ZoneDOW>(where(
+        c(&ZoneDOW::daily_state_id) == ds->get_id()
+    ));
+
+    db->remove_all<DailyStateToLEDState>(where(
+        c(&DailyStateToLEDState::daily_state_id) == ds->get_id()
+    ));
+
+    db->remove<DailyState>(ds->get_id());
+}
+void DataParser::remove(Controller* c)
+{
+    // ON CASCADE DELETE
+    for (auto led : InternalState::get_leds()) {
+        if (led->get_controller_id() == c->get_id()) {
+            remove(led);
+        }
+    }
+
+    db->remove<Controller>(c->get_id());
+}
+void DataParser::remove(Zone* zone, LED* led)
+{
+    db->remove_all<ZoneToLED>(where(
+        c(&ZoneToLED::zone_id) == zone->get_id() and
+        c(&ZoneToLED::led_id) == led->get_id()
+    ));
+}
+void DataParser::remove(Zone* zone, int day_of_week)
+{
+    db->remove_all<ZoneDOW>(where(
+        c(&ZoneDOW::zone_id) == zone->get_id() and
+        c(&ZoneDOW::day_of_week) == day_of_week
+    ));
+}
+void DataParser::remove(DailyState* dailyState, int time_of_day)
+{
+    db->remove_all<DailyStateToLEDState>(where(
+        c(&DailyStateToLEDState::daily_state_id) == dailyState->get_id() and
+        c(&DailyStateToLEDState::time) == time_of_day
+    ));
+}
 
 
 // SELECT
@@ -293,9 +381,7 @@ bool DataParser::get_all()
             std::cout << "DB Error: could not find controller (for LED) with id " << l.get_controller_id() << std::endl;
         }
     }
-        
-
-
+    
     // Get LEDStates
     LEDState* ledState;
     for (auto& ls : db->iterate<LEDState>()) {
@@ -332,19 +418,20 @@ bool DataParser::get_all()
     }
     
     // Get ZoneDOWs (Day of weeks)
-    std::array<unsigned int, 7> days;
     for (auto& dow : db->iterate<ZoneDOW>()) {
         zone = get_zone(tmp_zones, dow.zone_id);
+        dailyState = InternalState::get_daily_state(dow.daily_state_id);
         
-        if (zone) {
-            days = dow.get_days();
-            for (std::size_t i = 0, max = days.size(); i != max; ++i) {
-                dailyState = InternalState::get_daily_state(days.at(i));
-                zone->set_daily_state(i, dailyState);
-            }
-        } else {
+        if (!zone) {
             std::cout << "DB relationship Error: could not find zone with id " << dow.zone_id << std::endl;
+            continue;
         }
+        if (!dailyState) {
+            std::cout << "DB relationship Error: could not find daily state with id " << dow.daily_state_id << std::endl;
+            continue;
+        }
+
+        zone->set_daily_state(dow.day_of_week, dailyState);
     }
 
     // Get DailyStateToLEDStates
@@ -366,49 +453,6 @@ bool DataParser::get_all()
 
     return true;
 }
-
-
-// DELETE
-void DataParser::remove(Profile* p)
-{
-    db->remove<Profile>(p->get_id());
-}
-void DataParser::remove(Zone* z)
-{
-    db->remove<Profile>(z->get_id());
-}
-void DataParser::remove(LED* l)
-{
-    db->remove<Profile>(l->get_id());
-}
-void DataParser::remove(LEDState* ls)
-{
-    db->remove<Profile>(ls->get_id());
-}
-void DataParser::remove(DailyState* ds)
-{
-    db->remove<Profile>(ds->get_id());
-}
-void DataParser::remove(Controller* c)
-{
-    db->remove<Profile>(c->get_id());
-}
-void DataParser::remove(Zone* zone, LED* led)
-{
-    db->remove_all<ZoneToLED>(where(
-                            c(&ZoneToLED::zone_id) == zone->get_id() and
-                            c(&ZoneToLED::led_id) == led->get_id()
-                            ));
-}
-void DataParser::remove(Zone*, int)
-{
-    
-}
-/*
-    db->update_all(set(c(&ZoneToLED::) = "Hardey",
-                       c(&User::typeId) = 2),
-                   where(c(&User::firstName) == "Tom"));
-*/
 
 
 // Clear
