@@ -13,7 +13,7 @@
 #include "./DailyState.hpp"
 
 #include "./relationships.hpp"
-
+#include "./setting.hpp"
 
 #include "./sqlite_orm.hpp"
 
@@ -35,6 +35,7 @@ public:
     static void insert(ZoneDOW);
     static void insert(ZoneToLED);
     static void insert(DailyStateToLEDState);
+    static void insert(Setting setting);
     
     // UPDATE
     static void update(Profile*);

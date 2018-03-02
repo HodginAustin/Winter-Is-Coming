@@ -10,6 +10,8 @@
 #include "./includes/InternalState.hpp"
 #include "./includes/DataParser.hpp"
 
+#include "./includes/setting.hpp"
+
 using namespace Pistache; // REST API
 using json = nlohmann::json; // Json
 
@@ -88,7 +90,6 @@ void API::setup_routes()
     Routes::Get(router, "leds", Routes::bind(&API::get_leds, this));
     Routes::Get(router, "leds/:id", Routes::bind(&API::get_led, this));
     Routes::Get(router, "leds/:id/controller", Routes::bind(&API::get_led_controller, this));
-    Routes::Put(router, "leds/:led_id/controller/add/:controller_id", Routes::bind(&API::put_led_controller, this));
     Routes::Post(router, "leds/add", Routes::bind(&API::post_led, this));
     Routes::Patch(router, "leds/:id/edit", Routes::bind(&API::patch_led, this));
     Routes::Delete(router, "leds/:id/delete", Routes::bind(&API::delete_led, this));
@@ -296,6 +297,13 @@ void API::post_current_profile(REQUEST, RESPONSE)
     Http::Code code = Http::Code::Not_Found;
 
     if (profile) {
+        Setting current_profile_setting;
+        current_profile_setting = {"current_profile", profile->get_id(), ""};
+
+        // Set database current profile setting
+        DataParser::insert(current_profile_setting);
+
+        // Set internal state current profile
         InternalState::set_current_profile(profile);
         j_out = *profile;
         code = Http::Code::Ok;
@@ -378,8 +386,12 @@ void API::patch_profile(REQUEST, RESPONSE)
     json j_out;
     Http::Code code = Http::Code::Not_Found;
     if (profile) {
+        // Update profile
         profile->copy(p);
+        
+        // Update profile in DB
         DataParser::update(profile);
+
         j_out = *profile;
         code = Http::Code::Ok;
     } else { j_out.push_back(json{"profile", id}); }
@@ -559,6 +571,7 @@ void API::put_zone_led(REQUEST, RESPONSE)
             for (auto json_id : j_in) {
                 unsigned int led_id = json_id.get<unsigned int>();
                 LED* led = InternalState::get_led(led_id);
+
                 // Check if LED exists
                 if (led) {
                     // Check if zone does not have LED already
@@ -587,7 +600,7 @@ void API::put_zone_daily_state(REQUEST, RESPONSE)
     auto profile_id = request.param(":profile_id").as<unsigned int>();
     auto zone_id = request.param(":zone_id").as<unsigned int>();
     auto daily_state_id = request.param(":daily_state_id").as<unsigned int>();
-    auto day_of_week = request.param(":day_of_week").as<int>();
+    auto day_of_week = request.param(":day_of_week").as<unsigned int>();
     
     // Data
     Profile* profile = InternalState::get_profile(profile_id);
@@ -603,9 +616,7 @@ void API::put_zone_daily_state(REQUEST, RESPONSE)
 
                 // Insert in DB
                 ZoneDOW dow;
-                dow.zone_id = zone->get_id();
-                dow.day_of_week = day_of_week;
-                dow.daily_state_id = ds->get_id();
+                dow = {zone->get_id(), day_of_week, ds->get_id()};
                 DataParser::insert(dow);
 
                 code = Http::Code::Ok;
@@ -753,32 +764,6 @@ void API::get_led_controller(REQUEST, RESPONSE)
     // Send response
     response.send(code, j_out.dump());
 }
-void API::put_led_controller(REQUEST, RESPONSE)
-{
-    // Log request
-    log_req(request);
-    
-    // Parameters
-    auto led_id = request.param(":led_id").as<unsigned int>();
-    auto controller_id = request.param(":controller_id").as<unsigned int>();
-
-    // Data
-    LED* led = InternalState::get_led(led_id);
-    Http::Code code = Http::Code::Not_Found;
-    json j_out;
-
-    // Build JSON
-    if (led) {
-        Controller* controller = InternalState::get_controller(controller_id);
-        if (controller) {
-            led->set_controller(controller);
-            code = Http::Code::Ok;
-        } else { j_out.push_back(json{"controller", controller_id}); }
-    } else { j_out.push_back(json{"led", led_id}); }
-    
-    // Send response
-    response.send(code, j_out.dump());
-}
 void API::post_led(REQUEST, RESPONSE)
 {
     // Log request
@@ -823,10 +808,16 @@ void API::patch_led(REQUEST, RESPONSE)
     
     // Build response
     json j_out;
-    Http::Code code = (led ? Http::Code::Ok : Http::Code::Not_Found);
+    Http::Code code = Http::Code::Not_Found;
     if (led) {
+        // Update LED
         led->copy(l);
+        
+        // Update LED in DB
+        DataParser::update(led);
+
         j_out = *led;
+        code = Http::Code::Ok;
     }
 
     // Send response
@@ -940,10 +931,16 @@ void API::patch_controller(REQUEST, RESPONSE)
     
     // Build response
     json j_out;
-    Http::Code code = (controller ? Http::Code::Ok : Http::Code::Not_Found);
+    Http::Code code = Http::Code::Not_Found;
     if (controller) {
+        // Update controller
         controller->copy(c);
+        
+        // Update controller in DB
+        DataParser::update(controller);
+
         j_out = *controller;
+        code = Http::Code::Ok;
     }
 
     // Send response
@@ -1060,10 +1057,16 @@ void API::patch_led_state(REQUEST, RESPONSE)
     
     // Build response
     json j_out;
-    Http::Code code = (ledState ? Http::Code::Ok : Http::Code::Not_Found);
+    Http::Code code = Http::Code::Not_Found;
     if (ledState) {
+        // Update ledState
         ledState->copy(ls);
+        
+        // Update ledState in DB
+        DataParser::update(ledState);
+
         j_out = *ledState;
+        code = Http::Code::Ok;
     }
 
     // Send response
@@ -1200,7 +1203,7 @@ void API::put_daily_state_led_state(REQUEST, RESPONSE)
         LEDState* ledState;
 
         for (auto json_time_state : j_in) {
-            int time_of_day = json_time_state.at("time").get<int>();
+            unsigned int time_of_day = json_time_state.at("time").get<unsigned int>();
             unsigned int s = json_time_state.at("state").get<unsigned int>();
 
             ledState = InternalState::get_led_state(s);
@@ -1211,9 +1214,7 @@ void API::put_daily_state_led_state(REQUEST, RESPONSE)
 
                     // Insert in DB
                     DailyStateToLEDState DStoLS;
-                    DStoLS.daily_state_id = dailyState->get_id();
-                    DStoLS.led_state_id = ledState->get_id();
-                    DStoLS.time = time_of_day;
+                    DStoLS = {dailyState->get_id(), time_of_day, ledState->get_id()};
                     DataParser::insert(DStoLS);
 
                     code = Http::Code::Ok;
@@ -1263,10 +1264,16 @@ void API::patch_daily_state(REQUEST, RESPONSE)
     
     // Build response
     json j_out;
-    Http::Code code = (dailyState ? Http::Code::Ok : Http::Code::Not_Found);
+    Http::Code code = Http::Code::Not_Found;
     if (dailyState) {
+        // Update dailyState
         dailyState->copy(ds);
+        
+        // Update dailyState in DB
+        DataParser::update(dailyState);
+
         j_out = *dailyState;
+        code = Http::Code::Ok;
     }
 
     // Send response

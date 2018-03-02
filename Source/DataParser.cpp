@@ -14,10 +14,15 @@ inline auto init_storage(const std::string& path)
     // Build schema
     return make_storage(path,
         // Settings
-        //make_table("settings",
-        //    make_column("current_profile",
-        //                &InternalState::currentProfileId)
-        //),
+        make_table("settings",
+            make_column("name",
+                        &Setting::name,
+                        primary_key()),
+            make_column("int_value",
+                        &Setting::int_value),
+            make_column("stirng_value",
+                        &Setting::string_value)
+        ),
         // Profiles
         make_table("profiles",
             make_column("id",
@@ -204,6 +209,11 @@ void DataParser::insert(DailyStateToLEDState dsl)
 {
     db->replace(dsl);
 }
+void DataParser::insert(Setting setting)
+{
+    db->replace(setting);
+}
+
 
 
 // UPDATE
@@ -231,11 +241,6 @@ void DataParser::update(Controller* c)
 {
     db->update(*c);
 }
-/*
-    db->update_all(set(c(&ZoneToLED::) = "Hardey",
-                       c(&User::typeId) = 2),
-                   where(c(&User::firstName) == "Tom"));
-*/
 
 
 // DELETE
@@ -451,6 +456,20 @@ bool DataParser::get_all()
         dailyState->add_state(dtl.time, ledState);
     }
 
+    // Get global settings
+    for (auto setting : db->iterate<Setting>()) {
+        // Currently active profile
+        if (setting.name == "current_profile") {
+            Profile* profile = InternalState::get_profile(setting.int_value);
+            if (profile) {
+                InternalState::set_current_profile(profile);
+            } else {
+                std::cout << "DB Error: could not find current profile with id " << setting.int_value << std::endl;
+                continue;
+            }
+        }
+    }
+
     return true;
 }
 
@@ -459,13 +478,13 @@ bool DataParser::get_all()
 void DataParser::clear()
 {
     // Entities
+    db->remove_all<ZoneDOW>();
+    db->remove_all<ZoneToLED>();
+    db->remove_all<DailyStateToLEDState>();
     db->remove_all<Profile>();
     db->remove_all<Zone>();
     db->remove_all<LED>();
     db->remove_all<Controller>();
-    //db->remove_all<ZoneDOW>();
-    //db->remove_all<ZoneToLED>();
-    //db->remove_all<DailyStateToLEDState>();
     db->remove_all<DailyState>();
     db->remove_all<LEDState>();
 }
