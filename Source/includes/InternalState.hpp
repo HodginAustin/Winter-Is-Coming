@@ -17,7 +17,6 @@ class InternalState
 private:
     // Abstract relationship objects
     static std::vector<Profile*> profiles;
-    static std::vector<Zone*> zones;
     static Profile* currentProfile;
     // Physically based objects
     static std::vector<LED*> leds;
@@ -40,11 +39,6 @@ public:
     static std::vector<Profile*> get_profiles();
     static Profile* get_profile(unsigned int id);
     static void delete_profile(Profile* profile);
-    // Zone CRUD
-    static void add_zone(Zone* zone);
-    static std::vector<Zone*> get_zones();
-    static Zone* get_zone(unsigned int id);
-    static void delete_zone(Zone* zone);
     // LED CRUD
     static void add_led(LED* led);
     static std::vector<LED*> get_leds();

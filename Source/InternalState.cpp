@@ -7,7 +7,6 @@
 // Required for static class members
 // Abstract relationship objects
 std::vector<Profile*> InternalState::profiles;
-std::vector<Zone*> InternalState::zones;
 Profile* InternalState::currentProfile;
 // Physically based objects
 std::vector<LED*> InternalState::leds;
@@ -60,47 +59,15 @@ Profile* InternalState::get_profile(unsigned int id)
 
 void InternalState::delete_profile(Profile* profile)
 {
+    // Cascade delete
+    for (auto zone : profile->get_zones()) {
+        profile->delete_zone(zone);
+    }
+
     profiles.erase(
         std::remove(profiles.begin(), profiles.end(), profile), profiles.end());
 
     free(profile);
-}
-
-
-// Zone CRUD
-void InternalState::add_zone(Zone* zone)
-{
-    zones.push_back(zone);
-}
-
-std::vector<Zone*> InternalState::get_zones()
-{
-    return zones;
-}
-
-Zone* InternalState::get_zone(unsigned int id)
-{
-    for (auto zone : zones) {
-        if (zone->get_id() == id){ return zone; }
-    }
-    return 0;
-}
-
-void InternalState::delete_zone(Zone* zone)
-{
-    unsigned int profile_id = zone->get_profile_id();
-
-    Profile* profile = get_profile(profile_id);
-
-    if (profile) {
-        profile->delete_zone(zone);
-
-        zones.erase(
-            std::remove(zones.begin(), zones.end(), zone), zones.end());
-
-        free(zone);
-    }
-
 }
 
 
@@ -125,6 +92,13 @@ LED* InternalState::get_led(unsigned int id)
 
 void InternalState::delete_led(LED* led)
 {
+    // Cascade delete
+    for (auto profile : get_profiles()) {
+        for (auto zone : profile->get_zones()) {
+            zone->delete_led(led);
+        }
+    }
+
     leds.erase(
         std::remove(leds.begin(), leds.end(), led), leds.end());
 
@@ -153,6 +127,13 @@ Controller* InternalState::get_controller(unsigned int id)
 
 void InternalState::delete_controller(Controller* controller)
 {
+    // Cascade delete
+    for (auto led : get_leds()) {
+        if (led->get_controller_id() == controller->get_id()) {
+            delete_led(led);
+        }
+    }
+
     controllers.erase(
         std::remove(controllers.begin(), controllers.end(), controller), controllers.end());
 
@@ -181,6 +162,11 @@ LEDState* InternalState::get_led_state(unsigned int id)
 
 void InternalState::delete_led_state(LEDState* ledState)
 {
+    // Cascade delete
+    for (auto dailyState : get_daily_states()) {
+        dailyState->delete_state(ledState);
+    }
+
     ledStates.erase(
         std::remove(ledStates.begin(), ledStates.end(), ledState), ledStates.end());
 
@@ -209,6 +195,19 @@ DailyState* InternalState::get_daily_state(unsigned int id)
 
 void InternalState::delete_daily_state(DailyState* dailyState)
 {
+    // Cascade delete
+    for (auto profile : get_profiles()) {
+        for (auto zone : profile->get_zones()) {
+            for (int i = 0; i < 7; ++i) {
+                if (zone->get_daily_state(i)) {
+                    if (zone->get_daily_state(i)->get_id() == dailyState->get_id()) {
+                        zone->set_daily_state(i, 0);
+                    }
+                }
+            }
+        }
+    }
+
     dailyStates.erase(
         std::remove(dailyStates.begin(), dailyStates.end(), dailyState), dailyStates.end());
 }
