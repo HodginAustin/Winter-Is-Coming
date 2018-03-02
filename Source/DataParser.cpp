@@ -477,14 +477,13 @@ bool DataParser::get_all()
 // Clear
 void DataParser::clear()
 {
-    // Entities
     db->remove_all<ZoneDOW>();
     db->remove_all<ZoneToLED>();
     db->remove_all<DailyStateToLEDState>();
-    db->remove_all<Profile>();
-    db->remove_all<Zone>();
     db->remove_all<LED>();
+    db->remove_all<LEDState>();
     db->remove_all<Controller>();
     db->remove_all<DailyState>();
-    db->remove_all<LEDState>();
+    db->remove_all<Zone>();
+    db->remove_all<Profile>();
 }

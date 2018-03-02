@@ -188,7 +188,7 @@ void API::nuke_from_orbit(REQUEST, RESPONSE)
     DataParser::clear();
 
     response.send(Http::Code::Ok,
-        "This is just a thing... and things can be replaced. Lives cannot. - Data");
+        "This is just a thing... and things can be replaced. Lives cannot. - Lt. Cmdr. Data");
 }
 
 
