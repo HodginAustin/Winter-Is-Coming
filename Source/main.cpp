@@ -16,7 +16,6 @@ void* thr_compose_call(void*)
         StateComposer::compose();
         usleep(250000);  // Sleep for .25 seconds, give the core a break during no state
     }
-    StateComposer::clean_up();
     pthread_exit(NULL);
 }
 
@@ -72,6 +71,7 @@ int main(int argc, char* argv[])
 
     // Cleanup
     StateComposer::composeEnable = false;
+    StateComposer::clean_up();
     std::cout << "Joining composer thread back to main... ";
     pthread_join(composerThread, NULL);
     std::cout << "Joined!\nFreeing API... " << std::endl;
