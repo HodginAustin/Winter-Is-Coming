@@ -3,30 +3,28 @@
   <head>
     <title>PlanteR-GB</title>
     <link rel="stylesheet" href="css/style.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.js" ></script>
+    <script type="text/javascript" src="js/requests.js"></script>
+    <script tpe="text/javascript" src="js/main.js"></script>
   </head>
   <body>
-    <div class="titlebar">
-      <div id="titleCard">
-        <img id="logo" src="img/logo2-interior-shadow.png" height="100px" width="100px" />
-        <h1 id="Name">PlanteR-GB</h1>
-      </div> <!-- titleCard -->
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class-navbar-header>
+          <a class="navbar-brand" href="#">PlanteR-GB</a>
+        </div> <!-- header -->
+        <ul class="nav navbar-nav">
+          <li>Profiles</li>
+          <li>Zones</li>
+          <li></li>
+        </ul>
+      </div> <!-- container-fluid -->
+    </nav>
 
-      <div id="lowerThirds">
-        <h5 id="current">Currently Selected: {{bed}}</h5>
+    <button id="test" onclick="getAllProfiles(5)">TEST</button> <!-- test button -->
 
-      </div> <!-- lowerThirds -->
 
-    </div> <!-- titleBard -->
-
-    <div id="navbar">
-      <ul id="navBarElements">
-        <li>Bed</li>
-        <li>Zones</li>
-        <li>Scheduling</li>
-        <li>Profile</li>
-      </ul>
-    </div> <!-- navbar -->
 
   </body>
 </html>
