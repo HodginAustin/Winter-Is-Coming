@@ -120,8 +120,8 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
         strftime(timeBuffer, 30, "%c", timeInfo);
         logFile << "[" << timeBuffer << "] "
                         << "Attempting serial send:\n"
-                        << "  IO Port:" << io << "\n"
-                        << "  Idx:" << idx << "\n"
+                        << "  IO Port:" << (int)io << "\n"
+                        << "  Idx:" << (int)idx << "\n"
                         << "  R:" << (int)r << "\n"
                         << "  G:" << (int)g << "\n"
                         << "  B:" << (int)b << "\n";
