@@ -58,11 +58,11 @@ private:
             static std::vector<LED*> currentZoneLEDs;
                 // For each LED, get: 
                 static Controller* currentLEDController;
-                    static unsigned int ioPort;
+                    static unsigned char ioPort;
                     static unsigned char stripIndex;
 
     // Sends color state to a target controller with target LED
-    static bool serial_send(unsigned int, unsigned char, unsigned char, unsigned char, unsigned char);
+    static bool serial_send(unsigned char, unsigned char, unsigned char, unsigned char, unsigned char);
 
 public:
     static bool composeEnable;

@@ -50,7 +50,7 @@ bool StateComposer::power;
 std::vector<LED*> StateComposer::currentZoneLEDs;
 Controller* StateComposer::currentLEDController;
 
-unsigned int StateComposer::ioPort;
+unsigned char StateComposer::ioPort;
 unsigned char StateComposer::stripIndex;
 
 
@@ -105,7 +105,7 @@ bool StateComposer::initialize(bool log)
 
 
 // Send and receive serial over uart w/ correct timings
-bool StateComposer::serial_send(unsigned int io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
+bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
 {
     // Tx Bytes - Send LED data to proper controller
 	unsigned char tx_buffer[4];
@@ -121,14 +121,15 @@ bool StateComposer::serial_send(unsigned int io, unsigned char r, unsigned char 
         logFile << "[" << timeBuffer << "] "
                         << "Attempting serial send:\n"
                         << "  IO Port:" << io << "\n"
+                        << "  Idx:" << idx << "\n"
                         << "  R:" << (int)r << "\n"
                         << "  G:" << (int)g << "\n"
-                        << "  B:" << (int)b << "\n"
-                        << "  Idx:" << idx << "\n";
+                        << "  B:" << (int)b << "\n";
     }
 
 	p_tx_buffer = &tx_buffer[0]; // Reset pointer to head of array
-	*p_tx_buffer++ = idx;        // Build with values
+    *p_tx_buffer++ = io;
+	*p_tx_buffer++ = idx;
     *p_tx_buffer++ = r;
     *p_tx_buffer++ = g;
     *p_tx_buffer++ = b;
@@ -235,7 +236,7 @@ void StateComposer::compose()
                 continue;
             }
 
-            ioPort = currentLEDController->get_io();
+            ioPort = (unsigned char)currentLEDController->get_io();
             if (ioPort <= 0) {
                 continue;
             }
@@ -274,7 +275,7 @@ void StateComposer::led_shutdown()
         }
 
         // Controller IO (deviceID)
-        ioPort = currentLEDController->get_io();
+        ioPort = (unsigned char)currentLEDController->get_io();
         if (ioPort <= 0) {
             continue;
         }
