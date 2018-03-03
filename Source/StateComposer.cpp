@@ -108,7 +108,7 @@ bool StateComposer::initialize(bool log)
 bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
 {
     // Tx Bytes - Send LED data to proper controller
-	unsigned char tx_buffer[4];
+	unsigned char tx_buffer[5];
 	unsigned char *p_tx_buffer;
     char timeBuffer[30];
 
