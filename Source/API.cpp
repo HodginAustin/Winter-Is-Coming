@@ -211,14 +211,18 @@ void API::nuke_from_orbit(REQUEST, RESPONSE)
     // Log request
     log_req(request);
 
+    // State composer LED blackout
+    StateComposer::composeEnable = false;
+    StateComposer::led_shutdown();
+
     // Wipe out internal state
     InternalState::clear();
 
     // Wipe out database
     DataParser::clear();
 
-    // State composer LED blackout
-    StateComposer::led_shutdown();
+    // Turn state composer back on
+    StateComposer::composeEnable = true;
 
     response.send(Http::Code::Ok,
         "This is just a thing... and things can be replaced. Lives cannot. - Lt. Cmdr. Data");
