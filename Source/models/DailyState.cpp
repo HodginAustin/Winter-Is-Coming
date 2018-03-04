@@ -125,14 +125,14 @@ void to_json(json& j, const DailyState& ds)
     for (auto& element : timeStateMap) {
         unsigned int t = element.first;
         LEDState* s = element.second;
+        unsigned int stateID = (s ? s->get_id() : 0);
 
-        if (s) {
-            json ts_j = json{
-                {"time", t},
-                {"state", s->get_id()}
-            };
-            tsm_j.push_back(ts_j);
-        }
+
+        json ts_j = json{
+            {"time", t},
+            {"state", stateID}
+        };
+        tsm_j.push_back(ts_j);
     }
 
     j = json{
