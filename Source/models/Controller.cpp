@@ -2,7 +2,11 @@
 
 
 // Constructor
-Controller::Controller() {}
+Controller::Controller() {
+    io = 0;
+    address = "";
+    details = "";
+}
 
 Controller::Controller(const Controller& c)
 {
@@ -13,7 +17,7 @@ Controller::Controller(const Controller& c)
 // Copy
 void Controller::copy(const Controller& c)
 {
-    if (c.get_io() >= 0) {
+    if (c.get_io() > 0) {
         set_io(c.get_io());
     }
     if (!c.get_address().empty()) {

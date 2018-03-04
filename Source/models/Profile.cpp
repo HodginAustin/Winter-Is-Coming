@@ -3,7 +3,10 @@
 
 
 // Constructor
-Profile::Profile() {}
+Profile::Profile() {
+    name = "";
+    description = "";
+}
 Profile::Profile(const Profile& p) { copy(p); }
 
 

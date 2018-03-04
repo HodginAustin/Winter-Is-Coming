@@ -6,6 +6,7 @@
 // Constructor
 Zone::Zone()
 {
+    name = "";
     weeklyState = {0,0,0,0,0,0,0};
 }
 Zone::Zone(const Zone& z)
