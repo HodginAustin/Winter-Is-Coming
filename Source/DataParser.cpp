@@ -7,6 +7,8 @@
 
 using namespace sqlite_orm;
 
+#define SETTING_DATABASE_VERSION "db_version"
+
 
 // Build database schema
 inline auto init_storage(const std::string& path)
@@ -156,7 +158,7 @@ bool DataParser::initialize()
     db->sync_schema();
 
     // Set database version
-    Setting db_version = {"db_version", 1, "plantergb v1.0"};
+    Setting db_version = {SETTING_DATABASE_VERSION, 1, "plantergb v1.0"};
     DataParser::insert(db_version);
 
     // Load all existing data
@@ -481,6 +483,10 @@ bool DataParser::get_all()
 // Clear
 void DataParser::clear()
 {
+    db->remove_all<Setting>(where(
+        c(&Setting::name) != SETTING_DATABASE_VERSION
+    ));
+
     db->remove_all<ZoneDOW>();
     db->remove_all<ZoneToLED>();
     db->remove_all<DailyStateToLEDState>();
