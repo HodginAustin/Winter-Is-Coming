@@ -287,7 +287,7 @@ void StateComposer::led_shutdown()
         }
 
         // Call serial send
-        if (serial_send(ioPort, '\0', '\0', '\0', stripIndex);) {
+        if (serial_send(ioPort, '\0', '\0', '\0', stripIndex)) {
             logFile << "[" << timeBuffer << "] " << "Error transmitting serial for led_shutdown!\n";
         }
     }
