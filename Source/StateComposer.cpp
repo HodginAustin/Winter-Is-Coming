@@ -54,7 +54,6 @@ unsigned char StateComposer::ioPort;
 unsigned char StateComposer::stripIndex;
 
 
-
 // Initialization
 bool StateComposer::initialize(bool log)
 {
@@ -145,7 +144,6 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
         
         usleep(WAIT_ACK); // Let Arduino catch up
 	}
-
 
 
     // Rx Bytes - Receive Acknowledge
@@ -242,7 +240,7 @@ void StateComposer::compose()
             }
 
             // Get LED index
-            stripIndex = currentLED->get_strip_idx();
+            stripIndex = (unsigned char)currentLED->get_strip_idx();
             if (stripIndex < 0) {
                 continue;
             }
@@ -288,7 +286,7 @@ void StateComposer::led_shutdown()
         }
 
         // Get LED index
-        stripIndex = currentLED->get_strip_idx();
+        stripIndex = (unsigned char)currentLED->get_strip_idx();
         if (stripIndex < 0) {
             continue;
         }
