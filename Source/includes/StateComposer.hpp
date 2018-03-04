@@ -43,6 +43,7 @@ private:
     // Timing objects
     static time_t sysTime;
     static int weekDay;
+    static unsigned int seconds;
     // Communication objects
     static char acknowledge;
     static char retransmit;
@@ -57,13 +58,15 @@ private:
             static std::vector<LED*> currentZoneLEDs;
                 // For each LED, get: 
                 static Controller* currentLEDController;
-                    static unsigned int ioPort;
+                    static unsigned char ioPort;
                     static unsigned char stripIndex;
 
     // Sends color state to a target controller with target LED
-    static bool serial_send(unsigned int, unsigned char, unsigned char, unsigned char, unsigned char);
+    static bool serial_send(unsigned char, unsigned char, unsigned char, unsigned char, unsigned char);
 
 public:
+    static bool composeEnable;
+
     // Initialization
     //  @Param 1 - Log actions flag
     //      True  : output actions to log
@@ -72,6 +75,9 @@ public:
 
     // Start compositioning of the internal state to the hardware state
     static void compose();
+
+    // Turn LEDs off
+    static void led_shutdown();
 
     // Clean up
     static void clean_up();

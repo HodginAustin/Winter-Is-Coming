@@ -1,13 +1,15 @@
-#include <iterator>
 #include "../includes/DailyState.hpp"
 #include "../includes/InternalState.hpp"
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 // Constructor
-DailyState::DailyState() {}
+DailyState::DailyState() {
+    other = 0;
+}
 DailyState::DailyState(const DailyState& d)
 {
+    other = 0;
     copy(d);
 }
 
@@ -95,6 +97,15 @@ bool DailyState::delete_state(unsigned int time)
     return timeStatePairs.count(time) == 0;
 }
 
+void DailyState::delete_state(LEDState* ledState)
+{
+    for (auto& element : timeStatePairs) {
+        if (element.second->get_id() == ledState->get_id()) {
+            delete_state(element.first);
+        }
+    }
+}
+
 int DailyState::get_time_state_count() const
 {
     return timeStatePairs.size();
@@ -117,10 +128,12 @@ void to_json(json& j, const DailyState& ds)
     for (auto& element : timeStateMap) {
         unsigned int t = element.first;
         LEDState* s = element.second;
+        unsigned int stateID = (s ? s->get_id() : 0);
+
 
         json ts_j = json{
             {"time", t},
-            {"state", s->get_id()}
+            {"state", stateID}
         };
         tsm_j.push_back(ts_j);
     }
@@ -139,6 +152,9 @@ void from_json(const json& j, DailyState& ds)
     for (auto& element : j) {
         json ts_j = element;
         LEDState* ls = InternalState::get_led_state(ts_j["state"]);
-        ds.add_state(ts_j["time"], ls);
+        unsigned int time_of_day = ts_j["time"];
+        if (time_of_day >= 0 && time_of_day <= 24*60*60) {
+            ds.add_state(time_of_day, ls);
+        }
     }
 }

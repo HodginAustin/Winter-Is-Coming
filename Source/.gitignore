@@ -3,3 +3,4 @@ out/
 .vscode/*
 Source/.vscode/settings.json
 *.log
+*.sqlite

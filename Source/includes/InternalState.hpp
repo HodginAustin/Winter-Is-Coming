@@ -15,7 +15,7 @@
 class InternalState
 {
 private:
-    // Abstract relationship objects (also zones inside profiles)
+    // Abstract relationship objects
     static std::vector<Profile*> profiles;
     static Profile* currentProfile;
     // Physically based objects
@@ -60,6 +60,9 @@ public:
     static DailyState* get_daily_state(unsigned int id);
     static void delete_daily_state(DailyState* dailyState);
 
+    // Clear
+    static void clear();
+    
     // Helpers
     static unsigned int get_time();
     static int get_day();

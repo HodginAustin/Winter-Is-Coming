@@ -20,6 +20,7 @@
 
 
 // Required for static class members
+bool StateComposer::composeEnable;
 
 // UART
 int StateComposer::uartFilestream;
@@ -30,27 +31,34 @@ bool StateComposer::logEnable;
 std::ofstream StateComposer::logFile;
 char StateComposer::composerState;
 
-// Internal State variables
+// Timing
 time_t StateComposer::sysTime;
 int StateComposer::weekDay;
+unsigned int StateComposer::seconds;
+
+// Internal State variables
 Profile* StateComposer::currentProfile;
 Schedule* StateComposer::currentZoneSchedule;
 LEDState* StateComposer::currentZoneActiveState;
+
 unsigned char StateComposer::red;
 unsigned char StateComposer::green;
 unsigned char StateComposer::blue;
 int  StateComposer::intensity;
 bool StateComposer::power;
+
 std::vector<LED*> StateComposer::currentZoneLEDs;
 Controller* StateComposer::currentLEDController;
-unsigned int StateComposer::ioPort;
-unsigned char StateComposer::stripIndex;
 
+unsigned char StateComposer::ioPort;
+unsigned char StateComposer::stripIndex;
 
 
 // Initialization
 bool StateComposer::initialize(bool log)
 {
+    composeEnable = true;
+    
     logEnable = log;
     composerState = 'C';
 
@@ -96,10 +104,10 @@ bool StateComposer::initialize(bool log)
 
 
 // Send and receive serial over uart w/ correct timings
-bool StateComposer::serial_send(unsigned int io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
+bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
 {
     // Tx Bytes - Send LED data to proper controller
-	unsigned char tx_buffer[4];
+	unsigned char tx_buffer[5];
 	unsigned char *p_tx_buffer;
     char timeBuffer[30];
 
@@ -111,15 +119,16 @@ bool StateComposer::serial_send(unsigned int io, unsigned char r, unsigned char 
         strftime(timeBuffer, 30, "%c", timeInfo);
         logFile << "[" << timeBuffer << "] "
                         << "Attempting serial send:\n"
-                        << "  IO Port:" << io << "\n"
+                        << "  IO Port:" << (int)io << "\n"
+                        << "  Idx:" << (int)idx << "\n"
                         << "  R:" << (int)r << "\n"
                         << "  G:" << (int)g << "\n"
-                        << "  B:" << (int)b << "\n"
-                        << "  Idx:" << idx << "\n";
+                        << "  B:" << (int)b << "\n";
     }
 
 	p_tx_buffer = &tx_buffer[0]; // Reset pointer to head of array
-	*p_tx_buffer++ = idx;        // Build with values
+    *p_tx_buffer++ = io;
+	*p_tx_buffer++ = idx;
     *p_tx_buffer++ = r;
     *p_tx_buffer++ = g;
     *p_tx_buffer++ = b;
@@ -135,7 +144,6 @@ bool StateComposer::serial_send(unsigned int io, unsigned char r, unsigned char 
         
         usleep(WAIT_ACK); // Let Arduino catch up
 	}
-
 
 
     // Rx Bytes - Receive Acknowledge
@@ -171,7 +179,7 @@ void StateComposer::compose()
     timeInfo=localtime(&sysTime);
 
     weekDay = timeInfo->tm_wday;
-    unsigned int seconds = ( (timeInfo->tm_hour * 3600) + (timeInfo->tm_min * 60) + (timeInfo->tm_sec) );
+    seconds = ( (timeInfo->tm_hour * 3600) + (timeInfo->tm_min * 60) + (timeInfo->tm_sec) );
 
     if (logEnable) {
         strftime(timeBuffer, 30, "%c", timeInfo);
@@ -226,13 +234,13 @@ void StateComposer::compose()
                 continue;
             }
 
-            ioPort = currentLEDController->get_io();
+            ioPort = (unsigned char)currentLEDController->get_io();
             if (ioPort <= 0) {
                 continue;
             }
 
             // Get LED index
-            stripIndex = currentLED->get_strip_idx();
+            stripIndex = (unsigned char)currentLED->get_strip_idx();
             if (stripIndex < 0) {
                 continue;
             }
@@ -242,7 +250,7 @@ void StateComposer::compose()
 
             if (serial_send(ioPort, red, green, blue, stripIndex)) {
                 logFile << "[" << timeBuffer << "] " << "Error transmitting serial!\n";
-            } 
+            }
             composerState = 'C';
             // END OF LEDS LOOP
         }
@@ -254,6 +262,45 @@ void StateComposer::compose()
 }
 
 
+void StateComposer::led_shutdown()
+{
+    char timeBuffer[30];
+
+    tm* timeInfo;
+    time(&sysTime);
+    timeInfo=localtime(&sysTime);
+    strftime(timeBuffer, 30, "%c", timeInfo);
+
+    for (auto currentLED : InternalState::get_leds())
+    {
+        if (currentLED) {
+
+            // Get controller info
+            currentLEDController = currentLED->get_controller();
+            if (currentLEDController == NULL) {
+                continue;
+            }
+
+            // Controller IO (deviceID)
+            ioPort = (unsigned char)currentLEDController->get_io();
+            if (ioPort <= 0) {
+                continue;
+            }
+
+            // Get LED index
+            stripIndex = (unsigned char)currentLED->get_strip_idx();
+            if (stripIndex < 0) {
+                continue;
+            }
+
+            // Call serial send
+            if (serial_send(ioPort, '\0', '\0', '\0', stripIndex)) {
+                logFile << "[" << timeBuffer << "] " << "Error transmitting serial for led_shutdown!\n";
+            }
+        }
+    }
+}
+
 
 void StateComposer::clean_up() 
 {
@@ -262,7 +309,6 @@ void StateComposer::clean_up()
 
     close(uartFilestream);
 }
-
 
 
 char StateComposer::get_composer_state() 

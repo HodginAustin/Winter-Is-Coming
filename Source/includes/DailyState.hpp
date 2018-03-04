@@ -17,6 +17,7 @@ private:
     std::unordered_map<unsigned int, LEDState*> timeStatePairs;
 
 public:
+    int other; // This value exists only to please the sqlite_orm library, which does not allow 1 column PK tables.
     
     // Constructor
     DailyState();
@@ -37,6 +38,7 @@ public:
     std::unordered_map<unsigned int, LEDState*> get_led_states() const;
     LEDState* get_led_state(unsigned int time_of_day);
     bool delete_state(unsigned int time);
+    void delete_state(LEDState*);
     void clear_led_states();
     int get_time_state_count() const;
 };

@@ -86,11 +86,13 @@ copy_api:
 	fi
 
 install_sqlite:
-	sudo apt-get install libsqlite3-dev
+	#sudo apt-get install libsqlite3-dev
+	sudo apt-get install sqlite3
 
 
 # Download and build the API from source (only to be used for unix systems other than the Raspberry Pi Zero W)
 build_api:
+	rm -rf pistache
 	git clone https://github.com/oktal/pistache.git
 	git submodule update --init
 	cd pistache
@@ -99,6 +101,7 @@ build_api:
 	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
 	make
 	sudo make install
+	rm -rf pistache
 
 
 # Clean up

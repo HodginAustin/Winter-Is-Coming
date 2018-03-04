@@ -5,7 +5,7 @@
 
 
 // Required for static class members
-// Abstract relationship objects (also zones inside profiles)
+// Abstract relationship objects
 std::vector<Profile*> InternalState::profiles;
 Profile* InternalState::currentProfile;
 // Physically based objects
@@ -59,8 +59,17 @@ Profile* InternalState::get_profile(unsigned int id)
 
 void InternalState::delete_profile(Profile* profile)
 {
+    // Cascade delete
+    for (auto zone : profile->get_zones()) {
+        profile->delete_zone(zone);
+
+        free(zone);
+    }
+
     profiles.erase(
         std::remove(profiles.begin(), profiles.end(), profile), profiles.end());
+
+    free(profile);
 }
 
 
@@ -85,8 +94,17 @@ LED* InternalState::get_led(unsigned int id)
 
 void InternalState::delete_led(LED* led)
 {
+    // Cascade delete
+    for (auto profile : get_profiles()) {
+        for (auto zone : profile->get_zones()) {
+            zone->delete_led(led);
+        }
+    }
+
     leds.erase(
         std::remove(leds.begin(), leds.end(), led), leds.end());
+
+    free(led);
 }
 
 
@@ -111,8 +129,17 @@ Controller* InternalState::get_controller(unsigned int id)
 
 void InternalState::delete_controller(Controller* controller)
 {
+    // Cascade delete
+    for (auto led : get_leds()) {
+        if (led->get_controller_id() == controller->get_id()) {
+            delete_led(led);
+        }
+    }
+
     controllers.erase(
         std::remove(controllers.begin(), controllers.end(), controller), controllers.end());
+
+    free(controller);
 }
 
 
@@ -137,8 +164,15 @@ LEDState* InternalState::get_led_state(unsigned int id)
 
 void InternalState::delete_led_state(LEDState* ledState)
 {
+    // Cascade delete
+    for (auto dailyState : get_daily_states()) {
+        dailyState->delete_state(ledState);
+    }
+
     ledStates.erase(
         std::remove(ledStates.begin(), ledStates.end(), ledState), ledStates.end());
+
+    free(ledState);
 }
 
 
@@ -163,8 +197,65 @@ DailyState* InternalState::get_daily_state(unsigned int id)
 
 void InternalState::delete_daily_state(DailyState* dailyState)
 {
+    // Cascade delete
+    for (auto profile : get_profiles()) {
+        for (auto zone : profile->get_zones()) {
+            for (int i = 0; i < 7; ++i) {
+                if (zone->get_daily_state(i)) {
+                    if (zone->get_daily_state(i)->get_id() == dailyState->get_id()) {
+                        zone->set_daily_state(i, 0);
+                    }
+                }
+            }
+        }
+    }
+
     dailyStates.erase(
         std::remove(dailyStates.begin(), dailyStates.end(), dailyState), dailyStates.end());
+}
+
+
+// Clear
+void InternalState::clear()
+{
+    // Profiles
+    for (auto profile : profiles)
+    {
+        for (auto zone : profile->get_zones())
+        {
+            free(zone);
+        }
+        free(profile);
+    }
+    profiles.clear();
+
+    currentProfile = 0;
+
+    // Physically based objects
+    for (auto led : leds)
+    {
+        free(led);
+    }
+    leds.clear();
+
+    for (auto controller : controllers)
+    {
+        free(controller);
+    }
+    controllers.clear();
+
+    // State objects
+    for (auto ledState : ledStates)
+    {
+        free(ledState);
+    }
+    ledStates.clear();
+
+    for (auto dailyState : dailyStates)
+    {
+        free(dailyState);
+    }
+    dailyStates.clear();
 }
 
 

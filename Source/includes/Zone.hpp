@@ -19,13 +19,12 @@ class Zone
 {
 private:
     unsigned int id;
+    unsigned int profile_id;
     std::string name;
     std::array<DailyState*, 7> weeklyState;
     std::vector<LED*> leds;
 
 public:
-    // USE ACCESSORS AND MUTATORS
-    std::shared_ptr<unsigned int> profile_id;
 
     // Constructor
     Zone();
@@ -37,10 +36,12 @@ public:
     // Accessors
     const unsigned int& get_id() const;
     const std::string& get_name() const;
+    const unsigned int& get_profile_id() const;
 
     // Mutators
     void set_id(unsigned int);
-    void set_name(std::string value);
+    void set_name(std::string);
+    void set_profile_id(unsigned int); // This does not assign a zone to a profile, this is only for DB FK
 
     // CRUD
     void add_led(LED* led);

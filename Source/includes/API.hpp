@@ -42,10 +42,12 @@ private:
 
     // System routes
     void index(REQUEST, RESPONSE);
+    void system_shutdown(REQUEST, RESPONSE);
     void system_restart(REQUEST, RESPONSE);
 
     // API Actions
     void api_shutdown(REQUEST, RESPONSE);
+    void nuke_from_orbit(REQUEST, RESPONSE);
 
     // Top level objects (get all of a specific object without knowing what it belongs to)
     // add new objects which are not linked to any other objects yet

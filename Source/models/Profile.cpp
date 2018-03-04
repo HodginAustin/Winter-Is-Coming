@@ -3,7 +3,10 @@
 
 
 // Constructor
-Profile::Profile() {}
+Profile::Profile() {
+    name = "";
+    description = "";
+}
 Profile::Profile(const Profile& p) { copy(p); }
 
 
@@ -56,6 +59,7 @@ void Profile::set_description(std::string val)
 // CRUD
 void Profile::add_zone(Zone* zone)
 {
+    zone->set_profile_id(this->get_id());
     zones.push_back(zone);
 }
 

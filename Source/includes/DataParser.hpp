@@ -12,6 +12,8 @@
 #include "./LEDState.hpp"
 #include "./DailyState.hpp"
 
+#include "./relationships.hpp"
+#include "./setting.hpp"
 
 #include "./sqlite_orm.hpp"
 
@@ -19,29 +21,45 @@ using namespace sqlite_orm;
 
 class DataParser
 {
-private:
-    static unsigned int profile_id;
-    static unsigned int zone_id;
-    static unsigned int led_id;
-    static unsigned int led_state_id;
-    static unsigned int daily_state_id;
-    static unsigned int controller_id;
-
 public:
     // Initialization
     static bool initialize();
 
-    // CRUD operations
-    static unsigned int insert(Zone* z);
-    static unsigned int insert(Profile* p);
+    // INSERT
+    static unsigned int insert(Profile*);
+    static unsigned int insert(Zone*);
+    static unsigned int insert(LED*);
+    static unsigned int insert(LEDState*);
+    static unsigned int insert(DailyState*);
+    static unsigned int insert(Controller*);
+    static void insert(ZoneDOW);
+    static void insert(ZoneToLED);
+    static void insert(DailyStateToLEDState);
+    static void insert(Setting setting);
+    
+    // UPDATE
+    static void update(Profile*);
+    static void update(Zone*);
+    static void update(LED*);
+    static void update(LEDState*);
+    static void update(DailyState*);
+    static void update(Controller*);
 
-    // ID Accessors
-    static unsigned int next_profile_id();
-    static unsigned int next_zone_id();
-    static unsigned int next_led_id();
-    static unsigned int next_led_state_id();
-    static unsigned int next_daily_state_id();
-    static unsigned int next_controller_id();
+    // SELECT
+    static bool get_all();
+
+    // DELETE
+    static void remove(Profile*);
+    static void remove(Zone*);
+    static void remove(LED*);
+    static void remove(LEDState*);
+    static void remove(DailyState*);
+    static void remove(Controller*);
+    static void remove(Zone*, LED*);
+    static void remove(Zone*, int);
+    static void remove(DailyState*, int);
+
+    static void clear();
 };
 
 #endif //__DATA_PARSER_H_INCLUDED__

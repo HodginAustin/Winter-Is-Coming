@@ -45,7 +45,7 @@ Controller* LED::get_controller() const
 
 const unsigned int& LED::get_controller_id() const
 {
-    if (controller) { return controller->get_id(); } else { return 0; }
+    return controller->get_id();
 }
 
 
@@ -87,8 +87,8 @@ void from_json(const json& j, LED& l) {
     if (j.find("strip_idx") != j.end()){
         l.set_strip_idx(j.at("strip_idx").get<unsigned int>());
     }
-    if (j.find("controller") != j.end()){
-        unsigned int id = j.at("controller").get<unsigned int>();
-        l.set_controller(InternalState::get_controller(id));
-    }
+
+    // Not optional parameter
+    unsigned int id = j.at("controller").get<unsigned int>();
+    l.set_controller(InternalState::get_controller(id));
 }
