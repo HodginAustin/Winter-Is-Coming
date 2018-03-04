@@ -622,6 +622,9 @@ void API::put_zone_led(REQUEST, RESPONSE)
                     }
                 } else { j_out.push_back(json{"led", led_id}); }
             }
+            if (sizeof(j_in) == 0) {
+                j_out.push_back(json{"leds", "No LEDs given"});
+            }
         } else { j_out.push_back(json{"zone", zone_id}); }
     } else { j_out.push_back(json{"profile", profile_id}); }
 
