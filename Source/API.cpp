@@ -211,14 +211,18 @@ void API::nuke_from_orbit(REQUEST, RESPONSE)
     // Log request
     log_req(request);
 
-    // Wipe out internal state
-    InternalState::clear();
-
+    // In order to use the led_shutdown routine you have to disassemble the
+    // internal state in a specific order
+    InternalState::set_current_profile(NULL);
+    
     // Wipe out database
     DataParser::clear();
-    
+
     // State composer LED blackout
     StateComposer::led_shutdown();
+
+    // Wipe out internal state
+    InternalState::clear();
 
     response.send(Http::Code::Ok,
         "This is just a thing... and things can be replaced. Lives cannot. - Lt. Cmdr. Data");

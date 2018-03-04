@@ -273,27 +273,30 @@ void StateComposer::led_shutdown()
 
     for (auto currentLED : InternalState::get_leds())
     {
-        // Get controller info
-        currentLEDController = currentLED->get_controller();
-        if (currentLEDController == NULL) {
-            continue;
-        }
+        if (currentLED) {
 
-        // Controller IO (deviceID)
-        ioPort = (unsigned char)currentLEDController->get_io();
-        if (ioPort <= 0) {
-            continue;
-        }
+            // Get controller info
+            currentLEDController = currentLED->get_controller();
+            if (currentLEDController == NULL) {
+                continue;
+            }
 
-        // Get LED index
-        stripIndex = (unsigned char)currentLED->get_strip_idx();
-        if (stripIndex < 0) {
-            continue;
-        }
+            // Controller IO (deviceID)
+            ioPort = (unsigned char)currentLEDController->get_io();
+            if (ioPort <= 0) {
+                continue;
+            }
 
-        // Call serial send
-        if (serial_send(ioPort, '\0', '\0', '\0', stripIndex)) {
-            logFile << "[" << timeBuffer << "] " << "Error transmitting serial for led_shutdown!\n";
+            // Get LED index
+            stripIndex = (unsigned char)currentLED->get_strip_idx();
+            if (stripIndex < 0) {
+                continue;
+            }
+
+            // Call serial send
+            if (serial_send(ioPort, '\0', '\0', '\0', stripIndex)) {
+                logFile << "[" << timeBuffer << "] " << "Error transmitting serial for led_shutdown!\n";
+            }
         }
     }
 }
