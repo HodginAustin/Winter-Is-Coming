@@ -4,9 +4,12 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 // Constructor
-DailyState::DailyState() {}
+DailyState::DailyState() {
+    other = 0;
+}
 DailyState::DailyState(const DailyState& d)
 {
+    other = 0;
     copy(d);
 }
 
@@ -149,6 +152,9 @@ void from_json(const json& j, DailyState& ds)
     for (auto& element : j) {
         json ts_j = element;
         LEDState* ls = InternalState::get_led_state(ts_j["state"]);
-        ds.add_state(ts_j["time"], ls);
+        unsigned int time_of_day = ts_j["time"];
+        if (time_of_day >= 0 && time_of_day <= 24*60*60) {
+            ds.add_state(time_of_day, ls);
+        }
     }
 }

@@ -1286,7 +1286,21 @@ void API::post_daily_state(REQUEST, RESPONSE)
     DailyState ds = j_in;
     DailyState* dailyState = new DailyState(ds);
     InternalState::add_daily_state(dailyState);
+
+    // Insert in DB
     DataParser::insert(dailyState);
+    for (auto element : dailyState->get_time_state_map()) {
+        LEDState* ls = element.second;
+        unsigned int time_of_day = element.first;
+
+        if (ls) {
+            if (time_of_day >= 0 && time_of_day <= 24*60*60) {
+                DailyStateToLEDState DStoLS;
+                DStoLS = {dailyState->get_id(), time_of_day, ls->get_id()};
+                DataParser::insert(DStoLS);
+            }
+        }
+    }
 
     // Build response
     json j_out = json{{"id", dailyState->get_id()}};
