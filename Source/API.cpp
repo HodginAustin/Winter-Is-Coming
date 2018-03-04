@@ -1178,7 +1178,7 @@ void API::get_daily_state(REQUEST, RESPONSE)
     if (dailyState) {
         j_out = *dailyState;
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"daily_state", id}); }
     
     // Send response
     response.send(code, j_out.dump());
@@ -1215,7 +1215,7 @@ void API::get_daily_state_led_states(REQUEST, RESPONSE)
             j_out.push_back(ts_j);
         }
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"daily_state", id}); }
    
     // Send response
     response.send(code, j_out.dump());
@@ -1314,7 +1314,7 @@ void API::patch_daily_state(REQUEST, RESPONSE)
 
         j_out = *dailyState;
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"daily_state", id}); }
 
     // Send response
     response.send(code, j_out.dump());
