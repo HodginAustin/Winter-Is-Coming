@@ -266,6 +266,13 @@ void StateComposer::compose()
 
 void StateComposer::led_shutdown()
 {
+    char timeBuffer[30];
+
+    tm* timeInfo;
+    time(&sysTime);
+    timeInfo=localtime(&sysTime);
+    strftime(timeBuffer, 30, "%c", timeInfo);
+
     for (auto currentLED : InternalState::get_leds())
     {
         // Get controller info
