@@ -62,6 +62,8 @@ void InternalState::delete_profile(Profile* profile)
     // Cascade delete
     for (auto zone : profile->get_zones()) {
         profile->delete_zone(zone);
+
+        free(zone);
     }
 
     profiles.erase(

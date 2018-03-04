@@ -314,7 +314,7 @@ void API::get_current_profile(REQUEST, RESPONSE)
         j_out = *profile;
         code = Http::Code::Ok;
     } else { j_out.push_back(json{"profile", -1}); }
-    
+
     // Send response
     response.send(code, j_out.dump());
 }
@@ -334,17 +334,17 @@ void API::post_current_profile(REQUEST, RESPONSE)
     Http::Code code = Http::Code::Not_Found;
 
     if (profile) {
+        // Set database current profile setting
         Setting current_profile_setting;
         current_profile_setting = {"current_profile", profile->get_id(), ""};
-
-        // Set database current profile setting
         DataParser::insert(current_profile_setting);
 
         // Set internal state current profile
         InternalState::set_current_profile(profile);
         j_out = *profile;
+        
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"profile", id}); }
     
     // Send response
     response.send(code, j_out.dump());
@@ -460,6 +460,7 @@ void API::delete_profile_zone(REQUEST, RESPONSE)
             // Delete from profile
             profile->delete_zone(zone);
 
+            // Memory
             free(zone);
 
             code = Http::Code::Ok;
@@ -483,6 +484,11 @@ void API::delete_profile(REQUEST, RESPONSE)
     Http::Code code = Http::Code::Not_Found;
     
     if (profile) {
+        // Unassign current profile if match
+        if (InternalState::get_current_profile() == profile) {
+            InternalState::set_current_profile(NULL);
+        }
+
         // Delete from DB
         DataParser::remove(profile);
 
