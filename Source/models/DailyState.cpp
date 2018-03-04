@@ -126,11 +126,13 @@ void to_json(json& j, const DailyState& ds)
         unsigned int t = element.first;
         LEDState* s = element.second;
 
-        json ts_j = json{
-            {"time", t},
-            {"state", s->get_id()}
-        };
-        tsm_j.push_back(ts_j);
+        if (s) {
+            json ts_j = json{
+                {"time", t},
+                {"state", s->get_id()}
+            };
+            tsm_j.push_back(ts_j);
+        }
     }
 
     j = json{

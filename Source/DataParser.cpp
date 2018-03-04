@@ -155,6 +155,10 @@ bool DataParser::initialize()
     // Create DB file
     db->sync_schema();
 
+    // Set database version
+    Setting db_version = {"db_version", 1, "plantergb v1.0"};
+    DataParser::insert(db_version);
+
     // Load all existing data
     return get_all();
 }
