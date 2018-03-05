@@ -9,10 +9,78 @@ REQUEST_TIMEOUT = 10
 NUM_LEDS = 60
 
 system = {}
-system['controllers'] = [1, 2] #IO ports
-system['profiles'] = {}
-system['led_states'] = {}
-system['daily_states'] = {}
+colors = [
+	{'name':'white', 'id':0, 'json':{
+			"r": 255,
+			"g": 255,
+			"b": 255,
+			"intensity": 100,
+			"power": True
+		}
+	},
+	{'name':'red', 'id':0, 'json':{
+			"r": 255,
+			"g": 0,
+			"b": 0,
+			"intensity": 100,
+			"power": True
+		}
+	},
+	{'name':'green', 'id':0, 'json':{
+			"r": 255,
+			"g": 0,
+			"b": 0,
+			"intensity": 100,
+			"power": True
+		}
+	},
+	{'name':'blue', 'id':0, 'json':{
+			"r": 255,
+			"g": 0,
+			"b": 0,
+			"intensity": 100,
+			"power": True
+		}
+	},
+	{'name':'teal', 'id':0, 'json':{
+			"r": 0,
+			"g": 128,
+			"b": 128,
+			"intensity": 100,
+			"power": True
+		}
+	},
+	{'name':'cyan', 'id':0, 'json':{
+			"r": 0,
+			"g": 255,
+			"b": 255,
+			"intensity": 100,
+			"power": True
+		}
+	},
+	{'name':'magenta', 'id':0, 'json':{
+			"r": 255,
+			"g": 0,
+			"b": 255,
+			"intensity": 100,
+			"power": True
+		}
+	},
+	{'name':'yellow', 'id':0, 'json':{
+			"r": 255,
+			"g": 255,
+			"b": 0,
+			"intensity": 100,
+			"power": True
+		}
+	}
+]
+	
+def demo_system_init():
+	system['controllers'] = [1, 2] #IO ports
+	system['profiles'] = {}
+	system['led_states'] = {}
+	system['daily_states'] = {}
 
 def get_time():
 	now = datetime.now()
@@ -43,7 +111,40 @@ def nuke_from_orbit(url):
 	r = requests.delete(url + "/nuke_from_orbit")
 	if r.status_code == 200:
 		print("All data erased.\n")
+		demo_system_init()
 
+
+def get_system(url):
+	print("Querying system of state")
+	# LED states
+	r = requests.get(url + "/led_states", timeout=REQUEST_TIMEOUT)
+	ledStates = json.loads(r.text)
+	for ls in ledStates:
+		j = {
+			'r': ls['r'],
+			'g': ls['g'],
+			'b': ls['b'],
+			'intensity': ls['intensity'],
+			'power': ls['power']
+		}
+
+		for color in colors:
+			if color['json'] == j:
+				color['id'] = ls['id']
+				system['led_states'][color['name']] = ls['id']
+
+	# Profiles
+	r = requests.get(url + "/profiles", timeout=REQUEST_TIMEOUT)
+	profiles = json.loads(r.text)
+	for profile in profiles:
+		system['profiles'][profile['name']] = profile['id']
+
+	# Controllers
+	r = requests.get(url + "/controllers", timeout=REQUEST_TIMEOUT)
+	controllers = json.loads(r.text)
+	if (len(controllers) >= len(system['controllers'])):
+		system['controllers'] = []
+	
 
 def initialize(url, header):
 	NUM_CONTROLLERS = len(system['controllers'])
@@ -61,103 +162,16 @@ def initialize(url, header):
 			j.append({"strip_idx": i, "controller": controllerID})
 		r = requests.post(url + "/leds/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
 		print_request(r)
+	system['controllers'] = []
 
-	print("\nAdding White LED state")
-	j = {
-		"r": 255,
-		"g": 255,
-		"b": 255,
-		"intensity": 100,
-		"power": True
-	}
-	r = requests.post(url + "/led_states/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
-	print_request(r)
-	system['led_states']['white'] = json.loads(r.text)['id']
-
-	print("Adding Red LED state")
-	j = {
-		"r": 255,
-		"g": 0,
-		"b": 0,
-		"intensity": 100,
-		"power": True
-	}
-	r = requests.post(url + "/led_states/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
-	print_request(r)
-	system['led_states']['red'] = json.loads(r.text)['id']
-
-	print("Adding Green LED state")
-	j = {
-		"r": 0,
-		"g": 255,
-		"b": 0,
-		"intensity": 100,
-		"power": True
-	}
-	r = requests.post(url + "/led_states/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
-	print_request(r)
-	system['led_states']['green'] = json.loads(r.text)['id']
-
-	print("Adding Blue LED state")
-	j = {
-		"r": 0,
-		"g": 0,
-		"b": 255,
-		"intensity": 100,
-		"power": True
-	}
-	r = requests.post(url + "/led_states/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
-	print_request(r)
-	system['led_states']['blue'] = json.loads(r.text)['id']
-
-	print("Adding Teal LED state")
-	j = {
-		"r": 0,
-		"g": 128,
-		"b": 128,
-		"intensity": 100,
-		"power": True
-	}
-	r = requests.post(url + "/led_states/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
-	print_request(r)
-	system['led_states']['teal'] = json.loads(r.text)['id']
-
-	print("Adding Cyan LED state")
-	j = {
-		"r": 0,
-		"g": 255,
-		"b": 255,
-		"intensity": 100,
-		"power": True
-	}
-	r = requests.post(url + "/led_states/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
-	print_request(r)
-	system['led_states']['cyan'] = json.loads(r.text)['id']
-
-	print("Adding Magenta LED state")
-	j = {
-		"r": 255,
-		"g": 0,
-		"b": 255,
-		"intensity": 100,
-		"power": True
-	}
-	r = requests.post(url + "/led_states/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
-	print_request(r)
-	system['led_states']['magenta'] = json.loads(r.text)['id']
-	
-	print("Adding Yellow LED state")
-	j = {
-		"r": 255,
-		"g": 255,
-		"b": 0,
-		"intensity": 100,
-		"power": True
-	}
-	r = requests.post(url + "/led_states/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
-	print_request(r)
-	system['led_states']['yellow'] = json.loads(r.text)['id']
-
+	for color in colors:
+		if color['id'] == 0:
+			print("Adding {} LED state".format(color['name']))
+			r = requests.post(url + "/led_states/add", json=color['json'], headers=header, timeout=REQUEST_TIMEOUT)
+			print_request(r)
+			j = json.loads(r.text)
+			color['id'] = j['id']
+			system['led_states'][color['name']] = j['id']
 
 	print("\nInitialization Complete\n")
 
@@ -165,13 +179,13 @@ def initialize(url, header):
 def createDemo1(url, header):
 	if 'demo1' not in system['profiles']:
 		print("Adding Demo1 Profile")
-		j = {"name": "Demo 1", "description": "One zone, all white"}
+		j = {"name": "demo1", "description": "One zone, all white"}
 		r = requests.post(url + "/profiles/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
 		print_request(r)
 		demoProfile = system['profiles']['demo1'] = json.loads(r.text)['id']
 
 		print("Adding Zone to Demo1 Profile, ID:{}".format(demoProfile))
-		j = {"name": "Demo 1, two controllers, all white"}
+		j = {"name": "demo1-zone", "description": "Demo 1, two controllers, all white"}
 		r = requests.post(url + "/profiles/{}/zones/add".format(demoProfile), json=j, headers=header, timeout=REQUEST_TIMEOUT)
 		print_request(r)
 		zone1ID = json.loads(r.text)['id']
@@ -198,14 +212,17 @@ def createDemo1(url, header):
 
 def createDemo2(url, header):
 	if 'demo2' not in system['profiles']:
+		how_long = raw_input("How long should it run? (minutes): ")
+		how_long = int(how_long or 600) # 10 mins default
+
 		# Time
 		seconds_since_midnight = get_time()
 		time = seconds_since_midnight
-		later = seconds_since_midnight + 600
+		later = seconds_since_midnight + (how_long*60)
 		delay = 5
 
 		print("Adding Demo2 Profile")
-		j = {"name": "Demo 2", "description": "Zone 1 = controller 1, zone 2 = controller 2. RGB cycle on 1, CMYK cycle on 2"}
+		j = {"name": "demo2", "description": "Zone 1 = controller 1, zone 2 = controller 2. RGB cycle on 1, CMYK cycle on 2"}
 		r = requests.post(url + "/profiles/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
 		print_request(r)
 		demoProfile = system['profiles']['demo2'] = json.loads(r.text)['id']
@@ -226,16 +243,21 @@ def createDemo2(url, header):
 		r = requests.post(url + "/daily_states/add", json={}, headers=header, timeout=REQUEST_TIMEOUT)
 		print_request(r)
 		rgbDailyState = system['daily_states']['rgbcycle'] = json.loads(r.text)['id']
-
+		
+		c = 0
+		j = []
 		while time < later:
-			j = []
 			j.append({"time": time, "state": system['led_states']['red']})
 			time += delay
 			j.append({"time": time, "state": system['led_states']['green']})
 			time += delay
 			j.append({"time": time, "state": system['led_states']['blue']})
 			time += delay
-			r = requests.put(url + "/daily_states/{}/led_states/add".format(rgbDailyState), json=j, headers=header)
+			c+=3
+			if c > 50:
+				c = 0
+				r = requests.put(url + "/daily_states/{}/led_states/add".format(rgbDailyState), json=j, headers=header)
+				j = []
 
 		print("Adding cmykcycle Daily State ({} min cycle)".format((later-seconds_since_midnight)/60))
 		r = requests.post(url + "/daily_states/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
@@ -243,6 +265,8 @@ def createDemo2(url, header):
 		cmyDailyState = system['daily_states']['cmycycle'] = json.loads(r.text)['id']
 
 		time = seconds_since_midnight
+		c = 0
+		j = []
 		while time < later:
 			j = []
 			j.append({"time": time, "state": system['led_states']['cyan']})
@@ -251,7 +275,11 @@ def createDemo2(url, header):
 			time += delay
 			j.append({"time": time, "state": system['led_states']['yellow']})
 			time += delay
-			r = requests.put(url + "/daily_states/{}/led_states/add".format(cmyDailyState), json=j, headers=header)
+			c+=3
+			if c > 50:
+				c = 0
+				r = requests.put(url + "/daily_states/{}/led_states/add".format(cmyDailyState), json=j, headers=header)
+				j = []
 
 		print("Assign Daily State {} to Zone {}".format(rgbDailyState, zone1ID))
 		r = requests.put(url + "/profiles/{}/zones/{}/day/{}/add/{}".format(demoProfile, zone1ID, get_dow(), rgbDailyState))
@@ -279,16 +307,11 @@ def createDemo2(url, header):
 def createDemo3(url, header):
 	if 'demo3' not in system['profiles']:
 		print("Adding Demo3 Profile")
-		j = {"name": "Demo 3", "description": "6 zones, split between two controllers"}
+		j = {"name": "demo3", "description": "6 zones, split between two controllers"}
 		r = requests.post(url + "/profiles/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
 		print_request(r)
 		demoProfile = system['profiles']['demo3'] = json.loads(r.text)['id']
 
-		colors = [
-			system['led_states']['red'], system['led_states']['green'], system['led_states']['blue'],
-			system['led_states']['cyan'], system['led_states']['magenta'], system['led_states']['yellow'],
-			system['led_states']['white']
-		]
 		leds = [
 			range(1,12+1) + [NUM_LEDS + n for n in range(1,12+1)], # First 12 on both strips
 			range(12+1,24+1) + [NUM_LEDS + n for n in range(24+1,36+1)], # Second 12 on strip 1, Third 12 on strip 2
@@ -304,7 +327,7 @@ def createDemo3(url, header):
 			zID = json.loads(r.text)['id']
 
 			print("Adding Daily State {} for Zone {}".format(z+1, z+1))
-			j = [{"time": 0, "state": colors[z-1]}]
+			j = [{"time": 0, "state": colors[z-1]['id']}]
 			r = requests.post(url + "/daily_states/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
 			print_request(r)
 			dsID = system['daily_states']["ds{}".format(z+1)] = json.loads(r.text)['id']
@@ -332,6 +355,12 @@ def main():
 	# Headers
 	header = {'Content-type': 'application/json'}
 
+	# Build demo system
+	demo_system_init()
+
+	# Load system from requests
+	get_system(url)
+
 	while True:
 		print("|------------------ Welcome to PlanteRGB Lighting System DEMOS ------------------|")
 		print("|------------------ Sending data to: {}\n".format(url))
@@ -344,7 +373,6 @@ def main():
 			print("Goodbye!\n")
 			exit()
 		elif option == 1:
-			print("Setting up default Zones, Profiles, and Schedules")
 			initialize(url, header)
 		elif  option == 2:
 			print("This will erase everything in the system. All settings and all data will be gone.")
