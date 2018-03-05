@@ -119,6 +119,8 @@ def get_system(url):
 	# LED states
 	r = requests.get(url + "/led_states", timeout=REQUEST_TIMEOUT)
 	ledStates = json.loads(r.text)
+	for color in colors:
+		color['id'] = 0
 	for ls in ledStates:
 		j = {
 			'r': ls['r'],
@@ -129,9 +131,14 @@ def get_system(url):
 		}
 
 		for color in colors:
-			if color['json'] == j:
+			if color['json']['r'] == j['r'] and \
+					color['json']['g'] == j['g'] and \
+					color['json']['b'] == j['b'] and \
+					color['json']['intensity'] == j['intensity'] and \
+					color['json']['power'] == j['power']:
 				color['id'] = ls['id']
 				system['led_states'][color['name']] = ls['id']
+	print (system)
 
 	# Profiles
 	r = requests.get(url + "/profiles", timeout=REQUEST_TIMEOUT)
@@ -147,10 +154,14 @@ def get_system(url):
 	
 
 def initialize(url, header):
+	# Poll for system state
+	get_system(url)
+
+
 	NUM_CONTROLLERS = len(system['controllers'])
 	
-	print("\nAdding {} Controllers".format(NUM_CONTROLLERS))
 	for ioPort in system['controllers']:
+		print("\nAdding Controller")
 		j = {"io": ioPort}
 		r = requests.post(url +"/controllers/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
 		print_request(r)
@@ -172,8 +183,6 @@ def initialize(url, header):
 			j = json.loads(r.text)
 			color['id'] = j['id']
 			system['led_states'][color['name']] = j['id']
-
-	print("\nInitialization Complete\n")
 
 
 def createDemo1(url, header):
@@ -213,7 +222,7 @@ def createDemo1(url, header):
 def createDemo2(url, header):
 	if 'demo2' not in system['profiles']:
 		how_long = raw_input("How long should it run? (minutes): ")
-		how_long = int(how_long or 600) # 10 mins default
+		how_long = int(how_long or 10) # 10 mins default
 
 		# Time
 		seconds_since_midnight = get_time()
@@ -285,7 +294,7 @@ def createDemo2(url, header):
 		r = requests.put(url + "/profiles/{}/zones/{}/day/{}/add/{}".format(demoProfile, zone1ID, get_dow(), rgbDailyState))
 		print_request(r)
 
-		print("Assign Daily State {} to Zone {}".format(cmyDailyState, zone1ID))
+		print("Assign Daily State {} to Zone {}".format(cmyDailyState, zone2ID))
 		r = requests.put(url + "/profiles/{}/zones/{}/day/{}/add/{}".format(demoProfile, zone2ID, get_dow(), cmyDailyState))
 		print_request(r)
 
@@ -319,6 +328,11 @@ def createDemo3(url, header):
 			range(36+1,60+1) + [NUM_LEDS + n for n in range(36+1,48+1)], # remaining 24 on strip 1, Fourth 12 on strip 2
 			[NUM_LEDS + n for n in range(48+1,60+1)] # remaining 12 on strip 2
 		]
+		color_order = [
+			system['led_states']['red'], system['led_states']['green'], system['led_states']['blue'],
+			system['led_states']['cyan'], system['led_states']['magenta'], system['led_states']['yellow'],
+			system['led_states']['white']
+		]
 		for z in range(1, 5+1):
 			print("Adding Zone to Demo2 Profile, ID:{}".format(demoProfile))
 			j = {"name": "Demo 3, Zone {}".format(z+1)}
@@ -327,7 +341,7 @@ def createDemo3(url, header):
 			zID = json.loads(r.text)['id']
 
 			print("Adding Daily State {} for Zone {}".format(z+1, z+1))
-			j = [{"time": 0, "state": colors[z-1]['id']}]
+			j = [{"time": 0, "state": color_order[z-1]}]
 			r = requests.post(url + "/daily_states/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
 			print_request(r)
 			dsID = system['daily_states']["ds{}".format(z+1)] = json.loads(r.text)['id']
@@ -358,35 +372,35 @@ def main():
 	# Build demo system
 	demo_system_init()
 
-	# Load system from requests
-	get_system(url)
+	# Load system
+	initialize(url, header)
+	print("Initialization Complete\n")
 
 	while True:
 		print("|------------------ Welcome to PlanteRGB Lighting System DEMOS ------------------|")
 		print("|------------------ Sending data to: {}\n".format(url))
 
-		option = raw_input("Hardware Initialize (1) | Erase All (2) | Shutdown (3)" +
-						   "\n| Demo 1 (4) | Demo 2 (5) | Demo 3 (6): ")
+		option = raw_input("Reset (1) | Shutdown (2)" +
+						   "\n| Demo 1 (3) | Demo 2 (4) | Demo 3 (5): ")
 		option = int(option or 0)
 
 		if option == 0:
 			print("Goodbye!\n")
 			exit()
-		elif option == 1:
-			initialize(url, header)
-		elif  option == 2:
+		elif  option == 1:
 			print("This will erase everything in the system. All settings and all data will be gone.")
 			confirm = str(raw_input("Do you wish to proceed? [y/N]:"))
 			if (confirm.lower() == 'y'):
 				nuke_from_orbit(url)
-		elif option == 3:
+				initialize(url, header)
+		elif option == 2:
 			shutdown(url, header)
 			exit()
-		elif option == 4:
+		elif option == 3:
 			createDemo1(url, header)
-		elif option == 5:
+		elif option == 4:
 			createDemo2(url, header)
-		elif option == 6:
+		elif option == 5:
 			createDemo3(url, header)
 
 if __name__ == "__main__":
