@@ -5,23 +5,19 @@
 * Notes: Http get request using async XMLHttpRequest
 * References: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Synchronous_and_Asynchronous_Requests
 ***********************/
-function httpGetAsync(url){
+function httpGetAsync(url, complete){
+  var getResponse;
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
-  xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
-  xhr.onload = function(e){
+  xhr.onreadystatechange = function(){
+    console.log("xhr.readystate:" + xhr.readyState);
+    console.log("xhr.status: " + xhr.status);
     if(xhr.readyState == 4 && xhr.status == 200){
-      console.log(xhr.responseText); // test
-      return xhr.responseText;
-    }
-    else{
-      console.log("ERROR LOADING RESPONSE: " + xhr.statusText);
+      console.log("Before Complete is called");
+      complete(xhr.responseText);
     }
   };
-  xhr.onerror = function(e){
-    console.error(xhr.statusText)
-  };
-  xhr.send(null);
+  xhr.open('GET', url, true); // true for async, false for sync (sync is depricated in some browsers) defualt: true
+  xhr.send();
 }
 
 
@@ -32,21 +28,23 @@ function httpGetAsync(url){
 * Notes: Http post request using async XMLHttpRequest
 ***************************************************/
 function httpPostAsync(url, data){
+  console.log("data: " + data);
+  temp = data
+  var getResponse;
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', url, true);
-  xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
-  xhr.onreadystatechange = function(e){
-    if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200){
-      //request finished
-    }
-    else{
-      console.log("ERROR LOADING RESPONSE: " + xhr.statusText);
+  xhr.onreadystatechange = function(){
+    console.log("xhr.readystate:" + xhr.readyState);
+    console.log("xhr.status: " + xhr.status);
+    if(xhr.readyState == 4 && xhr.status == 200){
     }
   };
-  xhr.onerror = function(e){
-    console.error(xhr.statusText)
-  };
+  xhr.open('POST', url, true); // true for async, false for sync (sync is depricated in some browsers) defualt: true
   xhr.send(data);
+}
+
+
+function test(){
+  console.log("temp: " + temp);
 }
 
 /*************************************************
@@ -56,20 +54,16 @@ function httpPostAsync(url, data){
 * Notes: Http post request using async XMLHttpRequest
 ***************************************************/
 function httpPutAsync(url, data){
+  var getResponse;
   var xhr = new XMLHttpRequest();
-  xhr.open('PUT', url, true);
-  xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
-  xhr.onload = function(e){
+  xhr.onreadystatechange = function(){
+    console.log("xhr.readystate:" + xhr.readyState);
+    console.log("xhr.status: " + xhr.status);
     if(xhr.readyState == 4 && xhr.status == 200){
-      console.log(xhr.response); // test
-      return xhr.responseText;
-    }
-    else{
-      console.log("ERROR LOADING RESPONSE: " + xhr.statusText);
+      console.log("Before Complete is called");
+      complete(xhr.responseText);
     }
   };
-  xhr.onerror = function(e){
-    console.error(xhr.statusText)
-  };
+  xhr.open('PUT', url, true); // true for async, false for sync (sync is depricated in some browsers) defualt: true
   xhr.send(data);
 }

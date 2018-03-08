@@ -1,4 +1,13 @@
-#titleCard {
+.navbar-custom{
+  background-color: #81AA61;
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-text {
+    color: #FFFFFF;
+  }
+
+/* #titleCard {
   overflow: auto;
   background-color: rgb(129,170,97);
   color:white;
@@ -45,4 +54,4 @@ ul#navBarElements{
 }
 ul#navbar li{
   display: inline;
-}
+} */
