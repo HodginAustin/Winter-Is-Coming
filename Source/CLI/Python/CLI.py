@@ -162,16 +162,17 @@ def initialize(url, header):
     for ioPort in system['controllers']:
         print("\nAdding Controller")
         j = {"io": ioPort}
-    r = requests.post(url +"/controllers/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
-    print_request(r)
-    controllerID = json.loads(r.text)['id']
+        r = requests.post(url +"/controllers/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
+        print_request(r)
+        controllerID = json.loads(r.text)['id']
 
-    print("    Creating {} LEDs for controller {}".format(NUM_LEDS, controllerID))
-    j = []
-    for i in range(NUM_LEDS):
-        j.append({"strip_idx": i, "controller": controllerID})
-    r = requests.post(url + "/leds/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
-    print_request(r)
+        print("    Creating {} LEDs for controller {}".format(NUM_LEDS, controllerID))
+        j = []
+        for i in range(NUM_LEDS):
+            j.append({"strip_idx": i, "controller": controllerID})
+        r = requests.post(url + "/leds/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
+        print_request(r)
+
     system['controllers'] = []
 
     for color in colors:
