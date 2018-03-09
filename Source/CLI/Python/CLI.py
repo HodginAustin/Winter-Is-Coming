@@ -84,8 +84,9 @@ def printDailyState(url, header):
     for s in sl:
         print("-------------------")
         print("(%s)" %s["id"])
-        print("State ID: %s" %s['timeStateMap']["state"])
-        print("Seconds from Midnight: %s" %s['timeStateMap'])
+        for l in s["timeStateMap"]:
+            print("State ID: %s" %l["state"])
+            print("Seconds from Midnight: %s" %l["time"])
         print("-------------------")
 
 def initialize(url, header):
@@ -344,22 +345,36 @@ def configure_LED(url, headerr):
 def configure_daily_state(url, header):
     option = "0"
 
+    r = requests.get(url + "/led_states")
+
+    numLEDStates = len(r.json())
+
     while option != "5":
         print("|---------------Daily State Configuration----------------|")
         option1 = str(raw_input("|Add Daily State (1) | Edit Daily State(2) | Delete Daily State(3)| Apply Daily State To Profile(4) | Return to Main Menu(5) |"))
 
         if option1 == "1":
             printDailyState(url, header)
-            return
+
+            time = str(raw_input("Enter in time to start (HH:MM) (0-24):(0-59): "))
+
+
+
+
+            printLEDState(url,header)
+            state = str(raw_input("LED State(0-%s):" %numLEDStates ))
+
+
+
         if option1 == "2":
+            printDailyState(url, header)
             return
-        if option2 == "3":
+        if option1 == "3":
+            printDailyState(url, header)
             return
-        if option2 == "4":
+        if option1 == "4":
+            printDailyState(url, header)
             return
-
-
-
 
 #TO DO Fix DELTE
 def configure_led_state(url, header):
@@ -633,11 +648,12 @@ def main():
         subprocess.call("clear", shell = True);
         print("|------------------Welcome to PlanteRGB Lighting System------------------|")
         print("|---------------------------Configuration Menu---------------------------|")
-        option = str(raw_input("|Zones (1) | Profiles (2 ) | Configure Hardware(3) | Configure States (4)|\n|Initialize (5) | Demos(6) | Erase All(7) | Shutdown (8) | Exit Script(9)|\n|Selection: "))
-        if option == "1":
-            configure_Zones(url, header)
-        elif  option == "2":
+        option = str(raw_input("| Profiles (1) | Zones (2) | Configure Hardware(3) | Configure States (4)|\n|Initialize (5) | Demos(6) | Erase All(7) | Shutdown (8) | Exit Script(9)|\n|Selection: "))
+
+        if  option == "1":
             configure_profiles(url, header)
+        elif option == "2":
+            configure_Zones(url, header)
         elif  option == "3":
             configureHardware(url,header)
         elif option == "4":
