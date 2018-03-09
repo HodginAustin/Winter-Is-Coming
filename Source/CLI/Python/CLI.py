@@ -36,11 +36,12 @@ def printProfiles(url, header, profilenum):
     p = r.json()
     profileCount = 1
     print("-----------------------------------------------------------")
-    print("(%s:)" %profilenum)
+    print("(%s:)" %p["id"])
     print("Name: %s" %p["name"])
     print("Description: %s" %p["description"])
     print("Zones: %s" %p["zones"])
     print("-----------------------------------------------------------")
+
 
 def getProfiles(url, header):
     r = requests.get(url + "/profiles", "")
@@ -51,15 +52,41 @@ def getProfiles(url, header):
 def printController(url, header, controlerNum):
     r = requests.get(url + "/controllers/%i" %controlerNum)
     s = r.json()
-    if(str(r.status_code) == "200"):
+    if str(r.status_code) == "200":
         print("--------------------------")
-        print("(%i)" %controlerNum)
+        print("(%i)" %s["id"])
         print("Details: %s" %s["details"])
         print("ID: %s" %s["io"] )
         print("--------------------------")
     else:
         print("unable to find controllers")
 
+def printLEDState(url, headers):
+    r = requests.get(url + "/led_states")
+    if str(r.status_code) == "200":
+        sl = r.json()
+        for s in sl:
+            print("------------------------")
+            print("(%s)" %s["id"])
+            print("Red: %s" %s["r"])
+            print("Green: %s" %s["g"])
+            print("Blue: %s" %s["b"])
+            print("intensity: %s" %s["intensity"])
+            print("Power: %s" %s["power"])
+            print("------------------------")
+
+    else:
+        print("Unable to obtain LED states")
+def printDailyState(url, header):
+    r = requests.get(url + "/daily_states")
+    sl = r.json()
+
+    for s in sl:
+        print("-------------------")
+        print("(%s)" %s["id"])
+        print("State ID: %s" %s['timeStateMap']["state"])
+        print("Seconds from Midnight: %s" %s['timeStateMap'])
+        print("-------------------")
 
 def initialize(url, header):
     subprocess.call("clear", shell = True);
@@ -82,12 +109,13 @@ def initialize(url, header):
     r = requests.post(url +"/controllers/add", json=j, headers=header)
     print_request(r)
 
+    j = []
     print("\nCreating LEDs")
     for i in range(NUM_LEDS):
         print("Adding LED #%i" % i)
-        j = {"strip_idx": i, "controller": 1}
-        r = requests.post(url + "/leds/add", json=j, headers=header)
-        print_request(r)
+        j.append({"strip_idx": i, "controller": 1})
+    r = requests.post(url + "/leds/add", json=j, headers=header)
+    print_request(r)
 
     print("\nAdding LEDS to Zone1")
     j = range(1,NUM_LEDS+1)
@@ -131,7 +159,7 @@ def shutdown(url, header):
     r = requests.get(url + "/shutdown")
     if str(r.status_code) == "200":
         print("Shut down Successful!")
-
+#TO DO:
 def configure_Zones(url, header):
 
     option = 0
@@ -179,11 +207,6 @@ def configure_Zones(url, header):
 
             elif option1 == 4:
                 return
-    return
-
-def configure_Schedule(url, header):
-    subprocess.call("clear", shell = True);
-
 def configure_profiles(url,header):
 
     subprocess.call("clear", shell = True);
@@ -258,72 +281,135 @@ def configure_controler(url, header):
     r = requests.get(url + "/controllers")
     NumControllers = len(r.json())
     temp = 1
-
-    if len(PL) > 1:
-        while option != "4":
+    while option != "5":
+        subprocess.call("clear", shell = True)
+        optionCount = 1
+        temp = 1
+        print("|----------------------------Controller Menu----------------------------|")
+        option =  str(raw_input("| Add Controller (1) | Add LEDs To Controller (2)| Edit Controler (3) | Delete Controller (4) |\n| Exit Configure Controler (5): "))
+        #add controller
+        if option == "1":
             subprocess.call("clear", shell = True)
-            optionCount = 1
-            temp = 1
-            print("|----------------------------Controller Menu----------------------------|")
-            option =  str(raw_input("| Add Controller (1) | Edit Controler (2) | Delete Controller (3) |\n| Exit Configure Controler (4): "))
+            while temp <= NumControllers:
+                printController(url, header, temp)
+                temp += 1
+            details = str(raw_input("Enter Details of new controllers: "))
+            io = str(raw_input("Enter ID of new controler: "))
+            j = {"details": details, "io": io}
+            r = requests.post(url + "/controllers/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
+            print(r)
+        #add LEDs to controller
+        if option == "2":
+            subprocess.call("clear", shell = True)
+            while temp <= NumControllers:
+                printController(url, header, temp)
+                temp += 1
+            SC = str(raw_input("Which controller would you like to add LEDs to?"))
+            numled = str(raw_input("How many of LEDS woudld lke to add? "))
+            j=[]
 
-            #add controller
-            if option == "1":
-                subprocess.call("clear", shell = True)
-                while temp <= NumControllers:
-                    printController(url, header, temp)
-                    temp += 1
-                details = str(raw_input("Enter Details of new controllers: "))
-                io = str(raw_input("Enter ID of new controler: "))
-                j = {"details": details, "io": io}
-                r = requests.post(url + "/controllers/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
-                print(r)
+            for i in range(int(numled)):
+                print("Adding LED #%i" % i)
+                j.append({"strip_idx": i, "controller": SC})
+            r = requests.post(url + "/leds/add", json=j, headers=header)
+            print_request(r)
             #edit controller
-            elif option == "2":
-                subprocess.call("clear", shell = True)
-                while temp <= NumControllers:
-                    printController(url, headers, temp)
-                    temp += 1
-                editOption = str(raw_input("Select which controller you would like to edit(1-%s)" % controllerCount))
-                details = str(raw_input("Enter in details: "))
-                io = str(raw_input("Enter ID of Controller: "))
-                j = {"details":details, "io": io}
-                r = requests.patch(url + "/controllers/%i/edit" %editOption, json=j, headers=header, timeout=REQUEST_TIMEOUT)
-                if(str(r.status_code) == "200"):
-                    print("Controller Successfully Edited!")
-            #delete controller
-            elif option == "3":
-                subprocess.call("clear", shell = True)
-                while temp <= NumControllers:
-                    printController(url, headers, temp)
-                    temp += 1
-                deleteoption = str(raw_input("Which controller would you like to delete? (1-%i)" % optionCount))
-                printController(url,header, optionCount)
-                confirm = str(raw_input("Do you wish to proceed? [y/N]:"))
-                if (confirm.lower() == 'y'):
-                    r = requests.Delete(url + "/controllers/%i/delete" % optionCount)
-    else:
-        print("Please run the initialize option to set default profiles")
-        return
-
+        elif option == "3":
+            subprocess.call("clear", shell = True)
+            while temp <= NumControllers:
+                printController(url, headers, temp)
+                temp += 1
+            editOption = str(raw_input("Select which controller you would like to edit(1-%s)" % controllerCount))
+            details = str(raw_input("Enter in details: "))
+            io = str(raw_input("Enter ID of Controller: "))
+            j = {"details":details, "io": io}
+            r = requests.patch(url + "/controllers/%i/edit" %editOption, json=j, headers=header, timeout=REQUEST_TIMEOUT)
+            if(str(r.status_code) == "200"):
+                print("Controller Successfully Edited!")
+        #delete controller
+        elif option == "4":
+            subprocess.call("clear", shell = True)
+            while temp <= NumControllers:
+                printController(url, headers, temp)
+                temp += 1
+            deleteoption = str(raw_input("Which controller would you like to delete? (1-%i)" % optionCount))
+            printController(url,header, optionCount)
+            confirm = str(raw_input("Do you wish to proceed? [y/N]:"))
+            if (confirm.lower() == 'y'):
+                r = requests.Delete(url + "/controllers/%i/delete" % optionCount)
+#TO DO:
 def configure_LED(url, headerr):
     return
-
+#TO DO:
 def configure_daily_state(url, header):
-    return
+    option = "0"
 
+    while option != "5":
+        print("|---------------Daily State Configuration----------------|")
+        option1 = str(raw_input("|Add Daily State (1) | Edit Daily State(2) | Delete Daily State(3)| Apply Daily State To Profile(4) | Return to Main Menu(5) |"))
+
+        if option1 == "1":
+            printDailyState(url, header)
+            return
+        if option1 == "2":
+            return
+        if option2 == "3":
+            return
+        if option2 == "4":
+            return
+
+
+
+
+#TO DO Fix DELTE
 def configure_led_state(url, header):
-    r = requests.get(url + "/controllers")
-    numControl = len(r.json())
-    temp = 0
-    print("|-------------LED Configuration-------------")
-    while temp <= numControl:
-        printController(url, header, temp)
-        print("Select Controller:")
+    temp = 1
+    option = "0"
+    while option != "4":
+        print("|-------------LED State Configuration-------------")
+        option = str(raw_input("| Add LED State(1) | Edit LED State(2)  | Delete LED State(3)| Exit LED State Configuration (4) "))
+        if option == "1":
+            red = str(raw_input("Enter Red Value (0-255): "))
+            green = str(raw_input("Enter Green Value ( 0-255): "))
+            blue = str(raw_input("Enter Blue Value (0-255): "))
+            intensity = str(raw_input("Enter in Brightness (0-100): "))
+            power = str(raw_input("Enter Power(true/false): "))
+            j = {
+                "r": int(red),
+                "g": int(green),
+                "b": int(blue),
+                "intensity": int(intensity),
+                "power": bool(power)
+                }
+            r = requests.post(url + "/led_states/add", json=j, headers=header)
+            print_request(r)
 
+        if option == "2":
+            printLEDState(url,header)
+            editOption = str(raw_input("Which LED State Would you like to edit? "))
 
-
-    return
+            red = str(raw_input("Enter New Red Value (0-255): "))
+            green = str(raw_input("Enter New Green Value ( 0-255): "))
+            blue = str(raw_input("Enter New Blue Value (0-255): "))
+            intensity = str(raw_input("Enter New in Brightness (0-100):"))
+            power = str(raw_input("Enter New Power(True/False:" ))
+            j = {
+                "r": int(red),
+                "g": int(green),
+                "b": int(blue),
+                "intensity": int(intensity),
+                "power": bool(power)
+            }
+            r = requests.patch(url + "/led_states/%s/edit" %editOption, json=j, headers=header, timeout=REQUEST_TIMEOUT)
+            print_request(r)
+        if option == "3":
+            printLEDState(url, header)
+            deleteOption = str(raw_input("Which LED state would you like to delete? "))
+            confirm = str(raw_input("Do you wish to proceed? [y/N]:"))
+            if (confirm.lower() == 'y'):
+                r = requests.delete(url + "/led_states/%s/delete" %deleteOption)
+                if str(r.status_code) == "200":
+                    print("Deleted LED State %i" %deleteOption)
 
 def configure_demos(url, header):
     subprocess.call("clear", shell = True);
@@ -521,10 +607,10 @@ def createDemo3(url, header):
     r = requests.put(url + "/profiles/2/zones/3/day/%i/add/3" % get_dow())
     print_request(r)
 
-def configureStates(url, headers):
-    return
-    stateoption = "0"
+def configureStates(url, header):
+    stateoption = 0
     while stateoption != "3":
+        print("-------------State Configuration Menu -------------")
         stateoption = str(raw_input("Configure Daily State (1) | Configure LED State (2) | Return to main menu (3)"))
         if stateoption == "1":
             configure_daily_state(url, header)
