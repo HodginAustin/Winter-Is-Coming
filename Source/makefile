@@ -9,14 +9,11 @@ default: directories
 	make settings
 	make internal_state_objects
 	make internal_state
-	make install_sqlite
-	make copy_api
 	make api
 	make data_parser
 	make state_composer
 	make control_service_main
 	make control_service
-	make tests
 
 
 # Output directories
