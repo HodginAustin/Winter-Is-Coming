@@ -13,6 +13,7 @@
 #define DATA_PIN 2    /* adjust to the used pin (Arduino nano pin 2 = D2) */
 
 CRGB leds[NUM_LEDS];  /*color object */
+unsigned char led_idx;
 
 void setup() {
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS); // initialize LEDs

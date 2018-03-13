@@ -8,6 +8,7 @@
 // LEDs at full white, off of the Arduino 5V rail
 // 5V rail can drive a maximum of 500mA
 // 60 * .2 * .033 = .396A (396mA)
+// Also makes the light bearable to look at...
 
 // We All Didn't Know Any Better Stupidity Inhibitor
 // TODO: Update once better power system is found
@@ -15,16 +16,12 @@
 
 // The amount of microseconds to wait for the 
 // Arduino Nano to send it's ACK and catch up
-// last updated to: 12000
-#define WAIT_ACK 12000
+// last updated to: 20000
+#define WAIT 20000
 
 
 // Required for static class members
 bool StateComposer::composeEnable;
-
-// UART
-//int StateComposer::uartFilestream;
-//struct termios StateComposer::options;
 
 // i2c
 int StateComposer::i2cFileStream;
@@ -78,35 +75,17 @@ bool StateComposer::initialize(bool log)
 
     i2cFileStream = open(I2C_BUS, O_RDWR | O_NOCTTY | O_NDELAY);  // Open in non terminal, non blocking, read-write mode
 
-	if (i2cFileStream == -1) { // ERROR - CAN'T OPEN SERIAL PORT
+	if (i2cFileStream == -1) {  // ERROR - CAN'T OPEN SERIAL PORT
 		std::cerr << "ERROR: Unable to open i2c bus on " << I2C_BUS << "! \nEnsure it is not in use by another application.\n" << std::endl;
         return false;
 	}
-
-    // CONFIGURE THE UART
-	//	Baud rate:- B1200, B2400, B4800, B9600, B19200, B38400, B57600, B115200, B230400, B460800, B500000, B576000, B921600, B1000000, B1152000, B1500000, B2000000, B2500000, B3000000, B3500000, B4000000
-	//	CSIZE:- CS5, CS6, CS7, CS8
-	//	CLOCAL - Ignore modem status lines
-	//	CREAD - Enable receiver
-	//	IGNPAR = Ignore characters with parity errors
-	//	ICRNL - Map CR to NL on input (Use for ASCII comms where you want to auto correct end of line characters - don't use for bianry comms!)
-	//	PARENB - Parity enable
-	//	PARODD - Odd parity (else even)
-
-    // tcgetattr(uartFilestream, &options);
-	// options.c_cflag = B57600 | CS8 | CLOCAL | CREAD;		// Set baud rate, bits in-transmission, etc
-	// options.c_iflag = IGNPAR;                               // Ignore parity
-	// options.c_oflag = 0;
-	// options.c_lflag = 0;
-	// tcflush(uartFilestream, TCIFLUSH);
-	// tcsetattr(uartFilestream, TCSANOW, &options);
 
     return true;
 }
 
 
 
-// Send and receive serial over uart w/ correct timings
+// Send and receive serial over i2c w/ correct timings
 bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
 {
 	unsigned char s_buffer[4];
@@ -120,11 +99,11 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
     if (logEnable) {
         strftime(timeBuffer, 30, "%c", timeInfo);
         logFile << "[" << timeBuffer << "] "
-                        << "Attempting i2c send:\n"
-                        << "  Idx:" << (int)idx << "\n"
-                        << "  R:" << (int)r << "\n"
-                        << "  G:" << (int)g << "\n"
-                        << "  B:" << (int)b << "\n";
+                << "Attempting i2c send:\n"
+                << "  Idx:" << (int)idx << "\n"
+                << "  R:" << (int)r << "\n"
+                << "  G:" << (int)g << "\n"
+                << "  B:" << (int)b << "\n";
     }
 
 	p_s_buffer = &s_buffer[0]; // Reset pointer to head of array
@@ -135,22 +114,19 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 	
 	if (i2cFileStream != -1) {
 
-        // TODO: set third arg back to io rather than hard coded for testing
-        if (ioctl(i2cFileStream, I2C_SLAVE, 7)) {   // Set io control for the i2c file stream, as sending to i2c slave, at address
-            std::cerr << "ERROR: Can't access i2c bus address: " << std::hex << io << std::endl;
-            logFile << "ERROR: Can't access i2c bus address: " << std::hex << io << std::endl;
+        if (ioctl(i2cFileStream, I2C_SLAVE, io)) {   // Set io control for the i2c file stream, as sending to i2c slave, at address
+            logFile << "ERROR: Can't access i2c bus address: " << io << std::endl;
             return true;    // Error state
         }
 
 
 		int count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Filestream, bytes to write, number of bytes to write
 		if (count < 0) {
-			std::cerr << "ERROR: i2c transmit failed! (" << std::hex << io << ")" << std::endl;
-            logFile << "ERROR: i2c transmit failed! (" << std::hex << io << ")" << std::endl;
+            logFile << "ERROR: i2c transmit failed! (" << io << ")" << std::endl;
             return true;    // Error state
 		}
         
-        usleep(WAIT_ACK); // Let Arduino catch up
+        usleep(WAIT);       // Let Arduino catch up
 	}
 
 	return false;
