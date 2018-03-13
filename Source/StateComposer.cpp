@@ -1,8 +1,8 @@
 #include "./includes/StateComposer.hpp"
 
-// The serial RxTx device in the linux system
-// TODO: Verify the correct port is in use for the Pi model
-#define SERIAL_DEV "/dev/serial0"
+// The I^2C serial bus device in the linux system
+#define I2C_BUS "/dev/i2c-1"
+
 
 // Required LED intensity scalar to use all 60 
 // LEDs at full white, off of the Arduino 5V rail
@@ -23,8 +23,11 @@
 bool StateComposer::composeEnable;
 
 // UART
-int StateComposer::uartFilestream;
-struct termios StateComposer::options;
+//int StateComposer::uartFilestream;
+//struct termios StateComposer::options;
+
+// i2c
+int StateComposer::i2cFileStream;
 
 // Composer variables
 bool StateComposer::logEnable;
@@ -73,10 +76,10 @@ bool StateComposer::initialize(bool log)
         logFile << "[" << timeBuffer << "] StateComposer transcript started\n";
     }
 
-    uartFilestream = open(SERIAL_DEV, O_RDWR | O_NOCTTY | O_NDELAY);		//Open in non blocking read/write mode
+    i2cFileStream = open(I2C_BUS, O_RDWR | O_NOCTTY | O_NDELAY);  // Open in non terminal, non blocking, read-write mode
 
-	if (uartFilestream == -1) { // ERROR - CAN'T OPEN SERIAL PORT
-		std::cerr << "ERROR: Unable to open UART on " << SERIAL_DEV << "! \nEnsure it is not in use by another application.\n" << std::endl;
+	if (i2cFileStream == -1) { // ERROR - CAN'T OPEN SERIAL PORT
+		std::cerr << "ERROR: Unable to open i2c bus on " << I2C_BUS << "! \nEnsure it is not in use by another application.\n" << std::endl;
         return false;
 	}
 
@@ -90,13 +93,13 @@ bool StateComposer::initialize(bool log)
 	//	PARENB - Parity enable
 	//	PARODD - Odd parity (else even)
 
-    tcgetattr(uartFilestream, &options);
-	options.c_cflag = B57600 | CS8 | CLOCAL | CREAD;		// Set baud rate, bits in-transmission, etc
-	options.c_iflag = IGNPAR;                               // Ignore parity
-	options.c_oflag = 0;
-	options.c_lflag = 0;
-	tcflush(uartFilestream, TCIFLUSH);
-	tcsetattr(uartFilestream, TCSANOW, &options);
+    // tcgetattr(uartFilestream, &options);
+	// options.c_cflag = B57600 | CS8 | CLOCAL | CREAD;		// Set baud rate, bits in-transmission, etc
+	// options.c_iflag = IGNPAR;                               // Ignore parity
+	// options.c_oflag = 0;
+	// options.c_lflag = 0;
+	// tcflush(uartFilestream, TCIFLUSH);
+	// tcsetattr(uartFilestream, TCSANOW, &options);
 
     return true;
 }
@@ -106,9 +109,8 @@ bool StateComposer::initialize(bool log)
 // Send and receive serial over uart w/ correct timings
 bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
 {
-    // Tx Bytes - Send LED data to proper controller
-	unsigned char tx_buffer[5];
-	unsigned char *p_tx_buffer;
+	unsigned char s_buffer[4];
+	unsigned char* p_s_buffer;
     char timeBuffer[30];
 
     tm* timeInfo;
@@ -118,49 +120,38 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
     if (logEnable) {
         strftime(timeBuffer, 30, "%c", timeInfo);
         logFile << "[" << timeBuffer << "] "
-                        << "Attempting serial send:\n"
-                        << "  IO Port:" << (int)io << "\n"
+                        << "Attempting i2c send:\n"
                         << "  Idx:" << (int)idx << "\n"
                         << "  R:" << (int)r << "\n"
                         << "  G:" << (int)g << "\n"
                         << "  B:" << (int)b << "\n";
     }
 
-	p_tx_buffer = &tx_buffer[0]; // Reset pointer to head of array
-    *p_tx_buffer++ = io;
-	*p_tx_buffer++ = idx;
-    *p_tx_buffer++ = r;
-    *p_tx_buffer++ = g;
-    *p_tx_buffer++ = b;
+	p_s_buffer = &s_buffer[0]; // Reset pointer to head of array
+	*p_s_buffer++ = idx;
+    *p_s_buffer++ = r;
+    *p_s_buffer++ = g;
+    *p_s_buffer++ = b;
 	
-	if (uartFilestream != -1) {
+	if (i2cFileStream != -1) {
 
-		int count = write(uartFilestream, &tx_buffer[0], (p_tx_buffer - &tx_buffer[0]));    // Filestream, bytes to write, number of bytes to write
+        // TODO: set third arg back to io rather than hard coded for testing
+        if (ioctl(i2cFileStream, I2C_SLAVE, 7)) {   // Set io control for the i2c file stream, as sending to i2c slave, at address
+            std::cerr << "ERROR: Can't access i2c bus address: " << std::hex << io << std::endl;
+            logFile << "ERROR: Can't access i2c bus address: " << std::hex << io << std::endl;
+            return true;    // Error state
+        }
+
+
+		int count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Filestream, bytes to write, number of bytes to write
 		if (count < 0) {
-
-			std::cerr << "   UART Tx error!\n" << std::endl;
-            return true;
+			std::cerr << "ERROR: i2c transmit failed! (" << std::hex << io << ")" << std::endl;
+            logFile << "ERROR: i2c transmit failed! (" << std::hex << io << ")" << std::endl;
+            return true;    // Error state
 		}
         
         usleep(WAIT_ACK); // Let Arduino catch up
 	}
-
-
-    // Rx Bytes - Receive Acknowledge
-    unsigned char rx_buffer[4];
-    int rx_length = read(uartFilestream, (void*)rx_buffer, 3);		//Filestream, buffer to store in, number of bytes to read (max)
-    if (rx_length < 0) {
-        //An error occured (will occur if there are no bytes)
-        logFile << "[" << timeBuffer << "] ERROR: Incorrect/no repsonse from Nano!\n";
-    }
-    else if (rx_length == 0) {
-        //No data waiting
-    }
-    else {
-        //Bytes received
-        rx_buffer[rx_length] = '\0';
-        logFile << "[" << timeBuffer << "] Received response: " << rx_buffer << std::endl;
-    }
 
 	return false;
 }
@@ -307,7 +298,7 @@ void StateComposer::clean_up()
     if (logEnable)
         logFile.close();
 
-    close(uartFilestream);
+    close(i2cFileStream);
 }
 
 

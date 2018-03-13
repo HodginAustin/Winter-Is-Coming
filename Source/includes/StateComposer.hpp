@@ -8,9 +8,10 @@
 #include <string>
 #include <fstream>
 
-#include <unistd.h>     //Used for UART
-#include <fcntl.h>		//Used for UART
-#include <termios.h>	//Used for UART
+#include <fcntl.h>          // Used for i2c
+#include <linux/i2c-dev.h>  // Used for i2c
+#include <sys/ioctl.h>      // Used for i2c
+#include <unistd.h>         // Used for i2c
 
 #include "./Controller.hpp"
 #include "./InternalState.hpp"
@@ -30,9 +31,8 @@ private:
     static unsigned char blue;
     static int intensity;
     static bool power;
-    // UART
-    static int uartFilestream;
-    static struct termios options;
+    // i2c 
+    static int i2cFileStream;
     // Log actions
     static std::ofstream logFile;
     static bool logEnable;    
