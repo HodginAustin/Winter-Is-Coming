@@ -1,0 +1,14 @@
+{
+  "name": "Plantergb",
+  "version":"0.10.1",
+  "description": "Scheduled RGB lighting system",
+  "main": "main.js",
+  "scripts":{
+    "start": "node main.js 8080"
+  },
+  "dependencies":{
+    "express": "^4.13.2",
+    "express-handlebars": "2.0.1",
+    "body-parser":"^1.13.3"
+  }
+}

@@ -1,0 +1,48 @@
+<div class="profiles">
+  <h3 class="text-center"> Current profile:</h3>
+  <table class="table table-striped">
+    <thead>
+      <th>Name: </th>
+      <th>ID: </th>
+      <th>Description: </th>
+      <th>Zones: </th>
+    </thead>
+
+    <tbody>
+      {{#currentProfile}}
+      <tr>
+        <td>{{name}}</td>
+        <td>{{id}}</td>
+        <td>{{description}}</td>
+        <td>{{zones}}</td>
+        <td><a href="/profiles/{{id}}">Edit(PLACEHOLDER)</a></td><div>
+
+      </tr>
+      {{/currentProfile}}
+    </tbody>
+  </table>
+
+
+  <h3 class="text-center">All Profiles: </h3>
+<table class="table table-striped">
+  <thead>
+    <th>Name: </th>
+    <th>ID: </th>
+    <th>Description: </th>
+    <th>Zones: </th>
+  </thead>
+
+  <tbody>
+    {{#each Profiles}}
+    <tr>
+      <td>{{name}}</td>
+      <td>{{id}}</td>
+      <td>{{description}}</td>
+      <td>{{zones}}</td>
+      <td><a href="/profiles/{{id}}">Edit(PLACEHOLDER)</a></td><div>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+</div>

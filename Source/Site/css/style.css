@@ -1,5 +1,6 @@
 .navbar-custom{
   background-color: #81AA61;
+  height: 56px;
 }
 
 .navbar-custom .navbar-brand,
@@ -7,51 +8,12 @@
     color: #FFFFFF;
   }
 
-/* #titleCard {
-  overflow: auto;
-  background-color: rgb(129,170,97);
-  color:white;
-  outline: black
-  }
-
-#logo{
-  float: left;
-  margin: auto;
-  display: run-in
-
+.nav.navbar-nav li {
+  color: #FFFFFF;
+  float:left;
 }
 
-#Name{
-  top: 10%;
-  left: 50%;
-  right: 50%
-}
-
-#navbarLowerThirds{
-  overflow: auto;
-  background-color: black;
-  color:white;
-}
-#current{
-  text-align: right;
+.nav.navbar-right li{
   padding-right: 10px;
+  padding-top: 15px;
 }
-
-#navbar{
-  height: 84px;
-  background-color: grey;
-}
-
-.table{
-  display: table;
-  margin: 0 auto;
-}
-
-ul#navBarElements{
-  min-width: 696px;
-  list-style: none;
-  padding-top: 20px;
-}
-ul#navbar li{
-  display: inline;
-} */

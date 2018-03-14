@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PlanteR-GB</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-custom">
+      <div class="container-fluid">
+        <div class-navbar-header>
+          <a class="navbar-brand" href="/plant">
+            <span>
+            <img src="img/logo2-interior-shadow.png" width="40" height="40" class="d-inline-block align-top">
+            </span>
+            PlanteR-GB
+          </a>
+        </div> <!-- header -->
+        <ul class="nav navbar-nav">
+            <li>
+              <a href="/plant">Home</a>
+            </li>
+            <li>
+              <a href="/profiles">Profiles</a>
+            </li>
+            <li>
+              <a href="/zones">Zones</a>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li> Current Profile: </li>
+            {{#currentProfile}}
+            <li>
+              {{name}}
+            </li>
+            {{/currentProfile}}
+          </ul>
+        </div> <!-- container-fluid -->
+    </nav>
+
+    {{{body}}}
+
+  </body>
+</html>
