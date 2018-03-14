@@ -66,10 +66,11 @@ bool StateComposer::initialize(bool log)
     time(&sysTime);
     timeInfo = localtime(&sysTime);
     char timeBuffer[30];
-    strftime(timeBuffer, 30, "%c", timeInfo);
+    strftime(timeBuffer, 30, "%H.%M.composer.log", timeInfo);
 
     if (logEnable) {
-        logFile.open("composer.log");
+        logFile.open(timeBuffer);
+        strftime(timeBuffer, 30, "%c", timeInfo);
         logFile << "[" << timeBuffer << "] StateComposer transcript started\n";
     }
 
@@ -114,16 +115,17 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 	
 	if (i2cFileStream != -1) {
 
-        if (ioctl(i2cFileStream, I2C_SLAVE, io)) {   // Set io control for the i2c file stream, as sending to i2c slave, at address
+	// TODO: Decide on how IDs are going to be passed
+        if (ioctl(i2cFileStream, I2C_SLAVE, (io + 3))) {   // Set io control for the i2c file stream, as sending to i2c slave, at address
             logFile << "ERROR: Can't access i2c bus address: " << io << std::endl;
-            return true;    // Error state
+            return true;    // Error state; return value not used currently
         }
 
 
 		int count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Filestream, bytes to write, number of bytes to write
 		if (count < 0) {
-            logFile << "ERROR: i2c transmit failed! (" << io << ")" << std::endl;
-            return true;    // Error state
+            logFile << "ERROR: i2c transmit failed! (" << (io + 3) << ")" << std::endl;
+            return true;    // Error state; return value not used currently
 		}
         
         usleep(WAIT);       // Let Arduino catch up
@@ -215,9 +217,8 @@ void StateComposer::compose()
             // Call serial send
             composerState = 'S';
 
-            if (serial_send(ioPort, red, green, blue, stripIndex)) {
-                logFile << "[" << timeBuffer << "] " << "Error transmitting serial!\n";
-            }
+            serial_send(ioPort, red, green, blue, stripIndex);
+
             composerState = 'C';
             // END OF LEDS LOOP
         }
@@ -261,9 +262,7 @@ void StateComposer::led_shutdown()
             }
 
             // Call serial send
-            if (serial_send(ioPort, '\0', '\0', '\0', stripIndex)) {
-                logFile << "[" << timeBuffer << "] " << "Error transmitting serial for led_shutdown!\n";
-            }
+            serial_send(ioPort, '\0', '\0', '\0', stripIndex);
         }
     }
 }
@@ -271,9 +270,10 @@ void StateComposer::led_shutdown()
 
 void StateComposer::clean_up() 
 {
-    if (logEnable)
+    if (logEnable) {
+	logFile << "[ SHUTDOWN RECEIVED ]" << std::endl << std::flush;
         logFile.close();
-
+    }
     close(i2cFileStream);
 }
 
