@@ -11,6 +11,7 @@
 
 #define NUM_LEDS 60   /* adjust to your length of LED strip*/
 #define DATA_PIN 2    /* adjust to the used pin (Arduino nano pin 2 = D2) */
+#define DEVICE_ID 4
 
 CRGB leds[NUM_LEDS];  /*color object */
 unsigned char led_idx;
@@ -18,7 +19,7 @@ unsigned char led_idx;
 void setup() {
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS); // initialize LEDs
   Serial.begin(9600);             // open the serial port at 9600 bps for serial monitor
-  Wire.begin(7);                  // Set Arduino up as an I2C slave at address 0x07
+  Wire.begin(DEVICE_ID);                  // Set Arduino up as an I2C slave at address 0x07
   Wire.onReceive(receiveEvent);   // Action upon recieving data
 
   /* Fancy setup animation & test each LED */
