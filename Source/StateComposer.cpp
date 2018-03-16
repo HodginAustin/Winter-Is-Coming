@@ -65,7 +65,7 @@ unsigned char StateComposer::stripIndex;
 // Thread work
 void* StateComposer::thr_compose_call(void*)
 {
-    std::cout << "Starting State Composer..." << std::endl;
+    std::cout << "Started State Composer" << std::endl;
     while (StateComposer::get_composer_state() != 0) {          // Any non-off state
         if (StateComposer::get_composer_state() != 'p') {       // Pause state
             StateComposer::compose();
