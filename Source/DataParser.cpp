@@ -189,6 +189,14 @@ bool DataParser::initialize(bool logEnable)
     // Load all existing data
     bool getDataSuccess = get_all();
 
+    // Set controller IO offset if not exist
+    auto existingOffset = db->get_all<struct Setting>(where(c(&Setting::name) == NANO_IO_OFFSET));
+    if (existingOffset.size() == 0)
+    {
+        Setting controller_offset = {NANO_IO_OFFSET, 2, ""};
+        DataParser::insert(controller_offset);
+    }
+
     if (getDataSuccess) {
         std::cout << "done" << std::endl;
     } else {
