@@ -120,8 +120,8 @@ bool StateComposer::initialize(bool logEnable)
         logFile << "   ERROR: Unable to create thread! Exiting --- " << thrStatus << std::endl;
         return false;
     }
+    else { std::cout << "spun and done" << std::endl; }
 
-    std::cout << "done" << std::endl;
     return true;
 }
 
