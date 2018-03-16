@@ -63,7 +63,7 @@ unsigned char StateComposer::stripIndex;
 void* StateComposer::thr_compose_call(void*)
 {
     std::cout << "Starting State Composer..." << std::endl;
-    while (StateComposer::get_composer_state()) { // Any non-off state
+    while (StateComposer::get_composer_state() != 0) { // Any non-off state
         if (StateComposer::get_composer_state() != 'p') { // Pause state
             StateComposer::compose();
 
@@ -286,6 +286,9 @@ void StateComposer::led_shutdown()
 // Cleanup
 void StateComposer::clean_up() 
 {
+    // Stop composing
+    set_composer_state(0);
+    
     // Join thread
     std::cout << "Joining composer thread back to main... ";
     pthread_join(composerThread, NULL);
