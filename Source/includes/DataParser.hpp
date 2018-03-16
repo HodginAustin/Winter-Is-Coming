@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <fstream>
+#include <string>
 
 #include "./Profile.hpp"
 #include "./Zone.hpp"
@@ -15,7 +16,7 @@
 #include "./DailyState.hpp"
 
 #include "./relationships.hpp"
-#include "./setting.hpp"
+#include "./Setting.hpp"
 
 #include "./sqlite_orm.hpp"
 
@@ -33,6 +34,9 @@ private:
     static std::ofstream logFile;
 
 public:
+    // Const settings
+    static const std::string SETTING_DATABASE_VERSION;
+    static const std::string NANO_IO_OFFSET;
 
     // Initialization
     static bool initialize(bool logEnable);

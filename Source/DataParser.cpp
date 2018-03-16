@@ -4,10 +4,13 @@
 
 #include "./includes/DataParser.hpp"
 #include "./includes/InternalState.hpp"
+#include "./includes/StateComposer.hpp"
+#include "./includes/Settings.hpp"
 
 using namespace sqlite_orm;
 
-#define SETTING_DATABASE_VERSION "db_version"
+const std::string DataParser::SETTING_DATABASE_VERSION = "db_version";
+const std::string DataParser::NANO_IO_OFFSET = "nano_io_offset";
 
 // logging variables
 std::ofstream DataParser::logFile;
@@ -540,8 +543,11 @@ bool DataParser::get_all()
 
     // Get global settings
     for (auto setting : db->iterate<Setting>()) {
+        // Add the setting
+        Settings::set_setting(setting.name, setting);
+
         // Currently active profile
-        if (setting.name == "current_profile") {
+        if (setting.name == "current_profile"){
             Profile* profile = InternalState::get_profile(setting.int_value);
             if (profile) {
                 InternalState::set_current_profile(profile);
