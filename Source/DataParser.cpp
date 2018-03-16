@@ -186,9 +186,6 @@ bool DataParser::initialize(bool logEnable)
     Setting db_version = {SETTING_DATABASE_VERSION, 1, "plantergb v1.0"};
     DataParser::insert(db_version);
 
-    // Load all existing data
-    bool getDataSuccess = get_all();
-
     // Set controller IO offset if not exist
     auto existingOffset = db->get_all<struct Setting>(where(c(&Setting::name) == NANO_IO_OFFSET));
     if (existingOffset.size() == 0)
@@ -196,6 +193,9 @@ bool DataParser::initialize(bool logEnable)
         Setting controller_offset = {NANO_IO_OFFSET, 2, ""};
         DataParser::insert(controller_offset);
     }
+
+    // Load all existing data
+    bool getDataSuccess = get_all();
 
     if (getDataSuccess) {
         std::cout << "done" << std::endl;
@@ -553,6 +553,7 @@ bool DataParser::get_all()
 
     // Get global settings
     for (auto setting : db->iterate<Setting>()) {
+        
         // Add the setting
         Settings::set_setting(setting.name, setting);
 
