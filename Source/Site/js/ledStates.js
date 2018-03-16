@@ -2,8 +2,6 @@
 * ledStates.js - Travis Hodgin,
 * Gets everything needed to render the ledState page
 ******************************************************/
-var url = "http://localhost:"; /* base url */
-var port = 9080; /* default port */
 var dailyStates = "daily_states";
 var profiles = "profiles"; /* grab profile */
 var currentProfile = "current_profile";
@@ -14,9 +12,12 @@ module.exports = function () {
   var router = express.Router();
   const http = require("http");
 
+  /* Connection settings */
+  var conn = require('./global/connection.js');
+
   /*gets all profiles. Uses async to collect data and complete to render */
   function getAllProfiles(res, context, complete) {
-    var profileURL = url + port + '/' + profiles;
+    var profileURL = conn.url + conn.port + '/' + profiles;
     http.get(profileURL, res => {
       res.setEncoding("utf8");
       body = "";
@@ -32,7 +33,7 @@ module.exports = function () {
   }
 
   function getAllLEDStates(res, context, complete) {
-    var ledStatesUrl = url + port + '/' + ledStates;
+    var ledStatesUrl = conn.url + conn.port + '/' + ledStates;
     http.get(ledStatesUrl, res => {
       res.setEncoding("utf8");
       body = "";
@@ -50,7 +51,7 @@ module.exports = function () {
   /*gets current profile. Uses async to collect data and complete to render
     THIS FUNCTION SHOULD BE INCLUDED IN ALL PAGES FOR THE NAVBAR CURRENT PROFILE*/
   function getCurrentProfile(res, context, complete) {
-    var current = url + port + '/' + currentProfile;
+    var current = conn.url + conn.port + '/' + currentProfile;
     http.get(current, res => {
       res.setEncoding("utf8");
       body = "";
