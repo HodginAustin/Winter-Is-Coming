@@ -3,15 +3,16 @@ INTERNAL_STATE_OBJECTS = ./out/internalstate.o ./out/led.o ./out/zone.o ./out/da
 API_OBJECTS = ./out/api.o
 DATA_PARSER_OBJECTS = ./out/dataparser.o
 STATE_COMPOSER = ./out/statecomposer.o
+SETTINGS = ./out/settings.o
 
 default: directories
+	make settings
 	make internal_state_objects
 	make internal_state
 	make install_sqlite
 	make copy_api
 	make api
 	make data_parser
-	make settings
 	make state_composer
 	make control_service_main
 	make control_service
@@ -26,10 +27,10 @@ directories:
 
 # Control service
 control_service_main:
-	$(GCC) -c ./main.cpp -o ./out/main.o -lpistache -lpthread 
+	$(GCC) -c ./main.cpp -o ./out/main.o -lpistache -lpthread
 
 control_service:
-	$(GCC) -o ./out/plantergb -L/usr/local/lib ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) $(DATA_PARSER_OBJECTS) $(STATE_COMPOSER) -lpistache -lpthread -lsqlite3
+	$(GCC) -o ./out/plantergb -L/usr/local/lib ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) $(DATA_PARSER_OBJECTS) $(STATE_COMPOSER) $(SETTINGS) -lpistache -lpthread -lsqlite3
 
 
 # Internal State

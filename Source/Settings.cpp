@@ -1,6 +1,8 @@
 #include "./includes/Settings.hpp"
 #include "./includes/Setting.hpp"
 
+std::unordered_map<std::string, struct Setting> Settings::settings;
+
 struct Setting Settings::get_setting(std::string key)
 {
     for (auto s : settings) {

@@ -7,6 +7,7 @@
 #include "./includes/InternalState.hpp"
 #include "./includes/StateComposer.hpp"
 #include "./includes/Settings.hpp"
+#include "./includes/Setting.hpp"
 
 using namespace sqlite_orm;
 
@@ -33,7 +34,7 @@ inline auto init_storage(const std::string& path)
                         primary_key()),
             make_column("int_value",
                         &Setting::int_value),
-            make_column("stirng_value",
+            make_column("string_value",
                         &Setting::string_value)
         ),
         // Profiles
