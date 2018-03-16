@@ -28,11 +28,12 @@ pthread_t StateComposer::composerThread;
 // State
 char StateComposer::composerState;
 
-// i2c
+// I2C
 int StateComposer::i2cFileStream;
 
 // Composer variables
 std::ofstream StateComposer::logFile;
+unsigned int StateComposer::i2cAddressOffset;
 
 // Timing
 time_t StateComposer::sysTime;
@@ -63,12 +64,12 @@ unsigned char StateComposer::stripIndex;
 void* StateComposer::thr_compose_call(void*)
 {
     std::cout << "Starting State Composer..." << std::endl;
-    while (StateComposer::get_composer_state() != 0) { // Any non-off state
-        if (StateComposer::get_composer_state() != 'p') { // Pause state
+    while (StateComposer::get_composer_state() != 0) {          // Any non-off state
+        if (StateComposer::get_composer_state() != 'p') {       // Pause state
             StateComposer::compose();
 
             // Enable pausing and shutdown
-            if (StateComposer::get_composer_state() == 's') { // LED Shutdown state
+            if (StateComposer::get_composer_state() == 's') {   // LED Shutdown state
                 StateComposer::led_shutdown();
                 StateComposer::set_composer_state('c');
             }
@@ -89,6 +90,8 @@ bool StateComposer::initialize(bool logEnable)
     // Begin composing
     composerState = 'c';
     
+    i2cAddressOffset = Settings::get_setting(DataParser::NANO_IO_OFFSET).int_value;
+
     // Logging
     time(&sysTime);
     timeInfo = localtime(&sysTime);
@@ -97,7 +100,7 @@ bool StateComposer::initialize(bool logEnable)
     if (logEnable) {
         logFile.open(timeBuffer);
         strftime(timeBuffer, 30, "%c", timeInfo);
-        logFile << "[" << timeBuffer << "] StateComposer transcript started\n";
+        logFile << "[" << timeBuffer << "] StateComposer transcript started\n" << std::flush;
     }
 
     // Open in non terminal, non blocking, read-write mode
@@ -105,7 +108,7 @@ bool StateComposer::initialize(bool logEnable)
 
 	if (i2cFileStream == -1) {  // ERROR - CAN'T OPEN SERIAL PORT
         std::cout << "failed" << std::endl;
-		logFile << "    ERROR: Unable to open i2c bus on "
+		logFile << "    ERROR: Unable to open I2C device: "
                 << I2C_BUS
                 << "! \n           Ensure it is not in use by another application."
                 << std::endl;
@@ -127,7 +130,7 @@ bool StateComposer::initialize(bool logEnable)
 
 
 
-// Send and receive serial over i2c w/ correct timings
+// Send and receive serial over I2C w/ correct timings
 bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
 {
 	unsigned char s_buffer[4];
@@ -140,14 +143,15 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 
     if (logFile.is_open()) {
         logFile << "[" << timeBuffer << "] "
-                << "Attempting i2c send:\n"
+                << "Attempting I2C send:\n"
                 << "  Idx:" << (int)idx << "\n"
                 << "  R:" << (int)r << "\n"
                 << "  G:" << (int)g << "\n"
                 << "  B:" << (int)b << "\n";
     }
 
-	p_s_buffer = &s_buffer[0]; // Reset pointer to head of array
+	p_s_buffer = &s_buffer[0];  // Reset pointer to head of array
+
 	*p_s_buffer++ = idx;
     *p_s_buffer++ = r;
     *p_s_buffer++ = g;
@@ -155,16 +159,16 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 	
 	if (i2cFileStream != -1) {
 
-	// TODO: Decide on how IDs are going to be passed
-        if (ioctl(i2cFileStream, I2C_SLAVE, (io + 3))) {   // Set io control for the i2c file stream, as sending to i2c slave, at address
-            logFile << "ERROR: Can't access i2c bus address: " << io << std::endl;
+	    // TODO: Decide on how IDs are going to be passed
+        if (ioctl(i2cFileStream, I2C_SLAVE, (io + i2cAddressOffset))) {   // Set io control for the I2C file stream, as sending to I2C slave, at address
+            logFile << "ERROR: Can't switch ioctl to I2C bus address: [ " << (io + i2cAddressOffset) << " ]" << std::endl;
             return true;    // Error state; return value not used currently
         }
 
 
 		int count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Filestream, bytes to write, number of bytes to write
 		if (count < 0) {
-            logFile << "ERROR: i2c transmit failed! (" << (io + 3) << ")" << std::endl;
+            logFile << "ERROR: I2C transmit failed! [ " << (io + i2cAddressOffset) << " ]" << std::endl;
             return true;    // Error state; return value not used currently
 		}
         
