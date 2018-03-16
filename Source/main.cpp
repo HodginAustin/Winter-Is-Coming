@@ -36,6 +36,7 @@ int main(int argc, char* argv[])
     API* api = new API(addr);
 
     boot &= api->initialize(threads, DEBUG);
+    if (!boot) { return 1; }
     api->start(port_num);
 
     // Cleanup
