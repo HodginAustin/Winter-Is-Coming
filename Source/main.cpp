@@ -1,13 +1,18 @@
 #include <iostream>
 #include <pthread.h>
+#include <algorithm>
 
 #include "./includes/InternalState.hpp"
 #include "./includes/DataParser.hpp"
 #include "./includes/StateComposer.hpp"
 #include "./includes/API.hpp"
 
-// State Composer Logging
-#define SC_LOG true
+
+bool cmd_opt_exists(char** begin, char** end, const std::string& option)
+{
+    return std::find(begin, end, option) != end;
+}
+
 
 void* thr_compose_call(void*)
 {
@@ -22,25 +27,28 @@ void* thr_compose_call(void*)
 
 int main(int argc, char* argv[])
 {
+    bool log = false;
+
     // Port number argument
     unsigned int port_num = (argc > 1 ? atoi(argv[1]) : 9080);
 
-
+    bool logEnable = cmd_opt_exists(argv, argv+argc, "-d");
+    
     // Internal state
     std::cout << "Initalizing Internal State... ";
-    if (InternalState::initialize()) { std::cout << "done" << std::endl; }
+    if (InternalState::initialize(logEnable)) { std::cout << "done" << std::endl; }
     else { std::cout << "failed" << std::endl; return 0; }
 
 
     // Data parser
     std::cout << "Initalizing Data Parser... ";
-    if (DataParser::initialize()) { std::cout << "done" << std::endl; }
+    if (DataParser::initialize(logEnable)) { std::cout << "done" << std::endl; }
     else { std::cout << "failed" << std::endl; return 0; }
 
 
     // LED control system
     std::cout << "Initializing State Composer... ";
-    if (StateComposer::initialize(SC_LOG)) { std::cout << "done" << std::endl; }
+    if (StateComposer::initialize(logEnable)) { std::cout << "done" << std::endl; }
     else { std::cout << "failed" << std::endl; return 0; }
 
     std::cout << "Spinning thread for State Composer... ";
@@ -61,7 +69,7 @@ int main(int argc, char* argv[])
     API* api = new API(addr);
 
     std::cout << "Initalizing API... ";
-    if (api->initialize(threads)) { std::cout << "done" << std::endl; }
+    if (api->initialize(threads, logEnable)) { std::cout << "done" << std::endl; }
     else { std::cout << "failed" << std::endl; return 0; }
 
     // Start listening
