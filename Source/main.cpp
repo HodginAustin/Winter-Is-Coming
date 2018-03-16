@@ -1,5 +1,4 @@
 #include <iostream>
-#include <pthread.h>
 
 #include "./includes/InternalState.hpp"
 #include "./includes/DataParser.hpp"

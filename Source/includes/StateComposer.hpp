@@ -6,6 +6,7 @@
 #include <ctime>
 #include <iostream>
 #include <string>
+#include <pthread.h>
 #include <fstream>
 
 #include <fcntl.h>          // Used for i2c
