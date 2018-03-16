@@ -9,6 +9,13 @@ using namespace sqlite_orm;
 
 #define SETTING_DATABASE_VERSION "db_version"
 
+// logging variables
+std::ofstream DataParser::logFile;
+
+// Timing
+time_t DataParser::sysTime;
+char DataParser::timeBuffer[30];
+tm* DataParser::timeInfo;
 
 // Build database schema
 inline auto init_storage(const std::string& path)
@@ -149,8 +156,21 @@ static std::shared_ptr<Storage> db;
 
 
 // Initialization
-bool DataParser::initialize()
+bool DataParser::initialize(bool logEnable)
 {
+    std::cout << "Initalizing Data Parser... ";
+
+    // Logging
+    time(&sysTime);
+    timeInfo = localtime(&sysTime);
+    strftime(timeBuffer, 30, "%F.dataparser.log", timeInfo);
+
+    if (logEnable) {
+        logFile.open(timeBuffer);
+        strftime(timeBuffer, 30, "%c", timeInfo);
+        logFile << "[" << timeBuffer << "] DataParser transcript started\n";
+    }
+
     // Get database object
     db = std::make_shared<Storage>(init_storage("db.sqlite"));
 
@@ -162,7 +182,14 @@ bool DataParser::initialize()
     DataParser::insert(db_version);
 
     // Load all existing data
-    return get_all();
+    bool getDataSuccess = get_all();
+
+    if (getDataSuccess) {
+        std::cout << "done" << std::endl;
+    } else {
+        std::cout << "failed" << std::endl;
+    }
+    return getDataSuccess;
 }
 
 
@@ -389,7 +416,14 @@ bool DataParser::get_all()
             led->set_controller(controller);
             InternalState::add_led(led);
         } else {
-            std::cout << "DB Error: could not find controller (for LED) with id " << l.get_controller_id() << std::endl;
+            // Get current time
+            time(&sysTime);
+            timeInfo=localtime(&sysTime);
+            strftime(timeBuffer, 30, "%c", timeInfo);
+
+            if (logFile.is_open()) {
+                logFile << "[" << timeBuffer << "] " << "DB Error: could not find controller (for LED) with id " << l.get_controller_id() << std::endl;
+            }
         }
     }
     
@@ -417,11 +451,25 @@ bool DataParser::get_all()
         led = InternalState::get_led(ztl.led_id);
         
         if (!zone) {
-            std::cout << "DB relationship Error: could not find zone with id " << ztl.zone_id << std::endl;
+            // Get current time
+            time(&sysTime);
+            timeInfo=localtime(&sysTime);
+            strftime(timeBuffer, 30, "%c", timeInfo);
+
+            if (logFile.is_open()) {
+                logFile << "[" << timeBuffer << "] " << "DB relationship Error: could not find zone with id " << ztl.zone_id << std::endl;
+            }
             continue;
         }
         if (!led) {
-            std::cout << "DB relationship Error: could not find led with id " << ztl.led_id << std::endl;
+            // Get current time
+            time(&sysTime);
+            timeInfo=localtime(&sysTime);
+            strftime(timeBuffer, 30, "%c", timeInfo);
+
+            if (logFile.is_open()) {
+                logFile << "[" << timeBuffer << "] " << "DB relationship Error: could not find led with id " << ztl.led_id << std::endl;
+            }
             continue;
         }
 
@@ -434,11 +482,25 @@ bool DataParser::get_all()
         dailyState = InternalState::get_daily_state(dow.daily_state_id);
         
         if (!zone) {
-            std::cout << "DB relationship Error: could not find zone with id " << dow.zone_id << std::endl;
+            // Get current time
+            time(&sysTime);
+            timeInfo=localtime(&sysTime);
+            strftime(timeBuffer, 30, "%c", timeInfo);
+
+            if (logFile.is_open()) {
+                logFile << "[" << timeBuffer << "] " << "DB relationship Error: could not find zone with id " << dow.zone_id << std::endl;
+            }
             continue;
         }
         if (!dailyState) {
-            std::cout << "DB relationship Error: could not find daily state with id " << dow.daily_state_id << std::endl;
+            // Get current time
+            time(&sysTime);
+            timeInfo=localtime(&sysTime);
+            strftime(timeBuffer, 30, "%c", timeInfo);
+
+            if (logFile.is_open()) {
+                logFile << "[" << timeBuffer << "] " << "DB relationship Error: could not find daily state with id " << dow.daily_state_id << std::endl;
+            }
             continue;
         }
 
@@ -451,11 +513,25 @@ bool DataParser::get_all()
         ledState = InternalState::get_led_state(dtl.led_state_id);
 
         if (!dailyState) {
-            std::cout << "DB relationship Error: could not find daily state with id " << dtl.daily_state_id << std::endl;
+            // Get current time
+            time(&sysTime);
+            timeInfo=localtime(&sysTime);
+            strftime(timeBuffer, 30, "%c", timeInfo);
+
+            if (logFile.is_open()) {
+                logFile << "[" << timeBuffer << "] " << "DB relationship Error: could not find daily state with id " << dtl.daily_state_id << std::endl;
+            }
             continue;
         }
         if (!ledState) {
-            std::cout << "DB relationship Error: could not find led state with id " << dtl.led_state_id << std::endl;
+            // Get current time
+            time(&sysTime);
+            timeInfo=localtime(&sysTime);
+            strftime(timeBuffer, 30, "%c", timeInfo);
+
+            if (logFile.is_open()) {
+                logFile << "[" << timeBuffer << "] " << "DB relationship Error: could not find led state with id " << dtl.led_state_id << std::endl;
+            }
             continue;
         }
 
@@ -470,7 +546,14 @@ bool DataParser::get_all()
             if (profile) {
                 InternalState::set_current_profile(profile);
             } else {
-                std::cout << "DB Error: could not find current profile with id " << setting.int_value << std::endl;
+                // Get current time
+                time(&sysTime);
+                timeInfo=localtime(&sysTime);
+                strftime(timeBuffer, 30, "%c", timeInfo);
+
+                if (logFile.is_open()) {
+                    logFile << "[" << timeBuffer << "] " << "DB Error: could not find current profile with id " << setting.int_value << std::endl;
+                }
                 continue;
             }
         }
@@ -496,4 +579,10 @@ void DataParser::clear()
     db->remove_all<DailyState>();
     db->remove_all<Zone>();
     db->remove_all<Profile>();
+}
+
+// Clean up
+void DataParser::clean_up()
+{
+    clear();
 }

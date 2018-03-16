@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <ctime>
+#include <iostream>
 
 #include "./includes/InternalState.hpp"
 
@@ -19,7 +20,10 @@ std::vector<DailyState*> InternalState::dailyStates;
 // Initialization
 bool InternalState::initialize()
 {
+    std::cout << "Initalizing Internal State... ";
     currentProfile = 0;
+    std::cout << "done" << std::endl;
+
     return true;
 }
 
@@ -258,6 +262,10 @@ void InternalState::clear()
     dailyStates.clear();
 }
 
+void InternalState::clean_up()
+{
+    clear();
+}
 
 // Helpers
 unsigned int InternalState::get_time()

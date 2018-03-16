@@ -20,19 +20,22 @@
 #define WAIT 20000
 
 
-// Required for static class members
-bool StateComposer::composeEnable;
+// Threading
+pthread_t StateComposer::composerThread;
+
+// State
+char StateComposer::composerState;
 
 // i2c
 int StateComposer::i2cFileStream;
 
 // Composer variables
-bool StateComposer::logEnable;
 std::ofstream StateComposer::logFile;
-char StateComposer::composerState;
 
 // Timing
 time_t StateComposer::sysTime;
+char StateComposer::timeBuffer[30];
+tm* StateComposer::timeInfo;
 int StateComposer::weekDay;
 unsigned int StateComposer::seconds;
 
@@ -54,19 +57,40 @@ unsigned char StateComposer::ioPort;
 unsigned char StateComposer::stripIndex;
 
 
-// Initialization
-bool StateComposer::initialize(bool log)
+// Thread work
+void* StateComposer::thr_compose_call(void*)
 {
-    composeEnable = true;
-    
-    logEnable = log;
-    composerState = 'C';
+    std::cout << "Starting State Composer..." << std::endl;
+    while (StateComposer::get_composer_state()) { // Any non-off state
+        if (StateComposer::get_composer_state() != 'p') { // Pause state
+            StateComposer::compose();
 
-    tm* timeInfo;
+            // Enable pausing and shutdown
+            if (StateComposer::get_composer_state() == 's') { // LED Shutdown state
+                StateComposer::led_shutdown();
+                StateComposer::set_composer_state('c');
+            }
+            
+            // Sleep for .25 seconds, give the core a break during no state
+            usleep(250000);
+        }
+    }
+    pthread_exit(NULL);
+}
+
+
+// Initialization
+bool StateComposer::initialize(bool logEnable)
+{
+    std::cout << "Initializing State Composer... ";
+
+    // Begin composing
+    composerState = 'c';
+    
+    // Logging
     time(&sysTime);
     timeInfo = localtime(&sysTime);
-    char timeBuffer[30];
-    strftime(timeBuffer, 30, "%H.%M.composer.log", timeInfo);
+    strftime(timeBuffer, 30, "%F.composer.log", timeInfo);
 
     if (logEnable) {
         logFile.open(timeBuffer);
@@ -74,13 +98,28 @@ bool StateComposer::initialize(bool log)
         logFile << "[" << timeBuffer << "] StateComposer transcript started\n";
     }
 
-    i2cFileStream = open(I2C_BUS, O_RDWR | O_NOCTTY | O_NDELAY);  // Open in non terminal, non blocking, read-write mode
+    // Open in non terminal, non blocking, read-write mode
+    i2cFileStream = open(I2C_BUS, O_RDWR | O_NOCTTY | O_NDELAY);
 
 	if (i2cFileStream == -1) {  // ERROR - CAN'T OPEN SERIAL PORT
-		std::cerr << "ERROR: Unable to open i2c bus on " << I2C_BUS << "! \nEnsure it is not in use by another application.\n" << std::endl;
+        std::cout << "failed" << std::endl;
+		logFile << "    ERROR: Unable to open i2c bus on "
+                << I2C_BUS
+                << "! \n           Ensure it is not in use by another application."
+                << std::endl;
         return false;
 	}
 
+    // Threading
+    int thrStatus = pthread_create(&composerThread, NULL, StateComposer::thr_compose_call, NULL);
+
+    if (thrStatus) {
+        std::cout << "failed" << std::endl;
+        logFile << "   ERROR: Unable to create thread! Exiting --- " << thrStatus << std::endl;
+        return false;
+    }
+
+    std::cout << "done" << std::endl;
     return true;
 }
 
@@ -91,14 +130,13 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 {
 	unsigned char s_buffer[4];
 	unsigned char* p_s_buffer;
-    char timeBuffer[30];
-
-    tm* timeInfo;
+    
+    // Get current time
     time(&sysTime);
     timeInfo=localtime(&sysTime);
+    strftime(timeBuffer, 30, "%c", timeInfo);
 
-    if (logEnable) {
-        strftime(timeBuffer, 30, "%c", timeInfo);
+    if (logFile.is_open()) {
         logFile << "[" << timeBuffer << "] "
                 << "Attempting i2c send:\n"
                 << "  Idx:" << (int)idx << "\n"
@@ -139,31 +177,29 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 // Main composer function
 void StateComposer::compose()
 {
-    composerState = 'C';
     float scalar = 0.0;
-    char timeBuffer[30];
 
-    tm* timeInfo;
+    // Get current time
     time(&sysTime);
     timeInfo=localtime(&sysTime);
+    strftime(timeBuffer, 30, "%c", timeInfo);
 
     weekDay = timeInfo->tm_wday;
     seconds = ( (timeInfo->tm_hour * 3600) + (timeInfo->tm_min * 60) + (timeInfo->tm_sec) );
 
-    if (logEnable) {
-        strftime(timeBuffer, 30, "%c", timeInfo);
+    if (logFile.is_open()) {
         logFile << "[" << timeBuffer << "] Starting composition of internal state to hardware\n";
     }
     
     currentProfile = InternalState::get_current_profile();
     if (currentProfile == NULL) {
-        if (logEnable) {
+        if (logFile.is_open()) {
             logFile << "[" << timeBuffer << "] No profiles to loop on. Exiting composer\n";
         }
         return;
     }
 
-    if (logEnable) {
+    if (logFile.is_open()) {
         logFile << "[" << timeBuffer << "] Looping on active profile zones\n";
     }
 
@@ -181,8 +217,9 @@ void StateComposer::compose()
 
         scalar = (float)( ((float)intensity / 100.0) * (float)power * WADKABSI );
 
-        if (logEnable)
+        if (logFile.is_open()) {
             logFile << "[" << timeBuffer << "] Power Scalar for current zone: " << scalar << "\n";
+        }
 
         red = ((unsigned char) ( ((float)currentZoneActiveState->get_r()) * scalar)); 
         green = ((unsigned char) ( ((float)currentZoneActiveState->get_g()) * scalar));
@@ -190,7 +227,7 @@ void StateComposer::compose()
 
         currentZoneLEDs = currentZone->get_leds();
 
-        if (logEnable) {
+        if (logFile.is_open()) {
             logFile << "[" << timeBuffer << "] Looping on zone '" << currentZone->get_name() << "' LEDs\n";
         }
 
@@ -214,12 +251,7 @@ void StateComposer::compose()
                 continue;
             }
 
-            // Call serial send
-            composerState = 'S';
-
             serial_send(ioPort, red, green, blue, stripIndex);
-
-            composerState = 'C';
             // END OF LEDS LOOP
         }
 
@@ -232,13 +264,6 @@ void StateComposer::compose()
 
 void StateComposer::led_shutdown()
 {
-    char timeBuffer[30];
-
-    tm* timeInfo;
-    time(&sysTime);
-    timeInfo=localtime(&sysTime);
-    strftime(timeBuffer, 30, "%c", timeInfo);
-
     for (auto currentLED : InternalState::get_leds())
     {
         if (currentLED) {
@@ -267,18 +292,29 @@ void StateComposer::led_shutdown()
     }
 }
 
-
+// Cleanup
 void StateComposer::clean_up() 
 {
-    if (logEnable) {
-	logFile << "[ SHUTDOWN RECEIVED ]" << std::endl << std::flush;
+    // Join thread
+    std::cout << "Joining composer thread back to main... ";
+    pthread_join(composerThread, NULL);
+    std::cout << "done." << std::endl;
+
+    if (logFile.is_open()) {
+	    logFile << "[ SHUTDOWN RECEIVED ]" << std::endl << std::flush;
         logFile.close();
     }
     close(i2cFileStream);
 }
 
-
+// Accessors
 char StateComposer::get_composer_state() 
 {
     return composerState;
+}
+
+// Mutators
+void StateComposer::set_composer_state(char state) 
+{
+    composerState = state;
 }

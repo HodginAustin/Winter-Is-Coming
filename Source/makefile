@@ -107,6 +107,5 @@ build_api:
 # Clean up
 clean:
 	rm -rf ./out/*
-	if [ -f ./composer.log]; then \
-		rm ./composer.log; \
-	fi
+	rm -f *.log
+	rm db.sqlite

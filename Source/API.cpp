@@ -1,6 +1,7 @@
 #include <map>
 #include <ctime>
 #include <cstdlib>
+#include <iostream>
 
 #include <pistache/http.h>
 #include <pistache/mime.h>
@@ -21,28 +22,64 @@ using json = nlohmann::json; // Json
 std::shared_ptr<Http::Endpoint> httpEndpoint;
 Rest::Router router;
 
+// logging variables
+std::ofstream API::logFile;
+
+// Timing
+time_t API::sysTime;
+char API::timeBuffer[30];
+tm* API::timeInfo;
+
 
 API::API(Address addr) : httpEndpoint(std::make_shared<Http::Endpoint>(addr)) {}
 
-bool API::initialize(size_t thr = 2)
+bool API::initialize(size_t thr, bool logEnable)
 {
+    std::cout << "Initalizing API... ";
+
+    // Logging
+    time(&sysTime);
+    timeInfo = localtime(&sysTime);
+    strftime(timeBuffer, 30, "%F.api.log", timeInfo);
+
+    if (logEnable) {
+        logFile.open(timeBuffer);
+        strftime(timeBuffer, 30, "%c", timeInfo);
+        logFile << "[" << timeBuffer << "] API transcript started\n";
+    }
+
     auto opts = Http::Endpoint::options()
                 .threads(thr)
                 .flags(Tcp::Options::InstallSignalHandler);
 
     httpEndpoint->init(opts);
     setup_routes();
+
+    std::cout << "done" << std::endl;
     return true;
 }
 
-void API::start()
+
+// Cleanup
+void API::clean_up() 
 {
+    if (logFile.is_open()) {
+	    logFile << "[ SHUTTING DOWN ]" << std::endl << std::flush;
+        logFile.close();
+    }
+}
+
+
+void API::start(unsigned int port)
+{
+    std::cout << "Started listening on port " << port << std::endl;
+
     httpEndpoint->setHandler(router.handler());
     httpEndpoint->serveThreaded();
 
     while(api_power_state){ sleep(1); }
     
-    std::cout << "Shutting down" << std::endl;
+    logFile << "[" << timeBuffer << "]Shutting down" << std::endl;
     httpEndpoint->shutdown();
 }
 
@@ -136,15 +173,13 @@ void API::setup_routes()
 // Logging
 void API::log_req(REQUEST)
 {
-    // Date and time
-    time_t tt;
-    time(&tt);
-    struct tm* ltm = localtime(&tt);
-    char timeBuffer[80];
-    strftime (timeBuffer, 80, "%c", ltm);
+    // Get current time
+    time(&sysTime);
+    timeInfo=localtime(&sysTime);
+    strftime(timeBuffer, 30, "%c", timeInfo);
     
     // Print log
-    std::cout << "[" << timeBuffer << "] "
+    logFile << "[" << timeBuffer << "] "
               << Http::methodString(request.method()) << " "
               << request.resource()
               << std::endl;
@@ -168,9 +203,8 @@ void API::system_shutdown(REQUEST, RESPONSE)
 
     response.send(Http::Code::Ok, "Shutting down");
 
-    // Stop state composer and turn LEDs off
-    StateComposer::composeEnable = false;
-    StateComposer::led_shutdown();
+    // Pause state composer and turn LEDs off
+    StateComposer::set_composer_state('s');
 
     // Shutdown system
     std::system("sudo halt");
@@ -185,9 +219,8 @@ void API::system_restart(REQUEST, RESPONSE)
 
     response.send(Http::Code::Ok, "Restarting");
 
-    // Stop state composer and turn LEDs off
-    StateComposer::composeEnable = false;
-    StateComposer::led_shutdown();
+    // Pause state composer and turn LEDs off
+    StateComposer::set_composer_state('s');
 
     // System reboot
     std::system("sudo reboot");
@@ -211,15 +244,11 @@ void API::nuke_from_orbit(REQUEST, RESPONSE)
     // Log request
     log_req(request);
 
-    // In order to use the led_shutdown routine you have to disassemble the
-    // internal state in a specific order
-    InternalState::set_current_profile(NULL);
-    
+    // Pause state composer and turn LEDs off
+    StateComposer::set_composer_state('s');
+
     // Wipe out database
     DataParser::clear();
-
-    // State composer LED blackout
-    StateComposer::led_shutdown();
 
     // Wipe out internal state
     InternalState::clear();

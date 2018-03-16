@@ -24,6 +24,8 @@
 class StateComposer
 {
 private:
+    // Threading
+    static pthread_t composerThread;
 
     // RGB color values
     static unsigned char red;
@@ -33,15 +35,14 @@ private:
     static bool power;
     // i2c 
     static int i2cFileStream;
-    // Log actions
+
+    // Logging
     static std::ofstream logFile;
-    static bool logEnable;    
-    // Composer's current state:
-    //  C == computing on current internal state
-    //  S == Communicating Serial 
-    static char composerState;
+
     // Timing objects
     static time_t sysTime;
+    static char timeBuffer[30];
+    static tm* timeInfo;
     static int weekDay;
     static unsigned int seconds;
     // Communication objects
@@ -61,29 +62,39 @@ private:
                     static unsigned char ioPort;
                     static unsigned char stripIndex;
 
+    // Composer's current state:
+    // 0(NULL) - off, non functioning
+    // 'c' - on, compose loop
+    // 'p' - pause, no activity
+    // 's' - pause, led_shutdown
+    static char composerState;
+
     // Sends color state to a target controller with target LED
     static bool serial_send(unsigned char, unsigned char, unsigned char, unsigned char, unsigned char);
 
+    // Turn LEDs off (DO NOT CALL)
+    static void led_shutdown();
 public:
-    static bool composeEnable;
+    // Thread work
+    static void* thr_compose_call(void*);
 
     // Initialization
     //  @Param 1 - Log actions flag
     //      True  : output actions to log
     //      False : don't ^
-    static bool initialize(bool);
+    static bool initialize(bool logEnable);
 
     // Start compositioning of the internal state to the hardware state
     static void compose();
-
-    // Turn LEDs off
-    static void led_shutdown();
 
     // Clean up
     static void clean_up();
 
     // Accessors
     static char get_composer_state();
+
+    // Mutators
+    static void set_composer_state(char);
     
 };
 
