@@ -26,47 +26,61 @@
                 <th>Blue</th>
                 <th>Intensity</th>
                 <th>On/Off</th>
-                <th>Edit</th>
+                <th></th>
+                <th></th>
               </tr>
             </thead>
             <tbody id="editor_rows">
               {{#each LEDStates}}
               <!-- Display or update row -->
               <tr>
+                <!-- ID -->
                 <td>{{ id }}</td>
 
-                <form name="update-ledState" action="/ledStates" method="POST">
-                  <td class="row-display-{{id}}">{{ r }}</td>
-                  <td class="row-update-{{id}} hidden">
-                    <input type="text" class="form-control" id="update-green" placeholder="{{ r }}">
+                <form name="patch_ledState" action="/ledStates" method="POST">
+                  <input type="number" name="id" value="{{ id }}" hidden> <!-- Hidden element for ID -->
+                  
+                  <!-- Red -->
+                  <td class="row_display_{{id}}">{{ r }}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="number" class="form-control" style="width:80px;" name="red" value="{{ r }}" min="0" max="255">
+                  </td>
+                  <!-- Green -->
+                  <td class="row_display_{{id}}">{{ g }}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="number" class="form-control" style="width:80px;" name="green" value="{{ g }}" min="0" max="255">
+                  </td>
+                  <!-- Blue -->
+                  <td class="row_display_{{id}}">{{ b }}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="number" class="form-control" style="width:80px;" name="blue" value="{{ b }}" min="0" max="255">
+                  </td>
+                  <!-- Intensity -->
+                  <td class="row_display_{{id}}" style="width:80px;">{{ intensity }}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="number" class="form-control" style="width:80px;" name="intensity" value="{{ intensity }}" min="0" max="100">
+                  </td>
+                  <!-- Power -->
+                  <td class="row_display_{{id}}">{{ power }}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="checkbox" class="form-check-input mx-auto" name="power" {{#if power}}checked{{/if}}>
                   </td>
 
-                  <td class="row-display-{{id}}">{{ g }}</td>
-                  <td class="row-update-{{id}} hidden">
-                    <input type="text" class="form-control" id="update-green" placeholder="{{ g }}">
+                  <!-- Save -->
+                  <td class="row_update_{{id}} hidden">
+                    <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info" onclick="edit_mode({{id}})">Save</button>
                   </td>
+                </form>
 
-                  <td class="row-display-{{id}}">{{ b }}</td>
-                  <td class="row-update-{{id}} hidden">
-                    <input type="text" class="form-control" id="update-green" placeholder="{{ b }}">
-                  </td>
+                <!-- Edit -->
+                <td>
+                  <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
+                </td>
 
-                  <td class="row-display-{{id}}">{{ intensity }}</td>
-                  <td class="row-update-{{id}} hidden">
-                    <input type="text" class="form-control" id="update-green" placeholder="{{ intensity }}">
-                  </td>
-
-                  <td class="row-display-{{id}}">{{ power }}</td>
-                  <td class="row-update-{{id}} hidden">
-                    <input type="text" class="form-control" id="update-green" placeholder="{{ power }}">
-                  </td>
-
-                  <td>
-                    <a id="row-edit-{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
-                  </td>
-
-                  <td class="row-update-{{id}} hidden">
-                    <a type="submit" id="row-save-{{id}}" class="btn text-white badge badge-info" onclick="edit_mode({{id}})">Save</a>
+                <!-- Delete -->
+                <form name="delete_ledState" action="/ledStates" method="DELETE">
+                  <td class="row_display_{{id}}">
+                    <button type="submit" - id="row_delete_{{id}}" class="btn text-white badge badge-danger">Delete</button>
                   </td>
                 </form>
 
@@ -82,20 +96,20 @@
 
 <script>
   function edit_mode(id) {
-    if ($('.row-update-' + id).hasClass("hidden")) {
-      $('.row-update-' + id).removeClass("hidden");
-      $('.row-display-' + id).addClass("hidden");
-      // Edit button
-      $('#row-edit-' + id).text("Cancel");
-      $('#row-edit-' + id).removeClass("badge-success");
-      $('#row-edit-' + id).addClass("badge-danger");
+    if ($('.row_update_' + id).hasClass("hidden")) {
+      $('.row_update_' + id).removeClass("hidden");
+      $('.row_display_' + id).addClass("hidden");
+      // Edit button to cancel
+      $('#row_edit_' + id).text("Cancel");
+      $('#row_edit_' + id).removeClass("badge-success");
+      $('#row_edit_' + id).addClass("badge-secondary");
     } else {
-      $('.row-update-' + id).addClass("hidden");
-      $('.row-display-' + id).removeClass("hidden");
-      // Edit button
-      $('#row-edit-' + id).text("Edit");
-      $('#row-edit-' + id).removeClass("badge-danger");
-      $('#row-edit-' + id).addClass("badge-success");
+      $('.row_update_' + id).addClass("hidden");
+      $('.row_display_' + id).removeClass("hidden");
+      // Edit button to edit
+      $('#row_edit_' + id).text("Edit");
+      $('#row_edit_' + id).removeClass("badge-secondary");
+      $('#row_edit_' + id).addClass("badge-success");
     }
   }
 </script>

@@ -1,4 +1,5 @@
-var url = "http://localhost:"; // base url
+var hostname = "localhost:";
+var url = "http://" + hostname; // base url
 var port = 9080; //default port
 var header = "application/json"
 
