@@ -13,7 +13,7 @@
 #include "./includes/DataParser.hpp"
 #include "./includes/StateComposer.hpp"
 
-#include "./includes/setting.hpp"
+#include "./includes/Setting.hpp"
 
 using namespace Pistache; // REST API
 using json = nlohmann::json; // Json
@@ -80,7 +80,7 @@ void API::start(unsigned int port)
     while(api_power_state){ sleep(1); }
     
     httpEndpoint->shutdown();
-    
+
     logFile << "[" << timeBuffer << "] API Shutting down" << std::endl;
 }
 
@@ -988,17 +988,23 @@ void API::post_controller(REQUEST, RESPONSE)
     // Decode JSON
     json j_in = json::parse(request.body());
 
+    // Build response
+    json j_out;
+    Http::Code code = Http::Code::Not_Found;
+
     // Data
     Controller c = j_in;
-    Controller* controller = new Controller(c);
-    InternalState::add_controller(controller);
-    DataParser::insert(controller);
-    
-    // Build response
-    json j_out = json{{"id", controller->get_id()}};
+     if (c.get_io() > 0) {
+        Controller* controller = new Controller(c);
+        InternalState::add_controller(controller);
+        DataParser::insert(controller);
 
+        j_out = json{{"id", controller->get_id()}};
+        code = Http::Code::Ok;
+    } else { j_out["io_out_of_bounds"] = { {"min:", 1}, {"given:", c.get_io()} }; }
+    
     // Send response
-    response.send(Http::Code::Ok, j_out.dump());
+    response.send(code, j_out.dump());
 }
 void API::patch_controller(REQUEST, RESPONSE)
 {
