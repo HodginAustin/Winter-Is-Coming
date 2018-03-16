@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "./includes/StateComposer.hpp"
 
 // The I^2C serial bus device in the linux system
