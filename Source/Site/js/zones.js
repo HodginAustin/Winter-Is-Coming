@@ -2,13 +2,6 @@
 * zones.js - Travis Hodgin,
 * Gets everything needed to render the zones page
 ******************************************************/
-var url = "http://localhost:"; /* base url */
-var port = 9080; /* default port */
-var dailyStates = "daily_states";
-var profiles = "profiles"; /* grab profile */
-var currentProfile = "current_profile";
-var ledStates = "led_states";
-
 module.exports = function () {
   var express = require('express');
   var router = express.Router();
@@ -19,7 +12,7 @@ module.exports = function () {
 
   /*gets all profiles. Uses async to collect data and complete to render */
   function getAllProfiles(res, context, complete) {
-    var profileURL = conn.url + conn.port + '/' + profiles;
+    var profileURL = conn.url + conn.port + '/' + conn.profiles;
     http.get(profileURL, res => {
       res.setEncoding("utf8");
       body = "";
@@ -37,7 +30,7 @@ module.exports = function () {
   /*gets current profile. Uses async to collect data and complete to render
     THIS FUNCTION SHOULD BE INCLUDED IN ALL PAGES FOR THE NAVBAR CURRENT PROFILE*/
   function getCurrentProfile(res, context, complete) {
-    var current = conn.url + conn.port + '/' + currentProfile;
+    var current = conn.url + conn.port + '/' + conn.currentProfile;
     http.get(current, res => {
       res.setEncoding("utf8");
       body = "";

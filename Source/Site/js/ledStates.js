@@ -2,10 +2,6 @@
 * ledStates.js - Travis Hodgin,
 * Gets everything needed to render the ledState page
 ******************************************************/
-var dailyStates = "daily_states";
-var profiles = "profiles"; /* grab profile */
-var currentProfile = "current_profile";
-var ledStates = "led_states";
 
 module.exports = function () {
   var express = require('express');
@@ -17,7 +13,7 @@ module.exports = function () {
 
   /*gets all profiles. Uses async to collect data and complete to render */
   function getAllProfiles(res, context, complete) {
-    var profileURL = conn.url + conn.port + '/' + profiles;
+    var profileURL = conn.url + conn.port + '/' + conn.profiles;
     http.get(profileURL, res => {
       res.setEncoding("utf8");
       body = "";
@@ -33,7 +29,7 @@ module.exports = function () {
   }
 
   function getAllLEDStates(res, context, complete) {
-    var ledStatesUrl = conn.url + conn.port + '/' + ledStates;
+    var ledStatesUrl = conn.url + conn.port + '/' + conn.ledStates;
     http.get(ledStatesUrl, res => {
       res.setEncoding("utf8");
       body = "";
@@ -51,7 +47,7 @@ module.exports = function () {
   /*gets current profile. Uses async to collect data and complete to render
     THIS FUNCTION SHOULD BE INCLUDED IN ALL PAGES FOR THE NAVBAR CURRENT PROFILE*/
   function getCurrentProfile(res, context, complete) {
-    var current = conn.url + conn.port + '/' + currentProfile;
+    var current = conn.url + conn.port + '/' + conn.currentProfile;
     http.get(current, res => {
       res.setEncoding("utf8");
       body = "";
@@ -73,10 +69,8 @@ module.exports = function () {
     getAllProfiles(res, context, complete);
     getCurrentProfile(res, context, complete);
     function complete() {
-      console.log("in complete");
       callbackCount++;
       if (callbackCount >= 3) {
-        console.log("LEDStates!");
         res.render('ledStates', context);
       }
     }
