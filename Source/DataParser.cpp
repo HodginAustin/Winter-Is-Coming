@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <map>
 #include <iostream>
+#include <string>
 
 #include "./includes/DataParser.hpp"
 #include "./includes/InternalState.hpp"
