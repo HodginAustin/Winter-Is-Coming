@@ -3,6 +3,8 @@ var handlebars = require('express-handlebars'); /* templating engine */
 var bodyParser = require('body-parser');
 const path = require("path"); /* allows use of path.join for folder paths */
 const http = require('http'); /* make internal requests to control service */
+var request = require('request');
+
 var app = express();
 
 /* Connection settings */
@@ -13,6 +15,7 @@ app.engine('handlebars', handlebars({
 }));
 
 
+// Files and data
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/static', express.static(path.join(__dirname, 'public'))); /* public folder */
@@ -49,29 +52,24 @@ app.post('/ledStates', function (req, res) {
 
   // Patch control service
   var options = {
-    "method": "PATCH",
-    "hostname": conn.hostname,
-    "port": conn.port,
-    "path": conn.ledStates + "/" + id + "/edit",
-    "headers": {
-      "content-type": conn.header
-    }
+    method: "PATCH",
+    uri: conn.url + conn.port + "/" + conn.ledStates + "/" + id + "/edit",
+    json: j
   };
-  
+
   // Make request
-  let request = http.request(options, function (response) {
-    if (response.statusCode != 200) {
+  request(options, function (err, response, body) {
+    if (err || response.statusCode != 200) {
       let error = "Error! Status: " + res.statusCode + ", Response: " + String(response.body);
       console.log(error);
       console.log(response.body);
     }
     else {
-      console.log("Response:" + response.body);
+      console.log("Control Service Response:" + response.body);
       res.redirect('back');
     }
   });
-  request.write(JSON.stringify(j));
-  request.end();
+
 });
 
 
