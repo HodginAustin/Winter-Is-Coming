@@ -3,6 +3,7 @@
   height: 56px;
 }
 
+
 .navbar-custom .navbar-brand,
 .navbar-custom .navbar-text {
     color: #FFFFFF;
@@ -14,6 +15,7 @@
 }
 
 .nav.navbar-right li{
+  color: #FFFFFF;
   padding-right: 10px;
   padding-top: 15px;
 }

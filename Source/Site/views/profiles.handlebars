@@ -15,7 +15,7 @@
         <td>{{id}}</td>
         <td>{{description}}</td>
         <td>{{zones}}</td>
-        <td><a href="/profiles/{{id}}">Edit(PLACEHOLDER)</a></td><div>
+        <td><a href="/profiles/{{id}}">Edit</a></td><div>
 
       </tr>
       {{/currentProfile}}
@@ -39,10 +39,40 @@
       <td>{{id}}</td>
       <td>{{description}}</td>
       <td>{{zones}}</td>
-      <td><a href="/profiles/{{id}}">Edit(PLACEHOLDER)</a></td><div>
+      <td><a href="/profiles/{{id}}">Edit</a></td>
     </tr>
     {{/each}}
   </tbody>
 </table>
 
-</div>
+<div id="addProfileForm" style="display: none">
+<h3 class="text-center">Add profile:</h3>
+<form name="update-profile" action="/profiles" method="POST">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type=text class="form-control" id="name" placeholder="Enter name"></inut>
+  </div>
+  <div class="form-group">
+    <label for="description">Description</label>
+    <input type="text" class="form-control" id="description" placeholder="Enter Description"/>
+  </div>
+  <div class="form-group">
+    <label for="zones">Zones</label>
+    <input type="text" class="form-control" id="zones" placeholder="Enter Zones (comma sperated)"/>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+</div> <!-- hide/unhide div -->
+<br />
+<button onclick="addProfileFormToggle()">Add profile</button>
+
+<script>
+function addProfileFormToggle(){
+  var hide = document.getElementById("addProfileForm")
+  if(hide.style.display == "none"){
+    hide.style.display = "block";
+  } else{
+    hide.style.display = "none";
+  }
+}
+</script>

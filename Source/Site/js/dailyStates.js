@@ -1,6 +1,6 @@
 /******************************************************
-* profiles.js - Travis Hodgin,
-* gets all profiles, current profile, create profile
+* dailyStates.js - Travis Hodgin,
+* Gets everything needed to render the dailyState plant page
 ******************************************************/
 var url = "http://localhost:"; /* base url */
 var port = 9080; /* default port */
@@ -8,7 +8,7 @@ var dailyStates = "daily_states";
 var profiles = "profiles"; /* grab profile */
 var currentProfile = "current_profile";
 var ledStates = "led_states";
-var header = "application/json"; /* header for ajax call */
+
 module.exports = function(){
   var express = require('express');
   var router = express.Router();
@@ -31,7 +31,8 @@ module.exports = function(){
       });
     }
 
-    /*gets all profiles. Uses async to collect data and complete to render NEEDED ON ALL VIEWS */
+    /*gets current profile. Uses async to collect data and complete to render
+      THIS FUNCTION SHOULD BE INCLUDED IN ALL PAGES FOR THE NAVBAR CURRENT PROFILE*/
     function getCurrentProfile(res, context, complete){
       var current = url + port + '/' + currentProfile;
       http.get(current, res => {
@@ -48,24 +49,6 @@ module.exports = function(){
       });
     }
 
-    function getProfile(res, context, id, complete){
-      var profileURL = url + port + '/' + profiles + "/" + id;
-      http.get(profileURL, res =>{
-        res.setEncoding("utf8");
-        body="";
-        res.on("data", data => {
-          console.log(data);
-          body += data;
-        });
-        res.on("end", () => {
-          body= JSON.parse(body);
-          context.Profile = body
-          complete();
-        });
-      });
-
-    }
-
     router.get('/', function(req, res){
       var callbackCount = 0;
       var context = {};
@@ -75,25 +58,14 @@ module.exports = function(){
         console.log("in complete");
         callbackCount++;
         if(callbackCount >= 2){
-          console.log("");
-          res.render('profiles', context);
+          console.log("ZONES!");
+          res.render('dailyStates', context);
         }
       }
     });
 
-    router.get('/:id', function(req, res){
-        var callbackCount = 0;
-        var context = {};
-        console.log("id: " + req.params.id);
-        getProfile(res, context, req.params.id, complete);
-        function complete(){
-          callbackCount++;
-          if(callbackCount >= 1){
-            res.render('update-profile', context);
-          }
-        }
-    });
 
 
   return router;
+
 }();
