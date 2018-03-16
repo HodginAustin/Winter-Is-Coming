@@ -11,6 +11,7 @@ default: directories
 	make copy_api
 	make api
 	make data_parser
+	make settings
 	make state_composer
 	make control_service_main
 	make control_service
@@ -69,6 +70,11 @@ api:
 # State Composer
 state_composer:
 	$(GCC) -c ./StateComposer.cpp -o ./out/statecomposer.o  -lpthread
+
+
+# Settings
+settings:
+	$(GCC) -c ./Settings.cpp -o ./out/settings.o  -lpthread
 
 
 # Tests
