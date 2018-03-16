@@ -11,7 +11,7 @@
 
 #define NUM_LEDS 60       // adjust to your length of LED strip*/
 #define LED_DATA_PIN 2    // adjust to the used pin (Arduino nano pin 2 = D2)
-#define DEVICE_ID 4
+#define DEVICE_ID 3
 
 CRGB leds[NUM_LEDS];      // color object for setup testing
 unsigned char led_idx;
