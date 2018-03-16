@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "./includes/InternalState.hpp"
 #include "./includes/DataParser.hpp"
 #include "./includes/StateComposer.hpp"
@@ -45,6 +43,5 @@ int main(int argc, char* argv[])
     api->clean_up();
     free(api);
 
-    std::cout << "done\n\nExiting..." << std::endl;
     return !boot;
 }
