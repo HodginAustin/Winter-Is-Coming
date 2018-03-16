@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 
     // LED control system
     boot &= StateComposer::initialize(DEBUG);
-    //if (!boot) { return 1; }
+    if (!boot) { return 1; }
 
     // API
     Port port(port_num);
