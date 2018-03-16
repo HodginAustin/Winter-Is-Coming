@@ -1,15 +1,21 @@
+#include <algorithm>
+
 #include "./includes/InternalState.hpp"
 #include "./includes/DataParser.hpp"
 #include "./includes/StateComposer.hpp"
 #include "./includes/API.hpp"
 
-// State Composer Logging
-#define DEBUG true
+
+bool cmd_opt_exists(char** begin, char** end, const std::string& option)
+{
+    return std::find(begin, end, option) != end;
+}
 
 int main(int argc, char* argv[])
 {
-    // Port number argument
+    // Arguments
     unsigned int port_num = (argc > 1 ? atoi(argv[1]) : 9080);
+    bool DEBUG = cmd_opt_exists(argv, argv+argc, "-d");
 
     // Bool success
     bool boot = true;
@@ -31,7 +37,6 @@ int main(int argc, char* argv[])
     Address addr(Ipv4::any(), port);
     int threads = 2;
     API* api = new API(addr);
-
     boot &= api->initialize(threads, DEBUG);
     if (!boot) { return 1; }
     api->start(port_num);
