@@ -68,7 +68,7 @@ api:
 
 # State Composer
 state_composer:
-	$(GCC) -c ./StateComposer.cpp -o ./out/statecomposer.o
+	$(GCC) -c ./StateComposer.cpp -o ./out/statecomposer.o  -lpthread
 
 
 # Tests

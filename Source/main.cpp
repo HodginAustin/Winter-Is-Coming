@@ -11,14 +11,20 @@ int main(int argc, char* argv[])
     // Port number argument
     unsigned int port_num = (argc > 1 ? atoi(argv[1]) : 9080);
 
+    // Bool success
+    bool boot = true;
+
     // Internal state
-    if (!InternalState::initialize()) { return 1; }
+    boot &= InternalState::initialize();
+    if (!boot) { return 1; }
 
     // Data parser
-    if (!DataParser::initialize(DEBUG)) { return 1; }
+    boot &= DataParser::initialize(DEBUG);
+    if (!boot) { return 1; }
 
     // LED control system
-    if (!StateComposer::initialize(DEBUG)) { return 1; }
+    boot &= StateComposer::initialize(DEBUG);
+    if (!boot) { return 1; }
 
     // API
     Port port(port_num);
@@ -26,7 +32,8 @@ int main(int argc, char* argv[])
     int threads = 2;
     API* api = new API(addr);
 
-    if (!api->initialize(threads, DEBUG)) { return 1; }
+    boot &= api->initialize(threads, DEBUG);
+    if (!boot) { return 1; }
     api->start(port_num);
 
     // Cleanup
@@ -36,5 +43,5 @@ int main(int argc, char* argv[])
     api->clean_up();
     free(api);
 
-    return 0;
+    return !boot;
 }

@@ -188,21 +188,10 @@ void StateComposer::compose()
 
     weekDay = timeInfo->tm_wday;
     seconds = ( (timeInfo->tm_hour * 3600) + (timeInfo->tm_min * 60) + (timeInfo->tm_sec) );
-
-    if (logFile.is_open()) {
-        logFile << "[" << timeBuffer << "] Starting composition of internal state to hardware\n";
-    }
     
     currentProfile = InternalState::get_current_profile();
     if (currentProfile == NULL) {
-        if (logFile.is_open()) {
-            logFile << "[" << timeBuffer << "] No profiles to loop on. Exiting composer\n";
-        }
         return;
-    }
-
-    if (logFile.is_open()) {
-        logFile << "[" << timeBuffer << "] Looping on active profile zones\n";
     }
 
     // Will only loop over returned vector of zones (if none, skip)

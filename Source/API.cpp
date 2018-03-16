@@ -245,7 +245,10 @@ void API::nuke_from_orbit(REQUEST, RESPONSE)
     log_req(request);
 
     // Pause state composer and turn LEDs off
+    InternalState::set_current_profile(NULL);
     StateComposer::set_composer_state('s');
+    // Wait for composer thread to finish led_shutdown
+    while (StateComposer::get_composer_state() == 's') {}
 
     // Wipe out database
     DataParser::clear();
