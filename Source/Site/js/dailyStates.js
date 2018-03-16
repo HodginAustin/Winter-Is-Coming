@@ -59,7 +59,7 @@ module.exports = function () {
       console.log("in complete");
       callbackCount++;
       if (callbackCount >= 2) {
-        console.log("ZONES!");
+        console.log("Daily States!");
         res.render('dailyStates', context);
       }
     }

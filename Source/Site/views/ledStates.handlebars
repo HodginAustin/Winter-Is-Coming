@@ -1,4 +1,8 @@
 <!-- LED States -->
+</br>
+</br>
+</br>
+
 <div class="container">
   <div class="row">
     <div class="col-12">
@@ -7,107 +11,91 @@
           <h5 class="card-title">LED States</h5>
 
           <div class="row">
-            <div class="valign-wrapper col-12">
-              <p class="right">LED States represent a possible state of a single LED. It has 3 values (Red, Green, Blue), an intensity (percentage), and a power state.</p>
+            <div class="col-12">
+              <p class="right">LED States represent a possible state of a single LED. It has 3 values (Red, Green, Blue), an intensity (percentage),
+                and a power state.</p>
             </div>
           </div>
 
           <table class="table">
             <thead>
               <tr>
+                <th>ID</th>
                 <th>Red</th>
                 <th>Green</th>
                 <th>Blue</th>
                 <th>Intensity</th>
                 <th>On/Off</th>
+                <th>Edit</th>
               </tr>
             </thead>
             <tbody id="editor_rows">
               {{#each LEDStates}}
+              <!-- Display or update row -->
               <tr>
-                <td>{{ r }}</td>
-                <td>{{ g }}</td>
-                <td>{{ b }}</td>
-                <td>{{ intensity }}</td>
-                <td>{{ power }}</td>
-                <td>
-                  <a href="" name="btn_edit_account">
-                    Edit
-                  </a>
-                </td>
+                <td>{{ id }}</td>
+
+                <form name="update-ledState" action="/ledStates" method="POST">
+                  <td class="row-display-{{id}}">{{ r }}</td>
+                  <td class="row-update-{{id}} hidden">
+                    <input type="text" class="form-control" id="update-green" placeholder="{{ r }}">
+                  </td>
+
+                  <td class="row-display-{{id}}">{{ g }}</td>
+                  <td class="row-update-{{id}} hidden">
+                    <input type="text" class="form-control" id="update-green" placeholder="{{ g }}">
+                  </td>
+
+                  <td class="row-display-{{id}}">{{ b }}</td>
+                  <td class="row-update-{{id}} hidden">
+                    <input type="text" class="form-control" id="update-green" placeholder="{{ b }}">
+                  </td>
+
+                  <td class="row-display-{{id}}">{{ intensity }}</td>
+                  <td class="row-update-{{id}} hidden">
+                    <input type="text" class="form-control" id="update-green" placeholder="{{ intensity }}">
+                  </td>
+
+                  <td class="row-display-{{id}}">{{ power }}</td>
+                  <td class="row-update-{{id}} hidden">
+                    <input type="text" class="form-control" id="update-green" placeholder="{{ power }}">
+                  </td>
+
+                  <td>
+                    <a id="row-edit-{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
+                  </td>
+
+                  <td class="row-update-{{id}} hidden">
+                    <a type="submit" id="row-save-{{id}}" class="btn text-white badge badge-info" onclick="edit_mode({{id}})">Save</a>
+                  </td>
+                </form>
+
               </tr>
               {{/each}}
             </tbody>
           </table>
-
-
         </div>
       </div>
     </div>
   </div>
 </div>
 
-
-
-
-<!-- 
-<div class="profiles">
-  <h3 class="text-center">LEDStates: </h3>
-  <table class="table table-striped">
-    <thead>
-      <th>Name: </th>
-      <th>ID: </th>
-      <th>Description: </th>
-      <th>Zones: </th>
-    </thead>
-
-    <tbody>
-      {{#each Profiles}}
-      <tr>
-        <td>{{name}}</td>
-        <td>{{id}}</td>
-        <td>{{description}}</td>
-        <td>{{zones}}</td>
-        <td>
-          <a href="/profiles/{{id}}">Edit</a>
-        </td>
-      </tr>
-      {{/each}}
-    </tbody>
-  </table>
-
-  <div id="addProfileForm" style="display: none">
-    <h3 class="text-center">Add profile:</h3>
-    <form name="update-profile" action="/profiles" method="POST">
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input type=text class="form-control" id="name" placeholder="Enter name">
-        </inut>
-      </div>
-      <div class="form-group">
-        <label for="description">Description</label>
-        <input type="text" class="form-control" id="description" placeholder="Enter Description" />
-      </div>
-      <div class="form-group">
-        <label for="zones">Zones</label>
-        <input type="text" class="form-control" id="zones" placeholder="Enter Zones (comma sperated)" />
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-  </div>
-
-  <br />
-  <button onclick="addProfileFormToggle()">Add profile</button>
-
-  <script>
-    function addProfileFormToggle() {
-      var hide = document.getElementById("addProfileForm")
-      if (hide.style.display == "none") {
-        hide.style.display = "block";
-      } else {
-        hide.style.display = "none";
-      }
+<script>
+  function edit_mode(id) {
+    if ($('.row-update-' + id).hasClass("hidden")) {
+      $('.row-update-' + id).removeClass("hidden");
+      $('.row-display-' + id).addClass("hidden");
+      // Edit button
+      $('#row-edit-' + id).text("Cancel");
+      $('#row-edit-' + id).removeClass("badge-success");
+      $('#row-edit-' + id).addClass("badge-danger");
+    } else {
+      $('.row-update-' + id).addClass("hidden");
+      $('.row-display-' + id).removeClass("hidden");
+      // Edit button
+      $('#row-edit-' + id).text("Edit");
+      $('#row-edit-' + id).removeClass("badge-danger");
+      $('#row-edit-' + id).addClass("badge-success");
     }
-  </script>
-
-  -->
+  }
+</script>
