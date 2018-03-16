@@ -17,6 +17,9 @@ DailyState::DailyState(const DailyState& d)
 // Copy
 void DailyState::copy(const DailyState& d)
 {
+    // Clear existing led statess
+    clear_led_states();
+
     std::unordered_map<unsigned int, LEDState*> states = d.get_time_state_map();
     if (!states.empty()) {
         // Iterate through all map pairs

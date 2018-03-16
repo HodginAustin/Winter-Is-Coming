@@ -3,6 +3,8 @@
 #define __API_H_INCLUDED__
 //=================================
 
+#include <fstream>
+
 #include <pistache/endpoint.h>
 #include <pistache/router.h>
 
@@ -18,11 +20,21 @@ class API {
 public:
     API(Address addr);
 
-    bool initialize(size_t thr);
-    void start();
+    bool initialize(size_t, bool);
+    void start(unsigned int port);
     void shutdown();
 
+    // Clean up
+    void clean_up();
 private:
+    // Timing objects
+    static time_t sysTime;
+    static char timeBuffer[30];
+    static tm* timeInfo;
+
+    // Logging
+    static std::ofstream logFile;
+
     std::shared_ptr<Http::Endpoint> httpEndpoint;
     Rest::Router router;
 

@@ -62,6 +62,9 @@ public:
 
     // Clear
     static void clear();
+
+    // Cleanup
+    static void clean_up();
     
     // Helpers
     static unsigned int get_time();
