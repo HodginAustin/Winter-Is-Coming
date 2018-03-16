@@ -1,6 +1,8 @@
 #include <iostream>
 
 #include "./includes/StateComposer.hpp"
+#include "./includes/DataParser.hpp"
+#include "./includes/Settings.hpp"
 
 // The I^2C serial bus device in the linux system
 #define I2C_BUS "/dev/i2c-1"
