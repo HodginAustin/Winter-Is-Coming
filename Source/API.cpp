@@ -79,7 +79,7 @@ void API::start(unsigned int port)
 
     while(api_power_state){ sleep(1); }
     
-    logFile << "[" << timeBuffer << "]Shutting down" << std::endl;
+    logFile << "[" << timeBuffer << "] API Shutting down" << std::endl;
     httpEndpoint->shutdown();
 }
 

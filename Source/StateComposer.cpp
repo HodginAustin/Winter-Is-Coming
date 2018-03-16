@@ -295,6 +295,8 @@ void StateComposer::clean_up()
 	    logFile << "[ SHUTDOWN RECEIVED ]" << std::endl << std::flush;
         logFile.close();
     }
+
+    // Close I2C
     close(i2cFileStream);
 }
 
