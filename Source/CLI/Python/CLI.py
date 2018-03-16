@@ -90,6 +90,10 @@ def get_dow():
     d = datetime.today().weekday() + 1
     return d if d <= 6 else 0
 
+def convertTimeString(time_str):
+    h, m = time_str.split(':')
+    return int(h) * 3600 + int(m) * 60
+
 def print_request(r):
     if(str(r.status_code) == "200"):
         print("Success")
@@ -212,7 +216,7 @@ def configure_Zones(url, header):
         if len(PL) < 1:
             print("Please run the initialize option on the main menu first")
         else:
-            option1 = input("|Add New Zone(1) | Modifiy Zone (2) | Add LEDs To Zone (3)|\n|Go To main Menu (4)|\n|Selection:")
+            option1 = input("|Add(1) | Edit(2) | Add LEDs To Zone (3)|\n|Go to main Menu (4)|\n|Selection:")
 
             if option1 == 1:
                 return
@@ -252,7 +256,7 @@ def configure_profiles(url,header):
     while option != "3":
         temp = 1;
         print("|----------------------------Profile Menu----------------------------|")
-        option = str(raw_input("|Add New Profile(1) |Edit Existing Profile (2)|Set Active Profile (3)|\n| Delete Profile(4)|Exit Profile(5)|\n|Selected:"))
+        option = str(raw_input("|Add(1) |Edit(2)|Set Active Profile (3)|\n| Delete (4)|Return to main menu(5)|\n|Selected:"))
         if option == "1":
             print("Adding new profile")
             name = str(raw_input("Please enter the name of new profile: "))
@@ -317,7 +321,7 @@ def configure_controler(url, header):
         optionCount = 1
         temp = 1
         print("|----------------------------Controller Menu----------------------------|")
-        option =  str(raw_input("| Add Controller (1) | Add LEDs To Controller (2)| Edit Controler (3) | Delete Controller (4) |\n| Exit Configure Controler (5): "))
+        option =  str(raw_input("| Add (1) | Add LEDs (2)| Edit (3) | Delete (4) |\n| Return to main menu (5): "))
         #add controller
         if option == "1":
             subprocess.call("clear", shell = True)
@@ -374,35 +378,55 @@ def configure_LED(url, headerr):
 #TO DO:
 def configure_daily_state(url, header):
     option = "0"
+    suboption = "0"
+    loopCount = 0
 
     r = requests.get(url + "/led_states")
-
     numLEDStates = len(r.json())
+    r = requests.get(url + "/daily_state")
+
+    numDailyStates = len(r.json())
 
     while option != "5":
         print("|---------------Daily State Configuration----------------|")
-        option1 = str(raw_input("|Add Daily State (1) | Edit Daily State(2) | Delete Daily State(3)| Apply Daily State To Profile(4) | Return to Main Menu(5) |"))
+        option = str(raw_input("| Add (1) | Edit (2) | Delete (3)| Apply Daily State To Profile(4) |\n | Return to Main Menu(5) |\n| Selected: "))
 
-        if option1 == "1":
+        if option == "1":
+
+            j = []
+            suboption = str(raw_input("How many dailystates would you like to add? "))
+
+            while loopCount < int(suboption):
+                printDailyState(url, header)
+                time = str(raw_input("Enter in time to start (HH:MM) (0-24):(0-59): "))
+                seconds_From_Midnight = convertTimeString(time)
+                printLEDState(url,header)
+                state = str(raw_input("LED State(0-%s):" %numLEDStates ))
+                j.append({"time": seconds_From_Midnight, "state": int(state)})
+                loopCount += 1
+
+            print("J: %s" %j)
+            r = requests.post(url + "/daily_states/add", json=j, headers=header, timeout=REQUEST_TIMEOUT)
+            print_request(r)
+
+        if option == "2":
             printDailyState(url, header)
 
-            time = str(raw_input("Enter in time to start (HH:MM) (0-24):(0-59): "))
 
 
 
 
-            printLEDState(url,header)
-            state = str(raw_input("LED State(0-%s):" %numLEDStates ))
-
-
-
-        if option1 == "2":
-            printDailyState(url, header)
             return
-        if option1 == "3":
+        if option == "3"
             printDailyState(url, header)
-            return
-        if option1 == "4":
+            option1 = str("Which Daily State Would you like to delete? (1-%s)" %numDailyStates)
+            confirm = str(raw_input("Do you wish to proceed? [y/N]:"))
+            if (confirm.lower() == 'y'):
+                   r = requests.delete(url + "/daily_state/%s/delete" %option1)
+                   if(str(r.status_code) == "200"):
+                       print("Daily State Deleted!)
+
+        if option == "4":
             printDailyState(url, header)
             return
 
@@ -412,7 +436,7 @@ def configure_led_state(url, header):
     option = "0"
     while option != "4":
         print("|-------------LED State Configuration-------------")
-        option = str(raw_input("| Add LED State(1) | Edit LED State(2)  | Delete LED State(3)| Exit LED State Configuration (4) "))
+        option = str(raw_input("| Add (1) | Edit(2)  | Delete (3)| Return to Main Menu (4) "))
         if option == "1":
             red = str(raw_input("Enter Red Value (0-255): "))
             green = str(raw_input("Enter Green Value ( 0-255): "))
