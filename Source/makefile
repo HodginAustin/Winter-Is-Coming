@@ -3,8 +3,10 @@ INTERNAL_STATE_OBJECTS = ./out/internalstate.o ./out/led.o ./out/zone.o ./out/da
 API_OBJECTS = ./out/api.o
 DATA_PARSER_OBJECTS = ./out/dataparser.o
 STATE_COMPOSER = ./out/statecomposer.o
+SETTINGS = ./out/settings.o
 
 default: directories
+	make settings
 	make internal_state_objects
 	make internal_state
 	make install_sqlite
@@ -25,10 +27,10 @@ directories:
 
 # Control service
 control_service_main:
-	$(GCC) -c ./main.cpp -o ./out/main.o -lpistache -lpthread 
+	$(GCC) -c ./main.cpp -o ./out/main.o -lpistache -lpthread
 
 control_service:
-	$(GCC) -o ./out/plantergb -L/usr/local/lib ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) $(DATA_PARSER_OBJECTS) $(STATE_COMPOSER) -lpistache -lpthread -lsqlite3
+	$(GCC) -o ./out/plantergb -L/usr/local/lib ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) $(DATA_PARSER_OBJECTS) $(STATE_COMPOSER) $(SETTINGS) -lpistache -lpthread -lsqlite3
 
 
 # Internal State
@@ -68,7 +70,12 @@ api:
 
 # State Composer
 state_composer:
-	$(GCC) -c ./StateComposer.cpp -o ./out/statecomposer.o
+	$(GCC) -c ./StateComposer.cpp -o ./out/statecomposer.o  -lpthread
+
+
+# Settings
+settings:
+	$(GCC) -c ./Settings.cpp -o ./out/settings.o  -lpthread
 
 
 # Tests
@@ -107,6 +114,5 @@ build_api:
 # Clean up
 clean:
 	rm -rf ./out/*
-	if [ -f ./composer.log]; then \
-		rm ./composer.log; \
-	fi
+	rm -f *.log
+	rm db.sqlite

@@ -1,13 +1,18 @@
-#include "./includes/StateComposer.hpp"
+#include <iostream>
 
-// The serial RxTx device in the linux system
-// TODO: Verify the correct port is in use for the Pi model
-#define SERIAL_DEV "/dev/serial0"
+#include "./includes/StateComposer.hpp"
+#include "./includes/DataParser.hpp"
+#include "./includes/Settings.hpp"
+
+// The I^2C serial bus device in the linux system
+#define I2C_BUS "/dev/i2c-1"
+
 
 // Required LED intensity scalar to use all 60 
 // LEDs at full white, off of the Arduino 5V rail
 // 5V rail can drive a maximum of 500mA
 // 60 * .2 * .033 = .396A (396mA)
+// Also makes the light bearable to look at...
 
 // We All Didn't Know Any Better Stupidity Inhibitor
 // TODO: Update once better power system is found
@@ -15,24 +20,27 @@
 
 // The amount of microseconds to wait for the 
 // Arduino Nano to send it's ACK and catch up
-// last updated to: 12000
-#define WAIT_ACK 12000
+// last updated to: 20000
+#define WAIT 20000
 
 
-// Required for static class members
-bool StateComposer::composeEnable;
+// Threading
+pthread_t StateComposer::composerThread;
 
-// UART
-int StateComposer::uartFilestream;
-struct termios StateComposer::options;
+// State
+char StateComposer::composerState;
+
+// I2C
+int StateComposer::i2cFileStream;
 
 // Composer variables
-bool StateComposer::logEnable;
 std::ofstream StateComposer::logFile;
-char StateComposer::composerState;
+unsigned int StateComposer::i2cAddressOffset;
 
 // Timing
 time_t StateComposer::sysTime;
+char StateComposer::timeBuffer[30];
+tm* StateComposer::timeInfo;
 int StateComposer::weekDay;
 unsigned int StateComposer::seconds;
 
@@ -54,113 +62,120 @@ unsigned char StateComposer::ioPort;
 unsigned char StateComposer::stripIndex;
 
 
-// Initialization
-bool StateComposer::initialize(bool log)
+// Thread work
+void* StateComposer::thr_compose_call(void*)
 {
-    composeEnable = true;
-    
-    logEnable = log;
-    composerState = 'C';
+    std::cout << "Started State Composer" << std::endl;
+    while (StateComposer::get_composer_state() != 0) {          // Any non-off state
+        if (StateComposer::get_composer_state() != 'p') {       // Pause state
+            StateComposer::compose();
 
-    tm* timeInfo;
+            // Enable pausing and shutdown
+            if (StateComposer::get_composer_state() == 's') {   // LED Shutdown state
+                StateComposer::led_shutdown();
+                StateComposer::set_composer_state('c');
+            }
+            
+            // Sleep for .25 seconds, give the core a break during no state
+            usleep(250000);
+        }
+    }
+    pthread_exit(NULL);
+}
+
+
+// Initialization
+bool StateComposer::initialize(bool logEnable)
+{
+    std::cout << "Initializing State Composer... ";
+
+    // Begin composing
+    composerState = 'c';
+    
+    i2cAddressOffset = Settings::get_setting(DataParser::NANO_IO_OFFSET).int_value;
+
+    // Logging
     time(&sysTime);
     timeInfo = localtime(&sysTime);
-    char timeBuffer[30];
-    strftime(timeBuffer, 30, "%c", timeInfo);
+    strftime(timeBuffer, 30, "%F.composer.log", timeInfo);
 
     if (logEnable) {
-        logFile.open("composer.log");
-        logFile << "[" << timeBuffer << "] StateComposer transcript started\n";
+        logFile.open(timeBuffer);
+        strftime(timeBuffer, 30, "%c", timeInfo);
+        logFile << "[" << timeBuffer << "] StateComposer transcript started\n" << std::flush;
     }
 
-    uartFilestream = open(SERIAL_DEV, O_RDWR | O_NOCTTY | O_NDELAY);		//Open in non blocking read/write mode
+    // Open in non terminal, non blocking, read-write mode
+    i2cFileStream = open(I2C_BUS, O_RDWR | O_NOCTTY | O_NDELAY);
 
-	if (uartFilestream == -1) { // ERROR - CAN'T OPEN SERIAL PORT
-		std::cerr << "ERROR: Unable to open UART on " << SERIAL_DEV << "! \nEnsure it is not in use by another application.\n" << std::endl;
+	if (i2cFileStream == -1) {  // ERROR - CAN'T OPEN SERIAL PORT
+        std::cout << "failed" << std::endl;
+		logFile << "    ERROR: Unable to open I2C device: "
+                << I2C_BUS
+                << "! \n           Ensure it is not in use by another application."
+                << std::endl;
         return false;
 	}
 
-    // CONFIGURE THE UART
-	//	Baud rate:- B1200, B2400, B4800, B9600, B19200, B38400, B57600, B115200, B230400, B460800, B500000, B576000, B921600, B1000000, B1152000, B1500000, B2000000, B2500000, B3000000, B3500000, B4000000
-	//	CSIZE:- CS5, CS6, CS7, CS8
-	//	CLOCAL - Ignore modem status lines
-	//	CREAD - Enable receiver
-	//	IGNPAR = Ignore characters with parity errors
-	//	ICRNL - Map CR to NL on input (Use for ASCII comms where you want to auto correct end of line characters - don't use for bianry comms!)
-	//	PARENB - Parity enable
-	//	PARODD - Odd parity (else even)
+    // Threading
+    int thrStatus = pthread_create(&composerThread, NULL, StateComposer::thr_compose_call, NULL);
 
-    tcgetattr(uartFilestream, &options);
-	options.c_cflag = B57600 | CS8 | CLOCAL | CREAD;		// Set baud rate, bits in-transmission, etc
-	options.c_iflag = IGNPAR;                               // Ignore parity
-	options.c_oflag = 0;
-	options.c_lflag = 0;
-	tcflush(uartFilestream, TCIFLUSH);
-	tcsetattr(uartFilestream, TCSANOW, &options);
+    if (thrStatus) {
+        std::cout << "failed" << std::endl;
+        logFile << "   ERROR: Unable to create thread! Exiting --- " << thrStatus << std::endl;
+        return false;
+    }
+    else { std::cout << "spun and done" << std::endl; }
 
     return true;
 }
 
 
 
-// Send and receive serial over uart w/ correct timings
+// Send and receive serial over I2C w/ correct timings
 bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
 {
-    // Tx Bytes - Send LED data to proper controller
-	unsigned char tx_buffer[5];
-	unsigned char *p_tx_buffer;
-    char timeBuffer[30];
-
-    tm* timeInfo;
+	unsigned char s_buffer[4];
+	unsigned char* p_s_buffer;
+    
+    // Get current time
     time(&sysTime);
     timeInfo=localtime(&sysTime);
+    strftime(timeBuffer, 30, "%c", timeInfo);
 
-    if (logEnable) {
-        strftime(timeBuffer, 30, "%c", timeInfo);
+    if (logFile.is_open()) {
         logFile << "[" << timeBuffer << "] "
-                        << "Attempting serial send:\n"
-                        << "  IO Port:" << (int)io << "\n"
-                        << "  Idx:" << (int)idx << "\n"
-                        << "  R:" << (int)r << "\n"
-                        << "  G:" << (int)g << "\n"
-                        << "  B:" << (int)b << "\n";
+                << "Attempting I2C send:\n"
+                << "  Idx:" << (int)idx << "\n"
+                << "  R:" << (int)r << "\n"
+                << "  G:" << (int)g << "\n"
+                << "  B:" << (int)b << "\n";
     }
 
-	p_tx_buffer = &tx_buffer[0]; // Reset pointer to head of array
-    *p_tx_buffer++ = io;
-	*p_tx_buffer++ = idx;
-    *p_tx_buffer++ = r;
-    *p_tx_buffer++ = g;
-    *p_tx_buffer++ = b;
+	p_s_buffer = &s_buffer[0];  // Reset pointer to head of array
+
+	*p_s_buffer++ = idx;
+    *p_s_buffer++ = r;
+    *p_s_buffer++ = g;
+    *p_s_buffer++ = b;
 	
-	if (uartFilestream != -1) {
+	if (i2cFileStream != -1) {
 
-		int count = write(uartFilestream, &tx_buffer[0], (p_tx_buffer - &tx_buffer[0]));    // Filestream, bytes to write, number of bytes to write
+	    // TODO: Decide on how IDs are going to be passed
+        if (ioctl(i2cFileStream, I2C_SLAVE, (io + i2cAddressOffset))) {   // Set io control for the I2C file stream, as sending to I2C slave, at address
+            logFile << "ERROR: Can't switch ioctl to I2C bus address: [ " << (io + i2cAddressOffset) << " ]" << std::endl;
+            return true;    // Error state; return value not used currently
+        }
+
+
+		int count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Filestream, bytes to write, number of bytes to write
 		if (count < 0) {
-
-			std::cerr << "   UART Tx error!\n" << std::endl;
-            return true;
+            logFile << "ERROR: I2C transmit failed! [ " << (io + i2cAddressOffset) << " ]" << std::endl;
+            return true;    // Error state; return value not used currently
 		}
         
-        usleep(WAIT_ACK); // Let Arduino catch up
+        usleep(WAIT);       // Let Arduino catch up
 	}
-
-
-    // Rx Bytes - Receive Acknowledge
-    unsigned char rx_buffer[4];
-    int rx_length = read(uartFilestream, (void*)rx_buffer, 3);		//Filestream, buffer to store in, number of bytes to read (max)
-    if (rx_length < 0) {
-        //An error occured (will occur if there are no bytes)
-        logFile << "[" << timeBuffer << "] ERROR: Incorrect/no repsonse from Nano!\n";
-    }
-    else if (rx_length == 0) {
-        //No data waiting
-    }
-    else {
-        //Bytes received
-        rx_buffer[rx_length] = '\0';
-        logFile << "[" << timeBuffer << "] Received response: " << rx_buffer << std::endl;
-    }
 
 	return false;
 }
@@ -170,32 +185,19 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 // Main composer function
 void StateComposer::compose()
 {
-    composerState = 'C';
     float scalar = 0.0;
-    char timeBuffer[30];
 
-    tm* timeInfo;
+    // Get current time
     time(&sysTime);
     timeInfo=localtime(&sysTime);
+    strftime(timeBuffer, 30, "%c", timeInfo);
 
     weekDay = timeInfo->tm_wday;
     seconds = ( (timeInfo->tm_hour * 3600) + (timeInfo->tm_min * 60) + (timeInfo->tm_sec) );
-
-    if (logEnable) {
-        strftime(timeBuffer, 30, "%c", timeInfo);
-        logFile << "[" << timeBuffer << "] Starting composition of internal state to hardware\n";
-    }
     
     currentProfile = InternalState::get_current_profile();
     if (currentProfile == NULL) {
-        if (logEnable) {
-            logFile << "[" << timeBuffer << "] No profiles to loop on. Exiting composer\n";
-        }
         return;
-    }
-
-    if (logEnable) {
-        logFile << "[" << timeBuffer << "] Looping on active profile zones\n";
     }
 
     // Will only loop over returned vector of zones (if none, skip)
@@ -212,8 +214,9 @@ void StateComposer::compose()
 
         scalar = (float)( ((float)intensity / 100.0) * (float)power * WADKABSI );
 
-        if (logEnable)
+        if (logFile.is_open()) {
             logFile << "[" << timeBuffer << "] Power Scalar for current zone: " << scalar << "\n";
+        }
 
         red = ((unsigned char) ( ((float)currentZoneActiveState->get_r()) * scalar)); 
         green = ((unsigned char) ( ((float)currentZoneActiveState->get_g()) * scalar));
@@ -221,7 +224,7 @@ void StateComposer::compose()
 
         currentZoneLEDs = currentZone->get_leds();
 
-        if (logEnable) {
+        if (logFile.is_open()) {
             logFile << "[" << timeBuffer << "] Looping on zone '" << currentZone->get_name() << "' LEDs\n";
         }
 
@@ -245,13 +248,7 @@ void StateComposer::compose()
                 continue;
             }
 
-            // Call serial send
-            composerState = 'S';
-
-            if (serial_send(ioPort, red, green, blue, stripIndex)) {
-                logFile << "[" << timeBuffer << "] " << "Error transmitting serial!\n";
-            }
-            composerState = 'C';
+            serial_send(ioPort, red, green, blue, stripIndex);
             // END OF LEDS LOOP
         }
 
@@ -264,13 +261,6 @@ void StateComposer::compose()
 
 void StateComposer::led_shutdown()
 {
-    char timeBuffer[30];
-
-    tm* timeInfo;
-    time(&sysTime);
-    timeInfo=localtime(&sysTime);
-    strftime(timeBuffer, 30, "%c", timeInfo);
-
     for (auto currentLED : InternalState::get_leds())
     {
         if (currentLED) {
@@ -294,24 +284,39 @@ void StateComposer::led_shutdown()
             }
 
             // Call serial send
-            if (serial_send(ioPort, '\0', '\0', '\0', stripIndex)) {
-                logFile << "[" << timeBuffer << "] " << "Error transmitting serial for led_shutdown!\n";
-            }
+            serial_send(ioPort, '\0', '\0', '\0', stripIndex);
         }
     }
 }
 
-
+// Cleanup
 void StateComposer::clean_up() 
 {
-    if (logEnable)
-        logFile.close();
+    // Stop composing
+    set_composer_state(0);
+    
+    // Join thread
+    std::cout << "Joining composer thread back to main... ";
+    pthread_join(composerThread, NULL);
+    std::cout << "done." << std::endl;
 
-    close(uartFilestream);
+    if (logFile.is_open()) {
+	    logFile << "[ SHUTDOWN RECEIVED ]" << std::endl << std::flush;
+        logFile.close();
+    }
+
+    // Close I2C
+    close(i2cFileStream);
 }
 
-
+// Accessors
 char StateComposer::get_composer_state() 
 {
     return composerState;
+}
+
+// Mutators
+void StateComposer::set_composer_state(char state) 
+{
+    composerState = state;
 }

@@ -3,7 +3,7 @@
 
 // Constructor
 Controller::Controller() {
-    io = 0;
+    io = 1;
     address = "";
     details = "";
 }

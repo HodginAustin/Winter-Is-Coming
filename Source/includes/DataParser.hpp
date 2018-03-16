@@ -5,6 +5,9 @@
 
 
 #include <vector>
+#include <fstream>
+#include <string>
+
 #include "./Profile.hpp"
 #include "./Zone.hpp"
 #include "./LED.hpp"
@@ -13,7 +16,7 @@
 #include "./DailyState.hpp"
 
 #include "./relationships.hpp"
-#include "./setting.hpp"
+#include "./Setting.hpp"
 
 #include "./sqlite_orm.hpp"
 
@@ -21,9 +24,22 @@ using namespace sqlite_orm;
 
 class DataParser
 {
+private:
+    // Timing objects
+    static time_t sysTime;
+    static char timeBuffer[30];
+    static tm* timeInfo;
+
+    // Logging
+    static std::ofstream logFile;
+
 public:
+    // Const settings
+    static const std::string SETTING_DATABASE_VERSION;
+    static const std::string NANO_IO_OFFSET;
+
     // Initialization
-    static bool initialize();
+    static bool initialize(bool logEnable);
 
     // INSERT
     static unsigned int insert(Profile*);
@@ -60,6 +76,9 @@ public:
     static void remove(DailyState*, int);
 
     static void clear();
+
+    // Cleanup
+    static void clean_up();
 };
 
 #endif //__DATA_PARSER_H_INCLUDED__
