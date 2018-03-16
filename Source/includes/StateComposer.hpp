@@ -8,10 +8,10 @@
 #include <pthread.h>
 #include <fstream>
 
-#include <fcntl.h>          // Used for i2c
-#include <linux/i2c-dev.h>  // Used for i2c
-#include <sys/ioctl.h>      // Used for i2c
-#include <unistd.h>         // Used for i2c
+#include <fcntl.h>          // Used for I2C
+#include <linux/i2c-dev.h>  // Used for I2C
+#include <sys/ioctl.h>      // Used for I2C
+#include <unistd.h>         // Used for I2C
 
 #include "./Controller.hpp"
 #include "./InternalState.hpp"
@@ -33,8 +33,11 @@ private:
     static unsigned char blue;
     static int intensity;
     static bool power;
-    // i2c 
-    static int i2cFileStream;
+
+    // I2C 
+    static int i2cFileStream;               // File descriptor for serial stream
+    static unsigned int i2cAddressOffset;   // I2C bus addresses start at 0x03, so add this offset 
+                                            // to the fetched 'io' controller member to reach the correct address
 
     // Logging
     static std::ofstream logFile;
@@ -45,6 +48,7 @@ private:
     static tm* timeInfo;
     static int weekDay;
     static unsigned int seconds;
+
     // Communication objects
     static char acknowledge;
     static char retransmit;
