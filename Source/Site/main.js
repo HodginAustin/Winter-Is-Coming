@@ -37,6 +37,42 @@ app.use('/ledStates', require('./js/ledStates.js'));
 app.use('/dailyStates', require('./js/dailyStates.js'));
 
 
+
+
+// Add requests
+app.post('/ledStates/add', function (req, res) {
+  console.log("POST ledstate");
+  
+  // Build JSON for control service
+  let j = {};
+  j['r'] = parseInt(req.body.red);
+  j['g'] = parseInt(req.body.green);
+  j['b'] = parseInt(req.body.blue);
+  j['intensity'] = parseInt(req.body.intensity);
+  j['power'] = req.body.power == "true";
+  
+  // Patch control service
+  var options = {
+    method: "POST",
+    uri: conn.url + conn.port + "/" + conn.ledStates + "/add",
+    json: j
+  };
+  
+  // Make request
+  request(options, function (err, response, body) {
+    if (err || response.statusCode != 200) {
+      let error = "Error! Status: " + res.statusCode + ", Response: " + String(response.body);
+      console.log(error);
+      console.log(response.body);
+    }
+    else {
+      console.log("Control Service Response:" + response.body);
+      res.redirect('back');
+    }
+  });
+});
+
+
 // Update requests
 app.post('/ledStates', function (req, res) {
   let id = req.body.id;
@@ -48,7 +84,7 @@ app.post('/ledStates', function (req, res) {
   j['g'] = parseInt(req.body.green);
   j['b'] = parseInt(req.body.blue);
   j['intensity'] = parseInt(req.body.intensity);
-  j['power'] = !!req.body.power; // Black magic. body.power comes back as "on" or undefined. (!undefined = true) and (!"on" = false) so (bool value = !!body.power)
+  j['power'] = req.body.power == "true";
 
   // Patch control service
   var options = {
@@ -69,14 +105,33 @@ app.post('/ledStates', function (req, res) {
       res.redirect('back');
     }
   });
-
 });
 
 
-// Add requests
-
-
 // Delete requests
+app.post('/ledStates/delete', function (req, res) {
+  let id = req.body.id;
+  console.log("DELETE ledstate " + id);
+
+  // Patch control service
+  var options = {
+    method: "DELETE",
+    uri: conn.url + conn.port + "/" + conn.ledStates + "/" + id + "/delete"
+  };
+
+  // Make request
+  request(options, function (err, response, body) {
+    if (err || response.statusCode != 200) {
+      let error = "Error! Status: " + res.statusCode + ", Response: " + String(response.body);
+      console.log(error);
+      console.log(response.body);
+    }
+    else {
+      console.log("Control Service Response:" + response.body);
+      res.redirect('back');
+    }
+  });
+});
 
 
 
