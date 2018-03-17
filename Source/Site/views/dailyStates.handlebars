@@ -20,19 +20,41 @@
                     </div>
 
                     <!-- Existing Daily States -->
-
                     {{#each DailyStates}}
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Daily State {{id}}</h5>
+                                    <!-- Header -->
+                                    <table style="width:100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <h5 class="card-title">Daily State {{id}}</h5>
+                                                </td>
+                                                <td style="text-align: right">
+                                                    <!-- Delete -->
+                                                    <form name="delete" action="/dailyStates/delete" method="POST">
+                                                        <!-- Hidden element for ID and time -->
+                                                        <input type="number" name="id" class="hidden" value="{{ id }}">
+
+                                                        <button class="btn btn-sm btn-danger text-white" type="submit">
+                                                        Delete Daily State
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    </br>
+
                                     <!-- Existing LED States -->
                                     <table class="table" id="timeStateMap">
                                         <thead>
                                             <tr>
                                                 <th>Time</th>
                                                 <th>LEDState</th>
+                                                <th></th>
                                                 <th></th>
                                                 <th></th>
                                             </tr>
@@ -51,8 +73,12 @@
                                                 <!-- Delete -->
                                                 <form name="delete_mapping" action="/dailyStates/deleteMapping" method="POST">
                                                     <!-- Hidden element for ID and time -->
-                                                    <td><input type="number" name="id" class="hidden" value="{{ ../id }}"></td>
-                                                    <td><input type="number" name="time" class="hidden" value="{{ time }}"></td>
+                                                    <td>
+                                                        <input type="number" name="id" class="hidden" value="{{ ../id }}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" name="time" class="hidden" value="{{ time }}">
+                                                    </td>
 
                                                     <td>
                                                         <button type="submit" id="row_delete_{{time}}" class="btn text-white badge badge-danger">Delete</button>
@@ -100,11 +126,16 @@
                             </div>
                         </div>
                     </div>
+                    </br>
                     {{/each}}
 
-
                     <!-- New Daily state -->
-
+                    <form name="post_dailyState" action="/dailyStates/add" method="POST">
+                        <!-- Submit -->
+                        <button class="btn btn-outline-secondary" type="submit">
+                            <h5>Add new daily state</h5>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -114,7 +145,7 @@
 <script>
     $(document).ready(function () {
         to_am_pm();
-        sortTable($('#timeStateMap'),'asc');
+        sortTable($('#timeStateMap'), 'asc');
     });
     function to_am_pm() {
         let noon = 12 * 60 * 60;

@@ -6,8 +6,6 @@
 module.exports = function () {
     var express = require('express');
     var router = express.Router();
-    const http = require("http");
-    var request = require('request');
 
     /* Connection settings */
     var conn = require('./global/connection.js');
@@ -20,6 +18,9 @@ module.exports = function () {
 
     /* Daily State functions */
     let dailyStates = require('./global/dailyStates.js');
+
+    /* Control service request */
+    let controlService = require('./global/controlServiceRequest.js');
 
     /* Converts hour, minute, second into seconds after midnight */
     function get_time(req) {
@@ -60,7 +61,7 @@ module.exports = function () {
     router.post('/addMapping', function (req, res) {
         let dailyStateID = req.body.id;
 
-        console.log("POST dailyState mapping for " + id);
+        console.log("POST dailyState mapping for " + dailyStateID);
 
         // Get form data
         let time = get_time(req);
@@ -80,17 +81,20 @@ module.exports = function () {
         };
 
         // Make request
-        request(options, function (err, response, body) {
-            if (err || response.statusCode != 200) {
-                let error = "Error! Status: " + res.statusCode + ", Response: " + String(response.body);
-                console.log(error);
-                console.log(response.body);
-            }
-            else {
-                console.log("Control Service Response:" + response.body);
-                res.redirect('back');
-            }
-        });
+        controlService.makeRequest(options, function () { res.redirect('back'); })
+    });
+    router.post('/add', function (req, res) {
+        console.log("POST dailyState");
+
+        // Patch control service
+        var options = {
+            method: "POST",
+            uri: conn.url + conn.port + "/" + conn.dailyStates + "/add",
+            json: {}
+        };
+
+        // Make request
+        controlService.makeRequest(options, function (err, response, body) { res.redirect('back'); })
     });
 
 
@@ -115,17 +119,7 @@ module.exports = function () {
         };
 
         // Make request
-        request(options, function (err, response, body) {
-            if (err || response.statusCode != 200) {
-                let error = "Error! Status: " + res.statusCode + ", Response: " + String(response.body);
-                console.log(error);
-                console.log(response.body);
-            }
-            else {
-                console.log("Control Service Response:" + response.body);
-                res.redirect('back');
-            }
-        });
+        controlService.makeRequest(options, function (err, response, body) { res.redirect('back'); })
     });
 
 
@@ -142,19 +136,22 @@ module.exports = function () {
         };
 
         // Make request
-        request(options, function (err, response, body) {
-            if (err || response.statusCode != 200) {
-                let error = "Error! Status: " + res.statusCode + ", Response: " + String(response.body);
-                console.log(error);
-                console.log(response.body);
-            }
-            else {
-                console.log("Control Service Response:" + response.body);
-                res.redirect('back');
-            }
-        });
+        controlService.makeRequest(options, function (err, response, body) { res.redirect('back'); })
     });
 
+    router.post('/delete', function (req, res) {
+        let id = req.body.id;
+        console.log("DELETE dailyState " + id);
+
+        // Patch control service
+        var options = {
+            method: "DELETE",
+            uri: conn.url + conn.port + "/" + conn.dailyStates + "/" + id + "/delete/"
+        };
+
+        // Make request
+        controlService.makeRequest(options, function (err, response, body) { res.redirect('back'); })
+    });
 
     return router;
 }();
