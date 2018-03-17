@@ -113,12 +113,10 @@ def printProfiles(url, header, profilenum):
     print("Zones: %s" %p["zones"])
     print("-----------------------------------------------------------")
 
-
 def getProfiles(url, header):
     r = requests.get(url + "/profiles", "")
     if (str(r.status_code) == "200"):
         return r.json()
-
 
 def printController(url, header, controlerNum):
     r = requests.get(url + "/controllers/%i" %controlerNum)
@@ -148,6 +146,13 @@ def printLEDState(url, headers):
 
     else:
         print("Unable to obtain LED states")
+
+
+def humanize_time(secs):
+    mins, secs = divmod(secs, 60)
+    hours, mins = divmod(mins, 60)
+    return '%02d:%02d:%02d' % (hours, mins, secs)
+
 def printDailyState(url, header):
     r = requests.get(url + "/daily_states")
     sl = r.json()
@@ -157,7 +162,9 @@ def printDailyState(url, header):
         print("(%s)" %s["id"])
         for l in s["timeStateMap"]:
             print("State ID: %s" %l["state"])
-            print("Seconds from Midnight: %s" %l["time"])
+            seconds = int(l["time"])
+            time = humanize_time(seconds)
+            print("Start Time: %s" %time)
         print("-------------------")
 
 def initialize(url, header):
@@ -202,46 +209,49 @@ def configure_Zones(url, header):
     modifyoption = 0
     subprocess.call("clear", shell = True);
     PL = getProfiles(url, header)
-    print("Current Profiles:")
-    for p in PL:
-        print("-----------------------------------------------------------")
-        print("Name: %s" %p["name"])
-        print("Description: %s" %p["description"])
-        print("Zones: %s" %p["zones"])
-        print("-----------------------------------------------------------")
+
+    r = requests.get(url + "/daily_states")
+
+    numDailyStates = len(r.json())
+
+    printProfiles(url,header)
 
     SelectedProfile = str(raw_input("Which Profile Would you like to edit zones for(1-%s): " %len(PL)))
-    while option != 4:
+
+    while option != "4":
         print("|------------------------Zone Menu------------------------|")
-        if len(PL) < 1:
-            print("Please run the initialize option on the main menu first")
-        else:
-            option1 = input("|Add(1) | Edit(2) | Add LEDs To Zone (3)|\n|Go to main Menu (4)|\n|Selection:")
+        option = str(raw_input("Add Zone(1) | Assign Daily State |  Edit (2) | Select new profile(3)| Return to main menu(4) |\n|Selected: "))
 
-            if option1 == 1:
-                return
-            elif option1 == 2:
-                r = requests.get(url + "/profiles/%i" % option)
+        if option == "1":
+            zoneName = str(raw_input("What would you like the zone called? "))
+            des = str(raw_input("Enter in description: "))
+            startLED = str(raw_input("number of first LED in the zone"))
+            endLED = str(raw_input("Number of last LED in the zone"))
+            day = str(raw_input("What Day do you want the zone to be active (Sunday(0)-Saturday(6)): " ))
+            printDailyState(url, header)
+            dailyState = str(raw_input("Select Daily State to apply to zone(1-%s):" %numDailyStates))
 
-                selected_profile = r.json()
+            #creating the zone
+            j = {"name": zoneName, "description": des}
+            r = requests.post(url + "/profiles/%s/zones/add" %SelectedProfile)
 
-                print("-----------------------------------------------------------")
-                print("Selected Profile (%i)" % option)
-                print("Name: %s" % selected_profile["name"])
-                print("Description: %s" % selected_profile["description"])
-                print("Zones: %s "% selected_profile["zones"])
-                print("-----------------------------------------------------------")
-                modifyoption = input("Add Zone To Profile (1) | Add LEDs to Zone (2)|\n|Selection:")
+            zoneid = r.json()
 
-                if option == 1:
-                    return
-                elif option == 2:
-                    return
-            elif option1 == 3:
-                return
+            print(zoneid)
 
-            elif option1 == 4:
-                return
+
+
+        if option == "2":
+
+        if option == "3:"
+            printProfiles(url, header)
+            SelectedProfile = str(raw_input("Select profile(1-%s): " %%len(PL)))
+
+
+
+
+
+
 def configure_profiles(url,header):
 
     subprocess.call("clear", shell = True);
@@ -383,11 +393,11 @@ def configure_daily_state(url, header):
 
     r = requests.get(url + "/led_states")
     numLEDStates = len(r.json())
-    r = requests.get(url + "/daily_state")
-
+    r = requests.get(url + "/daily_states")
     numDailyStates = len(r.json())
 
     while option != "5":
+        loopCount = 0
         print("|---------------Daily State Configuration----------------|")
         option = str(raw_input("| Add (1) | Edit (2) | Delete (3)| Apply Daily State To Profile(4) |\n | Return to Main Menu(5) |\n| Selected: "))
 
@@ -410,21 +420,61 @@ def configure_daily_state(url, header):
             print_request(r)
 
         if option == "2":
+
+            while suboption != "3":
+                loopCount = 0
+                printDailyState(url, header)
+                suboption = str(raw_input("Add State/Time to Existing Daily State (1) | Edit Existing Daily State (2) | Return to Daily State Menu (3): "))
+
+                if suboption == "1":
+
+                    D_State = str(raw_input("Which daily state would you like to add to? (1-%s)" %numDailyStates))
+
+                    j = []
+                    numDailyAdd = str(raw_input("How many dailystates would you like to add? "))
+
+                    printDailyState(url, header)
+                    while loopCount < int(numDailyAdd):
+
+                        time = str(raw_input("Enter in time to start (HH:MM) (0-24):(0-59): "))
+                        seconds_From_Midnight = convertTimeString(time)
+                        printLEDState(url,header)
+                        state = str(raw_input("LED State(0-%s):" %numLEDStates ))
+                        j.append({"time": seconds_From_Midnight, "state": int(state)})
+                        loopCount += 1
+
+                    r = requests.put(url + "/daily_states/%s/led_states/add" %D_State, json=j, headers=header, timeout=REQUEST_TIMEOUT)
+                    print_request(r)
+
+
+                if suboption == "2":
+                    printDailyState(url, header)
+                    D_State = str(raw_input("Which daily state would you like to edit? (1-%s)" %numDailyStates))
+
+                    j = []
+                    numDailyAdd = str(raw_input("How many daily states would you like to add? "))
+
+                    while loopCount < int(numDailyAdd):
+                        printDailyState(url, header)
+                        time = str(raw_input("Enter in time to start (HH:MM) (0-24):(0-59): "))
+                        seconds_From_Midnight = convertTimeString(time)
+                        printLEDState(url,header)
+                        state = str(raw_input("LED State(0-%s):" %numLEDStates ))
+                        j.append({"time": seconds_From_Midnight, "state": int(state)})
+                        loopCount += 1
+
+                    r = requests.patch(url + "/daily_states/%s/edit" %D_State, json=j, headers=header, timeout=REQUEST_TIMEOUT)
+                    print_request(r)
+
+
+        if option == "3":
             printDailyState(url, header)
-
-
-
-
-
-            return
-        if option == "3"
-            printDailyState(url, header)
-            option1 = str("Which Daily State Would you like to delete? (1-%s)" %numDailyStates)
+            option1 = str(raw_input("Which Daily State Would you like to delete? (1-%s)" %numDailyStates))
             confirm = str(raw_input("Do you wish to proceed? [y/N]:"))
             if (confirm.lower() == 'y'):
-                   r = requests.delete(url + "/daily_state/%s/delete" %option1)
+                   r = requests.delete(url + "/daily_states/%s/delete" %option1)
                    if(str(r.status_code) == "200"):
-                       print("Daily State Deleted!)
+                       print("Daily State Deleted!")
 
         if option == "4":
             printDailyState(url, header)
