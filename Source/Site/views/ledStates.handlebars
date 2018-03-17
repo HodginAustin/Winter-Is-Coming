@@ -38,7 +38,7 @@
                 <!-- ID -->
                 <td>{{ id }}</td>
 
-                <form name="patch_ledState" action="/ledStates" method="POST">
+                <form name="patch_ledState" action="/ledStates/edit" method="POST">
                   <!-- Hidden element for ID -->
                   <input type="number" name="id" value="{{ id }}" hidden>
 
@@ -73,7 +73,7 @@
 
                   <!-- Save -->
                   <td class="row_update_{{id}} hidden">
-                    <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info" onclick="edit_mode({{id}})">Save</button>
+                    <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info">Save</button>
                   </td>
                 </form>
 
