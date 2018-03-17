@@ -29,6 +29,9 @@ app.set('port', process.argv[2]); /* sets port to what is given in command line 
 
 
 // Base pages
+app.get('/', function(req, res){
+  res.redirect('/plant');
+});
 app.use('/plant', require('./js/plant.js'));
 app.use('/profiles', require('./js/profiles.js'));
 app.use('/zones', require('./js/zones.js'));
