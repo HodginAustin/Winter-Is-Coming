@@ -597,9 +597,3 @@ void DataParser::clear()
     db->remove_all<Zone>();
     db->remove_all<Profile>();
 }
-
-// Clean up
-void DataParser::clean_up()
-{
-    clear();
-}
