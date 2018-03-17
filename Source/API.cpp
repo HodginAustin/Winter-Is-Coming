@@ -1329,29 +1329,35 @@ void API::post_daily_state(REQUEST, RESPONSE)
 
     // Data
     DailyState ds = j_in;
-    DailyState* dailyState = new DailyState(ds);
-    InternalState::add_daily_state(dailyState);
+
+    // Build response
+    json j_out;
+    Http::Code code = Http::Code::Not_Found;
 
     // Insert in DB
+    DailyState* dailyState = new DailyState(ds);
+    InternalState::add_daily_state(dailyState);
     DataParser::insert(dailyState);
+
     for (auto element : dailyState->get_time_state_map()) {
-        LEDState* ls = element.second;
         unsigned int time_of_day = element.first;
+        LEDState* ls = element.second;
 
         if (ls) {
             if (time_of_day >= 0 && time_of_day <= 24*60*60) {
+    
                 DailyStateToLEDState DStoLS;
                 DStoLS = {dailyState->get_id(), time_of_day, ls->get_id()};
                 DataParser::insert(DStoLS);
-            }
-        }
+
+                j_out = json{{"id", dailyState->get_id()}};
+                code = Http::Code::Ok;
+            } else { j_out["time_out_of_bounds"] = { {"min:", 0}, {"max:", 24*60*60}, {"given:", time_of_day} }; }
+        } else { j_out.push_back(json{"led_state", "unknown id, daily state still added"}); }
     }
 
-    // Build response
-    json j_out = json{{"id", dailyState->get_id()}};
-
     // Send response
-    response.send(Http::Code::Ok, j_out.dump());
+    response.send(code, j_out.dump());
 }
 void API::patch_daily_state(REQUEST, RESPONSE)
 {
