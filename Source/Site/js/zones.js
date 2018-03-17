@@ -8,7 +8,10 @@ module.exports = function () {
   const http = require("http");
 
   /* Connection settings */
-  var conn = require('./global/connection.js');
+  let conn = require('./global/connection.js');
+
+  /* Current profile for navbar */
+  let currentProfile = require('./global/currentProfile.js');
 
   /*gets all profiles. Uses async to collect data and complete to render */
   function getAllProfiles(res, context, complete) {
@@ -27,29 +30,16 @@ module.exports = function () {
     });
   }
 
-  /*gets current profile. Uses async to collect data and complete to render
-    THIS FUNCTION SHOULD BE INCLUDED IN ALL PAGES FOR THE NAVBAR CURRENT PROFILE*/
-  function getCurrentProfile(res, context, complete) {
-    var current = conn.url + conn.port + '/' + conn.currentProfile;
-    http.get(current, res => {
-      res.setEncoding("utf8");
-      body = "";
-      res.on("data", data => {
-        body += data;
-      });
-      res.on("end", () => {
-        body = JSON.parse(body);
-        context.currentProfile = body;
-        complete();
-      });
-    });
-  }
-
   router.get('/', function (req, res) {
     var callbackCount = 0;
     var context = {};
+
+    /* Get all profiles */
     getAllProfiles(res, context, complete);
-    getCurrentProfile(res, context, complete);
+
+    /* Get current profile */
+    currentProfile.get(res, context, complete);
+
     function complete() {
       console.log("in complete");
       callbackCount++;
@@ -61,7 +51,5 @@ module.exports = function () {
   });
 
 
-
   return router;
-
 }();

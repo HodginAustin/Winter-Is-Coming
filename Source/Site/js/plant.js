@@ -9,55 +9,27 @@ module.exports = function () {
   const http = require("http");
 
   /* Connection settings */
-  var conn = require('./global/connection.js');
+  let conn = require('./global/connection.js');
   
-  /*gets all profiles. Uses async to collect data and complete to render */
-  function getAllProfiles(res, context, complete) {
-    var profileURL = conn.url + conn.port + '/' + conn.profiles;
-    http.get(profileURL, res => {
-      res.setEncoding("utf8");
-      body = "";
-      res.on("data", data => {
-        body += data;
-      });
-      res.on("end", () => {
-        body = JSON.parse(body);
-        context.Profiles = body;
-        complete();
-      });
-    });
-  }
-
-  /*gets current profile. Uses async to collect data and complete to render */
-  function getCurrentProfile(res, context, complete) {
-    var current = conn.url + conn.port + '/' + conn.currentProfile;
-    http.get(current, res => {
-      res.setEncoding("utf8");
-      body = "";
-      res.on("data", data => {
-        body += data;
-      });
-      res.on("end", () => {
-        body = JSON.parse(body);
-        context.currentProfile = body;
-        complete();
-      });
-    });
-  }
-
+  /* Current profile for navbar */
+  let currentProfile = require('./global/currentProfile.js');
+  
   router.get('/', function (req, res) {
     var callbackCount = 0;
     var context = {};
-    getAllProfiles(res, context, complete);
-    getCurrentProfile(res, context, complete);
+
+    /* Get current profile */
+    currentProfile.get(res, context, complete);
+
     function complete() {
       console.log("in complete");
       callbackCount++;
-      if (callbackCount >= 2) {
-        console.log("");
+      if (callbackCount >= 1) {
         res.render('plant', context);
       }
     }
   });
+
+
   return router;
 }();

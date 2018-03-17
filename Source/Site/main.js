@@ -8,7 +8,7 @@ var request = require('request');
 var app = express();
 
 /* Connection settings */
-var conn = require('./js/global/connection.js');
+let conn = require('./js/global/connection.js');
 
 app.engine('handlebars', handlebars({
   defaultLayout: 'main',
