@@ -536,7 +536,7 @@ bool DataParser::get_all()
             }
             continue;
         }
-        if (!ledState) {
+        if (dtl.led_state_id < 0) {
             // Get current time
             time(&sysTime);
             timeInfo=localtime(&sysTime);
