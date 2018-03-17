@@ -1,78 +1,166 @@
-<div class="profiles">
-  <h3 class="text-center"> Current profile:</h3>
-  <table class="table table-striped">
-    <thead>
-      <th>Name: </th>
-      <th>ID: </th>
-      <th>Description: </th>
-      <th>Zones: </th>
-    </thead>
-
-    <tbody>
-      {{#currentProfile}}
-      <tr>
-        <td>{{name}}</td>
-        <td>{{id}}</td>
-        <td>{{description}}</td>
-        <td>{{zones}}</td>
-        <td><a href="/profiles/{{id}}">Edit</a></td><div>
-
-      </tr>
-      {{/currentProfile}}
-    </tbody>
-  </table>
-
-
-  <h3 class="text-center">All Profiles: </h3>
-<table class="table table-striped">
-  <thead>
-    <th>Name: </th>
-    <th>ID: </th>
-    <th>Description: </th>
-    <th>Zones: </th>
-  </thead>
-
-  <tbody>
-    {{#each Profiles}}
-    <tr>
-      <td>{{name}}</td>
-      <td>{{id}}</td>
-      <td>{{description}}</td>
-      <td>{{zones}}</td>
-      <td><a href="/profiles/{{id}}">Edit</a></td>
-    </tr>
-    {{/each}}
-  </tbody>
-</table>
-
-<div id="addProfileForm" style="display: none">
-<h3 class="text-center">Add profile:</h3>
-<form name="update-profile" action="/profiles" method="POST">
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input type=text class="form-control" id="name" placeholder="Enter name"></inut>
-  </div>
-  <div class="form-group">
-    <label for="description">Description</label>
-    <input type="text" class="form-control" id="description" placeholder="Enter Description"/>
-  </div>
-  <div class="form-group">
-    <label for="zones">Zones</label>
-    <input type="text" class="form-control" id="zones" placeholder="Enter Zones (comma sperated)"/>
-  </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-</div> <!-- hide/unhide div -->
 <br />
-<button onclick="addProfileFormToggle()">Add profile</button>
+<br />
+<br />
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Profiles</h4>
+          <div class="row">
+            <div class="col-12">
+              <p class="right">
+                Profiles are used to set commonly used daily, and LED states on specific zones
+              </p>
+            </div>
+          </div>
+          <h4> Current profile:</h4>
+          <table class="table table-striped">
+            <thead>
+              <th>Name: </th>
+              <th>ID: </th>
+              <th>Description: </th>
+              <th>Zones: </th>
+            </thead>
+
+            <tbody>
+              {{#currentProfile}}
+                <tr>
+                  <form name="patch_profile" action="/profiles/edit" method="POST">
+                    <td class="row_display_{{id}}">{{name}}</td>
+                    <td class="row_update_{{id}} hidden">
+                      <input type="text" class="from-control" style="width:80px;" name="name" value={{name}} />
+                    </td>
+                    <td class="row_display_{{id}}">{{id}}</td>
+                    <td class="row_update_{{id}} hidden">
+                      <input type="number" class="form-control" style="width:80px;" name=id value={{id}} min="0" />
+                    </td>
+                    <td class="row_display_{{id}}">{{description}}</td>
+                    <td class="row_update_{{id}} hidden">
+                      <input type="text" class="from-control" style="width:80px;" name="description" value={{description}} />
+                    </td>
+                    <td class="row_display_{{id}}">{{zones}}</td>
+                    <td class="row_update_{{id}} hidden">
+                      <input type="text" class="form-control" style="width:80px;" name="zones" value= {{zones}} />
+                    </td>
+                    <td>
+                      <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
+                    </td>
+                    <div>
+                      <!-- Save -->
+                      <td class="row_update_{{id}} hidden">
+                        <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info">Save</button>
+                      </td>
+                  </form>
+
+                </tr>
+              {{/currentProfile}}
+            </tbody>
+          </table>
+
+          <br />
+          <h4>All Profiles: </h4>
+          <table class="table table-striped">
+            <thead>
+              <th>Name: </th>
+              <th>ID: </th>
+              <th>Description: </th>
+              <th>Zones: </th>
+            </thead>
+
+            <tbody>
+              {{#each Profiles}}
+                <tr>
+                  <form name="patch_profile" action="/profiles/edit" method="POST">
+                    <td class="row_display_{{id}}">{{name}}</td>
+                    <td class="row_update_{{id}} hidden">
+                      <input type="text" class="from-control" style="width:80px;" name="name" value= {{name}} />
+                    </td>
+                    <td class="row_display_{{id}}">{{id}}</td>
+                    <td class="row_update_{{id}} hidden">
+                      <input type="number" class="form-control" style="width:80px;" name=id value= {{id}} min="0" />
+                    </td>
+                    <td class="row_display_{{id}}">{{description}}</td>
+                    <td class="row_update_{{id}} hidden">
+                      <input type="text" class="from-control" style="width:80px;" name="name" value= {{description}} />
+                    </td>
+                    <td class="row_display_{{id}}">{{zones}}</td>
+                    <td class="row_update_{{id}} hidden">
+                      <input type="text" class="form-control" style="width:80px;" name="zones" value= {{zones}} />
+                    </td>
+                    <td>
+                      <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
+                    </td>
+
+                      <!-- Save -->
+                      <td class="row_update_{{id}} hidden">
+                        <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info">Save</button>
+                      </td>
+                  </form>
+
+                  <!-- Delete -->
+                  <form name="delete_profile" action="/profiles/delete" method="POST">
+                    <!-- Hidden element for ID -->
+                    <input type="number" name="id" value="{{ id }}" hidden>
+                    <td class="row_display_{{id}}">
+                      <button type="submit" id="row_delete_{{id}}" class="btn text-white badge badge-danger">Delete</button>
+                    </td>
+                  </form>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+          <br />
+          <h5>Add new profile</h5>
+          <!-- New profile -->
+          <form name="post_profile" action="/profiles/add" method="POST">
+            <div class="input-group mb-3">
+              <!-- name -->
+              <input type="text" class="form-control" placeholder="Name" name="name"  />
+              <!-- description -->
+              <input type="text" class="form-control" placeholder="Description" name="description" />
+              <!-- Zones -->
+              <input type="text" class="form-control" placeholder="Zones" name="zones"  />
+
+              <!-- Submit -->
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">Submit</button>
+              </div>
+            </div>
+          </form>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-function addProfileFormToggle(){
-  var hide = document.getElementById("addProfileForm")
-  if(hide.style.display == "none"){
-    hide.style.display = "block";
-  } else{
-    hide.style.display = "none";
+  function edit_mode(id) {
+    if ($('.row_update_' + id).hasClass("hidden")) {
+      $('.row_update_' + id).removeClass("hidden");
+      $('.row_display_' + id).addClass("hidden");
+      // Edit button to cancel
+      $('#row_edit_' + id).text("Cancel");
+      $('#row_edit_' + id).removeClass("badge-success");
+      $('#row_edit_' + id).addClass("badge-secondary");
+    } else {
+      $('.row_update_' + id).addClass("hidden");
+      $('.row_display_' + id).removeClass("hidden");
+      // Edit button to edit
+      $('#row_edit_' + id).text("Edit");
+      $('#row_edit_' + id).removeClass("badge-secondary");
+      $('#row_edit_' + id).addClass("badge-success");
+    }
   }
-}
+  // function addProfileFormToggle(){
+  //   var hide = document.getElementById("addProfileForm")
+  //   if(hide.style.display == "none"){
+  //     hide.style.display = "block";
+  //   } else{
+  //     hide.style.display = "none";
+  //   }
+  // }
 </script>

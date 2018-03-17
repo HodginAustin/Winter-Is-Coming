@@ -14,6 +14,9 @@ module.exports = function () {
   /* Current profile for navbar */
   let currentProfile = require('./global/currentProfile.js');
 
+  /* Control service request */
+  let controlService = require('./global/controlServiceRequest.js');
+
   /*gets all profiles. Uses async to collect data and complete to render */
   function getAllProfiles(res, context, complete) {
     var profileURL = conn.url + conn.port + '/' + conn.profiles;
@@ -31,31 +34,11 @@ module.exports = function () {
     });
   }
 
-  function getProfile(res, context, id, complete) {
-    var profileURL = conn.url + conn.port + '/' + conn.profiles + "/" + id;
-    http.get(profileURL, res => {
-      res.setEncoding("utf8");
-      body = "";
-      res.on("data", data => {
-        console.log(data);
-        body += data;
-      });
-      res.on("end", () => {
-        body = JSON.parse(body);
-        context.Profile = body
-        complete();
-      });
-    });
-
-  }
-
   router.get('/', function (req, res) {
     var callbackCount = 0;
     var context = {};
-
     /* Get all profiles */
     getAllProfiles(res, context, complete);
-
     /* Get current profile */
     currentProfile.get(res, context, complete);
 
@@ -69,17 +52,51 @@ module.exports = function () {
     }
   });
 
-  router.get('/:id', function (req, res) {
-    var callbackCount = 0;
-    var context = {};
-    console.log("id: " + req.params.id);
-    getProfile(res, context, req.params.id, complete);
-    function complete() {
-      callbackCount++;
-      if (callbackCount >= 1) {
-        res.render('update-profile', context);
-      }
-    }
+  router.post('/add', function(req, res){
+        console.log("POST ADD PROFILE");
+        let j = {};
+        j['name'] = req.body.name;
+        j['description'] = req.body.description;
+        j['zones'] = req.body.zones;
+
+        var options = {
+          method: "POST",
+          uri: conn.url + conn.port + "/" + conn.profiles + "/add",
+          json: j
+        };
+        controlService.makeRequest(options, function(){
+          res.redirect('back');
+        });
+     });
+
+
+  router.post('/edit', function(req, res){
+    let id = req.body.id;
+    console.log("PATCH profile " + id);
+    let j = {};
+    j['name'] = req.body.name;
+    j['description'] = req.body.description;
+    j['zones'] = req.body.zones;
+    var options = {
+      method: "PATCH",
+      uri: conn.url + conn.port + "/" + conn.profiles + "/" + id + "/edit",
+      json: j
+    };
+    controlService.makeRequest(options, function(){
+      res.redirect('back');
+    });
+  });
+
+  router.post('/delete', function(req, res){
+    let id = req.body.id;
+    console.log("DELETE Profile " + id);
+    var options = {
+      method: "DELETE",
+      uri: conn.url + conn.port + "/" + conn.profiles + "/" + id + "/delete"
+    };
+    controlService.makeRequest(options, function(){
+      res.redirect('back');
+    });
   });
 
 

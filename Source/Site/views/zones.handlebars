@@ -1,5 +1,34 @@
-<h1>Zones</h1>
+<br />
+<br />
+<br />
+<div class=container>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Zones</h4>
+          <div class="row">
+            <div class="col-12">
+              <p class="right">
+                Zones represent an Daily state on a set of LED's. These can be cross controller and cross lED strip
 
-<p>
-  This page allows you to edit or create zones
-</p>
+              </p>
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+              <th>ID</th>
+            </thead>
+            <tbody>
+              {{#each Zone}}
+              <tr>
+                <td>{{id}}</td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
