@@ -1,7 +1,143 @@
-<h2>Daily States</h2>
+<!-- Daily States -->
+</br>
+</br>
+</br>
 
-<p>
-Daily states go here!
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Daily States</h4>
 
-Add hours and led states!
-</p>
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="right">A Daily State represents a single "day" unit. This "day" can be applied to any or all 7 days
+                                of the week. Each Daily State is a mapping between a time, and an
+                                <a href="/ledStates">LED state</a>. A list of these mappings create a daily schedule. As the day passes, the appropriate
+                                LED state will be selected and applied to the system.</p>
+                        </div>
+                    </div>
+
+                    <!-- Existing Daily States -->
+
+                    {{#each DailyStates}}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Daily State {{id}}</h5>
+                                    <!-- Existing LED States -->
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Time</th>
+                                                <th>LEDState</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{#each timeStateMap}}
+                                            <!-- Display or update row -->
+                                            <tr>
+                                                <!-- Time -->
+                                                <td class="disp_time">{{ time }}</td>
+                                                <!-- State -->
+                                                <td>
+                                                    <a href="/ledStates/{{state}}" class="btn text-white badge badge-secondary">ID:{{ state }}</a>
+                                                </td>
+
+                                                <!-- Delete -->
+                                                <form name="delete_mapping" action="/dailyStates/delete" method="POST">
+                                                    <!-- Hidden element for ID -->
+                                                    <input type="number" name="time" value="{{ time }}" hidden>
+
+                                                    <td>
+                                                        <button type="submit" id="row_delete_{{time}}" class="btn text-white badge badge-danger">Delete</button>
+                                                    </td>
+                                                </form>
+
+                                            </tr>
+                                            {{/each}}
+                                        </tbody>
+                                    </table>
+
+                                    <!-- New LED state -->
+                                    </br>
+                                    <h5>Add new</h5>
+                                    <form name="post_timeStateMap" action="/dailyStates/addMapping" method="POST">
+                                        <div class="input-group mb-3">
+                                            <!-- Time -->
+                                            <input type="number" class="form-control" placeholder="Time(Seconds after midnight)" name="time" min="0" max="86400">
+                                            <!-- State -->
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text" for="inputGroupSelect01">LEDState</label>
+                                            </div>
+                                            <select class="custom-select" id="inputGroupSelect01">
+                                                <option value="true" selected>On</option>
+                                                <option value="false">Off</option>
+                                            </select>
+
+                                            <!-- Submit -->
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" type="submit">Submit</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+
+
+                    <!-- New Daily state -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        to_am_pm();
+    });
+    function to_am_pm() {
+        let noon = 12 * 60 * 60;
+        let last_second = 24 * 60 * 60;
+        $('.disp_time').each(function (i, obj) {
+            console.log(obj);
+            let normal_time = "";
+            let init_time = parseInt($(this).text());
+
+            if (init_time >= 0 && init_time < last_second) {
+
+                // AM/PM
+                let ampm = (init_time > noon ? "PM" : "AM");
+                // Decimal
+                let dec = (init_time / 60 / 60);
+                // Hour
+                let hour = Math.floor(dec);
+                // MinuteSecond
+                let minsec = (dec - hour) * 60;
+                // Minute
+                let minute = Math.floor(minsec);
+                // Second
+                let second = Math.floor((minsec - minute) * 60);
+
+                // Hour adjustment
+                hour = (hour > noon ? hour - 12 : hour);
+                hour = (hour == 0 ? 12 : hour);
+
+                normal_time = hour + ":" + minute + (second > 0 ? ":" + second : "") + " " + ampm;
+            } else {
+                normal_time = init_time + "s. after midnight";
+            }
+
+            $(this).text(normal_time);
+        });
+    };
+
+</script>
