@@ -536,7 +536,7 @@ bool DataParser::get_all()
             }
             continue;
         }
-        if (!ledState) {
+        if (dtl.led_state_id < 0) {
             // Get current time
             time(&sysTime);
             timeInfo=localtime(&sysTime);
@@ -596,10 +596,4 @@ void DataParser::clear()
     db->remove_all<DailyState>();
     db->remove_all<Zone>();
     db->remove_all<Profile>();
-}
-
-// Clean up
-void DataParser::clean_up()
-{
-    clear();
 }

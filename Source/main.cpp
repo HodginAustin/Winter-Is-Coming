@@ -76,7 +76,6 @@ int main(int argc, char** argv)
     // Cleanup
     StateComposer::clean_up();
     InternalState::clean_up();
-    DataParser::clean_up();
     api->clean_up();
     free(api);
 

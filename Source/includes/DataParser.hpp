@@ -76,9 +76,6 @@ public:
     static void remove(DailyState*, int);
 
     static void clear();
-
-    // Cleanup
-    static void clean_up();
 };
 
 #endif //__DATA_PARSER_H_INCLUDED__
