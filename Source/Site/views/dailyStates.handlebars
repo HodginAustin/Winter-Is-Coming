@@ -28,7 +28,7 @@
                                 <div class="card-body">
                                     <h5 class="card-title">Daily State {{id}}</h5>
                                     <!-- Existing LED States -->
-                                    <table class="table">
+                                    <table class="table" id="timeStateMap">
                                         <thead>
                                             <tr>
                                                 <th>Time</th>
@@ -49,9 +49,10 @@
                                                 </td>
 
                                                 <!-- Delete -->
-                                                <form name="delete_mapping" action="/dailyStates/delete" method="POST">
-                                                    <!-- Hidden element for ID -->
-                                                    <input type="number" name="time" value="{{ time }}" hidden>
+                                                <form name="delete_mapping" action="/dailyStates/deleteMapping" method="POST">
+                                                    <!-- Hidden element for ID and time -->
+                                                    <td><input type="number" name="id" class="hidden" value="{{ ../id }}"></td>
+                                                    <td><input type="number" name="time" class="hidden" value="{{ time }}"></td>
 
                                                     <td>
                                                         <button type="submit" id="row_delete_{{time}}" class="btn text-white badge badge-danger">Delete</button>
@@ -67,6 +68,9 @@
                                     </br>
                                     <h5>Add new time/state mapping</h5>
                                     <form name="post_timeStateMap" action="/dailyStates/addMapping" method="POST">
+                                        <!-- Hidden element for ID -->
+                                        <input type="number" name="id" value="{{ id }}" hidden>
+
                                         <div class="input-group mb-3">
                                             <!-- Time -->
                                             <input type="number" class="form-control" placeholder="Hour" name="hour" min="0" max="12">
@@ -80,9 +84,9 @@
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text" for="inputGroupSelect01">LEDState</label>
                                             </div>
-                                            <select class="custom-select" id="inputGroupSelect01">
+                                            <select class="custom-select" name="state">
                                                 {{#each ../LEDStates}}
-                                                <option value="">{{id}}</option>
+                                                <option value="{{id}}">{{id}}</option>
                                                 {{/each}}
                                             </select>
 
@@ -110,6 +114,7 @@
 <script>
     $(document).ready(function () {
         to_am_pm();
+        sortTable($('#timeStateMap'),'asc');
     });
     function to_am_pm() {
         let noon = 12 * 60 * 60;
@@ -137,7 +142,7 @@
                 hour = (hour > noon ? hour - 12 : hour);
                 hour = (hour == 0 ? 12 : hour);
 
-                normal_time = hour + ":" + minute + (second > 0 ? ":" + second : "") + " " + ampm;
+                normal_time = hour + ":" + minute + (minute < 10 ? "0" : "") + (second > 0 ? ":" + second + (second < 10 ? "0" : "") : "") + " " + ampm;
             } else {
                 normal_time = init_time + "s. after midnight";
             }
@@ -145,5 +150,18 @@
             $(this).text(normal_time);
         });
     };
+
+    function sortTable(table, order) {
+        var asc = order === 'asc',
+            tbody = table.find('tbody');
+
+        tbody.find('tr').sort(function (a, b) {
+            if (asc) {
+                return $('td:first', a).text().localeCompare($('td:first', b).text());
+            } else {
+                return $('td:first', b).text().localeCompare($('td:first', a).text());
+            }
+        }).appendTo(tbody);
+    }
 
 </script>

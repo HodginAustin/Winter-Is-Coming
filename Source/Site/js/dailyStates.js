@@ -21,6 +21,17 @@ module.exports = function () {
     /* Daily State functions */
     let dailyStates = require('./global/dailyStates.js');
 
+    /* Converts hour, minute, second into seconds after midnight */
+    function get_time(req) {
+        let time = 0;
+        let hour = parseInt(req.body.hour) || 0;
+        let minute = parseInt(req.body.minute) || 0;
+        let second = parseInt(req.body.second) || 0;
+        let ampm = req.body.ampm;
+
+        hour *= (ampm == "pm" ? 12 : 1);
+        return (hour * 60 * 60) + (minute * 60) + (second);
+    }
 
     /* Get page */
     router.get('/', function (req, res) {
@@ -46,21 +57,25 @@ module.exports = function () {
 
 
     /* Add */
-    router.post('/add', function (req, res) {
-        console.log("POST dailyState");
+    router.post('/addMapping', function (req, res) {
+        let dailyStateID = req.body.id;
+
+        console.log("POST dailyState mapping for " + id);
+
+        // Get form data
+        let time = get_time(req);
+        let state = parseInt(req.body.state);
 
         // Build JSON for control service
         let j = {};
-        j['r'] = parseInt(req.body.red);
-        j['g'] = parseInt(req.body.green);
-        j['b'] = parseInt(req.body.blue);
-        j['intensity'] = parseInt(req.body.intensity);
-        j['power'] = req.body.power == "true";
+        j['time'] = time;
+        j['state'] = state;
+        j = [j];
 
         // Patch control service
         var options = {
-            method: "POST",
-            uri: conn.url + conn.port + "/" + conn.dailyStates + "/add",
+            method: "PUT",
+            uri: conn.url + conn.port + "/" + conn.dailyStates + "/" + dailyStateID + "/led_states/add",
             json: j
         };
 
@@ -115,14 +130,15 @@ module.exports = function () {
 
 
     /* Delete */
-    router.post('/delete', function (req, res) {
+    router.post('/deleteMapping', function (req, res) {
         let id = req.body.id;
-        console.log("DELETE dailyState " + id);
+        let time = req.body.time;
+        console.log("DELETE dailyState mapping for " + id);
 
         // Patch control service
         var options = {
             method: "DELETE",
-            uri: conn.url + conn.port + "/" + conn.dailyStates + "/" + id + "/delete"
+            uri: conn.url + conn.port + "/" + conn.dailyStates + "/" + id + "/led_states/" + time + "/delete"
         };
 
         // Make request
