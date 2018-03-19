@@ -133,7 +133,7 @@ void API::setup_routes()
     Routes::Get(router, "leds/:id/controller", Routes::bind(&API::get_led_controller, this));
     Routes::Post(router, "leds/add", Routes::bind(&API::post_led, this));
     Routes::Patch(router, "leds/:id/edit", Routes::bind(&API::patch_led, this));
-    Routes::Delete(router, "leds/:id/delete", Routes::bind(&API::delete_led, this));
+    Routes::Delete(router, "leds/delete", Routes::bind(&API::delete_led, this));
 
     // Controller routes
     Routes::Get(router, "controllers", Routes::bind(&API::get_controllers, this));
@@ -914,23 +914,28 @@ void API::delete_led(REQUEST, RESPONSE)
     // Log request
     log_req(request);
 
-    // Parameters
-    auto id = request.param(":id").as<unsigned int>();
-
+    // Decode JSON
+    json j_in = json::parse(request.body());
+    
     // Data
-    LED* led = InternalState::get_led(id);
     json j_out;
     Http::Code code = Http::Code::Not_Found;
     
-    if (led) {
-        // Remove from DB
-        DataParser::remove(led);
+    for (auto json_id : j_in) {
+        unsigned int id = json_id.get<unsigned int>();
+        LED* led = InternalState::get_led(id);
 
-        // Remove from internal state
-        InternalState::delete_led(led);
+        // Validation
+        if (led) {
+            // Remove from DB
+            DataParser::remove(led);
 
-        code = Http::Code::Ok;
-    } else { j_out.push_back(json{"led", id}); }
+            // Remove from internal state
+            InternalState::delete_led(led);
+            
+            code = Http::Code::Ok;
+        } else { j_out.push_back(json{"led", id}); }
+    }  
 
     // Send response
     response.send(code, j_out.dump());
