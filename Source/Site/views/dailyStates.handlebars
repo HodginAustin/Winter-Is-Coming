@@ -74,10 +74,10 @@
                                                 <form name="delete_mapping" action="/dailyStates/deleteMapping" method="POST">
                                                     <!-- Hidden element for ID and time -->
                                                     <td>
-                                                        <input type="number" name="id" class="hidden" value="{{ ../id }}">
+                                                        <input type="number" name="id" class="hidden" value="{{ ../id }}" required>
                                                     </td>
                                                     <td>
-                                                        <input type="number" name="time" class="hidden" value="{{ time }}">
+                                                        <input type="number" name="time" class="hidden" value="{{ time }}" required>
                                                     </td>
 
                                                     <td>
@@ -99,10 +99,10 @@
 
                                         <div class="input-group mb-3">
                                             <!-- Time -->
-                                            <input type="number" class="form-control" placeholder="Hour" name="hour" min="0" max="12">
-                                            <input type="number" class="form-control" placeholder="Minute" name="minute" min="0" max="59">
+                                            <input type="number" class="form-control" placeholder="Hour" name="hour" min="0" max="12" required>
+                                            <input type="number" class="form-control" placeholder="Minute" name="minute" min="0" max="59" required>
                                             <input type="number" class="form-control" placeholder="Seconds" name="second" min="0" max="59">
-                                            <select class="custom-select">
+                                            <select class="custom-select" required>
                                                 <option value="am">AM</option>
                                                 <option value="pm">PM</option>
                                             </select>
@@ -110,7 +110,7 @@
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text" for="inputGroupSelect01">LEDState</label>
                                             </div>
-                                            <select class="custom-select" name="state">
+                                            <select class="custom-select" name="state" required>
                                                 {{#each ../LEDStates}}
                                                 <option value="{{id}}">{{id}}</option>
                                                 {{/each}}

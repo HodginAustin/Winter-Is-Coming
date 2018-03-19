@@ -46,27 +46,27 @@
                   <!-- Red -->
                   <td class="row_display_{{id}}">{{ r }}</td>
                   <td class="row_update_{{id}} hidden">
-                    <input type="number" class="form-control" style="width:80px;" name="red" value="{{ r }}" min="0" max="255">
+                    <input type="number" class="form-control" style="width:80px;" name="red" value="{{ r }}" min="0" max="255" required>
                   </td>
                   <!-- Green -->
                   <td class="row_display_{{id}}">{{ g }}</td>
                   <td class="row_update_{{id}} hidden">
-                    <input type="number" class="form-control" style="width:80px;" name="green" value="{{ g }}" min="0" max="255">
+                    <input type="number" class="form-control" style="width:80px;" name="green" value="{{ g }}" min="0" max="255" required>
                   </td>
                   <!-- Blue -->
                   <td class="row_display_{{id}}">{{ b }}</td>
                   <td class="row_update_{{id}} hidden">
-                    <input type="number" class="form-control" style="width:80px;" name="blue" value="{{ b }}" min="0" max="255">
+                    <input type="number" class="form-control" style="width:80px;" name="blue" value="{{ b }}" min="0" max="255" required>
                   </td>
                   <!-- Intensity -->
                   <td class="row_display_{{id}}" style="width:80px;">{{ intensity }}%</td>
                   <td class="row_update_{{id}} hidden">
-                    <input type="number" class="form-control" style="width:80px;" name="intensity" value="{{ intensity }}" min="0" max="100">
+                    <input type="number" class="form-control" style="width:80px;" name="intensity" value="{{ intensity }}" min="0" max="100" required>
                   </td>
                   <!-- Power -->
                   <td class="row_display_{{id}}">{{#if power}}On{{/if}}{{#unless power}}Off{{/unless}}</td>
                   <td class="row_update_{{id}} hidden">
-                    <select class="custom-select" name="power">
+                    <select class="custom-select" name="power" required>
                       <option value="true" {{#if power}}selected{{/if}}>On</option>
                       <option value="false" {{#unless power}}selected{{/unless}}>Off</option>
                     </select>
@@ -104,19 +104,19 @@
           <form name="post_ledState" action="/ledStates/add" method="POST">
             <div class="input-group mb-3">
               <!-- Red -->
-              <input type="number" class="form-control" placeholder="Red" name="red" value="{{ r }}" min="0" max="255">
+              <input type="number" class="form-control" placeholder="Red" name="red" value="{{ r }}" min="0" max="255" required>
               <!-- Green -->
-              <input type="number" class="form-control" placeholder="Green" name="green" value="{{ g }}" min="0" max="255">
+              <input type="number" class="form-control" placeholder="Green" name="green" value="{{ g }}" min="0" max="255" required>
               <!-- Blue -->
-              <input type="number" class="form-control" placeholder="Blue" name="blue" value="{{ b }}" min="0" max="255">
+              <input type="number" class="form-control" placeholder="Blue" name="blue" value="{{ b }}" min="0" max="255" required>
               <!-- Intensity -->
-              <input type="number" class="form-control" placeholder="Intensity" name="intensity" value="{{ intensity }}" min="0" max="100">
+              <input type="number" class="form-control" placeholder="Intensity" name="intensity" value="{{ intensity }}" min="0" max="100" required>
 
               <!-- Power -->
               <div class="input-group-prepend">
                 <label class="input-group-text" for="inputGroupSelect01">Power</label>
               </div>
-              <select class="custom-select" id="inputGroupSelect01">
+              <select class="custom-select" id="inputGroupSelect01" required>
                 <option value="true" selected>On</option>
                 <option value="false">Off</option>
               </select>

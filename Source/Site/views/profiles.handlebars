@@ -77,7 +77,7 @@
 
                   <td class="row_display_{{id}}">{{name}}</td>
                   <td class="row_update_{{id}} hidden">
-                    <input type="text" class="from-control" style="width:200px;" name="name" value="{{name}}" />
+                    <input type="text" class="from-control" style="width:200px;" name="name" value="{{name}}" required/>
                   </td>
                   <td>{{id}}</td>
                   <td class="row_display_{{id}}">{{description}}</td>
@@ -116,7 +116,7 @@
           <form name="post_profile" action="/profiles/add" method="POST">
             <div class="input-group mb-3">
               <!-- name -->
-              <input type="text" class="form-control" placeholder="Name" name="name" />
+              <input type="text" class="form-control" placeholder="Name" name="name" required/>
               <!-- description -->
               <input type="text" class="form-control" placeholder="Description" name="description" />
               <!-- Zones -->
@@ -128,7 +128,6 @@
               </div>
             </div>
           </form>
-
 
           </div>
         </div>
