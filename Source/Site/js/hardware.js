@@ -60,12 +60,12 @@ module.exports = function () {
 
                 context = controllersList;
 
+                /* Get current profile */
+                currentProfile.get(res, context, complete);
+                
                 complete();
             }
         }
-
-        /* Get current profile */
-        currentProfile.get(res, context, complete);
 
         function complete() {
             callbackCount++;
