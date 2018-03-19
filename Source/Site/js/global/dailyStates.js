@@ -1,21 +1,22 @@
 /* Get Daily states */
 function getAllDailyStates(res, context, complete) {
-    var conn = require('./connection.js');
+    let conn = require('./connection.js');
     const http = require("http");
 
-    var uri = conn.url + conn.port + '/' + conn.dailyStates;
+    /* Control service request */
+    let controlService = require('./controlServiceRequest.js');
+    
+    // Control service options
+    let options = {
+        method: "GET",
+        uri: conn.url + conn.port + '/' + conn.dailyStates,
+        json: {}
+    };
 
-    http.get(uri, res => {
-        res.setEncoding("utf8");
-        body = "";
-        res.on("data", data => {
-            body += data;
-        });
-        res.on("end", () => {
-            body = JSON.parse(body);
-            context.DailyStates = body;
-            complete();
-        });
+    // Make request
+    controlService.makeRequest(options, function (err, response, body) {
+        context.DailyStates = body;
+        complete();
     });
 }
 

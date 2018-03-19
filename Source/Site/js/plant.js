@@ -22,7 +22,6 @@ module.exports = function () {
     currentProfile.get(res, context, complete);
 
     function complete() {
-      console.log("in complete");
       callbackCount++;
       if (callbackCount >= 1) {
         res.render('plant', context);
