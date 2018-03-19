@@ -102,10 +102,33 @@ def print_request(r):
         print("    status:" + str(r.status_code))
         print("    text:" + r.text)
 
+
+def printAllProfiles(url,header):
+    r = requests.get(url + "/profiles")
+    for p in r.json():
+        print("-----------------------------------------------------------")
+        print("(%s:)" %p["id"])
+        print("Name: %s" %p["name"])
+        print("Description: %s" %p["description"])
+        print("Zones: %s" %p["zones"])
+        print("-----------------------------------------------------------")
+
+def printZones(url,header,profile):
+    r = requests.get(url + "/profiles/%s/zones" %profile)
+    DOW = ["Sunday" , "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    i = 0 
+    for zone in r.json():
+        print("-----------------------")
+        print("(%s)" %zone["id"])
+        print("Name: %s" %zone["name"])
+        i = 0 
+        for day in zone["days"]:
+            print("{}: {}".format(DOW[i], day))
+            i += 1
+
 def printProfiles(url, header, profilenum):
     r = requests.get(url + "/profiles/%s" %profilenum)
     p = r.json()
-    profileCount = 1
     print("-----------------------------------------------------------")
     print("(%s:)" %p["id"])
     print("Name: %s" %p["name"])
@@ -201,60 +224,93 @@ def shutdown(url, header):
     r = requests.get(url + "/shutdown")
     if str(r.status_code) == "200":
         print("Shut down Successful!")
-#TO DO:
+
 def configure_Zones(url, header):
 
     option = 0
     option1 = 0
     modifyoption = 0
-    subprocess.call("clear", shell = True);
+    temp = 0
+    subprocess.call("clear", shell = True)
     PL = getProfiles(url, header)
 
     r = requests.get(url + "/daily_states")
 
     numDailyStates = len(r.json())
-
-    printProfiles(url,header)
-
+    print("Profiles: ")
+    printAllProfiles(url,header)
     SelectedProfile = str(raw_input("Which Profile Would you like to edit zones for(1-%s): " %len(PL)))
 
     while option != "4":
-        print("|------------------------Zone Menu------------------------|")
-        option = str(raw_input("Add Zone(1) | Assign Daily State |  Edit (2) | Select new profile(3)| Return to main menu(4) |\n|Selected: "))
+        temp = 0
+        numOfDays = 0
+        days = []
+        subprocess.call("clear", shell = True)
+        print("|---------------------------------------- Zone Menu -----------------------------------------|")
+        option = str(raw_input("|   Add Zone(1)   |   Assign Daily State(2)   |    Delete (3)   |    Select new profile(3)   |\n| Return to main menu(4) |\n|Selected: "))
 
         if option == "1":
-            zoneName = str(raw_input("What would you like the zone called? "))
+            subprocess.call("clear", shell = True);
+            zoneName = str(raw_input("Name of new Zone:  "))
             des = str(raw_input("Enter in description: "))
-            startLED = str(raw_input("number of first LED in the zone"))
-            endLED = str(raw_input("Number of last LED in the zone"))
-            day = str(raw_input("What Day do you want the zone to be active (Sunday(0)-Saturday(6)): " ))
-            printDailyState(url, header)
-            dailyState = str(raw_input("Select Daily State to apply to zone(1-%s):" %numDailyStates))
 
             #creating the zone
             j = {"name": zoneName, "description": des}
-            r = requests.post(url + "/profiles/%s/zones/add" %SelectedProfile)
-
-            zoneid = r.json()
-
-            print(zoneid)
+            r = requests.post(url + "/profiles/{}/zones/add".format(SelectedProfile), json=j, headers=header, timeout=REQUEST_TIMEOUT)
+            zoneID = json.loads(r.text)['id']
 
 
+            startLED = int(raw_input("Number of first LED in the zone: "))
+            endLED = int(raw_input("Number of last LED in the zone: "))
+
+            printDailyState(url, header)
+            dailyState = str(raw_input("Select Daily State to apply to zone(1-%s):" %numDailyStates))
+
+             #assigning LED's
+            j = range(startLED,endLED)
+            r = requests.put(url + "/profiles/{}/zones/{}/leds/add".format(SelectedProfile, zoneID), json=j, headers=header, timeout=REQUEST_TIMEOUT)
 
         if option == "2":
+            subprocess.call("clear", shell = True)
+            temp = 0
+            days = []
+            numOfDays = 0
+            subprocess.call("clear", shell = True);
+            print("Zones: ")
+            printZones(url,header,SelectedProfile)
+            selectedZone = str(raw_input("Select Zone: "))
+            subprocess.call("clear", shell = True);
+            
+            print("Daily States: ")
+            printDailyState(url,header)
 
-        if option == "3:"
-            printProfiles(url, header)
-            SelectedProfile = str(raw_input("Select profile(1-%s): " %%len(PL)))
+            selectedDailyState = str(raw_input("Select Daily State: "))
+            subprocess.call("clear", shell = True);
+            numOfDays = int(raw_input("How many days do you want want this zone to apply to? "))
+            print("num of days before while: %s" % numOfDays)
+            while temp < numOfDays:
+                print("Temp: %i" %temp)
+                print("num of days in loop: %i" % numOfDays)
+                temp1 = str(raw_input("What day as an integer do you want the zone to be active (Sunday(0)-Saturday(6)): "))
+                r = requests.put(url + "/profiles/{}/zones/{}/day/{}/add/{}".format(SelectedProfile, selectedZone, temp1, selectedDailyState))
+                if(str(r.status_code) == "200"):
+                    print("Daily State added!")
+                temp += 1
 
-
-
-
-
+            
+        if option == "3":
+            subprocess.call("clear", shell = True);
+            printZones(url,header,SelectedProfile)
+            deleteOption = str(raw_input("Which zone do you want to delete? "))
+            confirm = str(raw_input("Do you wish to proceed? [y/N]:"))
+            if (confirm.lower() == 'y'):
+                r = requests.delete(url + "/profiles/{}/zones/{}/delete".format(SelectedProfile, deleteOption))
+                if(str(r.status_code) == "200"):
+                    print("Deleted {} zone from profile {}".format(deleteOption, SelectedProfile))
 
 def configure_profiles(url,header):
 
-    subprocess.call("clear", shell = True);
+    subprocess.call("clear", shell = True)
     r = getProfiles(url, header)
     option = 0
     numProfile = 0
@@ -263,12 +319,13 @@ def configure_profiles(url,header):
 
     numProfile = len(r)
     print("num of profiles %i" %numProfile)
-    while option != "3":
+    while option != "5":
+        subprocess.call("clear", shell = True)
         temp = 1;
-        print("|----------------------------Profile Menu----------------------------|")
-        option = str(raw_input("|Add(1) |Edit(2)|Set Active Profile (3)|\n| Delete (4)|Return to main menu(5)|\n|Selected:"))
+        print("|----------------------------------------Profile Menu----------------------------------------|")
+        option = str(raw_input("|  Add(1)  |  Edit(2)  |  Set Active Profile (3)  |  Delete (4)  |   Return to main menu(5)  |\n|Selected:"))
         if option == "1":
-            print("Adding new profile")
+            subprocess.call("clear", shell = True)
             name = str(raw_input("Please enter the name of new profile: "))
             des = str(raw_input("Please enter a description of the new profile: "))
             j = {"name": name, "description": des}
@@ -276,6 +333,7 @@ def configure_profiles(url,header):
             if(str(r.status_code) == "200"):
                 print("profile Added!")
         elif option == "2":
+            subprocess.call("clear", shell = True)
             while(temp <= numProfile):
                 printProfiles(url, header, temp)
                 temp += 1
@@ -287,6 +345,7 @@ def configure_profiles(url,header):
             if(str(r.status_code) == "200"):
                 print("Profile %s updated!" %option1)
         elif option == "3":
+            subprocess.call("clear", shell = True)
             print("-----------------------------------------------------------")
             print("Current Active Profile:")
             r = requests.get(url + "/current_profile")
@@ -304,6 +363,7 @@ def configure_profiles(url,header):
             if(str(r.status_code) == "200"):
                 print("Profile %s set as active!" %option1)
         elif option == "4":
+            subprocess.call("clear", shell = True)
             while temp <= numProfile:
                 printProfiles(url, header, temp)
                 temp += 1
@@ -315,8 +375,7 @@ def configure_profiles(url,header):
                    r = requests.delete(url + "/profiles/%s/delete" %option1)
                    if(str(r.status_code) == "200"):
                        print("Profile Deleted!")
-        elif option =="5":
-            return
+        
 
 def configure_controler(url, header):
     subprocess.call("clear", shell = True)
@@ -330,8 +389,8 @@ def configure_controler(url, header):
         subprocess.call("clear", shell = True)
         optionCount = 1
         temp = 1
-        print("|----------------------------Controller Menu----------------------------|")
-        option =  str(raw_input("| Add (1) | Add LEDs (2)| Edit (3) | Delete (4) |\n| Return to main menu (5): "))
+        print("|-------------------------------------- Controller Menu -------------------------------------|")
+        option =  str(raw_input("|   Add (1)   |  Add LEDs (2)   |  Edit (3)   |   Delete (4)   |   Return to main menu (5)   |\n|Selection: "))
         #add controller
         if option == "1":
             subprocess.call("clear", shell = True)
@@ -382,10 +441,7 @@ def configure_controler(url, header):
             confirm = str(raw_input("Do you wish to proceed? [y/N]:"))
             if (confirm.lower() == 'y'):
                 r = requests.Delete(url + "/controllers/%i/delete" % optionCount)
-#TO DO:
-def configure_LED(url, headerr):
-    return
-#TO DO:
+
 def configure_daily_state(url, header):
     option = "0"
     suboption = "0"
@@ -396,13 +452,14 @@ def configure_daily_state(url, header):
     r = requests.get(url + "/daily_states")
     numDailyStates = len(r.json())
 
-    while option != "5":
+    while option != "4":
+        subprocess.call("clear", shell = True)
         loopCount = 0
-        print("|---------------Daily State Configuration----------------|")
-        option = str(raw_input("| Add (1) | Edit (2) | Delete (3)| Apply Daily State To Profile(4) |\n | Return to Main Menu(5) |\n| Selected: "))
+        print("|--------------------------------- Daily State Configuration --------------------------------|")
+        option = str(raw_input("|     Add (1)     |     Edit (2)     |     Delete (3)      |      Return to Main Menu(4)     |\n| Selected: "))
 
         if option == "1":
-
+            subprocess.call("clear", shell = True)
             j = []
             suboption = str(raw_input("How many dailystates would you like to add? "))
 
@@ -420,14 +477,14 @@ def configure_daily_state(url, header):
             print_request(r)
 
         if option == "2":
-
+            subprocess.call("clear", shell = True)
             while suboption != "3":
                 loopCount = 0
                 printDailyState(url, header)
-                suboption = str(raw_input("Add State/Time to Existing Daily State (1) | Edit Existing Daily State (2) | Return to Daily State Menu (3): "))
+                suboption = str(raw_input("|     Add State/Time to Existing Daily State (1)     |     Edit Existing Daily State (2)     |\n| Return to Daily State Menu (3) |\n|Selection: "))
 
                 if suboption == "1":
-
+                    subprocess.call("clear", shell = True)                    
                     D_State = str(raw_input("Which daily state would you like to add to? (1-%s)" %numDailyStates))
 
                     j = []
@@ -448,6 +505,7 @@ def configure_daily_state(url, header):
 
 
                 if suboption == "2":
+                    subprocess.call("clear", shell = True)
                     printDailyState(url, header)
                     D_State = str(raw_input("Which daily state would you like to edit? (1-%s)" %numDailyStates))
 
@@ -465,9 +523,8 @@ def configure_daily_state(url, header):
 
                     r = requests.patch(url + "/daily_states/%s/edit" %D_State, json=j, headers=header, timeout=REQUEST_TIMEOUT)
                     print_request(r)
-
-
         if option == "3":
+            subprocess.call("clear", shell = True)
             printDailyState(url, header)
             option1 = str(raw_input("Which Daily State Would you like to delete? (1-%s)" %numDailyStates))
             confirm = str(raw_input("Do you wish to proceed? [y/N]:"))
@@ -476,17 +533,12 @@ def configure_daily_state(url, header):
                    if(str(r.status_code) == "200"):
                        print("Daily State Deleted!")
 
-        if option == "4":
-            printDailyState(url, header)
-            return
-
-#TO DO Fix DELTE
 def configure_led_state(url, header):
     temp = 1
     option = "0"
     while option != "4":
-        print("|-------------LED State Configuration-------------")
-        option = str(raw_input("| Add (1) | Edit(2)  | Delete (3)| Return to Main Menu (4) "))
+        print("|--------------------------------- LED State Configuration ----------------------------------|")
+        option = str(raw_input("|     Add (1)     |     Edit(2)      |      Delete (3)     |     Return to Main Menu (4)     |\n|Selection:"))
         if option == "1":
             red = str(raw_input("Enter Red Value (0-255): "))
             green = str(raw_input("Enter Green Value ( 0-255): "))
@@ -532,28 +584,18 @@ def configure_led_state(url, header):
 
 def configure_demos(url, header):
     subprocess.call("clear", shell = True);
-    print("|------------------------Demos----------------------------|")
-    option = str(raw_input("Demo 1 (1) | Demo 2 (2) | Demo 3 (3) | Exit Demos (4):"))
-    if option == "1":
-        print("Creating demo option 1")
-        createDemo1(url, header)
-    elif option == "2":
-        print("Creating demo option 2")
-        createDemo2(url, header)
-    elif option == "3":
-        print("Creating demo option 3")
-        createDemo3(url, header)
-    elif option == "4":
-        return
-
-def configureHardware(url, header):
-    hardwareOption = 0
-    while hardwareOption != "3":
-        hardwareOption = str(raw_input("Configure Controller (1) | Configure LEDs (2) | Exit Configure Hardware (3)"))
-        if hardwareOption == "1":
-            configure_controler(url, header)
-        elif hardwareOption == "2":
-            configure_LED(url, header)
+    while option != 4:
+        print("|---------------------------------------- Demos --------------------------------------------|")
+        option = str(raw_input("|     Demo 1 (1)     |      Demo 2 (2)     |       Demo 3 (3)     |       Exit Demos (4)    |\n|Selection:"))
+        if option == "1": 
+            print("Creating demo option 1")
+            createDemo1(url, header)
+        elif option == "2":
+            print("Creating demo option 2")
+            createDemo2(url, header)
+        elif option == "3":
+            print("Creating demo option 3")
+            createDemo3(url, header)
 
 def createDemo1(url, header):
     subprocess.call("clear", shell = True);
@@ -732,8 +774,8 @@ def createDemo3(url, header):
 def configureStates(url, header):
     stateoption = 0
     while stateoption != "3":
-        print("-------------State Configuration Menu -------------")
-        stateoption = str(raw_input("Configure Daily State (1) | Configure LED State (2) | Return to main menu (3)"))
+        print("|--------------------------------- State Configuration Menu ---------------------------------|")
+        stateoption = str(raw_input("|   Configure Daily State (1)   |   Configure LED State (2)   |    Return to main menu (3)   |\n|Selection:"))
         if stateoption == "1":
             configure_daily_state(url, header)
         elif stateoption == "2":
@@ -753,16 +795,16 @@ def main():
     option = 0
     while option != "9":
         subprocess.call("clear", shell = True);
-        print("|------------------Welcome to PlanteRGB Lighting System------------------|")
-        print("|---------------------------Configuration Menu---------------------------|")
-        option = str(raw_input("| Profiles (1) | Zones (2) | Configure Hardware(3) | Configure States (4)|\n|Initialize (5) | Demos(6) | Erase All(7) | Shutdown (8) | Exit Script(9)|\n|Selection: "))
+        print("|--------------------------- Welcome to PlanteRGB Lighting System ---------------------------|")
+        print("|------------------------------------ Configuration Menu ------------------------------------|")
+        option = str(raw_input("|     Profiles (1)     | Zones (2) | Configure controller (3) |     Configure States (4)     |\n| Initialize Demos (5) | Demos(6)  |       Erase All(7)       | Shutdown (8) | Exit Script(9)|\n|Selection: "))
 
         if  option == "1":
             configure_profiles(url, header)
         elif option == "2":
             configure_Zones(url, header)
         elif  option == "3":
-            configureHardware(url,header)
+             configure_controler(url, header)
         elif option == "4":
             configureStates(url, header)
         elif option == "5":
