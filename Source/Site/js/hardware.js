@@ -129,12 +129,16 @@ module.exports = function () {
         let controllerId = req.body.controllerId;
         let count = req.body.count;
         let leds = req.body.ledIds;
+        if (!Array.isArray(leds)) {
+            leds = new Array(leds);
+        }
+
 
         // Only operate when LEDs are given
         if (leds != undefined && leds.length > 0) {
             leds = leds.map(id => parseInt(id));
             leds = leds.sort(function(a, b){ return a-b });
-
+            
             console.log("DELETE " + count + " LEDs for controller " + controllerId);
 
             let j = [];
