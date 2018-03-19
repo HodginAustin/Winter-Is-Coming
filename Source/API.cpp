@@ -346,7 +346,7 @@ void API::get_current_profile(REQUEST, RESPONSE)
     if (profile){
         j_out = *profile;
         code = Http::Code::Ok;
-    } else { j_out.push_back(json{"profile", -1}); }
+    } else { j_out.push_back(json{"profile", "No current profile set"}); }
 
     // Send response
     response.send(code, j_out.dump());
