@@ -10,8 +10,8 @@ function controlServiceRequest(options, callback) {
         }
         else {
             console.log("Control Service Response:" + response.body);
-            callback(err, response, body);
         }
+        callback(err, response, body);
     });
 }
 

@@ -4,27 +4,40 @@ function get(res, context, complete) {
     var conn = require('./connection.js');
     const http = require("http");
 
-    var current = conn.url + conn.port + '/' + conn.currentProfile;
-    http.get(current, res => {
-        res.setEncoding("utf8");
-        body = "";
-        res.on("data", data => {
-            body += data;
-        });
-        res.on("end", () => {
-            body = JSON.parse(body);
-            context.currentProfile = body;
-            complete();
-        });
-    });
+    /* Control service request */
+    let controlService = require('./controlServiceRequest.js');
+
+    // Patch control service
+    var options = {
+        method: "GET",
+        uri: conn.url + conn.port + '/' + conn.currentProfile,
+        json: {}
+    };
+
+    // Make request
+    controlService.makeRequest(options, function () { complete(); })
 }
 
-function set(res, context, complete) {
+function set(res, context, complete, profileId) {
+    var conn = require('./connection.js');
+    const http = require("http");
 
+    /* Control service request */
+    let controlService = require('./controlServiceRequest.js');
+
+    // Patch control service
+    var options = {
+        method: "POST",
+        uri: conn.url + conn.port + '/' + conn.currentProfile + '/' + profileId,
+        json: {}
+    };
+
+    // Make request
+    controlService.makeRequest(options, function () { complete(); })
 }
 
-module.exports = 
-{
-    get: get,
-    set: set
-};
+module.exports =
+    {
+        get: get,
+        set: set
+    };
