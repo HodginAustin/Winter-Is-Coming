@@ -25,35 +25,35 @@
 
             <tbody>
               {{#currentProfile}}
-                <tr>
-                  <form name="patch_profile" action="/profiles/edit" method="POST">
-                    <td class="row_display_{{id}}">{{name}}</td>
+              <tr>
+                <form name="patch_profile" action="/profiles/edit" method="POST">
+                  <td class="row_display_{{id}}">{{name}}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="text" class="from-control" style="width:80px;" name="name" value={{name}} />
+                  </td>
+                  <td class="row_display_{{id}}">{{id}}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="number" class="form-control" style="width:80px;" name=id value={{id}} min="0" />
+                  </td>
+                  <td class="row_display_{{id}}">{{description}}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="text" class="from-control" style="width:80px;" name="description" value={{description}} />
+                  </td>
+                  <td class="row_display_{{id}}">{{zones}}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="text" class="form-control" style="width:80px;" name="zones" value={ {zones}} />
+                  </td>
+                  <td>
+                    <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
+                  </td>
+                  <div>
+                    <!-- Save -->
                     <td class="row_update_{{id}} hidden">
-                      <input type="text" class="from-control" style="width:80px;" name="name" value={{name}} />
+                      <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info">Save</button>
                     </td>
-                    <td class="row_display_{{id}}">{{id}}</td>
-                    <td class="row_update_{{id}} hidden">
-                      <input type="number" class="form-control" style="width:80px;" name=id value={{id}} min="0" />
-                    </td>
-                    <td class="row_display_{{id}}">{{description}}</td>
-                    <td class="row_update_{{id}} hidden">
-                      <input type="text" class="from-control" style="width:80px;" name="description" value={{description}} />
-                    </td>
-                    <td class="row_display_{{id}}">{{zones}}</td>
-                    <td class="row_update_{{id}} hidden">
-                      <input type="text" class="form-control" style="width:80px;" name="zones" value= {{zones}} />
-                    </td>
-                    <td>
-                      <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
-                    </td>
-                    <div>
-                      <!-- Save -->
-                      <td class="row_update_{{id}} hidden">
-                        <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info">Save</button>
-                      </td>
-                  </form>
+                </form>
 
-                </tr>
+              </tr>
               {{/currentProfile}}
             </tbody>
           </table>
@@ -70,40 +70,43 @@
 
             <tbody>
               {{#each Profiles}}
-                <tr>
-                  <form name="patch_profile" action="/profiles/edit" method="POST">
-                    <td class="row_display_{{id}}">{{name}}</td>
-                    <td class="row_update_{{id}} hidden">
-                      <input type="text" class="from-control" style="width:80px;" name="name" value= {{name}} />
-                    </td>
-                    <td>{{id}}</td>
-                    <td class="row_display_{{id}}">{{description}}</td>
-                    <td class="row_update_{{id}} hidden">
-                      <input type="text" class="from-control" style="width:80px;" name="name" value= {{description}} />
-                    </td>
-                    <td class="row_display_{{id}}">{{zones}}</td>
-                    <td class="row_update_{{id}} hidden">
-                      <input type="text" class="form-control" style="width:80px;" name="zones" value= {{zones}} />
-                    </td>
-                    <td>
-                      <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
-                    </td>
+              <tr>
+                <form name="patch_profile" action="/profiles/edit" method="POST">
+                  <!-- Hidden element for ID -->
+                  <input type="number" name="id" value="{{ id }}" hidden>
 
-                      <!-- Save -->
-                      <td class="row_update_{{id}} hidden">
-                        <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info">Save</button>
-                      </td>
-                  </form>
+                  <td class="row_display_{{id}}">{{name}}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="text" class="from-control" style="width:200px;" name="name" value="{{name}}" />
+                  </td>
+                  <td>{{id}}</td>
+                  <td class="row_display_{{id}}">{{description}}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <textarea class="from-control" style="width:450px;" name="description">{{description}}</textarea>
+                  </td>
+                  <td class="row_display_{{id}}">{{zones}}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="text" class="form-control" style="width:80px;" name="zones" value="{{zones}}" />
+                  </td>
+                  <td>
+                    <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
+                  </td>
 
-                  <!-- Delete -->
-                  <form name="delete_profile" action="/profiles/delete" method="POST">
-                    <!-- Hidden element for ID -->
-                    <input type="number" name="id" value="{{ id }}" hidden>
-                    <td class="row_display_{{id}}">
-                      <button type="submit" id="row_delete_{{id}}" class="btn text-white badge badge-danger">Delete</button>
-                    </td>
-                  </form>
-                </tr>
+                  <!-- Save -->
+                  <td class="row_update_{{id}} hidden">
+                    <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info">Save</button>
+                  </td>
+                </form>
+
+                <!-- Delete -->
+                <form name="delete_profile" action="/profiles/delete" method="POST">
+                  <!-- Hidden element for ID -->
+                  <input type="number" name="id" value="{{ id }}" hidden>
+                  <td class="row_display_{{id}}">
+                    <button type="submit" id="row_delete_{{id}}" class="btn text-white badge badge-danger">Delete</button>
+                  </td>
+                </form>
+              </tr>
               {{/each}}
             </tbody>
           </table>
@@ -113,11 +116,11 @@
           <form name="post_profile" action="/profiles/add" method="POST">
             <div class="input-group mb-3">
               <!-- name -->
-              <input type="text" class="form-control" placeholder="Name" name="name"  />
+              <input type="text" class="form-control" placeholder="Name" name="name" />
               <!-- description -->
               <input type="text" class="form-control" placeholder="Description" name="description" />
               <!-- Zones -->
-              <input type="text" class="form-control" placeholder="Zones" name="zones"  />
+              <input type="text" class="form-control" placeholder="Zones" name="zones" />
 
               <!-- Submit -->
               <div class="input-group-append">
