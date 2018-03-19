@@ -8,6 +8,8 @@ var profiles = "profiles";
 var currentProfile = "current_profile";
 var dailyStates = "daily_states";
 var ledStates = "led_states";
+var controllers = "controllers";
+var leds = "leds";
 
 module.exports = 
 {
@@ -18,5 +20,7 @@ module.exports =
     profiles: profiles,
     currentProfile: currentProfile,
     dailyStates: dailyStates,
-    ledStates: ledStates
+    ledStates: ledStates,
+    controllers: controllers,
+    leds: leds
 };

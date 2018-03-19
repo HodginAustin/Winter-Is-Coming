@@ -33,6 +33,7 @@ app.get('/', function(req, res){
   res.redirect('/plant');
 });
 app.use('/plant', require('./js/plant.js'));
+app.use('/hardware', require('./js/hardware.js'));
 app.use('/profiles', require('./js/profiles.js'));
 app.use('/zones', require('./js/zones.js'));
 app.use('/ledStates', require('./js/ledStates.js'));

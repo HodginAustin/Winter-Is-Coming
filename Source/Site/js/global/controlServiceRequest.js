@@ -3,14 +3,14 @@ function controlServiceRequest(options, callback) {
     let request = require('request');
 
     request(options, function (err, response, body) {
+        console.log(options.method + " " + options.uri + " " + JSON.stringify(options.json));
         if (err || response.statusCode != 200) {
-            let error = "Error! Status: " + response.statusCode + ", Response: " + String(response.body);
+            let error = "    ERROR: " + response.statusCode + " " + JSON.stringify(response.body);
             console.log(error);
-            console.log(response.body);
         }
-        //else {
-        //    console.log("Control Service Response:" + response.body);
-        //}
+        else {
+            console.log("    " + JSON.stringify(response.body).slice(0, 100));
+        }
         callback(err, response, body);
     });
 }
