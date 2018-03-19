@@ -128,17 +128,31 @@ module.exports = function () {
         // Get form data
         let controllerId = req.body.controllerId;
         let count = req.body.count;
-        console.log("DELETE " + count + "LEDs for controller " + controllerId);
+        let leds = req.body.ledIds;
 
-        for (let i = 0; i < count; i++) {
+        // Only operate when LEDs are given
+        if (leds != undefined && leds.length > 0) {
+            leds = leds.map(id => parseInt(id));
+            leds = leds.sort(function(a, b){ return a-b });
+
+            console.log("DELETE " + count + " LEDs for controller " + controllerId);
+
+            let j = [];
+            for (let i = 0; i < count && i < leds.length; i++) {
+                j.push(leds[leds.length - 1 - i]);
+            }
+
             // Control service options
             var options = {
                 method: "DELETE",
-                uri: conn.url + conn.port + "/" + conn.leds + "/" + ledId + "/delete/"
+                uri: conn.url + conn.port + "/" + conn.leds + "/delete/",
+                json: j
             };
 
             // Make request
             controlService.makeRequest(options, function (err, response, body) { res.redirect('back'); })
+        } else {
+            res.redirect('back');
         }
     });
 

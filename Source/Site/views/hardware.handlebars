@@ -50,53 +50,56 @@
                                     </br>
 
                                     <!-- Existing LEDs -->
-                                    <h6>{{LEDs.length}} LEDs</h6>
-                                    <div class="d-flex flex-wrap" id="leds">
-                                        {{#each LEDs}}
-                                        <a class="btn text-white badge badge-info">{{strip_idx}}</a>
-                                        {{/each}}
-                                    </div>
-                                    </br>
-                                    <table style="width:100%;">
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <form name="delete_led" action="/hardware/leds/delete" method="POST">
+                                    <h6>Strip Indexes ({{LEDs.length}} LEDs):</h6>
+                                    <form name="delete_led" action="/hardware/leds/delete" method="POST">
+                                        <div class="d-flex flex-wrap" id="leds">
+                                            {{#each LEDs}}
+                                            <!-- Hidden element for LED ID -->
+                                            <input type="number" name="ledIds" value="{{ id }}" hidden>
+
+                                            <a class="btn text-white badge badge-info" style="margin:2px;">{{strip_idx}}</a>
+                                            {{/each}}
+                                        </div>
+                                        </br>
+                                        <table style="width:100%;">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
                                                         <!-- Hidden element for controller ID -->
                                                         <input type="number" name="controllerId" value="{{ id }}" hidden>
 
                                                         <div class="input-group" style="width:200px;">
                                                             <!-- Num LEDs -->
-                                                            <input type="number" class="form-control" placeholder="Count" name="count" value="1" min="1" max="60">
+                                                            <input type="number" class="form-control" placeholder="Count" name="count" value="1" min="1" max="{{LEDs.length}}">
 
                                                             <!-- Submit -->
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-outline-danger" type="submit">Remove LED(s)</button>
                                                             </div>
                                                         </div>
-                                                    </form>
-                                                </td>
-                                                <td align="right">
-                                                    <form name="post_led" action="/hardware/led/add" method="POST">
-                                                        <!-- Hidden element for controller ID -->
-                                                        <input type="number" name="id" value="{{ id }}" hidden>
+                                                    </td>
+                                    </form>
+                                    <td align="right">
+                                        <form name="post_led" action="/hardware/led/add" method="POST">
+                                            <!-- Hidden element for controller ID -->
+                                            <input type="number" name="id" value="{{ id }}" hidden>
 
-                                                        <!-- Hidden element for next LED strip IDX -->
-                                                        <input type="number" name="idx" value="{{ LEDNextIdx }}" hidden>
+                                            <!-- Hidden element for next LED strip IDX -->
+                                            <input type="number" name="idx" value="{{ LEDNextIdx }}" hidden>
 
-                                                        <div class="input-group" style="width:200px;">
-                                                            <!-- Num LEDs -->
-                                                            <input type="number" class="form-control" placeholder="Count" name="count" value="1" min="1" max="60">
+                                            <div class="input-group" style="width:200px;">
+                                                <!-- Num LEDs -->
+                                                <input type="number" class="form-control" placeholder="Count" name="count" value="1" min="1" max="60">
 
-                                                            <!-- Submit -->
-                                                            <div class="input-group-append">
-                                                                <button class="btn btn-outline-success" type="submit">Add LED(s)</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        </tbody>
+                                                <!-- Submit -->
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-success" type="submit">Add LED(s)</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </td>
+                                    </tr>
+                                    </tbody>
                                     </table>
 
                                 </div>
@@ -110,8 +113,8 @@
                     </br>
                     <h5>Add new LED strip</h5>
                     <p>The IO port is the unique hardware ID given to a specific LED controller. These IDs are pre-flashed onto
-                        the LED controllers. Example:
-                        <i>#define DEVICE_ID 2</i>
+                        the LED controllers with a
+                        <i>#define DEVICE_ID</i>
                     </p>
                     <form name="post_led_strip" action="/hardware/add" method="POST">
                         <div class="input-group mb-3">
@@ -134,5 +137,8 @@
 
 <script>
     $(document).ready(function () {
+        $('form').submit(function () {
+            $(this).find("button[type='submit']").prop('disabled', true);
+        });
     });
 </script>
