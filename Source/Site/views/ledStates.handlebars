@@ -13,7 +13,8 @@
           <div class="row">
             <div class="col-12">
               <p class="right">LED States represent a possible state of a single LED. It has 3 values (Red, Green, Blue), an intensity (percentage),
-                and a power state. Many LEDs can be assigned to a single LED State. Use this menu to add, edit, and delete them.</p>
+                and a power state. Many LEDs can be assigned to a single LED State. Use this menu to add, edit, and delete
+                them.</p>
             </div>
           </div>
 
@@ -134,6 +135,11 @@
 </div>
 
 <script>
+  $(document).ready(function () {
+    $('form').submit(function () {
+      $(this).find("button[type='submit']").prop('disabled', true);
+    });
+  });
   function edit_mode(id) {
     if ($('.row_update_' + id).hasClass("hidden")) {
       $('.row_update_' + id).removeClass("hidden");

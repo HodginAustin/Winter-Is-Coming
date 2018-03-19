@@ -39,7 +39,7 @@
                                                         <input type="number" name="id" class="hidden" value="{{ id }}">
 
                                                         <button class="btn btn-sm btn-danger text-white" type="submit">
-                                                        Delete Daily State
+                                                            Delete Daily State
                                                         </button>
                                                     </form>
                                                 </td>
@@ -146,6 +146,10 @@
     $(document).ready(function () {
         to_am_pm();
         sortTable($('#timeStateMap'), 'asc');
+
+        $('form').submit(function () {
+            $(this).find("button[type='submit']").prop('disabled', true);
+        });
     });
     function to_am_pm() {
         let noon = 12 * 60 * 60;

@@ -138,6 +138,12 @@
 </div>
 
 <script>
+  $(document).ready(function () {
+    $('form').submit(function () {
+      $(this).find("button[type='submit']").prop('disabled', true);
+    });
+  });
+
   function edit_mode(id) {
     if ($('.row_update_' + id).hasClass("hidden")) {
       $('.row_update_' + id).removeClass("hidden");
