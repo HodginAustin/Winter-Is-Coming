@@ -15,7 +15,11 @@ function get(res, context, complete) {
     };
 
     // Make request
-    controlService.makeRequest(options, function () { complete(); })
+    controlService.makeRequest(options,
+        function (err, response, body) {
+            context.currentProfile = body;
+            complete();
+        })
 }
 
 function set(res, context, complete, profileId) {
