@@ -45,6 +45,9 @@ app.all('*', function(req, res, next) {
 
     /* Get profiles */
     profiles.get(res, context, complete);
+  } else {
+    callbackCount = 100;
+    complete();
   }
 
   function complete() {
