@@ -1,5 +1,6 @@
 /*Make a request to the control service */
 function controlServiceRequest(options, callback) {
+    console.log(JSON.stringify(options));
     let request = require('request');
 
     request(options, function (err, response, body) {

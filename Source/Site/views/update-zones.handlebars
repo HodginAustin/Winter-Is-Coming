@@ -9,102 +9,132 @@
         <div class="card-body">
           <h4 class="card-title">Zones for {{Profile.name}}</h4>
 
-        <div class"row">
-          <div class="col-12">
-            <p class="right">
-              A Zone represents a set of daily zones across specific LEDS. Days corresponds to 7 individual daily state id's formated like
-              Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday.
-              LEDS correspond to the ID of each individual LED.
-            </p>
+          <div class "row">
+            <div class="col-12">
+              <p class="right">
+                A Zone represents a set of daily zones across specific LEDS. Days corresponds to 7 individual daily state id's formated like
+                Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday. LEDS correspond to the ID of each individual LED.
+              </p>
+            </div>
           </div>
-        </div>
-        <div class="d-flex flex-wrap" id="leds">
+          <div class="d-flex flex-wrap" id="leds">
 
-        {{#each Zones}}
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-body">
-                <table class="table">
-                  <thead>
-                    <th>ID: </th>
-                    <th>Name: </th>
-                    <th><a href="/dailyStates" >Days:</a></th>
-                    <th>LED's: </th>
-                  </thead>
-                  <tbody>
-                    <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
+            <div style="width:100%;">
+              {{#each Zones}}
+              <div class="card">
 
-                    <form name="patch_zones" action="/profiles/{{Profile.id}}/zones/edit">
-                      <td>{{id}}</td>
-                      <td>{{name}}</td>
-                      <td class="row_display_{{id}}">{{days}}</td>
-                      <td class="row_update_{{id}} hidden">
-                        <a href="#" data-toggle="modal" data-target="#dayOfWeek">{{days}}</a>
-                      <!-- Modal -->
-                        <div class="modal fade" id="dayOfWeek" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-                          <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="dayTitle">Daily states for day of week:</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </div>
-                              <div class="modal-body">
-                                <input type="text" class="from-control" style="width:200px;" name="sunday" placeholder="Sunday daily state" required/>
-                                <input type="text" class="from-control" style="width:200px;" name="Monday" placeholder="Monday daily state" required/>
-                                <input type="text" class="from-control" style="width:200px;" name="tuesday" placeholder="Tuesday daily state" required/>
-                                <input type="text" class="from-control" style="width:200px;" name="wednesday" placeholder="Wednesday daily state" required/>
-                                <input type="text" class="from-control" style="width:200px;" name="thursday" placeholder="Thursday daily state" required/>
-                                <input type="text" class="from-control" style="width:200px;" name="friday" placeholder="Friday daily state" required/>
-                                <input type="text" class="from-control" style="width:200px;" name="saturday" placeholder="Saturday daily state" required/>
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button class="btn btn-outline-secondary" type="submit">Submit</button>
+
+                <div class="card-body">
+                  <!-- Edit -->
+                  <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
+
+                  <!-- Delete -->
+                  <form name="delete_zone" action="/profiles/{{../Profile.id}}/zones/delete" method="POST">
+                    <!-- Hidden element for ID -->
+                    <input type="number" name="id" value="{{ id }}" hidden>
+
+                    <button type="submit" class="btn text-white badge badge-danger">Delete</button>
+                  </form>
+
+                  <table class="table">
+                    <thead>
+                      <th>ID: </th>
+                      <th>Name: </th>
+                      <th>
+                        <a href="/dailyStates">Days:</a>
+                      </th>
+                      <th>LED's: </th>
+                    </thead>
+                    <tbody>
+
+                      <form name="patch_zones" action="/profiles/{{../Profile.id}}/zones/edit" method="POST">
+                        <!-- Hidden element for ID -->
+                        <input type="number" name="id" value="{{ id }}" hidden>
+
+                        <td>{{id}}</td>
+                        <td>{{name}}</td>
+                        <td class="row_display_{{id}}">{{days}}</td>
+                        <td class="row_update_{{id}} hidden">
+                          <a href="#" data-toggle="modal" data-target="#dayOfWeek">{{days}}</a>
+                          <!-- Modal -->
+                          <div class="modal fade" id="dayOfWeek" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="dayTitle">Daily states for day of week:</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  <input type="text" class="from-control" style="width:200px;" value="1" name="sunday" placeholder="Sunday daily state" required/>
+                                  <input type="text" class="from-control" style="width:200px;" value="1" name="monday" placeholder="Monday daily state" required/>
+                                  <input type="text" class="from-control" style="width:200px;" value="1" name="tuesday" placeholder="Tuesday daily state" required/>
+                                  <input type="text" class="from-control" style="width:200px;" value="1" name="wednesday" placeholder="Wednesday daily state" required/>
+                                  <input type="text" class="from-control" style="width:200px;" value="1" name="thursday" placeholder="Thursday daily state" required/>
+                                  <input type="text" class="from-control" style="width:200px;" value="1" name="friday" placeholder="Friday daily state" required/>
+                                  <input type="text" class="from-control" style="width:200px;" value="1" name="saturday" placeholder="Saturday daily state" required/>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                  <button class="btn btn-outline-secondary" type="submit">Submit</button>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                    </form>
+                        </td>
+                      </form>
 
 
                       <td>{{leds}}</td>
 
-                  </tbody>
-                </table>
+                    </tbody>
+                  </table>
+                </div>
               </div>
+              <br/> {{/each}}
             </div>
           </div>
+          </br>
+
+          <h5>Add new zone</h5>
+          <!-- New zone -->
+          <form name="post_zone" action="/profiles/{{Profile.id}}/zones/add" method="POST">
+            <div class="input-group mb-3">
+              <!-- Hidden element for ID -->
+              <input type="number" name="id" value="{{ Profile.id }}" hidden>
+
+              <!-- name -->
+              <input type="text" class="form-control" placeholder="Name" name="name" required/>
+
+              <!-- Submit -->
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">Submit</button>
+              </div>
+            </div>
+          </form>
+
         </div>
-        <br />
-        {{/each}}
-      </div>
-
-
       </div>
     </div>
   </div>
-</div>
 
-<script>
-function edit_mode(id) {
-  if ($('.row_update_' + id).hasClass("hidden")) {
-    $('.row_update_' + id).removeClass("hidden");
-    $('.row_display_' + id).addClass("hidden");
-    // Edit button to cancel
-    $('#row_edit_' + id).text("Cancel");
-    $('#row_edit_' + id).removeClass("badge-success");
-    $('#row_edit_' + id).addClass("badge-secondary");
-  } else {
-    $('.row_update_' + id).addClass("hidden");
-    $('.row_display_' + id).removeClass("hidden");
-    // Edit button to edit
-    $('#row_edit_' + id).text("Edit");
-    $('#row_edit_' + id).removeClass("badge-secondary");
-    $('#row_edit_' + id).addClass("badge-success");
-  }
-}
-</script>
+  <script>
+    function edit_mode(id) {
+      if ($('.row_update_' + id).hasClass("hidden")) {
+        $('.row_update_' + id).removeClass("hidden");
+        $('.row_display_' + id).addClass("hidden");
+        // Edit button to cancel
+        $('#row_edit_' + id).text("Cancel");
+        $('#row_edit_' + id).removeClass("badge-success");
+        $('#row_edit_' + id).addClass("badge-secondary");
+      } else {
+        $('.row_update_' + id).addClass("hidden");
+        $('.row_display_' + id).removeClass("hidden");
+        // Edit button to edit
+        $('#row_edit_' + id).text("Edit");
+        $('#row_edit_' + id).removeClass("badge-secondary");
+        $('#row_edit_' + id).addClass("badge-success");
+      }
+    }
+  </script>

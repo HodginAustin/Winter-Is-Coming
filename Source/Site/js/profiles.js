@@ -46,7 +46,6 @@ module.exports = function () {
         let j = {};
         j['name'] = req.body.name;
         j['description'] = req.body.description;
-        j['zones'] = req.body.zones;
 
         var options = {
           method: "POST",
@@ -65,12 +64,173 @@ module.exports = function () {
     let j = {};
     j['name'] = req.body.name;
     j['description'] = req.body.description;
-    j['zones'] = req.body.zones;
+
     var options = {
       method: "PATCH",
       uri: conn.url + conn.port + "/" + conn.profiles + "/" + id + "/edit",
       json: j
     };
+    controlService.makeRequest(options, function(){
+      res.redirect('back');
+    });
+  });
+
+  router.post('/:id/zones/add', function(req, res){
+    let id = req.body.id;
+    console.log("POST zone " + id);
+    let j = {};
+    j['name'] = req.body.name;
+
+    var options = {
+      method: "POST",
+      uri: conn.url + conn.port + "/" + conn.profiles + "/" + id + "/zones/add",
+      json: j
+    };
+    
+    controlService.makeRequest(options, function(){
+      res.redirect('back');
+    });
+  });
+  
+  router.post('/:id/zones/edit', function(req, res){
+    let zoneId = req.body.id;
+    console.log("PUT zone daily states for " + zoneId);
+    
+    let sunday = req.body.sunday;
+    let monday = req.body.monday;
+    let tuesday = req.body.tuesday;
+    let wednesday = req.body.wednesday;
+    let thursday = req.body.thursday;
+    let friday = req.body.friday;
+    let saturday = req.body.saturday;
+    
+    let allReqs = [];
+    let successCount = 0;
+
+    if (sunday) {
+      var dow = 0;
+      var options = {
+        method: "PUT",
+        uri: conn.url + conn.port + "/" + conn.profiles + "/" + req.params.id + "/zones/" + zoneId + "/day/" + dow + "/add/" + sunday,
+        json: {}
+      };
+      while (successCount <= dow) {
+        controlService.makeRequest(options, function(){
+          reqDone();
+        });
+        break;
+      }
+    }
+    if (monday) {
+      var dow = 1;
+      var options = {
+        method: "PUT",
+        uri: conn.url + conn.port + "/" + conn.profiles + "/" + req.params.id + "/zones/" + zoneId + "/day/" + dow + "/add/" + monday,
+        json: {}
+      };
+      
+      while (successCount <= dow) {
+        controlService.makeRequest(options, function(){
+          reqDone();
+        });
+        break;
+      }
+    }
+    if (tuesday) {
+      var dow = 2;
+      var options = {
+        method: "PUT",
+        uri: conn.url + conn.port + "/" + conn.profiles + "/" + req.params.id + "/zones/" + zoneId + "/day/" + dow + "/add/" + tuesday,
+        json: {}
+      };
+
+      while (successCount <= dow) {
+        controlService.makeRequest(options, function(){
+          reqDone();
+        });
+        break;
+      }
+    }
+    if (wednesday) {
+      var dow = 3;
+      var options = {
+        method: "PUT",
+        uri: conn.url + conn.port + "/" + conn.profiles + "/" + req.params.id + "/zones/" + zoneId + "/day/" + dow + "/add/" + wednesday,
+        json: {}
+      };
+
+      while (successCount <= dow) {
+        controlService.makeRequest(options, function(){
+          reqDone();
+        });
+        break;
+      }
+    }
+    if (thursday) {
+      var dow = 4;
+      var options = {
+        method: "PUT",
+        uri: conn.url + conn.port + "/" + conn.profiles + "/" + req.params.id + "/zones/" + zoneId + "/day/" + dow + "/add/" + thursday,
+        json: {}
+      };
+      while (successCount <= dow) {
+        controlService.makeRequest(options, function(){
+          reqDone();
+        });
+        break;
+      } 
+    }
+    if (friday) {
+      var dow = 5;
+      var options = {
+        method: "PUT",
+        uri: conn.url + conn.port + "/" + conn.profiles + "/" + req.params.id + "/zones/" + zoneId + "/day/" + dow + "/add/" + friday,
+        json: {}
+      };
+      while (successCount <= dow) {
+        controlService.makeRequest(options, function(){
+          reqDone();
+        });
+        break;
+      }
+    }
+    if (saturday) {
+      var dow = 6;
+      var options = {
+        method: "PUT",
+        uri: conn.url + conn.port + "/" + conn.profiles + "/" + req.params.id + "/zones/" + zoneId + "/day/" + dow + "/add/" + saturday,
+        json: {}
+      };
+      while (successCount <= dow) {
+        controlService.makeRequest(options, function(){
+          reqDone();
+        });
+        break;
+        
+      }
+    }
+
+
+    function reqDone() {
+      successCount++;
+      if (successCount >= 7) {
+        res.redirect('back');
+      }
+    }
+
+  });
+
+
+  router.post('/:id/zones/delete', function(req, res){
+    let zoneId = req.body.id;
+    console.log("DELETE zone " + zoneId);
+
+    var options = {
+      method: "DELETE",
+      uri: conn.url + conn.port + "/" + conn.profiles + "/" + req.params.id + "/zones/" + zoneId + "/delete",
+      json: {}
+    };
+
     controlService.makeRequest(options, function(){
       res.redirect('back');
     });
