@@ -16,6 +16,16 @@ function getAllProfiles(res, context, complete) {
     // Make request
     controlService.makeRequest(options, function (err, response, body) {
         context.Profiles = body;
+        
+        // Add a current flag to the current profile
+        for (let p = 0; p < context.Profiles.length; p++) {
+            if (context.Profiles[p].id == context.currentProfile.id) {
+                context.Profiles[p].active = true;
+            } else {
+                context.Profiles[p].active = false;
+            }
+        }
+
         complete();
     });
 }

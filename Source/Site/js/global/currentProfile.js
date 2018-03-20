@@ -22,7 +22,7 @@ function get(res, context, complete) {
         })
 }
 
-function set(res, context, complete, profileId) {
+function set(res, profileId, complete) {
     var conn = require('./connection.js');
     const http = require("http");
 

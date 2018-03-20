@@ -41,10 +41,15 @@ app.all('*', function(req, res, next) {
 
   if (req.method === 'GET') {
     /* Get current profile */
-    currentProfile.get(res, context, complete);
+    currentProfile.get(res, context, gotCurrentProfile);
 
-    /* Get profiles */
-    profiles.get(res, context, complete);
+    function gotCurrentProfile() {
+      callbackCount++;
+      
+      /* Get profiles */
+      profiles.get(res, context, complete);
+    }
+
   } else {
     callbackCount = 100;
     complete();
@@ -57,7 +62,14 @@ app.all('*', function(req, res, next) {
       next();
     }
   }
+});
 
+// Set current profile
+app.post('/currentProfile/', function(req, res){
+  let id = req.body.id;
+  currentProfile.set(res, id, function(){
+    res.redirect('back');
+  });
 });
 
 // Base pages
