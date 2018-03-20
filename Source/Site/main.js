@@ -6,6 +6,12 @@ const http = require('http'); /* make internal requests to control service */
 
 var app = express();
 
+/* Current profile for navbar */
+let currentProfile = require('./js/global/currentProfile.js');
+
+/* Profiles for navbar */
+let profiles = require('./js/global/profiles.js');
+
 /* Connection settings */
 let conn = require('./js/global/connection.js');
 
@@ -28,6 +34,29 @@ app.set('view engine', 'handlebars');
 app.set('port', process.argv[2]); /* sets port to what is given in command line */
 
 
+// Global call
+app.all('*', function(req, res, next) {
+  var callbackCount = 0;
+  let context = {};
+
+  if (req.method === 'GET') {
+    /* Get current profile */
+    currentProfile.get(res, context, complete);
+
+    /* Get profiles */
+    profiles.get(res, context, complete);
+  }
+
+  function complete() {
+    callbackCount++;
+    if (callbackCount >= 2) {
+      req.context = context;
+      next();
+    }
+  }
+
+});
+
 // Base pages
 app.get('/', function(req, res){
   res.redirect('/plant');
@@ -35,7 +64,6 @@ app.get('/', function(req, res){
 app.use('/plant', require('./js/plant.js'));
 app.use('/hardware', require('./js/hardware.js'));
 app.use('/profiles', require('./js/profiles.js'));
-app.use('/zones', require('./js/zones.js'));
 app.use('/ledStates', require('./js/ledStates.js'));
 app.use('/dailyStates', require('./js/dailyStates.js'));
 

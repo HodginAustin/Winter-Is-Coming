@@ -11,22 +11,10 @@ module.exports = function () {
   /* Connection settings */
   let conn = require('./global/connection.js');
   
-  /* Current profile for navbar */
-  let currentProfile = require('./global/currentProfile.js');
-  
   router.get('/', function (req, res) {
-    var callbackCount = 0;
-    var context = {};
+    var context = req.context;
 
-    /* Get current profile */
-    currentProfile.get(res, context, complete);
-
-    function complete() {
-      callbackCount++;
-      if (callbackCount >= 1) {
-        res.render('plant', context);
-      }
-    }
+    res.render('plant', context);
   });
 
 

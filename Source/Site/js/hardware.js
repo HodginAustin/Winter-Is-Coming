@@ -10,9 +10,6 @@ module.exports = function () {
     /* Connection settings */
     var conn = require('./global/connection.js');
 
-    /* Current profile for navbar */
-    let currentProfile = require('./global/currentProfile.js');
-
     /* Controller functions */
     let controllers = require('./global/controllers.js');
 
@@ -25,7 +22,7 @@ module.exports = function () {
     /* Get page */
     router.get('/', function (req, res) {
         let callbackCount = 0;
-        let context = {};
+        let context = req.context;
         let controllersList = {};
         let ledsList = {};
 
@@ -58,18 +55,15 @@ module.exports = function () {
                     }
                 }
 
-                context = controllersList;
+                context.Controllers = controllersList.Controllers;
 
-                /* Get current profile */
-                currentProfile.get(res, context, complete);
-                
                 complete();
             }
         }
 
         function complete() {
             callbackCount++;
-            if (callbackCount >= 2) {
+            if (callbackCount >= 1) {
                 res.render('hardware', context);
             }
         }
@@ -132,7 +126,6 @@ module.exports = function () {
         if (!Array.isArray(leds)) {
             leds = new Array(leds);
         }
-
 
         // Only operate when LEDs are given
         if (leds != undefined && leds.length > 0) {

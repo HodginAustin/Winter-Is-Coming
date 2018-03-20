@@ -11,33 +11,13 @@ module.exports = function () {
   /* Connection settings */
   let conn = require('./global/connection.js');
 
-  /* Current profile for navbar */
-  let currentProfile = require('./global/currentProfile.js');
-
   /* Control service request */
   let controlService = require('./global/controlServiceRequest.js');
 
-  /* Profiles request */
-  let profiles = require('./global/profiles.js');
-
   router.get('/', function (req, res) {
-    var callbackCount = 0;
-    var context = {};
-    
-    /* Get all profiles */
-    profiles.get(res, context, complete);
+    var context = req.context;
 
-    /* Get current profile */
-    currentProfile.get(res, context, complete);
-
-    function complete() {
-      console.log("in complete");
-      callbackCount++;
-      if (callbackCount >= 2) {
-        console.log("");
-        res.render('profiles', context);
-      }
-    }
+    res.render('profiles', context);
   });
 
   router.post('/add', function(req, res){

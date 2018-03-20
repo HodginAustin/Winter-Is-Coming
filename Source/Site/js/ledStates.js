@@ -10,9 +10,6 @@ module.exports = function () {
     /* Connection settings */
     var conn = require('./global/connection.js');
 
-    /* Current profile for navbar */
-    let currentProfile = require('./global/currentProfile.js');
-
     /* LED State functions */
     let ledStates = require('./global/ledStates.js');
 
@@ -22,17 +19,14 @@ module.exports = function () {
     /* Get page */
     router.get('/', function (req, res) {
         var callbackCount = 0;
-        var context = {};
+        var context = req.context;
 
         /* Get LED states */
         ledStates.get(res, context, complete);
 
-        /* Get current profile */
-        currentProfile.get(res, context, complete);
-
         function complete() {
             callbackCount++;
-            if (callbackCount >= 2) {
+            if (callbackCount >= 1) {
                 res.render('ledStates', context);
             }
         }
