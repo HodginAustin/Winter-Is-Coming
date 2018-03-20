@@ -86,7 +86,7 @@
                   </td>
                   <td class="row_display_{{id}}">{{zones}}</td>
                   <td class="row_update_{{id}} hidden">
-                    <input type="text" class="form-control" style="width:80px;" name="zones" value="{{zones}}" />
+                    <a href="/profiles/{{id}}">Edit Zones</a>
                   </td>
                   <td>
                     <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
@@ -137,6 +137,7 @@
 </div>
 
 <script>
+
   $(document).ready(function () {
     $('form').submit(function () {
       $(this).find("button[type='submit']").prop('disabled', true);
