@@ -91,6 +91,25 @@ module.exports = function () {
       res.redirect('back');
     });
   });
+
+  router.post('/:id/zones/leds/add', function(req, res){
+    let zoneId = req.body.id;
+
+    console.log("POST zone leds for " + zoneId);
+    let j = req.body.leds.split(',');
+    j = j.map(id => parseInt(id));
+
+
+    var options = {
+      method: "PUT",
+      uri: conn.url + conn.port + "/" + conn.profiles + "/" + req.params.id + "/zones/" + zoneId + "/leds/add",
+      json: j
+    };
+    
+    controlService.makeRequest(options, function(){
+      res.redirect('back');
+    });
+  });
   
   router.post('/:id/zones/edit', function(req, res){
     let zoneId = req.body.id;
