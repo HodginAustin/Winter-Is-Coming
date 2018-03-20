@@ -102,7 +102,7 @@
                                             <input type="number" class="form-control" placeholder="Hour" name="hour" min="0" max="12" required>
                                             <input type="number" class="form-control" placeholder="Minute" name="minute" min="0" max="59" required>
                                             <input type="number" class="form-control" placeholder="Seconds" name="second" min="0" max="59">
-                                            <select class="custom-select" required>
+                                            <select class="custom-select" name="ampm" required>
                                                 <option value="am">AM</option>
                                                 <option value="pm">PM</option>
                                             </select>
@@ -156,30 +156,24 @@
         let last_second = 24 * 60 * 60;
         $('.disp_time').each(function (i, obj) {
             let normal_time = "";
-            let init_time = parseInt($(this).text());
+            let sec_num = parseInt($(this).text(), 10);
 
-            if (init_time >= 0 && init_time < last_second) {
-
-                // AM/PM
-                let ampm = (init_time > noon ? "PM" : "AM");
-                // Decimal
-                let dec = (init_time / 60 / 60);
-                // Hour
-                let hour = Math.floor(dec);
-                // MinuteSecond
-                let minsec = (dec - hour) * 60;
-                // Minute
-                let minute = Math.floor(minsec);
-                // Second
-                let second = Math.floor((minsec - minute) * 60);
+            if (sec_num >= 0 && sec_num <= last_second) {
+                var hours   = Math.floor(sec_num / 3600);
+                var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+                var seconds = sec_num - (hours * 3600) - (minutes * 60);
 
                 // Hour adjustment
-                hour = (hour > noon ? hour - 12 : hour);
-                hour = (hour == 0 ? 12 : hour);
+                hours = (sec_num > noon ? hours - 12 : hours);
 
-                normal_time = hour + ":" + minute + (minute < 10 ? "0" : "") + (second > 0 ? ":" + second + (second < 10 ? "0" : "") : "") + " " + ampm;
+                if (hours == 0) { hours = 12; }
+                if (minutes < 10) {minutes = "0"+minutes;}
+                if (seconds < 10 && seconds > 0) {seconds = "0"+seconds;}
+                let ampm = (sec_num < noon ? "AM" : "PM");
+                
+                normal_time =  hours+':'+minutes+(seconds>0 ? ':'+seconds : '')+' '+ampm;
             } else {
-                normal_time = init_time + "s. after midnight";
+                normal_time = sec_num + "s. after midnight";
             }
 
             $(this).text(normal_time);

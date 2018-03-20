@@ -30,8 +30,14 @@ module.exports = function () {
         let second = parseInt(req.body.second) || 0;
         let ampm = req.body.ampm;
 
-        hour *= (ampm == "pm" ? 12 : 1);
-        return (hour * 60 * 60) + (minute * 60) + (second);
+        if (ampm == "pm") {
+            hour += 12;
+        } else if (ampm == "am" && hour==12) {
+            hour = 0;
+        }
+        let t = (hour * 60 * 60) + (minute * 60) + (second);
+
+        return t;
     }
 
     /* Get page */
