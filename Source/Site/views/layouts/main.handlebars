@@ -37,6 +37,10 @@
       <li class="nav-item">
         <a href="/dailyStates" class="btn navbar-text">Daily states</a>
       </li>
+      <br/>
+      <li class="nav-item">
+        <a href="/settings" class="btn navbar-text">Settings</a>
+      </li>
     </ul>
 
     <!-- Current profile -->
@@ -67,8 +71,7 @@
                   <input type="number" name="id" value="{{ id }}" hidden>
 
                   <button class="btn list-group-item list-group-item-action col-12">
-                    {{name}}
-                    {{#if active}}
+                    {{name}} {{#if active}}
                     <span class="badge badge-success float-right m-2">Active</span>
                     {{/if}}
                   </button>

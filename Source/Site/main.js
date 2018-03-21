@@ -81,6 +81,7 @@ app.use('/hardware', require('./js/hardware.js'));
 app.use('/profiles', require('./js/profiles.js'));
 app.use('/ledStates', require('./js/ledStates.js'));
 app.use('/dailyStates', require('./js/dailyStates.js'));
+app.use('/settings', require('./js/settings.js'));
 
 
 // Bad states
