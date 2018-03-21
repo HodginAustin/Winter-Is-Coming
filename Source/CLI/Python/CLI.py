@@ -633,14 +633,13 @@ def createDemo1(url, header):
     print_request(r)
 
 def createDemo2(url, header):
-    subprocess.call("clear", shell = True);
+    subprocess.call("clear", shell = True)
     if 'demo2' not in system['profiles']:
         how_long = raw_input("How long should it run? (minutes): ")
         how_long = int(how_long or 10) # 10 mins default
 
         # Time
         seconds_since_midnight = get_time()
-        time = seconds_since_midnight
         later = seconds_since_midnight + (how_long*60)
         delay = 5
 
@@ -667,6 +666,7 @@ def createDemo2(url, header):
         print_request(r)
         rgbDailyState = system['daily_states']['rgbcycle'] = json.loads(r.text)['id']
 
+        time = seconds_since_midnight
         c = 0
         j = []
         while time < later:
@@ -691,7 +691,6 @@ def createDemo2(url, header):
         c = 0
         j = []
         while time < later:
-            j = []
             j.append({"time": time, "state": system['led_states']['cyan']})
             time += delay
             j.append({"time": time, "state": system['led_states']['magenta']})
