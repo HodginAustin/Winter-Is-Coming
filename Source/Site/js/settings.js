@@ -46,11 +46,7 @@ module.exports = function () {
     
             // Make request
             controlService.makeRequest(options, function () {
-                let SuccessPage = "";
-                SuccessPage += "<h3>Success! All data was deleted.</h3>";
-                SuccessPage += "<br/>";
-                SuccessPage += "<a href='/plant'>Return Home</a>";
-                res.send(SuccessPage);
+                res.render('delete_success', {});
             })
         }
     });
