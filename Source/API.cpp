@@ -690,16 +690,20 @@ void API::put_zone_daily_state(REQUEST, RESPONSE)
         Zone* zone = profile->get_zone(zone_id);
         if (zone) {
             DailyState* ds = InternalState::get_daily_state(daily_state_id);
+            unsigned int idOrZero = 0;
             if (ds) {
-                zone->set_daily_state(day_of_week, ds);
-
-                // Insert in DB
-                ZoneDOW dow;
-                dow = {zone->get_id(), day_of_week, ds->get_id()};
-                DataParser::insert(dow);
+                idOrZero = ds->get_id();
 
                 code = Http::Code::Ok;
             } else { j_out.push_back(json{"daily_state", daily_state_id}); }
+
+            zone->set_daily_state(day_of_week, ds);
+
+            // Insert in DB
+            ZoneDOW dow;
+            dow = {zone->get_id(), day_of_week, idOrZero};
+            DataParser::insert(dow);
+            
         } else { j_out.push_back(json{"zone", zone_id}); }
     } else { j_out.push_back(json{"profile", profile_id}); }
 

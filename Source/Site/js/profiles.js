@@ -126,7 +126,7 @@ module.exports = function () {
     let allReqs = [];
     let successCount = 0;
 
-    if (sunday) {
+    if (sunday != undefined) {
       var dow = 0;
       var options = {
         method: "PUT",
@@ -140,7 +140,7 @@ module.exports = function () {
         break;
       }
     }
-    if (monday) {
+    if (monday != undefined) {
       var dow = 1;
       var options = {
         method: "PUT",
@@ -155,7 +155,7 @@ module.exports = function () {
         break;
       }
     }
-    if (tuesday) {
+    if (tuesday != undefined) {
       var dow = 2;
       var options = {
         method: "PUT",
@@ -170,7 +170,7 @@ module.exports = function () {
         break;
       }
     }
-    if (wednesday) {
+    if (wednesday != undefined) {
       var dow = 3;
       var options = {
         method: "PUT",
@@ -185,7 +185,7 @@ module.exports = function () {
         break;
       }
     }
-    if (thursday) {
+    if (thursday != undefined) {
       var dow = 4;
       var options = {
         method: "PUT",
@@ -199,7 +199,7 @@ module.exports = function () {
         break;
       } 
     }
-    if (friday) {
+    if (friday != undefined) {
       var dow = 5;
       var options = {
         method: "PUT",
@@ -213,7 +213,7 @@ module.exports = function () {
         break;
       }
     }
-    if (saturday) {
+    if (saturday != undefined) {
       var dow = 6;
       var options = {
         method: "PUT",
