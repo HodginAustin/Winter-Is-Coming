@@ -1359,10 +1359,11 @@ void API::post_daily_state(REQUEST, RESPONSE)
                 DStoLS = {dailyState->get_id(), time_of_day, ls->get_id()};
                 DataParser::insert(DStoLS);
 
-                j_out = json{{"id", dailyState->get_id()}};
             } else { j_out["time_out_of_bounds"] = { {"min:", 0}, {"max:", 24*60*60}, {"given:", time_of_day} }; }
         } else { j_out.push_back(json{"led_state", "unknown id, daily state still added"}); }
     }
+    
+    j_out = json{{"id", dailyState->get_id()}};
 
     // Send response
     response.send(code, j_out.dump());
