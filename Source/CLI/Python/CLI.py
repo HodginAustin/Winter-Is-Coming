@@ -584,7 +584,8 @@ def configure_led_state(url, header):
 
 def configure_demos(url, header):
     subprocess.call("clear", shell = True);
-    while option != 4:
+    option = 0
+    while option != "4":
         print("|---------------------------------------- Demos --------------------------------------------|")
         option = str(raw_input("|     Demo 1 (1)     |      Demo 2 (2)     |       Demo 3 (3)     |       Exit Demos (4)    |\n|Selection:"))
         if option == "1": 
