@@ -65,6 +65,9 @@ unsigned char StateComposer::stripIndex;
 // Thread work
 void* StateComposer::thr_compose_call(void*)
 {
+    // Begin composing
+    StateComposer::set_composer_state('c');
+
     std::cout << "Started State Composer" << std::endl;
     while (StateComposer::get_composer_state() != 0) {          // Any non-off state
         if (StateComposer::get_composer_state() != 'p') {       // Pause state
@@ -88,9 +91,6 @@ void* StateComposer::thr_compose_call(void*)
 bool StateComposer::initialize(bool logEnable)
 {
     std::cout << "Initializing State Composer... ";
-
-    // Begin composing
-    composerState = 'c';
     
     i2cAddressOffset = Settings::get_setting(DataParser::NANO_IO_OFFSET).int_value;
 

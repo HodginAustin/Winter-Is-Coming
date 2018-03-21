@@ -246,10 +246,13 @@ void API::nuke_from_orbit(REQUEST, RESPONSE)
     log_req(request);
 
     // Pause state composer and turn LEDs off
-    InternalState::set_current_profile(NULL);
-    StateComposer::set_composer_state('s');
-    // Wait for composer thread to finish led_shutdown
-    while (StateComposer::get_composer_state() == 's') {}
+    if (StateComposer::get_composer_state() == 'c') {
+        InternalState::set_current_profile(NULL);
+        StateComposer::set_composer_state('s');
+
+        // Wait for composer thread to finish led_shutdown
+        while (StateComposer::get_composer_state() == 's') {}
+    }
 
     // Wipe out database
     DataParser::clear();
@@ -1362,7 +1365,7 @@ void API::post_daily_state(REQUEST, RESPONSE)
             } else { j_out["time_out_of_bounds"] = { {"min:", 0}, {"max:", 24*60*60}, {"given:", time_of_day} }; }
         } else { j_out.push_back(json{"led_state", "unknown id, daily state still added"}); }
     }
-    
+
     j_out = json{{"id", dailyState->get_id()}};
 
     // Send response
