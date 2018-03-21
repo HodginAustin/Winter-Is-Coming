@@ -28,17 +28,17 @@ colors = [
 		}
 	},
 	{'name':'green', 'id':0, 'json':{
-			"r": 255,
-			"g": 0,
+			"r": 0,
+			"g": 255,
 			"b": 0,
 			"intensity": 100,
 			"power": True
 		}
 	},
 	{'name':'blue', 'id':0, 'json':{
-			"r": 255,
+			"r": 0,
 			"g": 0,
-			"b": 0,
+			"b": 255,
 			"intensity": 100,
 			"power": True
 		}
