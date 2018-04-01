@@ -28,17 +28,17 @@ colors = [
 		}
 	},
 	{'name':'green', 'id':0, 'json':{
-			"r": 255,
-			"g": 0,
+			"r": 0,
+			"g": 255,
 			"b": 0,
 			"intensity": 100,
 			"power": True
 		}
 	},
 	{'name':'blue', 'id':0, 'json':{
-			"r": 255,
+			"r": 0,
 			"g": 0,
-			"b": 0,
+			"b": 255,
 			"intensity": 100,
 			"power": True
 		}
@@ -584,7 +584,8 @@ def configure_led_state(url, header):
 
 def configure_demos(url, header):
     subprocess.call("clear", shell = True);
-    while option != 4:
+    option = 0
+    while option != "4":
         print("|---------------------------------------- Demos --------------------------------------------|")
         option = str(raw_input("|     Demo 1 (1)     |      Demo 2 (2)     |       Demo 3 (3)     |       Exit Demos (4)    |\n|Selection:"))
         if option == "1": 
@@ -632,14 +633,13 @@ def createDemo1(url, header):
     print_request(r)
 
 def createDemo2(url, header):
-    subprocess.call("clear", shell = True);
+    subprocess.call("clear", shell = True)
     if 'demo2' not in system['profiles']:
         how_long = raw_input("How long should it run? (minutes): ")
         how_long = int(how_long or 10) # 10 mins default
 
         # Time
         seconds_since_midnight = get_time()
-        time = seconds_since_midnight
         later = seconds_since_midnight + (how_long*60)
         delay = 5
 
@@ -666,6 +666,7 @@ def createDemo2(url, header):
         print_request(r)
         rgbDailyState = system['daily_states']['rgbcycle'] = json.loads(r.text)['id']
 
+        time = seconds_since_midnight
         c = 0
         j = []
         while time < later:
@@ -690,7 +691,6 @@ def createDemo2(url, header):
         c = 0
         j = []
         while time < later:
-            j = []
             j.append({"time": time, "state": system['led_states']['cyan']})
             time += delay
             j.append({"time": time, "state": system['led_states']['magenta']})

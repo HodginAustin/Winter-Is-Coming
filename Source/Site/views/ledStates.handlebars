@@ -1,0 +1,160 @@
+<!-- LED States -->
+</br>
+</br>
+</br>
+
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">LED States</h4>
+
+          <div class="row">
+            <div class="col-12">
+              <p class="right">LED States represent a possible state of a single LED. It has 3 values (Red, Green, Blue), an intensity (percentage),
+                and a power state. Many LEDs can be assigned to a single LED State. Use this menu to add, edit, and delete
+                them.</p>
+            </div>
+          </div>
+
+          <!-- Existing LED States -->
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Red</th>
+                <th>Green</th>
+                <th>Blue</th>
+                <th>Intensity</th>
+                <th>On/Off</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each LEDStates}}
+              <!-- Display or update row -->
+              <tr>
+                <!-- ID -->
+                <td>{{ id }}</td>
+
+                <form name="patch_ledState" action="/ledStates/edit" method="POST">
+                  <!-- Hidden element for ID -->
+                  <input type="number" name="id" value="{{ id }}" hidden>
+
+                  <!-- Red -->
+                  <td class="row_display_{{id}}">{{ r }}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="number" class="form-control" style="width:80px;" name="red" value="{{ r }}" min="0" max="255" required>
+                  </td>
+                  <!-- Green -->
+                  <td class="row_display_{{id}}">{{ g }}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="number" class="form-control" style="width:80px;" name="green" value="{{ g }}" min="0" max="255" required>
+                  </td>
+                  <!-- Blue -->
+                  <td class="row_display_{{id}}">{{ b }}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="number" class="form-control" style="width:80px;" name="blue" value="{{ b }}" min="0" max="255" required>
+                  </td>
+                  <!-- Intensity -->
+                  <td class="row_display_{{id}}" style="width:80px;">{{ intensity }}%</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="number" class="form-control" style="width:80px;" name="intensity" value="{{ intensity }}" min="0" max="100" required>
+                  </td>
+                  <!-- Power -->
+                  <td class="row_display_{{id}}">{{#if power}}On{{/if}}{{#unless power}}Off{{/unless}}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <select class="custom-select" name="power" required>
+                      <option value="true" {{#if power}}selected{{/if}}>On</option>
+                      <option value="false" {{#unless power}}selected{{/unless}}>Off</option>
+                    </select>
+                  </td>
+
+                  <!-- Save -->
+                  <td class="row_update_{{id}} hidden">
+                    <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info">Save</button>
+                  </td>
+                </form>
+
+                <!-- Edit -->
+                <td>
+                  <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
+                </td>
+
+                <!-- Delete -->
+                <form name="delete_ledState" action="/ledStates/delete" method="POST">
+                  <!-- Hidden element for ID -->
+                  <input type="number" name="id" value="{{ id }}" hidden>
+
+                  <td class="row_display_{{id}}">
+                    <button type="submit" id="row_delete_{{id}}" class="btn text-white badge badge-danger">Delete</button>
+                  </td>
+                </form>
+
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+
+          <!-- New LED state -->
+          </br>
+          <h5>Add new LED state</h5>
+          <form name="post_ledState" action="/ledStates/add" method="POST">
+            <div class="input-group mb-3">
+              <!-- Red -->
+              <input type="number" class="form-control" placeholder="Red" name="red" value="{{ r }}" min="0" max="255" required>
+              <!-- Green -->
+              <input type="number" class="form-control" placeholder="Green" name="green" value="{{ g }}" min="0" max="255" required>
+              <!-- Blue -->
+              <input type="number" class="form-control" placeholder="Blue" name="blue" value="{{ b }}" min="0" max="255" required>
+              <!-- Intensity -->
+              <input type="number" class="form-control" placeholder="Intensity" name="intensity" value="{{ intensity }}" min="0" max="100" required>
+
+              <!-- Power -->
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">Power</label>
+              </div>
+              <select class="custom-select" id="inputGroupSelect01" required>
+                <option value="true" selected>On</option>
+                <option value="false">Off</option>
+              </select>
+
+              <!-- Submit -->
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">Submit</button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    $('form').submit(function () {
+      $(this).find("button[type='submit']").prop('disabled', true);
+    });
+  });
+  function edit_mode(id) {
+    if ($('.row_update_' + id).hasClass("hidden")) {
+      $('.row_update_' + id).removeClass("hidden");
+      $('.row_display_' + id).addClass("hidden");
+      // Edit button to cancel
+      $('#row_edit_' + id).text("Cancel");
+      $('#row_edit_' + id).removeClass("badge-success");
+      $('#row_edit_' + id).addClass("badge-secondary");
+    } else {
+      $('.row_update_' + id).addClass("hidden");
+      $('.row_display_' + id).removeClass("hidden");
+      // Edit button to edit
+      $('#row_edit_' + id).text("Edit");
+      $('#row_edit_' + id).removeClass("badge-secondary");
+      $('#row_edit_' + id).addClass("badge-success");
+    }
+  }
+</script>

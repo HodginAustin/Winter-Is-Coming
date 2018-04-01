@@ -4,4 +4,4 @@ out/
 Source/.vscode/settings.json
 *.log
 *.sqlite
-/Site/node_modules
+/Site/node_modules/*

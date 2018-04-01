@@ -133,7 +133,7 @@ void API::setup_routes()
     Routes::Get(router, "leds/:id/controller", Routes::bind(&API::get_led_controller, this));
     Routes::Post(router, "leds/add", Routes::bind(&API::post_led, this));
     Routes::Patch(router, "leds/:id/edit", Routes::bind(&API::patch_led, this));
-    Routes::Delete(router, "leds/:id/delete", Routes::bind(&API::delete_led, this));
+    Routes::Delete(router, "leds/delete", Routes::bind(&API::delete_led, this));
 
     // Controller routes
     Routes::Get(router, "controllers", Routes::bind(&API::get_controllers, this));
@@ -246,10 +246,13 @@ void API::nuke_from_orbit(REQUEST, RESPONSE)
     log_req(request);
 
     // Pause state composer and turn LEDs off
-    InternalState::set_current_profile(NULL);
-    StateComposer::set_composer_state('s');
-    // Wait for composer thread to finish led_shutdown
-    while (StateComposer::get_composer_state() == 's') {}
+    if (StateComposer::get_composer_state() == 'c') {
+        InternalState::set_current_profile(NULL);
+        StateComposer::set_composer_state('s');
+
+        // Wait for composer thread to finish led_shutdown
+        while (StateComposer::get_composer_state() == 's') {}
+    }
 
     // Wipe out database
     DataParser::clear();
@@ -346,7 +349,7 @@ void API::get_current_profile(REQUEST, RESPONSE)
     if (profile){
         j_out = *profile;
         code = Http::Code::Ok;
-    } else { j_out.push_back(json{"profile", -1}); }
+    } else { j_out.push_back(json{"profile", "No current profile set"}); }
 
     // Send response
     response.send(code, j_out.dump());
@@ -690,16 +693,20 @@ void API::put_zone_daily_state(REQUEST, RESPONSE)
         Zone* zone = profile->get_zone(zone_id);
         if (zone) {
             DailyState* ds = InternalState::get_daily_state(daily_state_id);
+            unsigned int idOrZero = 0;
             if (ds) {
-                zone->set_daily_state(day_of_week, ds);
-
-                // Insert in DB
-                ZoneDOW dow;
-                dow = {zone->get_id(), day_of_week, ds->get_id()};
-                DataParser::insert(dow);
+                idOrZero = ds->get_id();
 
                 code = Http::Code::Ok;
             } else { j_out.push_back(json{"daily_state", daily_state_id}); }
+
+            zone->set_daily_state(day_of_week, ds);
+
+            // Insert in DB
+            ZoneDOW dow;
+            dow = {zone->get_id(), day_of_week, idOrZero};
+            DataParser::insert(dow);
+            
         } else { j_out.push_back(json{"zone", zone_id}); }
     } else { j_out.push_back(json{"profile", profile_id}); }
 
@@ -914,23 +921,28 @@ void API::delete_led(REQUEST, RESPONSE)
     // Log request
     log_req(request);
 
-    // Parameters
-    auto id = request.param(":id").as<unsigned int>();
-
+    // Decode JSON
+    json j_in = json::parse(request.body());
+    
     // Data
-    LED* led = InternalState::get_led(id);
     json j_out;
     Http::Code code = Http::Code::Not_Found;
     
-    if (led) {
-        // Remove from DB
-        DataParser::remove(led);
+    for (auto json_id : j_in) {
+        unsigned int id = json_id.get<unsigned int>();
+        LED* led = InternalState::get_led(id);
 
-        // Remove from internal state
-        InternalState::delete_led(led);
+        // Validation
+        if (led) {
+            // Remove from DB
+            DataParser::remove(led);
 
-        code = Http::Code::Ok;
-    } else { j_out.push_back(json{"led", id}); }
+            // Remove from internal state
+            InternalState::delete_led(led);
+            
+            code = Http::Code::Ok;
+        } else { j_out.push_back(json{"led", id}); }
+    }  
 
     // Send response
     response.send(code, j_out.dump());
@@ -1332,7 +1344,7 @@ void API::post_daily_state(REQUEST, RESPONSE)
 
     // Build response
     json j_out;
-    Http::Code code = Http::Code::Not_Found;
+    Http::Code code = Http::Code::Ok;
 
     // Insert in DB
     DailyState* dailyState = new DailyState(ds);
@@ -1350,11 +1362,11 @@ void API::post_daily_state(REQUEST, RESPONSE)
                 DStoLS = {dailyState->get_id(), time_of_day, ls->get_id()};
                 DataParser::insert(DStoLS);
 
-                j_out = json{{"id", dailyState->get_id()}};
-                code = Http::Code::Ok;
             } else { j_out["time_out_of_bounds"] = { {"min:", 0}, {"max:", 24*60*60}, {"given:", time_of_day} }; }
         } else { j_out.push_back(json{"led_state", "unknown id, daily state still added"}); }
     }
+
+    j_out = json{{"id", dailyState->get_id()}};
 
     // Send response
     response.send(code, j_out.dump());

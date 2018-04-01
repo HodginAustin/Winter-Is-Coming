@@ -1,0 +1,120 @@
+<br />
+<br />
+<br />
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Profiles</h4>
+          <div class="row">
+            <div class="col-12">
+              <p class="right">
+                Profiles are used to set commonly used daily, and LED states on specific zones
+              </p>
+            </div>
+          </div>
+
+          <br />
+          <h4>All Profiles: </h4>
+          <table class="table table-striped">
+            <thead>
+              <th>Name: </th>
+              <th>ID: </th>
+              <th>Description: </th>
+              <th>Zones: </th>
+            </thead>
+
+            <tbody>
+              {{#each Profiles}}
+              <tr>
+                <form name="patch_profile" action="/profiles/edit" method="POST">
+                  <!-- Hidden element for ID -->
+                  <input type="number" name="id" value="{{ id }}" hidden>
+
+                  <td class="row_display_{{id}}">{{name}}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <input type="text" class="from-control" style="width:200px;" name="name" value="{{name}}" required/>
+                  </td>
+                  <td>{{id}}</td>
+                  <td class="row_display_{{id}}">{{description}}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <textarea class="from-control" style="width:450px;" name="description">{{description}}</textarea>
+                  </td>
+                  <td class="row_display_{{id}}">{{zones}}</td>
+                  <td class="row_update_{{id}} hidden">
+                    <a href="/profiles/{{id}}">Edit Zones</a>
+                  </td>
+                  <td>
+                    <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
+                  </td>
+
+                  <!-- Save -->
+                  <td class="row_update_{{id}} hidden">
+                    <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info">Save</button>
+                  </td>
+                </form>
+
+                <!-- Delete -->
+                <form name="delete_profile" action="/profiles/delete" method="POST">
+                  <!-- Hidden element for ID -->
+                  <input type="number" name="id" value="{{ id }}" hidden>
+                  <td class="row_display_{{id}}">
+                    <button type="submit" id="row_delete_{{id}}" class="btn text-white badge badge-danger">Delete</button>
+                  </td>
+                </form>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+          <br />
+          <h5>Add new profile</h5>
+          <!-- New profile -->
+          <form name="post_profile" action="/profiles/add" method="POST">
+            <div class="input-group mb-3">
+              <!-- name -->
+              <input type="text" class="form-control" placeholder="Name" name="name" required/>
+              <!-- description -->
+              <input type="text" class="form-control" placeholder="Description" name="description" />
+
+              <!-- Submit -->
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">Submit</button>
+              </div>
+            </div>
+          </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  $(document).ready(function () {
+    $('form').submit(function () {
+      $(this).find("button[type='submit']").prop('disabled', true);
+    });
+  });
+
+  function edit_mode(id) {
+    if ($('.row_update_' + id).hasClass("hidden")) {
+      $('.row_update_' + id).removeClass("hidden");
+      $('.row_display_' + id).addClass("hidden");
+      // Edit button to cancel
+      $('#row_edit_' + id).text("Cancel");
+      $('#row_edit_' + id).removeClass("badge-success");
+      $('#row_edit_' + id).addClass("badge-secondary");
+    } else {
+      $('.row_update_' + id).addClass("hidden");
+      $('.row_display_' + id).removeClass("hidden");
+      // Edit button to edit
+      $('#row_edit_' + id).text("Edit");
+      $('#row_edit_' + id).removeClass("badge-secondary");
+      $('#row_edit_' + id).addClass("badge-success");
+    }
+  }
+
+</script>
