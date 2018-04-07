@@ -7,7 +7,6 @@
 // The I^2C serial bus device in the linux system
 #define I2C_BUS "/dev/i2c-1"
 
-
 // Required LED intensity scalar to use all 60 
 // LEDs at full white, off of the Arduino 5V rail
 // 5V rail can drive a maximum of 500mA
@@ -22,6 +21,12 @@
 // Arduino Nano to send it's ACK and catch up
 // last updated to: 20000
 #define WAIT 20000
+
+// Set the maximum number of times to reattempt
+// writing serial data in the serial_send function
+// if errors occur
+#define TRIES 2
+
 
 
 // Threading
@@ -136,6 +141,7 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 {
 	unsigned char s_buffer[4];
 	unsigned char* p_s_buffer;
+    unsigned char attempts = 0;
     
     // Get current time
     time(&sysTime);
@@ -160,20 +166,29 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 	
 	if (i2cFileStream != -1) {
 
-	    // TODO: Decide on how IDs are going to be passed
         if (ioctl(i2cFileStream, I2C_SLAVE, (io + i2cAddressOffset))) {   // Set io control for the I2C file stream, as sending to I2C slave, at address
             logFile << "ERROR: Can't switch ioctl to I2C bus address: [ " << (io + i2cAddressOffset) << " ]" << std::endl;
             return true;    // Error state; return value not used currently
         }
 
 
+
 		int count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Filestream, bytes to write, number of bytes to write
-		if (count < 0) {
+
+		while (count < 0) {                                                             // If error in transmission, keep trying
+
             logFile << "ERROR: I2C transmit failed! [ " << (io + i2cAddressOffset) << " ]" << std::endl;
-            return true;    // Error state; return value not used currently
+
+            count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Rewrite the same values
+            usleep(WAIT);                                                               // Before blasting serial data again, let Arduino catch up
+            attempts++;
+            
+            if (attempts == TRIES) {                                                    // Give up after TRIES attempts
+                return true;
+            }
 		}
-        
-        usleep(WAIT);       // Let Arduino catch up
+
+        usleep(WAIT);                                                                   // Even if no error, let Arduino catch up
 	}
 
 	return false;
