@@ -4,15 +4,20 @@ function controlServiceRequest(options, callback) {
     let request = require('request');
 
     request(options, function (err, response, body) {
-        console.log(options.method + " " + options.uri + " " + JSON.stringify(options.json));
-        if (err || response.statusCode != 200) {
-            let error = "    ERROR: " + response.statusCode + " " + JSON.stringify(response.body);
-            console.log(error);
+        if (response) {
+            console.log(options.method + " " + options.uri + " " + JSON.stringify(options.json));
+            if (err || response.statusCode != 200) {
+                let error = "    ERROR: " + response.statusCode + " " + JSON.stringify(response.body);
+                console.log(error);
+            }
+            else {
+                console.log("    " + JSON.stringify(response.body).slice(0, 100));
+            }
+            callback(err, response, body);
         }
         else {
-            console.log("    " + JSON.stringify(response.body).slice(0, 100));
+            callback(err, null, "");
         }
-        callback(err, response, body);
     });
 }
 
