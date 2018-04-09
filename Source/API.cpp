@@ -1407,18 +1407,26 @@ void API::put_daily_state_led_state(REQUEST, RESPONSE)
 
             ledState = InternalState::get_led_state(s);
             
-            if (ledState) {
-                if (time_of_day >= 0 && time_of_day <= 24*60*60) {
-                    dailyState->add_state(time_of_day, ledState);
+            if (time_of_day >= 0 && time_of_day <= 24*60*60) {
+                unsigned int idOrZero = 0;
+                if (ledState) {
+                    idOrZero = ledState->get_id();
+                } else {
+                    if (ledState != 0) {
+                        j_out.push_back(json{"led_state", s});
+                    }
+                }
 
-                    // Insert in DB
-                    DailyStateToLEDState DStoLS;
-                    DStoLS = {dailyState->get_id(), time_of_day, ledState->get_id()};
-                    DataParser::insert(DStoLS);
 
-                    code = Http::Code::Ok;
-                } else { j_out["time_out_of_bounds"] = { {"min:", 0}, {"max:", 24*60*60}, {"given:", time_of_day} }; }
-            } else { j_out.push_back(json{"led_state", s}); }
+                dailyState->add_state(time_of_day, ledState);
+
+                // Insert in DB
+                DailyStateToLEDState DStoLS;
+                DStoLS = {dailyState->get_id(), time_of_day, idOrZero};
+                DataParser::insert(DStoLS);
+
+                code = Http::Code::Ok;
+            } else { j_out["time_out_of_bounds"] = { {"min:", 0}, {"max:", 24*60*60}, {"given:", time_of_day} }; }
         }
     } else { j_out.push_back(json{"daily_state", daily_state_id}); }
     
