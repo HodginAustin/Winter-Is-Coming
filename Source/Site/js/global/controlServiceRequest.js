@@ -6,7 +6,7 @@ function controlServiceRequest(options, callback) {
     request(options, function (err, response, body) {
         if (response) {
             console.log(options.method + " " + options.uri + " " + JSON.stringify(options.json));
-            if (err || response.statusCode != 200) {
+            if (err || response.statusCode >= 300) {
                 let error = "    ERROR: " + response.statusCode + " " + JSON.stringify(response.body);
                 console.log(error);
             }

@@ -60,19 +60,62 @@
                             <div class="modal-dialog" role="document">
                               <div class="modal-content">
                                 <div class="modal-header">
-                                  <h5 class="modal-title" id="dayTitle">Daily states for day of week:</h5>
+                                  <h5 class="modal-title" id="dayTitle">Daily states for days of the week:</h5>
                                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                   </button>
                                 </div>
                                 <div class="modal-body">
-                                  <input type="text" class="from-control" style="width:200px;" name="sunday" placeholder="Sunday daily state" required/>
-                                  <input type="text" class="from-control" style="width:200px;" name="monday" placeholder="Monday daily state" required/>
-                                  <input type="text" class="from-control" style="width:200px;" name="tuesday" placeholder="Tuesday daily state" required/>
-                                  <input type="text" class="from-control" style="width:200px;" name="wednesday" placeholder="Wednesday daily state" required/>
-                                  <input type="text" class="from-control" style="width:200px;" name="thursday" placeholder="Thursday daily state" required/>
-                                  <input type="text" class="from-control" style="width:200px;" name="friday" placeholder="Friday daily state" required/>
-                                  <input type="text" class="from-control" style="width:200px;" name="saturday" placeholder="Saturday daily state" required/>
+                                  <div style="text-align:center;">
+                                    <!-- Sunday -->
+                                    <div class="checkbox-container">
+                                      <input type="checkbox" id="checkbox_sun" class="checkbox-round" name="sunday" checked>
+                                      <label for="checkbox_sun">Sun</label>
+                                    </div>
+                                    <!-- Monday -->
+                                    <div class="checkbox-container">
+                                      <input type="checkbox" id="checkbox_mon" class="checkbox-round" name="monday">
+                                      <label for="checkbox_mon">Mon</label>
+                                    </div>
+                                    <!-- Tuesday -->
+                                    <div class="checkbox-container">
+                                      <input type="checkbox" id="checkbox_tue" class="checkbox-round" name="tuesday">
+                                      <label for="checkbox_tue">Tue</label>
+                                    </div>
+                                    <!-- Wednesday -->
+                                    <div class="checkbox-container">
+                                      <input type="checkbox" id="checkbox_wed" class="checkbox-round" name="wednesday">
+                                      <label for="checkbox_wed">Wed</label>
+                                    </div>
+                                    <!-- Thursday -->
+                                    <div class="checkbox-container">
+                                      <input type="checkbox" id="checkbox_thu" class="checkbox-round" name="thursday">
+                                      <label for="checkbox_thu">Thu</label>
+                                    </div>
+                                    <!-- Friday -->
+                                    <div class="checkbox-container">
+                                      <input type="checkbox" id="checkbox_fri" class="checkbox-round" name="friday">
+                                      <label for="checkbox_fri">Fri</label>
+                                    </div>
+                                    <!--Saturday -->
+                                    <div class="checkbox-container">
+                                      <input type="checkbox" id="checkbox_sat" class="checkbox-round" name="saturday">
+                                      <label for="checkbox_sat">Sat</label>
+                                    </div>
+                                  </div>
+                                  <br/>
+                                  <!-- Daily State -->
+                                  <div class="input-group">
+                                    <div class="input-group-prepend">
+                                      <label class="input-group-text" for="inputGroupSelect01">Daily State</label>
+                                    </div>
+                                    <select class="custom-select" name="state" required>
+                                      <option value="0">None</option>
+                                      {{#each ../DailyStates}}
+                                      <option value="{{id}}">{{id}}</option>
+                                      {{/each}}
+                                    </select>
+                                  </div>
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

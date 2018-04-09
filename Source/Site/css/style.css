@@ -23,3 +23,42 @@
 .hidden {
   display: none;
 }
+
+.circle {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.checkbox-round {
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  border-radius: 50%;
+  vertical-align: middle;
+  border: 1px solid #ddd;
+  -webkit-appearance: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.checkbox-container {
+  position: relative;
+  display: inline-block;
+}
+
+div .checkbox-round + label {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+.checkbox-round:checked {
+  background-color: #007BFF;
+}
