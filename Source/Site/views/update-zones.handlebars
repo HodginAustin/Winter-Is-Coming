@@ -12,8 +12,9 @@
           <div class "row">
             <div class="col-12">
               <p class="right">
-                A Zone represents a set of daily zones across specific LEDS. Days corresponds to 7 individual daily state id's formated like
-                Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday. LEDS correspond to the ID of each individual LED.
+                A Zone represents a set of 7 daily states applied to a set of LEDs. The days column represents the daily state ID for: Sunday,
+                Monday, Tuesday, Wednesday, Thursday, Friday, and Saturday. LEDS correspond to the ID of each individual
+                LED.
               </p>
             </div>
           </div>
@@ -24,139 +25,200 @@
               <div class="card">
 
                 <div class="card-body">
-                  <!-- Edit -->
-                  <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
+                  <!-- Header -->
+                  <table style="width:100%;">
+                    <tbody>
+                      <tr>
+                        <td>
+                          <h5 class="card-title">Zone {{id}}</h5>
+                        </td>
+                        <td style="text-align: right">
+                          <!-- Delete -->
+                          <form name="delete" action="/profiles/{{../Profile.id}}/zones/delete" method="POST">
+                            <!-- Hidden element for ID and time -->
+                            <input type="number" name="id" class="hidden" value="{{ id }}">
 
-                  <!-- Delete -->
-                  <form name="delete_zone" action="/profiles/{{../Profile.id}}/zones/delete" method="POST">
-                    <!-- Hidden element for ID -->
-                    <input type="number" name="id" value="{{ id }}" hidden>
-
-                    <button type="submit" class="btn text-white badge badge-danger">Delete</button>
-                  </form>
+                            <button class="btn btn-sm btn-danger text-white" type="submit">
+                              Delete Zone
+                            </button>
+                          </form>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  </br>
 
                   <table class="table">
                     <thead>
-                      <th>ID: </th>
-                      <th>Name: </th>
-                      <th>
-                        <a href="/dailyStates">Days:</a>
-                      </th>
-                      <th>LED's: </th>
+                      <th>Name:</th>
+                      <th>Sun,Mon,Tue,Wed,Thu,Fri,Sat:</th>
+                      <th>LEDs:</th>
                     </thead>
                     <tbody>
-
-                      <td>{{id}}</td>
                       <td>{{name}}</td>
                       <form name="patch_zones" action="/profiles/{{../Profile.id}}/zones/edit" method="POST">
                         <!-- Hidden element for ID -->
                         <input type="number" name="id" value="{{ id }}" hidden>
 
-                        <td class="row_display_{{id}}">{{days}}</td>
-                        <td class="row_update_{{id}} hidden">
-                          <a href="#" data-toggle="modal" data-target="#dayOfWeek{{id}}">{{days}}</a>
-                          <!-- Modal -->
-                          <div class="modal fade" id="dayOfWeek{{id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5 class="modal-title" id="dayTitle">Daily states for days of the week:</h5>
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                  </button>
-                                </div>
-                                <div class="modal-body">
-                                  <p style="text-align:center;">Select the days of the week to apply this daily state to:</p>
-                                  <div style="text-align:center;">
-                                    <!-- Sunday -->
-                                    <div class="checkbox-container">
-                                      <input type="checkbox" id="checkbox_sun" class="checkbox-round" name="sunday" checked>
-                                      <label for="checkbox_sun">Sun</label>
-                                    </div>
-                                    <!-- Monday -->
-                                    <div class="checkbox-container">
-                                      <input type="checkbox" id="checkbox_mon" class="checkbox-round" name="monday">
-                                      <label for="checkbox_mon">Mon</label>
-                                    </div>
-                                    <!-- Tuesday -->
-                                    <div class="checkbox-container">
-                                      <input type="checkbox" id="checkbox_tue" class="checkbox-round" name="tuesday">
-                                      <label for="checkbox_tue">Tue</label>
-                                    </div>
-                                    <!-- Wednesday -->
-                                    <div class="checkbox-container">
-                                      <input type="checkbox" id="checkbox_wed" class="checkbox-round" name="wednesday">
-                                      <label for="checkbox_wed">Wed</label>
-                                    </div>
-                                    <!-- Thursday -->
-                                    <div class="checkbox-container">
-                                      <input type="checkbox" id="checkbox_thu" class="checkbox-round" name="thursday">
-                                      <label for="checkbox_thu">Thu</label>
-                                    </div>
-                                    <!-- Friday -->
-                                    <div class="checkbox-container">
-                                      <input type="checkbox" id="checkbox_fri" class="checkbox-round" name="friday">
-                                      <label for="checkbox_fri">Fri</label>
-                                    </div>
-                                    <!--Saturday -->
-                                    <div class="checkbox-container">
-                                      <input type="checkbox" id="checkbox_sat" class="checkbox-round" name="saturday">
-                                      <label for="checkbox_sat">Sat</label>
-                                    </div>
+                        <td>
+                          {{days}}
+                          <a href="" data-toggle="modal" data-target="#dayOfWeek{{id}}" class="btn text-white badge badge-success">Edit</a>
+                        </td>
+                        <!-- Modal -->
+                        <div class="modal fade" id="dayOfWeek{{id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="dayTitle">Daily states for days of the week:</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+
+                              <div class="modal-body">
+                                <p style="text-align:center;">Select the days of the week to apply this daily state to:</p>
+                                <div style="text-align:center;">
+                                  <!-- Sunday -->
+                                  <div class="checkbox-container">
+                                    <input type="checkbox" id="checkbox_sun" class="checkbox-round" name="sunday" checked>
+                                    <label for="checkbox_sun">Sun</label>
                                   </div>
-                                  <br/>
-                                  <!-- Daily State -->
-                                  <div class="input-group">
-                                    <div class="input-group-prepend">
-                                      <label class="input-group-text" for="inputGroupSelect01">Daily State</label>
-                                    </div>
-                                    <select class="custom-select" name="state" required>
-                                      <option value="0">None</option>
-                                      {{#each ../DailyStates}}
-                                      <option value="{{id}}">{{id}}</option>
-                                      {{/each}}
-                                    </select>
+                                  <!-- Monday -->
+                                  <div class="checkbox-container">
+                                    <input type="checkbox" id="checkbox_mon" class="checkbox-round" name="monday">
+                                    <label for="checkbox_mon">Mon</label>
+                                  </div>
+                                  <!-- Tuesday -->
+                                  <div class="checkbox-container">
+                                    <input type="checkbox" id="checkbox_tue" class="checkbox-round" name="tuesday">
+                                    <label for="checkbox_tue">Tue</label>
+                                  </div>
+                                  <!-- Wednesday -->
+                                  <div class="checkbox-container">
+                                    <input type="checkbox" id="checkbox_wed" class="checkbox-round" name="wednesday">
+                                    <label for="checkbox_wed">Wed</label>
+                                  </div>
+                                  <!-- Thursday -->
+                                  <div class="checkbox-container">
+                                    <input type="checkbox" id="checkbox_thu" class="checkbox-round" name="thursday">
+                                    <label for="checkbox_thu">Thu</label>
+                                  </div>
+                                  <!-- Friday -->
+                                  <div class="checkbox-container">
+                                    <input type="checkbox" id="checkbox_fri" class="checkbox-round" name="friday">
+                                    <label for="checkbox_fri">Fri</label>
+                                  </div>
+                                  <!--Saturday -->
+                                  <div class="checkbox-container">
+                                    <input type="checkbox" id="checkbox_sat" class="checkbox-round" name="saturday">
+                                    <label for="checkbox_sat">Sat</label>
                                   </div>
                                 </div>
-                                <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                  <button class="btn btn-outline-secondary" type="submit">Submit</button>
+                                <br/>
+
+                                <!-- Daily State -->
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <label class="input-group-text" for="inputGroupSelect01">Daily State</label>
+                                  </div>
+                                  <select class="custom-select" name="state" required>
+                                    <option value="0">None</option>
+                                    {{#each ../DailyStates}}
+                                    <option value="{{id}}">{{id}}</option>
+                                    {{/each}}
+                                  </select>
                                 </div>
+                              </div>
+
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button class="btn btn-outline-secondary" type="submit">Submit</button>
                               </div>
                             </div>
                           </div>
+                        </div>
                         </td>
                       </form>
 
-                      <form name="put_zone_leds" action="/profiles/{{../Profile.id}}/zones/leds/add" method="POST">
-                        <!-- Hidden element for ID -->
-                        <input type="number" name="id" value="{{ id }}" hidden>
+                      <td>
+                        {{leds.length}}
+                        <a href="" data-toggle="modal" data-target="#ledsModal{{id}}" class="btn text-white badge badge-success">View or Add LEDs</a>
+                      </td>
+                      <!-- Modal -->
+                      <div class="modal fade" id="ledsModal{{id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
 
-                        <td class="row_display_{{id}}">{{leds}}</td>
-                        <td class="row_update_{{id}} hidden">
-                          <a href="#" data-toggle="modal" data-target="#ledsModal{{id}}">Add LEDS</a>
-                          <!-- Modal -->
-                          <div class="modal fade" id="ledsModal{{id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5 class="modal-title" id="ledsTitle">LEDS:</h5>
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                  </button>
-                                </div>
-                                <div class="modal-body">
-                                  <input type="text" class="from-control" style="width:200px;" name="leds" placeholder="Comma separated LEDs" required/>
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                  <button class="btn btn-outline-secondary" type="submit">Submit</button>
-                                </div>
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="ledsTitle">LEDS</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+
+                            <div class="modal-body">
+                              <div class="d-flex flex-wrap" id="leds">
+                                {{#each leds}}
+                                <!-- Hidden element for LED ID -->
+                                <input type="number" name="ledIds" value="{{this}}" hidden>
+
+                                <a class="btn text-white badge badge-info" style="margin:2px;">{{this}}</a>
+                                {{/each}}
                               </div>
+                              <br/>
+
+                              <!-- Add new LEDs -->
+                              <p>Add new LEDs by supplying a range of LED IDs:</p>
+                              <form name="put_zone_leds" action="/profiles/{{../Profile.id}}/zones/leds/add" method="POST">
+                                <!-- Hidden element for ID -->
+                                <input type="number" name="id" value="{{ id }}" hidden>
+
+                                <div class="input-group mb-3">
+                                  <div class="input-group-prepend">
+                                    <label class="input-group-text">LED Range</label>
+                                  </div>
+                                  <!-- Minimum -->
+                                  <input type="number" class="form-control" placeholder="First ID" name="min" min="1" max="{{../LEDs.length}}" required>
+                                  <!-- Maximum -->
+                                  <input type="number" class="form-control" placeholder="Last ID" name="max" min="1" max="{{../LEDs.length}}" required>
+
+                                  <!-- Submit -->
+                                  <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="submit">Add</button>
+                                  </div>
+                                </div>
+                              </form>
+
+                              <!-- Remove LEDs -->
+                              <p>Remove LEDs by supplying a range of LED IDs:</p>
+                              <form name="put_zone_leds" action="/profiles/{{../Profile.id}}/zones/leds/delete" method="POST">
+                                <!-- Hidden element for ID -->
+                                <input type="number" name="id" value="{{ id }}" hidden>
+
+                                <div class="input-group mb-3">
+                                  <div class="input-group-prepend">
+                                    <label class="input-group-text">LED Range</label>
+                                  </div>
+                                  <!-- Minimum -->
+                                  <input type="number" class="form-control" placeholder="First ID" name="min" min="1" max="{{../LEDs.length}}" required>
+                                  <!-- Maximum -->
+                                  <input type="number" class="form-control" placeholder="Last ID" name="max" min="1" max="{{../LEDs.length}}" required>
+
+                                  <!-- Submit -->
+                                  <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="submit">Delete</button>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             </div>
                           </div>
-                        </td>
-                      </form>
+                        </div>
+                      </div>
+                      </td>
 
                     </tbody>
                   </table>

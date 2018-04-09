@@ -20,6 +20,9 @@ module.exports = function () {
     /* Daily State functions */
     let dailyStates = require('./global/dailyStates.js');
 
+    /* LED functions */
+    let leds = require('./global/leds.js');
+
     function getProfile(res, context, id, complete) {
         let profileUrl = conn.url + conn.port + '/' + conn.profiles + '/' + id;
         console.log("getProfile url: " + profileUrl);
@@ -36,6 +39,8 @@ module.exports = function () {
             });
         });
     }
+
+
     router.get('/', function (req, res) {
         var callbackCount = 0;
         var context = req.context;
@@ -50,6 +55,7 @@ module.exports = function () {
             }
         }
     });
+
 
     router.post('/add', function (req, res) {
         console.log("POST ADD PROFILE");
@@ -85,6 +91,7 @@ module.exports = function () {
         });
     });
 
+
     router.post('/:id/zones/add', function (req, res) {
         let id = req.body.id;
         console.log("POST zone " + id);
@@ -102,13 +109,18 @@ module.exports = function () {
         });
     });
 
+
     router.post('/:id/zones/leds/add', function (req, res) {
         let zoneId = req.body.id;
 
         console.log("POST zone leds for " + zoneId);
-        let j = req.body.leds.split(',');
-        j = j.map(id => parseInt(id));
-
+        let minID = parseInt(req.body.min);
+        let maxID = parseInt(req.body.max);
+        let range = maxID - minID;
+        let j = [];
+        for (let i = 0; i < range+1; i++) {
+            j.push(minID + i);
+        }
 
         var options = {
             method: "PUT",
@@ -120,6 +132,7 @@ module.exports = function () {
             res.redirect('back');
         });
     });
+
 
     router.post('/:id/zones/edit', function (req, res) {
         let zoneId = req.body.id;
@@ -165,6 +178,30 @@ module.exports = function () {
     });
 
 
+    router.post('/:id/zones/leds/delete', function (req, res) {
+        let zoneId = req.body.id;
+
+        console.log("DELETE zone leds for " + zoneId);
+        let minID = parseInt(req.body.min);
+        let maxID = parseInt(req.body.max);
+        let range = maxID - minID;
+        let j = [];
+        for (let i = 0; i < range+1; i++) {
+            j.push(minID + i);
+        }
+
+        var options = {
+            method: "DELETE",
+            uri: conn.url + conn.port + "/" + conn.profiles + "/" + req.params.id + "/zones/" + zoneId + "/leds/delete",
+            json: j
+        };
+
+        controlService.makeRequest(options, function () {
+            res.redirect('back');
+        });
+    });
+
+
     router.post('/delete', function (req, res) {
         let id = req.body.id;
         console.log("DELETE Profile " + id);
@@ -177,21 +214,22 @@ module.exports = function () {
         });
     });
 
+
     router.get('/:id', function (req, res) {
         callbackCount = 0;
         var context = {};
         getProfile(res, context, req.params.id, complete);
         curr.get(res, context, complete);
         zones.get(res, context, req.params.id, complete);
+        leds.get(res, context, complete);
         dailyStates.get(res, context, complete)
         function complete() {
             callbackCount++;
-            if (callbackCount >= 4) {
+            if (callbackCount >= 5) {
                 res.render('update-zones', context);
             }
         }
     });
-
 
     return router;
 }();

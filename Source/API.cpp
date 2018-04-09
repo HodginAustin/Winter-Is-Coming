@@ -126,6 +126,8 @@ void API::setup_routes()
                 Routes::bind(&API::put_zone_daily_state, this));
     Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/leds/:led_id/delete",
                 Routes::bind(&API::delete_zone_led, this));
+    Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/leds/delete",
+                Routes::bind(&API::delete_zone_leds, this));
     Routes::Delete(router, "profiles/:profile_id/zones/:zone_id/day/:day_of_week/delete",
                 Routes::bind(&API::delete_zone_daily_state, this));
 
@@ -795,6 +797,45 @@ void API::delete_zone_led(REQUEST, RESPONSE)
                 
                 code = Http::Code::Ok;
             } else { j_out.push_back(json{"led", led_id}); }
+        } else { j_out.push_back(json{"zone", zone_id}); }
+    } else { j_out.push_back(json{"profile", profile_id}); }
+
+    // Send response
+    response.send(code, j_out.dump());
+}
+void API::delete_zone_leds(REQUEST, RESPONSE)
+{
+    // Log request
+    log_req(request);
+
+    // Parameters
+    auto profile_id = request.param(":profile_id").as<unsigned int>();
+    auto zone_id = request.param(":zone_id").as<unsigned int>();
+
+    // Request data
+    json j_in = json::parse(request.body());
+    
+    // Data
+    Profile* profile = InternalState::get_profile(profile_id);
+    Http::Code code = Http::Code::Not_Found;
+    json j_out;
+
+    if (profile) {
+        Zone* zone = profile->get_zone(zone_id);
+        if (zone) {
+            for (auto json_id : j_in) {
+                unsigned int led_id = json_id.get<unsigned int>();
+                LED* led = InternalState::get_led(led_id);
+                if (led) {
+                    // Delete from DB
+                    DataParser::remove(zone, led);
+
+                    // Remove from zone
+                    zone->delete_led(led);
+                    
+                    code = Http::Code::Ok;
+                } else { j_out.push_back(json{"led", led_id}); }
+            }
         } else { j_out.push_back(json{"zone", zone_id}); }
     } else { j_out.push_back(json{"profile", profile_id}); }
 
