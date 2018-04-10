@@ -2,6 +2,7 @@
 #include "../includes/InternalState.hpp"
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 // Constructor
 DailyState::DailyState() {
@@ -71,6 +72,7 @@ LEDState* DailyState::get_led_state(unsigned int time_of_day)
 {
     LEDState* nearest_state = 0;
     unsigned int nearest_time = 0;
+    unsigned int diff = 86401; // > 24 hours
 
     // First check if no time<->state pairs exist
     if (timeStatePairs.count(time_of_day) == 0) {
@@ -81,10 +83,14 @@ LEDState* DailyState::get_led_state(unsigned int time_of_day)
         for (auto& element : timeStatePairs) {
             unsigned int t = element.first;
 
-            // Only check times greater than or equal to the given time
-            if (time_of_day >= t) {
+            // Only check times less than or equal to the given time
+            if (t <= time_of_day) {
                 // Find the greatest of the times listed for this day
-                nearest_time = MAX(t, nearest_time);
+                unsigned int newDiff = MAX(t, time_of_day) - MIN(t, time_of_day);
+                if (newDiff < diff) {
+                    nearest_time = t;
+                    diff = newDiff;
+                }
             }
         }
         nearest_state = timeStatePairs[nearest_time];
