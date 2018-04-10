@@ -34,11 +34,11 @@ bool test_dailystate()
     condTrue &= assertTrue(d->get_led_state(13) == lds);
 
     // Delete non-existent LED state and confirm that the previous state still exists
-    d->delete_state(1500);
+    d->delete_time_state(1500);
     condTrue &= assertTrue(d->get_led_state(12) == lds);
 
     // Delete existing LED state and confirm it's gone
-    bool deleteResult = d->delete_state(12);
+    bool deleteResult = d->delete_time_state(12);
     condTrue &= assertTrue(deleteResult);
 
     time_state_map.erase(12);

@@ -42,6 +42,9 @@ public:
 
     // Static states
     static LEDState* off;
+
+    // Equals
+    static bool equals(LEDState*, LEDState*);
 };
 
 // JSON

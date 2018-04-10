@@ -170,7 +170,7 @@ void InternalState::delete_led_state(LEDState* ledState)
 {
     // Cascade delete
     for (auto dailyState : get_daily_states()) {
-        dailyState->delete_state(ledState);
+        dailyState->delete_led_state(ledState);
     }
 
     ledStates.erase(
