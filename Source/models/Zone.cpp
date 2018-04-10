@@ -104,10 +104,10 @@ DailyState* Zone::get_daily_state(unsigned int day) const
     return weeklyState.at(day);
 }
 
-LEDState* get_led_state_from_daily_state(unsigned int time, DailyState* ds)
+LEDState* get_led_state_from_daily_state(unsigned int t, DailyState* ds)
 {
-    if (!ds) { return 0; }
-    return ds->get_led_state(time);
+    if (ds == 0) { return 0; }
+    return ds->get_led_state(t);
 }
 
 LEDState* Zone::get_active_state(unsigned int time_of_day, int day) const
@@ -120,12 +120,10 @@ LEDState* Zone::get_active_state(unsigned int time_of_day, int day) const
 
     // Try to get closest active state initially
     DailyState* ds = weeklyState.at(dayToCheck);
-
     LEDState* ls = get_led_state_from_daily_state(timeToCheck, ds);
 
     // If the initial day does not exist or it has no daily states
     while (ls == 0) {
-
         // Look to the previous day
         dayToCheck--;
         // If we had to look back at the previous day, set the time to the end of the day
@@ -142,11 +140,7 @@ LEDState* Zone::get_active_state(unsigned int time_of_day, int day) const
         ls = get_led_state_from_daily_state(timeToCheck, ds);
     }
     
-    if (ls == 0) {
-        return LEDState::off;
-    } else {
-        return ls;
-    }
+    return ls;
 }
 
 void Zone::set_daily_state(unsigned int day, DailyState* state)
