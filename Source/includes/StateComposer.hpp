@@ -18,7 +18,6 @@
 #include "./LED.hpp"
 #include "./LEDState.hpp"
 #include "./Profile.hpp"
-#include "./Schedule.hpp"
 #include "./Zone.hpp"
 
 class StateComposer
@@ -58,7 +57,6 @@ private:
     // and looping through them
     static Profile* currentProfile;
         // Get vector of zones... for each, get:
-            static Schedule* currentZoneSchedule;
             static LEDState* currentZoneActiveState;
             static std::vector<LED*> currentZoneLEDs;
                 // For each LED, get: 

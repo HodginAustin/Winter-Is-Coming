@@ -46,7 +46,6 @@ unsigned int StateComposer::seconds;
 
 // Internal State variables
 Profile* StateComposer::currentProfile;
-Schedule* StateComposer::currentZoneSchedule;
 LEDState* StateComposer::currentZoneActiveState;
 
 unsigned char StateComposer::red;
