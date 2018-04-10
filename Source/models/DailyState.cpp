@@ -94,17 +94,17 @@ LEDState* DailyState::get_led_state(unsigned int time_of_day)
     }
 }
 
-bool DailyState::delete_state(unsigned int time)
+bool DailyState::delete_time_state(unsigned int time)
 {
     timeStatePairs.erase(time);
     return timeStatePairs.count(time) == 0;
 }
 
-void DailyState::delete_state(LEDState* ledState)
+void DailyState::delete_led_state(LEDState* ledState)
 {
     for (auto& element : timeStatePairs) {
         if (element.second->get_id() == ledState->get_id()) {
-            delete_state(element.first);
+            delete_time_state(element.first);
         }
     }
 }

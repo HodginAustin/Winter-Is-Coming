@@ -1450,7 +1450,7 @@ void API::delete_daily_state_led_state(REQUEST, RESPONSE)
         DataParser::remove(dailyState, time_of_day);
 
         // Remove from daily state
-        dailyState->delete_state(time_of_day);
+        dailyState->delete_time_state(time_of_day);
 
         code = Http::Code::Ok;
     } else { j_out.push_back(json{"daily_state", daily_state_id});}
