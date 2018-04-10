@@ -83,8 +83,10 @@ private:
     void put_zone_led(REQUEST, RESPONSE);          // Links a list of existing LEDs to a zone
                                                         // IN: list of LED IDs [1,4,9,40]
                                                         // OUT: list of things that were not found, or nothing on success
-    void put_zone_daily_state(REQUEST, RESPONSE);      // Links an existing dailyState to a zone by day of week
-    void delete_zone_led(REQUEST, RESPONSE);       // Unlinks an existing LED from a zone
+    void patch_zone_daily_state(REQUEST, RESPONSE);    // Links an existing dailyState to a zone by day of week
+    void put_zone_daily_state(REQUEST, RESPONSE);      // Links an existing list of dailystates to a zone, must be given a list with 7 numbers ex: [0,0,1,1,2,4,0]
+    void delete_zone_led(REQUEST, RESPONSE);           // Unlinks an existing LED from a zone
+    void delete_zone_leds(REQUEST, RESPONSE);          // Unlinks a set of existing LEDs from a zone
     void delete_zone_daily_state(REQUEST, RESPONSE);   // Unlinks an existing dailyState to a zone
 
     // LED routes

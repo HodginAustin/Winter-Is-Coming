@@ -292,7 +292,7 @@ def configure_Zones(url, header):
                 print("Temp: %i" %temp)
                 print("num of days in loop: %i" % numOfDays)
                 temp1 = str(raw_input("What day as an integer do you want the zone to be active (Sunday(0)-Saturday(6)): "))
-                r = requests.put(url + "/profiles/{}/zones/{}/day/{}/add/{}".format(SelectedProfile, selectedZone, temp1, selectedDailyState))
+                r = requests.patch(url + "/profiles/{}/zones/{}/day/{}/add/{}".format(SelectedProfile, selectedZone, temp1, selectedDailyState))
                 if(str(r.status_code) == "200"):
                     print("Daily State added!")
                 temp += 1

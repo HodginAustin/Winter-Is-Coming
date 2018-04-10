@@ -10,7 +10,8 @@
           <div class="row">
             <div class="col-12">
               <p class="right">
-                Profiles are used to set commonly used daily, and LED states on specific zones
+                Each profile holds a set of zones, and can be active or inactive. When a profile is active, its zones are applied to the system.
+                Each zone holds a daily state for every day of the week, and a list of LEDs that those daily states should be applied to.
               </p>
             </div>
           </div>
@@ -23,6 +24,8 @@
               <th>ID: </th>
               <th>Description: </th>
               <th>Zones: </th>
+              <th></th>
+              <th></th>
             </thead>
 
             <tbody>
@@ -41,7 +44,7 @@
                   <td class="row_update_{{id}} hidden">
                     <textarea class="from-control" style="width:450px;" name="description">{{description}}</textarea>
                   </td>
-                  <td class="row_display_{{id}}">{{zones}}</td>
+                  <td class="row_display_{{id}}">{{zones}} <a href="/profiles/{{id}}" id="row_view_zones_{{id}}" class="btn text-white badge badge-info">View</a></td>
                   <td class="row_update_{{id}} hidden">
                     <a href="/profiles/{{id}}">Edit Zones</a>
                   </td>

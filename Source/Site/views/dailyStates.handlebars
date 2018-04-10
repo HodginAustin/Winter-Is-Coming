@@ -67,7 +67,11 @@
                                                 <td class="disp_time">{{ time }}</td>
                                                 <!-- State -->
                                                 <td>
-                                                    <a href="/ledStates/{{state}}" class="btn text-white badge badge-secondary">ID:{{ state }}</a>
+                                                    {{#if state}}
+                                                    <a class="btn text-white badge badge-secondary">ID:{{ state }}</a>
+                                                    {{else}}
+                                                    <a class="btn text-white badge badge-secondary">None</a>
+                                                    {{/if}}
                                                 </td>
 
                                                 <!-- Delete -->
@@ -111,6 +115,7 @@
                                                 <label class="input-group-text" for="inputGroupSelect01">LEDState</label>
                                             </div>
                                             <select class="custom-select" name="state" required>
+                                                <option value="0">None</option>
                                                 {{#each ../LEDStates}}
                                                 <option value="{{id}}">{{id}}</option>
                                                 {{/each}}
