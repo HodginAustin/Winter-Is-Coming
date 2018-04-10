@@ -2,6 +2,7 @@
 #include "../includes/InternalState.hpp"
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 // Constructor
 DailyState::DailyState() {
@@ -72,23 +73,37 @@ LEDState* DailyState::get_led_state(unsigned int time_of_day)
     LEDState* nearest_state = 0;
     unsigned int nearest_time = 0;
 
-    // First check if no time<->state pairs exist
-    if (timeStatePairs.count(time_of_day) == 0) {
-        if (timeStatePairs.size() == 0) {
-            return 0;
-        }
+    // If there are no mappings then return null
+    if (timeStatePairs.size() == 0) {
+        return 0;
+    }
 
+    std::unordered_map<unsigned int, LEDState*>::const_iterator found = timeStatePairs.find(time_of_day);
+
+    // Check if no time<->state pairs exist
+    if (found == timeStatePairs.end()) {
+        
         for (auto& element : timeStatePairs) {
             unsigned int t = element.first;
 
-            // Only check times greater than or equal to the given time
-            if (time_of_day >= t) {
+            // Only check times less than or equal to the given time
+            if (t <= time_of_day) {
                 // Find the greatest of the times listed for this day
                 nearest_time = MAX(t, nearest_time);
+                found = timeStatePairs.find(nearest_time);
             }
         }
-        nearest_state = timeStatePairs[nearest_time];
-        return nearest_state;
+
+        // Lookup LED state
+        found = timeStatePairs.find(nearest_time);
+        nearest_state = found->second;
+        
+        // If nearest state if null, return OFF state
+        if (nearest_state == 0) {
+            return LEDState::off;
+        } else {
+            return nearest_state;
+        }
     } else {
         return timeStatePairs[time_of_day];
     }
