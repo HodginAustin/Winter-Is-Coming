@@ -73,6 +73,19 @@ void LEDState::set_power(bool val)
     power = val;
 }
 
+// Equals
+bool LEDState::equals(LEDState* lhs, LEDState* rhs)
+{
+    bool equal = true;
+
+    equal &= (lhs->get_r() == rhs->get_r());
+    equal &= (lhs->get_g() == rhs->get_g());
+    equal &= (lhs->get_b() == rhs->get_b());
+    equal &= (lhs->get_intensity() == rhs->get_intensity());
+    equal &= (lhs->get_power() == rhs->get_power());
+
+    return equal;
+}
 
 // JSON
 void to_json(json& j, const LEDState& ls) {
