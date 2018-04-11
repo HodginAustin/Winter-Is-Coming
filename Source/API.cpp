@@ -737,30 +737,39 @@ void API::put_zone_daily_state(REQUEST, RESPONSE)
     if (profile) {
         Zone* zone = profile->get_zone(zone_id);
         if (zone) {
-            unsigned int day_of_week = 0;
-            for (auto json_id : j_in) {
-                unsigned int daily_state_id = json_id.get<unsigned int>();
-                DailyState* ds = InternalState::get_daily_state(daily_state_id);
+            json dayOfWeekObj = j_in;
+            DailyState* ds;
 
-                unsigned int idOrZero = 0;
-                if (ds) {
-                    idOrZero = ds->get_id();
+            std::string days[7];
+            days[0] = "sunday";
+            days[1] = "monday";
+            days[2] = "tuesday";
+            days[3] = "wednesday";
+            days[4] = "thursday";
+            days[5] = "friday";
+            days[6] = "saturday";
 
-                    code = Http::Code::Ok;
-                } else {
-                    if (ds != 0) {
-                        j_out.push_back(json{"daily_state", daily_state_id});
-                    }
+            for (int dayCode = 0; dayCode < 7; dayCode++) {
+
+                if (dayOfWeekObj.find(days[dayCode]) != dayOfWeekObj.end()) {
+                    unsigned int daily_state_id = dayOfWeekObj[days[dayCode]];
+                    unsigned int day_of_week = dayCode;
+                    ds = InternalState::get_daily_state(daily_state_id);
+
+                    // Insert in internal state
+                    unsigned int idOrZero = (ds ? ds->get_id() : 0);
+                    zone->set_daily_state(day_of_week, ds);
+
+                    // Insert in DB
+                    ZoneDOW dow;
+                    dow = {zone->get_id(), day_of_week, idOrZero};
+                    DataParser::insert(dow);
+                    
+                    // Daily state found
+                    if (ds && daily_state_id != 0) {
+                        code = Http::Code::Ok;
+                    } else { j_out.push_back(json{"daily_state", daily_state_id}); }
                 }
-
-                zone->set_daily_state(day_of_week, ds);
-
-                // Insert in DB
-                ZoneDOW dow;
-                dow = {zone->get_id(), day_of_week, idOrZero};
-                DataParser::insert(dow);
-                
-                day_of_week++;
             }
             
         } else { j_out.push_back(json{"zone", zone_id}); }
