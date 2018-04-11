@@ -84,7 +84,7 @@ internal_state_tests:
 
 data_parser_tests:
 	$(GCC) -c ./tests/dataParser/run_tests.cpp -o ./out/tests/data_parser.o
-	$(GCC) -o ./out/tests/data_parser $(INTERNAL_STATE_OBJECTS) ./out/tests/data_parser.o
+	$(GCC) -o ./out/tests/data_parser $(INTERNAL_STATE_OBJECTS) $(DATA_PARSER_OBJECTS) $(SETTINGS) ./out/tests/data_parser.o -lsqlite3
 
 
 # Install

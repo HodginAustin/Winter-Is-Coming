@@ -378,6 +378,56 @@ void DataParser::remove(DailyState* dailyState, int time_of_day)
 
 
 // SELECT
+Profile* DataParser::selectProfile(unsigned int id)
+{
+    for(auto& p : db->iterate<Profile>())
+    {
+        return &p;
+    }
+    return 0;
+}
+Zone* DataParser::selectZone(unsigned int id)
+{
+    for(auto& p : db->iterate<Zone>())
+    {
+        return &p;
+    }
+    return 0;
+}
+LED* DataParser::selectLED(unsigned int id)
+{
+    for(auto& p : db->iterate<LED>())
+    {
+        return &p;
+    }
+    return 0;
+}
+LEDState* DataParser::selectLEDState(unsigned int id)
+{
+    for(auto& p : db->iterate<LEDState>())
+    {
+        return &p;
+    }
+    return 0;
+}
+DailyState* DataParser::selectDailyState(unsigned int id)
+{
+    for(auto& p : db->iterate<DailyState>())
+    {
+        return &p;
+    }
+    return 0;
+}
+Controller* DataParser::selectController(unsigned int id)
+{
+    for(auto& p : db->iterate<Controller>())
+    {
+        return &p;
+    }
+    return 0;
+}
+
+
 Zone* get_zone(std::map<unsigned int, Zone*> tmp, unsigned int id) {
     if (tmp.count(id) > 0) {
         return tmp[id];
