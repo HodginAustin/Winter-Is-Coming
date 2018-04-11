@@ -1,8 +1,8 @@
 #include <unordered_map>
 
-#include "./asserting.h"
-#include "../includes/DailyState.hpp"
-#include "../includes/LEDState.hpp"
+#include "../asserting.h"
+#include "../../includes/DailyState.hpp"
+#include "../../includes/LEDState.hpp"
 
 bool test_dailystate()
 {

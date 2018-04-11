@@ -70,6 +70,8 @@
         "xutility": "cpp",
         "cctype": "cpp",
         "fstream": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "*.tcc": "cpp",
+        "cwctype": "cpp"
     }
 }

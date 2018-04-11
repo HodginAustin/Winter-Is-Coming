@@ -76,9 +76,15 @@ settings:
 
 
 # Tests
-tests: directories
-	$(GCC) -c ./tests/run_tests.cpp -o ./out/tests/run_tests.o
-	$(GCC) -o ./out/tests/run_tests $(INTERNAL_STATE_OBJECTS) ./out/tests/run_tests.o
+tests: directories internal_state_tests data_parser_tests
+
+internal_state_tests:
+	$(GCC) -c ./tests/internalState/run_tests.cpp -o ./out/tests/internal_state.o
+	$(GCC) -o ./out/tests/internal_state $(INTERNAL_STATE_OBJECTS) ./out/tests/internal_state.o
+
+data_parser_tests:
+	$(GCC) -c ./tests/dataParser/run_tests.cpp -o ./out/tests/data_parser.o
+	$(GCC) -o ./out/tests/data_parser $(INTERNAL_STATE_OBJECTS) ./out/tests/data_parser.o
 
 
 # Install

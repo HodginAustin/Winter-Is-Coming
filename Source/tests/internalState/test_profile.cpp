@@ -1,7 +1,7 @@
 #include <vector>
 
-#include "./asserting.h"
-#include "../includes/Profile.hpp"
+#include "../asserting.h"
+#include "../../includes/Profile.hpp"
 
 bool test_profile()
 {
