@@ -149,8 +149,8 @@
 
 <script>
     $(document).ready(function () {
-        to_am_pm();
         sortTable($('#timeStateMap'), 'asc');
+        to_am_pm();
 
         $('form').submit(function () {
             $(this).find("button[type='submit']").prop('disabled', true);

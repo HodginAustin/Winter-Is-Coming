@@ -138,16 +138,16 @@ module.exports = function () {
         let zoneId = req.body.id;
         console.log("PUT zone daily states for zone " + zoneId);
 
-        let days = [];
+        let days = {};
 
         let dailyState = parseInt(req.body.state);
-        days[0] = (req.body.sunday == "on" ? dailyState : 0);
-        days[1] = (req.body.monday == "on" ? dailyState : 0);
-        days[2] = (req.body.tuesday == "on" ? dailyState : 0);
-        days[3] = (req.body.wednesday == "on" ? dailyState : 0);
-        days[4] = (req.body.thursday == "on" ? dailyState : 0);
-        days[5] = (req.body.friday == "on" ? dailyState : 0);
-        days[6] = (req.body.saturday == "on" ? dailyState : 0);
+        if (req.body.sunday == "on") { days["sunday"] = dailyState; }
+        if (req.body.monday == "on") { days["monday"] = dailyState; }
+        if (req.body.tuesday == "on") { days["tuesday"] = dailyState; }
+        if (req.body.wednesday == "on") { days["wednesday"] = dailyState; }
+        if (req.body.thursday == "on") { days["thursday"] = dailyState; }
+        if (req.body.friday == "on") { days["friday"] = dailyState; }
+        if (req.body.saturday == "on") { days["saturday"] = dailyState; }
 
         var options = {
             method: "PUT",
