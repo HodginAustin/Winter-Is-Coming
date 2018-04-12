@@ -70,7 +70,6 @@ std::unordered_map<unsigned int, LEDState*> DailyState::get_led_states() const
 
 LEDState* DailyState::get_led_state(unsigned int time_of_day)
 {
-    LEDState* nearest_state = 0;
     unsigned int nearest_time = 0;
 
     // If there are no mappings then return null
@@ -96,13 +95,14 @@ LEDState* DailyState::get_led_state(unsigned int time_of_day)
 
         // Lookup LED state
         found = timeStatePairs.find(nearest_time);
-        nearest_state = found->second;
-        
-        // If nearest state if null, return OFF state
-        if (nearest_state == 0) {
-            return LEDState::off;
+        if (found != timeStatePairs.end()) {
+            if (found->second == 0) {
+                return LEDState::off;
+            } else {
+                return found->second;
+            }
         } else {
-            return nearest_state;
+            return 0;
         }
     } else {
         return timeStatePairs[time_of_day];

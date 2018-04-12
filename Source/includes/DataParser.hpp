@@ -62,6 +62,12 @@ public:
     static void update(Controller*);
 
     // SELECT
+    static Profile* selectProfile(unsigned int);
+    static Zone* selectZone(unsigned int);
+    static LED* selectLED(unsigned int);
+    static LEDState* selectLEDState(unsigned int);
+    static DailyState* selectDailyState(unsigned int);
+    static Controller* selectController(unsigned int);
     static bool get_all();
 
     // DELETE

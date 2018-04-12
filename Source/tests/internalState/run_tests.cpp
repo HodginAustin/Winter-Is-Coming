@@ -6,7 +6,6 @@
 #include "./test_profile.cpp"
 #include "./test_zone.cpp"
 #include "./test_internal_state_manager.cpp"
-#include "./test_data_parser.cpp"
 
 
 #define GET_VAR_NAME(variable) #variable
@@ -32,9 +31,6 @@ int main()
     run_test(GET_VAR_NAME(test_dailystate), test_dailystate);
     run_test(GET_VAR_NAME(test_profile), test_profile);
     run_test(GET_VAR_NAME(test_zone), test_zone);
-
-    // Data parser tests
-    run_test(GET_VAR_NAME(test_data_parser), test_data_parser);
 
     return 0;
 }

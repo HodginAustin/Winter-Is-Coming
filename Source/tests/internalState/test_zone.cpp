@@ -1,9 +1,9 @@
 #include <vector>
 
-#include "./asserting.h"
-#include "../includes/Zone.hpp"
-#include "../includes/LEDState.hpp"
-#include "../includes/DailyState.hpp"
+#include "../asserting.h"
+#include "../../includes/Zone.hpp"
+#include "../../includes/LEDState.hpp"
+#include "../../includes/DailyState.hpp"
 
 bool test_zone()
 {

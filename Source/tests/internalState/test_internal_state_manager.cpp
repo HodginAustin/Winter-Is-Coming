@@ -1,7 +1,7 @@
 #include <vector>
 
-#include "./asserting.h"
-#include "../includes/InternalState.hpp"
+#include "../asserting.h"
+#include "../../includes/InternalState.hpp"
 
 bool test_internal_state_manager()
 {
