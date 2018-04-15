@@ -21,8 +21,8 @@ void LED::copy(const LED& l)
     if (l.get_strip_idx() >= 0){
         set_strip_idx(l.get_strip_idx());
     }
-    if (l.get_controller() != 0){
-        set_controller(l.get_controller());
+    if (l.get_controller_id() > 0){
+        set_controller_id(l.get_controller_id());
     }
 }
 

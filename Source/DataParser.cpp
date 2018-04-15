@@ -531,7 +531,7 @@ bool DataParser::get_all()
 
         InternalState::add_controller(controller);
     }
-    
+
     // Get LEDs
     LED* led;
     for (auto& l : db->iterate<LED>()) {

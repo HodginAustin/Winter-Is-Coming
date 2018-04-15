@@ -33,7 +33,7 @@ int main()
     run_test(GET_VAR_NAME(test_delete), test_delete);
 
     // SAVE + LOAD tests
-    //run_test(GET_VAR_NAME(test_saveload), test_saveload);
+    run_test(GET_VAR_NAME(test_saveload), test_saveload);
 
     return 0;
 }
