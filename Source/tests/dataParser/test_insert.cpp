@@ -34,10 +34,14 @@ bool test_insert()
 
     // PROFILE
     Profile* p = new Profile();
+    p->set_name("ptest");
+    p->set_description("ptestdesc");
     condTrue &= assertTrue(DataParser::selectProfile(1) == 0);
     unsigned int pid = DataParser::insert(p);
     p->set_id(pid);
     condTrue &= assertTrue(DataParser::selectProfile(pid)->get_id() == p->get_id());
+    condTrue &= assertTrue(DataParser::selectProfile(pid)->get_name() == p->get_name());
+    condTrue &= assertTrue(DataParser::selectProfile(pid)->get_description() == p->get_description());
 
     Profile* p2 = new Profile();
     condTrue &= assertTrue(DataParser::selectProfile(1) != 0);
@@ -48,11 +52,13 @@ bool test_insert()
 
     // ZONE
     Zone* z = new Zone();
+    z->set_name("zone1");
     z->set_profile_id(p->get_id());
     condTrue &= assertTrue(DataParser::selectZone(1) == 0);
     unsigned int zid = DataParser::insert(z);
     z->set_id(zid);
     condTrue &= assertTrue(DataParser::selectZone(zid)->get_id() == z->get_id());
+    condTrue &= assertTrue(DataParser::selectZone(zid)->get_name() == z->get_name());
 
     Zone* z2 = new Zone();
     z2->set_profile_id(p2->get_id());
@@ -64,10 +70,16 @@ bool test_insert()
 
     // CONTROLLER
     Controller* c = new Controller();
+    c->set_address("addr");
+    c->set_details("details");
+    c->set_io(3);
     condTrue &= assertTrue(DataParser::selectController(1) == 0);
     unsigned int cid = DataParser::insert(c);
     c->set_id(cid);
     condTrue &= assertTrue(DataParser::selectController(cid)->get_id() == c->get_id());
+    condTrue &= assertTrue(DataParser::selectController(cid)->get_address() == c->get_address());
+    condTrue &= assertTrue(DataParser::selectController(cid)->get_details() == c->get_details());
+    condTrue &= assertTrue(DataParser::selectController(cid)->get_io() == c->get_io());
 
     Controller* c2 = new Controller();
     condTrue &= assertTrue(DataParser::selectController(1) != 0);
@@ -78,11 +90,13 @@ bool test_insert()
 
     // LED
     LED* l = new LED();
+    l->set_strip_idx(12);
     l->set_controller(c);
     condTrue &= assertTrue(DataParser::selectLED(1) == 0);
     unsigned int lid = DataParser::insert(l);
     l->set_id(lid);
     condTrue &= assertTrue(DataParser::selectLED(lid)->get_id() == l->get_id());
+    condTrue &= assertTrue(DataParser::selectLED(lid)->get_strip_idx() == l->get_strip_idx());
 
     LED* l2 = new LED();
     l2->set_controller(c2);
@@ -108,10 +122,20 @@ bool test_insert()
 
     // LED STATE
     LEDState* ls = new LEDState();
+    ls->set_r(201);
+    ls->set_g(202);
+    ls->set_b(203);
+    ls->set_intensity(20);
+    ls->set_power(false);
     condTrue &= assertTrue(DataParser::selectLEDState(1) == 0);
     unsigned int lsid = DataParser::insert(ls);
     ls->set_id(lsid);
     condTrue &= assertTrue(DataParser::selectLEDState(lsid)->get_id() == ls->get_id());
+    condTrue &= assertTrue(DataParser::selectLEDState(lsid)->get_r() == ls->get_r());
+    condTrue &= assertTrue(DataParser::selectLEDState(lsid)->get_g() == ls->get_g());
+    condTrue &= assertTrue(DataParser::selectLEDState(lsid)->get_b() == ls->get_b());
+    condTrue &= assertTrue(DataParser::selectLEDState(lsid)->get_intensity() == ls->get_intensity());
+    condTrue &= assertTrue(DataParser::selectLEDState(lsid)->get_power() == ls->get_power());
 
     LEDState* ls2 = new LEDState();
     condTrue &= assertTrue(DataParser::selectLEDState(1) != 0);
