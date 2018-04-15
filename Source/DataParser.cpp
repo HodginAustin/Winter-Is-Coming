@@ -459,6 +459,35 @@ Setting DataParser::selectSetting(std::string name)
     }
     return {};
 }
+ZoneDOW DataParser::selectZoneDOW(unsigned int zone_id) {
+    for(auto s : db->iterate<ZoneDOW>())
+    {
+        if (s.zone_id == zone_id) {
+            return s;
+        }
+    }
+    return {};
+}
+ZoneToLED DataParser::selectZoneToLED(unsigned int zone_id)
+{
+    for(auto s : db->iterate<ZoneToLED>())
+    {
+        if (s.zone_id == zone_id) {
+            return s;
+        }
+    }
+    return {};
+}
+DailyStateToLEDState DataParser::selectDailyStateToLEDState(unsigned int daily_state_id)
+{
+    for(auto s : db->iterate<DailyStateToLEDState>())
+    {
+        if (s.daily_state_id == daily_state_id) {
+            return s;
+        }
+    }
+    return {};
+}
 
 
 

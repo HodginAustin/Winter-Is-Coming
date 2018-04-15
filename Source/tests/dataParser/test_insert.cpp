@@ -124,23 +124,47 @@ bool test_insert()
     Setting st;
     st.name = "test";
     st.int_value = 4;
-
+    condTrue &= assertTrue(DataParser::selectSetting("test").name == "");
+    DataParser::insert(st);
+    condTrue &= assertTrue(DataParser::selectSetting("test").name == "test");
+    condTrue &= assertTrue(DataParser::selectSetting("test").int_value == 4);
 
 
     // Zone DOW
+    ZoneDOW zoneDow;
+    zoneDow.daily_state_id = ds->get_id();
+    zoneDow.day_of_week = 1;
+    zoneDow.zone_id = z->get_id();
+    condTrue &= assertTrue(DataParser::selectZoneDOW(z->get_id()).zone_id == 0);
+    DataParser::insert(zoneDow);
+    condTrue &= assertTrue(DataParser::selectZoneDOW(z->get_id()).zone_id == zoneDow.zone_id);
+    condTrue &= assertTrue(DataParser::selectZoneDOW(z->get_id()).day_of_week == zoneDow.day_of_week);
+    condTrue &= assertTrue(DataParser::selectZoneDOW(z->get_id()).daily_state_id == zoneDow.daily_state_id);
 
 
     // ZoneToLED
+    ZoneToLED zoneToLED;
+    zoneToLED.zone_id = z->get_id();
+    zoneToLED.led_id = l->get_id();
+    condTrue &= assertTrue(DataParser::selectZoneToLED(z->get_id()).zone_id == 0);
+    DataParser::insert(zoneToLED);
+    condTrue &= assertTrue(DataParser::selectZoneToLED(z->get_id()).zone_id == zoneToLED.zone_id);
+    condTrue &= assertTrue(DataParser::selectZoneToLED(z->get_id()).led_id == zoneToLED.led_id);
 
 
     // DailyStateToLEDState
+    DailyStateToLEDState dailyStateToLEDState;
+    dailyStateToLEDState.daily_state_id = ds->get_id();
+    dailyStateToLEDState.time = 2002;
+    dailyStateToLEDState.led_state_id = ls->get_id();
+    condTrue &= assertTrue(DataParser::selectDailyStateToLEDState(ds->get_id()).daily_state_id == 0);
+    DataParser::insert(dailyStateToLEDState);
+    condTrue &= assertTrue(DataParser::selectDailyStateToLEDState(ds->get_id()).daily_state_id == dailyStateToLEDState.daily_state_id);
+    condTrue &= assertTrue(DataParser::selectDailyStateToLEDState(ds->get_id()).time == dailyStateToLEDState.time);
+    condTrue &= assertTrue(DataParser::selectDailyStateToLEDState(ds->get_id()).led_state_id == dailyStateToLEDState.led_state_id);
 
 
-    
-    //condTrue &= assertTrue(c->get_id() == 1);
-
-    //condFalse |= assertFalse();
-
+    // Cleanup
     DataParser::clear();
 
     return condTrue && !condFalse;
