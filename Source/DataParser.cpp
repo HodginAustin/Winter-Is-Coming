@@ -407,6 +407,7 @@ LED* DataParser::selectLED(unsigned int id)
     {
         if (p.get_id() == id) {
             LED* led = new LED(p);
+            led->set_controller(selectController(p.get_controller_id()));
             led->set_id(p.get_id());
             return led;
         }

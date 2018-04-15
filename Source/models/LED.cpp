@@ -7,13 +7,13 @@
 LED::LED() {
     strip_idx = 0;
     controller = 0;
+    controller_id = 0;
 }
 
 LED::LED(const LED& l)
 {
     copy(l);
 }
-
 
 // Copy
 void LED::copy(const LED& l)
@@ -45,7 +45,7 @@ Controller* LED::get_controller() const
 
 const unsigned int& LED::get_controller_id() const
 {
-    return controller->get_id();
+    return controller_id;
 }
 
 
@@ -63,11 +63,12 @@ void LED::set_strip_idx(unsigned int val)
 void LED::set_controller(Controller* newController)
 {
     controller = newController;
+    set_controller_id(controller->get_id());
 }
 
 void LED::set_controller_id(unsigned int id)
 {
-    set_controller(InternalState::get_controller(id));
+    controller_id = id;
 }
 
 
