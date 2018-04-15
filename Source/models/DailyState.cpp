@@ -114,13 +114,21 @@ bool DailyState::delete_time_state(unsigned int time)
     timeStatePairs.erase(time);
     return timeStatePairs.count(time) == 0;
 }
-
+#include <iostream>
 void DailyState::delete_led_state(LEDState* ledState)
 {
+    std::vector<unsigned int> toDelete;
+
     for (auto& element : timeStatePairs) {
-        if (element.second->get_id() == ledState->get_id()) {
-            delete_time_state(element.first);
+        if (element.second != 0) {
+            if (element.second->get_id() == ledState->get_id()) {
+                toDelete.push_back(element.first);
+            }
         }
+    }
+
+    for (auto& e : toDelete) {
+        delete_time_state(e);
     }
 }
 

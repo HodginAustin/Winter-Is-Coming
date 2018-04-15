@@ -553,7 +553,7 @@ bool DataParser::get_all()
             }
         }
     }
-    
+
     // Get LEDStates
     LEDState* ledState;
     for (auto& ls : db->iterate<LEDState>()) {
