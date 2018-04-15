@@ -162,7 +162,7 @@ static std::shared_ptr<Storage> db;
 // Initialization
 bool DataParser::initialize(bool logEnable)
 {
-    std::cout << "Initalizing Data Parser... ";
+    std::cout << "Initializing Data Parser... ";
 
     // Logging
     time(&sysTime);
