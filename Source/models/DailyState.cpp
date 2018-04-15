@@ -114,7 +114,7 @@ bool DailyState::delete_time_state(unsigned int time)
     timeStatePairs.erase(time);
     return timeStatePairs.count(time) == 0;
 }
-#include <iostream>
+
 void DailyState::delete_led_state(LEDState* ledState)
 {
     std::vector<unsigned int> toDelete;
