@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <map>
 #include <iostream>
-#include <string>
 
 #include "./includes/DataParser.hpp"
 #include "./includes/InternalState.hpp"
@@ -382,7 +381,11 @@ Profile* DataParser::selectProfile(unsigned int id)
 {
     for(auto& p : db->iterate<Profile>())
     {
-        return &p;
+        if (p.get_id() == id) {
+            Profile* profile = new Profile(p);
+            profile->set_id(p.get_id());
+            return profile;
+        }
     }
     return 0;
 }
@@ -390,7 +393,11 @@ Zone* DataParser::selectZone(unsigned int id)
 {
     for(auto& p : db->iterate<Zone>())
     {
-        return &p;
+        if (p.get_id() == id) {
+            Zone* zone = new Zone(p);
+            zone->set_id(p.get_id());
+            return zone;
+        }
     }
     return 0;
 }
@@ -398,7 +405,11 @@ LED* DataParser::selectLED(unsigned int id)
 {
     for(auto& p : db->iterate<LED>())
     {
-        return &p;
+        if (p.get_id() == id) {
+            LED* led = new LED(p);
+            led->set_id(p.get_id());
+            return led;
+        }
     }
     return 0;
 }
@@ -406,7 +417,11 @@ LEDState* DataParser::selectLEDState(unsigned int id)
 {
     for(auto& p : db->iterate<LEDState>())
     {
-        return &p;
+        if (p.get_id() == id) {
+            LEDState* ledState = new LEDState(p);
+            ledState->set_id(p.get_id());
+            return ledState;
+        }
     }
     return 0;
 }
@@ -414,7 +429,11 @@ DailyState* DataParser::selectDailyState(unsigned int id)
 {
     for(auto& p : db->iterate<DailyState>())
     {
-        return &p;
+        if (p.get_id() == id) {
+            DailyState* dailyState = new DailyState(p);
+            dailyState->set_id(p.get_id());
+            return dailyState;
+        }
     }
     return 0;
 }
@@ -422,10 +441,25 @@ Controller* DataParser::selectController(unsigned int id)
 {
     for(auto& p : db->iterate<Controller>())
     {
-        return &p;
+        if (p.get_id() == id) {
+            Controller* controller = new Controller(p);
+            controller->set_id(p.get_id());
+            return controller;
+        }
     }
     return 0;
 }
+Setting DataParser::selectSetting(std::string name)
+{
+    for(auto setting : db->iterate<Setting>())
+    {
+        if (setting.name == name) {
+            return setting;
+        }
+    }
+    return {};
+}
+
 
 
 Zone* get_zone(std::map<unsigned int, Zone*> tmp, unsigned int id) {

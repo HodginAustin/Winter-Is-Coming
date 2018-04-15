@@ -1,3 +1,8 @@
+// Include Guard
+#ifndef __RELATIONSHIPS_H_INCLUDED__
+#define __RELATIONSHIPS_H_INCLUDED__
+//=================================
+
 // Zone's 7 daily states
 struct ZoneDOW {
     unsigned int zone_id;
@@ -17,3 +22,6 @@ struct DailyStateToLEDState {
     unsigned int time;
     unsigned int led_state_id;
 };
+
+
+#endif //__RELATIONSHIPS_H_INCLUDED__

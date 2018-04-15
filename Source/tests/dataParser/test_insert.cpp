@@ -6,6 +6,7 @@
 #include "../../includes/LEDState.hpp"
 #include "../../includes/LED.hpp"
 #include "../../includes/Setting.hpp"
+#include "../../includes/relationships.hpp"
 
 #include <iostream>
 bool test_insert()
@@ -68,7 +69,6 @@ bool test_insert()
     c->set_id(cid);
     condTrue &= assertTrue(DataParser::selectController(cid)->get_id() == c->get_id());
 
-
     Controller* c2 = new Controller();
     condTrue &= assertTrue(DataParser::selectController(1) != 0);
     unsigned int cid2 = DataParser::insert(c2);
@@ -118,6 +118,13 @@ bool test_insert()
     unsigned int lsid2 = DataParser::insert(ls2);
     ls2->set_id(lsid2);
     condTrue &= assertTrue(DataParser::selectLEDState(lsid2) != DataParser::selectLEDState(lsid));
+
+    
+    // SETTINGS
+    Setting st;
+    st.name = "test";
+    st.int_value = 4;
+
 
 
     // Zone DOW
