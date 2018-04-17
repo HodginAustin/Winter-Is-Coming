@@ -8,21 +8,21 @@ module.exports = function () {
     const http = require("http");
 
     /* profile zones */
-    let zones = require('./global/zones.js');
-    let curr = require('./global/currentProfile.js');
+    let zones = require('../js/global/zones.js');
+    let curr = require('../js/global/currentProfile.js');
     /* Connection settings */
-    let conn = require('./global/connection.js');
+    let conn = require('../js/global/connection.js');
 
     /* Control service request */
-    let controlService = require('./global/controlServiceRequest.js');
+    let controlService = require('../js/global/controlServiceRequest.js');
 
     /* Daily State functions */
-    let dailyStates = require('./global/dailyStates.js');
+    let dailyStates = require('../js/global/dailyStates.js');
 
     /* LED functions */
-    let leds = require('./global/leds.js');
+    let leds = require('../js/global/leds.js');
 
-    function getProfile(res, context, id, complete) {
+    function getProfile(res, context, id, complete){
         let profileUrl = conn.url + conn.port + '/' + conn.profiles + '/' + id;
         console.log("getProfile url: " + profileUrl);
         http.get(profileUrl, res => {
@@ -37,36 +37,42 @@ module.exports = function () {
                 complete();
             });
         });
-      }
-    
+    }
+
+
     router.get('/', function (req, res) {
         var callbackCount = 0;
         var context = req.context;
 
         /* Get Daily states */
         dailyStates.get(res, context, complete);
-
-        function complete() {
-            callbackCount++;
-            if (callbackCount >= 1) {
-                res.render('profiles', context);
-            }
+        if(res.status == 200 ){
+          console.log("SUCCESS: GET PROFILES STATUS: " + res.status);
+        }
         }
     });
+
 
     router.post('/add', function (req, res) {
         console.log("POST ADD PROFILE");
         let j = {};
         j['name'] = req.body.name;
         j['description'] = req.body.description;
+
         var options = {
             method: "POST",
             uri: conn.url + conn.port + "/" + conn.profiles + "/add",
             json: j
         };
         controlService.makeRequest(options, function () {
-            res.redirect('back');
-        });
+
+          if(res.status == 200){
+            console.log("SUCCESS: POST PROFILE STATUS: " res.status);
+          }
+          else{
+            console.log("ERROR: POST PROFILE STATUS: " + res.status);
+          }
+      }
     });
 
 
@@ -134,16 +140,16 @@ module.exports = function () {
         let zoneId = req.body.id;
         console.log("PUT zone daily states for zone " + zoneId);
 
-        let days = {};
+        let days = [];
 
         let dailyState = parseInt(req.body.state);
-        if (req.body.sunday == "on") { days["sunday"] = dailyState; }
-        if (req.body.monday == "on") { days["monday"] = dailyState; }
-        if (req.body.tuesday == "on") { days["tuesday"] = dailyState; }
-        if (req.body.wednesday == "on") { days["wednesday"] = dailyState; }
-        if (req.body.thursday == "on") { days["thursday"] = dailyState; }
-        if (req.body.friday == "on") { days["friday"] = dailyState; }
-        if (req.body.saturday == "on") { days["saturday"] = dailyState; }
+        days[0] = (req.body.sunday == "on" ? dailyState : 0);
+        days[1] = (req.body.monday == "on" ? dailyState : 0);
+        days[2] = (req.body.tuesday == "on" ? dailyState : 0);
+        days[3] = (req.body.wednesday == "on" ? dailyState : 0);
+        days[4] = (req.body.thursday == "on" ? dailyState : 0);
+        days[5] = (req.body.friday == "on" ? dailyState : 0);
+        days[6] = (req.body.saturday == "on" ? dailyState : 0);
 
         var options = {
             method: "PUT",
