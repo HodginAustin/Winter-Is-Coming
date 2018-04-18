@@ -1,0 +1,79 @@
+<div>
+  <div id="beds"></div>
+
+  <div class="card" style="margin-top:10px;">
+    <div class="card-body">
+      <h3 class="card-title">Submit Info</h3>
+      <div class="input-group mb-3">
+
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default">Number of LEDs</span>
+        </div>
+        <input id="numLeds" type="text" class="form-control" name="leds">
+
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default">BedID</span>
+        </div>
+        <input id="bedId" type="text" class="form-control" placeholder="optional, for editing" name="bedId">
+
+        <div class="input-group-append">
+          <button class="btn btn-outline-primary" type="button" onclick="putbed(this)">Add Bed</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+
+<script type="text/javascript">
+
+  $(document).ready(function () {
+    setInterval(updateDom, 1000);
+  });
+
+  function updateDom() {
+    $('#beds').load('/simulator/getBeds');
+  }
+
+  function getBeds(e) {
+    $.ajax({
+      type: 'GET',
+      url: '/simulator/getBeds',
+      success: function (data) {
+        updateDom();
+      }
+    });
+  }
+
+  function putbed(e) {
+    let bedId = parseInt($('#bedId').val());
+    if (!bedId && !bedId === 0) {
+      bedId = "";
+    } else {
+      bedId = "?bedId=" + bedId;
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: '/simulator/putbed/' + bedId,
+      data: { "leds": $('#numLeds').val() },
+      success: function (data) {
+        updateDom();
+        $('#numLeds').val("");
+        $('#bedId').val("");
+      }
+    });
+  }
+
+  function deleteBed(e, id) {
+    $.ajax({
+      type: 'DELETE',
+      url: 'simulator/deleteBed/' + id,
+      success: function (data) {
+        updateDom();
+      }
+    });
+  }
+</script>

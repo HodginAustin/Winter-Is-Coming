@@ -1,0 +1,30 @@
+{{#each beds}}
+<div class="card" style="margin-top:10px;">
+    <div class="card-body">
+        <table style="width:100%;">
+            <tbody>
+                <tr>
+                    <td>
+                        <h3 class="card-title">BED {{id}}</h3>
+                    </td>
+                    <td style="text-align: right">
+                        <!-- Delete -->
+                        <button class="btn btn-sm btn-danger text-white" type="button" onclick="deleteBed(this, {{id}})">
+                            Delete Bed
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="d-flex flex-wrap" id="leds">
+
+            {{#each leds}}
+            <a class="badge" style="margin:2px; height:20px; background-color: rgb({{r}}, {{g}}, {{b}}); border: 1px solid black">
+                <p>{{strip_idx}}</p>
+            </a>
+            {{/each}}
+
+        </div>
+    </div>
+</div>
+{{/each}}

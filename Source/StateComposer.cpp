@@ -211,7 +211,7 @@ bool serial_send_test(unsigned char io, unsigned char r, unsigned char g, unsign
     int offset_g = (int)((float)((int)g) * m);
     int offset_b = (int)((float)((int)b) * m);
     char curl[256];
-    sprintf(curl, "curl --silent -X POST http://localhost:4444/update/%d/%d/%d/%d/%d > /dev/null", (int)io, (int)offset_r, (int)offset_g, (int)offset_b, (int)idx);
+    sprintf(curl, "curl --silent -X POST http://localhost:8080/simulator/update/%d/%d/%d/%d/%d > /dev/null", (int)io, (int)offset_r, (int)offset_g, (int)offset_b, (int)idx);
     system(curl); /* sends system command to run in the terminal */
     usleep(WAIT); /* to make things consistent with normal operations we still wait */
 	return true;
