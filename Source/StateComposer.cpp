@@ -16,15 +16,18 @@
 
 // We All Didn't Know Any Better Stupidity Inhibitor
 // TODO: Update once better power system is found
-#define WADKABSI 0.2
+#define WADKABSI 0.2f
 
 // The amount of microseconds to wait for the
 // Arduino Nano to send it's ACK and catch up
 // last updated to: 20000
 #define WAIT 20000
 
-
+// Defines the function that should be used to send serial data
+// serial_send is used to send over I2C to hardware
+// serial_send_test is used to send to the LED simulator node server
 #define SEND_FUNC serial_send_test
+
 // Set the maximum number of times to reattempt
 // writing serial data in the serial_send function
 // if errors occur
@@ -116,12 +119,12 @@ bool StateComposer::initialize(bool logEnable)
     i2cFileStream = open(I2C_BUS, O_RDWR | O_NOCTTY | O_NDELAY);
 
 	if (i2cFileStream == -1) {  // ERROR - CAN'T OPEN SERIAL PORT
-        std::cout << "failed" << std::endl;
+        std::cout << "failed to open I2C" << std::endl;
 		logFile << "    ERROR: Unable to open I2C device: "
                 << I2C_BUS
                 << "! \n           Ensure it is not in use by another application."
                 << std::endl;
-        return false;
+        //return false; // No longer returning due to test system being used
 	}
 
     // Threading
@@ -203,12 +206,14 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 /* Change the SEND_FUNC to this function for use in simulator */
 bool serial_send_test(unsigned char io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
 {
-  int i;
-  printf("serial_send_test");
-  std::string curl = "curl -X POST http://localhost:4444/update/" + io + '/' + r + '/' + g + '/' + b + '/' + idx;
-  const char * command = curl.c_str();
-  i = system(command); /* sends system command to run in the terminal */
-  usleep(WAIT); /* to make things consistent with normal operations we still wait */
+    float m = (1.0f / WADKABSI);
+    int offset_r = (int)((float)((int)r) * m);
+    int offset_g = (int)((float)((int)g) * m);
+    int offset_b = (int)((float)((int)b) * m);
+    char curl[256];
+    sprintf(curl, "%s/%d/%d/%d/%d/%d", "curl -X POST http://localhost:4444/update", (int)io, (int)offset_r, (int)offset_g, (int)offset_b, (int)idx);
+    system(curl); /* sends system command to run in the terminal */
+    usleep(WAIT); /* to make things consistent with normal operations we still wait */
 	return true;
 }
 
