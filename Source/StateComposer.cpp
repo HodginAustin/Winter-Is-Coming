@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 
 #include "./includes/StateComposer.hpp"
 #include "./includes/DataParser.hpp"
@@ -7,8 +8,7 @@
 // The I^2C serial bus device in the linux system
 #define I2C_BUS "/dev/i2c-1"
 
-
-// Required LED intensity scalar to use all 60 
+// Required LED intensity scalar to use all 60
 // LEDs at full white, off of the Arduino 5V rail
 // 5V rail can drive a maximum of 500mA
 // 60 * .2 * .033 = .396A (396mA)
@@ -16,12 +16,23 @@
 
 // We All Didn't Know Any Better Stupidity Inhibitor
 // TODO: Update once better power system is found
-#define WADKABSI 0.2
+#define WADKABSI 0.2f
 
-// The amount of microseconds to wait for the 
+// The amount of microseconds to wait for the
 // Arduino Nano to send it's ACK and catch up
 // last updated to: 20000
 #define WAIT 20000
+
+// Defines the function that should be used to send serial data
+// serial_send is used to send over I2C to hardware
+// serial_send_test is used to send to the LED simulator node server
+#define SEND_FUNC serial_send
+
+// Set the maximum number of times to reattempt
+// writing serial data in the serial_send function
+// if errors occur
+#define TRIES 2
+
 
 
 // Threading
@@ -77,7 +88,7 @@ void* StateComposer::thr_compose_call(void*)
                 StateComposer::led_shutdown();
                 StateComposer::set_composer_state('c');
             }
-            
+
             // Sleep for .25 seconds, give the core a break during no state
             usleep(250000);
         }
@@ -90,7 +101,7 @@ void* StateComposer::thr_compose_call(void*)
 bool StateComposer::initialize(bool logEnable)
 {
     std::cout << "Initializing State Composer... ";
-    
+
     i2cAddressOffset = Settings::get_setting(DataParser::NANO_IO_OFFSET).int_value;
 
     // Logging
@@ -108,12 +119,12 @@ bool StateComposer::initialize(bool logEnable)
     i2cFileStream = open(I2C_BUS, O_RDWR | O_NOCTTY | O_NDELAY);
 
 	if (i2cFileStream == -1) {  // ERROR - CAN'T OPEN SERIAL PORT
-        std::cout << "failed" << std::endl;
+        std::cout << "failed to open I2C" << std::endl;
 		logFile << "    ERROR: Unable to open I2C device: "
                 << I2C_BUS
                 << "! \n           Ensure it is not in use by another application."
                 << std::endl;
-        return false;
+        //return false; // No longer returning due to test system being used
 	}
 
     // Threading
@@ -136,7 +147,8 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 {
 	unsigned char s_buffer[4];
 	unsigned char* p_s_buffer;
-    
+    unsigned char attempts = 0;
+
     // Get current time
     time(&sysTime);
     timeInfo=localtime(&sysTime);
@@ -157,26 +169,52 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
     *p_s_buffer++ = r;
     *p_s_buffer++ = g;
     *p_s_buffer++ = b;
-	
+
 	if (i2cFileStream != -1) {
 
-	    // TODO: Decide on how IDs are going to be passed
         if (ioctl(i2cFileStream, I2C_SLAVE, (io + i2cAddressOffset))) {   // Set io control for the I2C file stream, as sending to I2C slave, at address
             logFile << "ERROR: Can't switch ioctl to I2C bus address: [ " << (io + i2cAddressOffset) << " ]" << std::endl;
             return true;    // Error state; return value not used currently
         }
 
 
+
 		int count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Filestream, bytes to write, number of bytes to write
-		if (count < 0) {
+
+		while (count < 0) {                                                             // If error in transmission, keep trying
+
             logFile << "ERROR: I2C transmit failed! [ " << (io + i2cAddressOffset) << " ]" << std::endl;
-            return true;    // Error state; return value not used currently
+
+            count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Rewrite the same values
+            usleep(WAIT);                                                               // Before blasting serial data again, let Arduino catch up
+            attempts++;
+
+            if (attempts == TRIES) {                                                    // Give up after TRIES attempts
+                return true;
+            }
 		}
-        
-        usleep(WAIT);       // Let Arduino catch up
+
+        usleep(WAIT);                                                                   // Even if no error, let Arduino catch up
 	}
 
 	return false;
+}
+
+
+/* Sends update request via cURL for simulator */
+/* this is used for testing when hardware is not available.*/
+/* Change the SEND_FUNC to this function for use in simulator */
+bool serial_send_test(unsigned char io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
+{
+    float m = (1.0f / WADKABSI);
+    int offset_r = (int)((float)((int)r) * m);
+    int offset_g = (int)((float)((int)g) * m);
+    int offset_b = (int)((float)((int)b) * m);
+    char curl[256];
+    sprintf(curl, "curl --silent -X POST http://localhost:8080/simulator/update/%d/%d/%d/%d/%d > /dev/null", (int)io, (int)offset_r, (int)offset_g, (int)offset_b, (int)idx);
+    system(curl); /* sends system command to run in the terminal */
+    usleep(WAIT); /* to make things consistent with normal operations we still wait */
+	return true;
 }
 
 
@@ -193,7 +231,7 @@ void StateComposer::compose()
 
     weekDay = timeInfo->tm_wday;
     seconds = ( (timeInfo->tm_hour * 3600) + (timeInfo->tm_min * 60) + (timeInfo->tm_sec) );
-    
+
     currentProfile = InternalState::get_current_profile();
     if (currentProfile == NULL) {
         return;
@@ -217,7 +255,7 @@ void StateComposer::compose()
             logFile << "[" << timeBuffer << "] Power Scalar for current zone: " << scalar << "\n";
         }
 
-        red = ((unsigned char) ( ((float)currentZoneActiveState->get_r()) * scalar)); 
+        red = ((unsigned char) ( ((float)currentZoneActiveState->get_r()) * scalar));
         green = ((unsigned char) ( ((float)currentZoneActiveState->get_g()) * scalar));
         blue = ((unsigned char) ( ((float)currentZoneActiveState->get_b()) * scalar));
 
@@ -229,7 +267,7 @@ void StateComposer::compose()
 
         // Will only loop over returned vector of LEDs (if none, skip)
         for (auto currentLED : currentZoneLEDs) {
-        
+
             // Get controller info
             currentLEDController = currentLED->get_controller();
             if (currentLEDController == NULL) {
@@ -247,7 +285,7 @@ void StateComposer::compose()
                 continue;
             }
 
-            serial_send(ioPort, red, green, blue, stripIndex);
+            SEND_FUNC(ioPort, red, green, blue, stripIndex);
             // END OF LEDS LOOP
         }
 
@@ -283,17 +321,17 @@ void StateComposer::led_shutdown()
             }
 
             // Call serial send
-            serial_send(ioPort, '\0', '\0', '\0', stripIndex);
+            SEND_FUNC(ioPort, '\0', '\0', '\0', stripIndex);
         }
     }
 }
 
 // Cleanup
-void StateComposer::clean_up() 
+void StateComposer::clean_up()
 {
     // Stop composing
     set_composer_state(0);
-    
+
     // Join thread
     std::cout << "Joining composer thread back to main... ";
     pthread_join(composerThread, NULL);
@@ -309,13 +347,13 @@ void StateComposer::clean_up()
 }
 
 // Accessors
-char StateComposer::get_composer_state() 
+char StateComposer::get_composer_state()
 {
     return composerState;
 }
 
 // Mutators
-void StateComposer::set_composer_state(char state) 
+void StateComposer::set_composer_state(char state)
 {
     composerState = state;
 }

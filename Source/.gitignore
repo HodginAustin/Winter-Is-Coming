@@ -5,3 +5,4 @@ Source/.vscode/settings.json
 *.log
 *.sqlite
 /Site/node_modules/*
+/LEDSim/node_modules/*
