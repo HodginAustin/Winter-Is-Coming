@@ -15,6 +15,7 @@ private:
     unsigned int id;
     unsigned int strip_idx;
     Controller* controller;
+    unsigned int controller_id;
 
 public:
     // Constructor

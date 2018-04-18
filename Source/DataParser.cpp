@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <map>
 #include <iostream>
-#include <string>
 
 #include "./includes/DataParser.hpp"
 #include "./includes/InternalState.hpp"
@@ -163,7 +162,7 @@ static std::shared_ptr<Storage> db;
 // Initialization
 bool DataParser::initialize(bool logEnable)
 {
-    std::cout << "Initalizing Data Parser... ";
+    std::cout << "Initializing Data Parser... ";
 
     // Logging
     time(&sysTime);
@@ -382,7 +381,11 @@ Profile* DataParser::selectProfile(unsigned int id)
 {
     for(auto& p : db->iterate<Profile>())
     {
-        return &p;
+        if (p.get_id() == id) {
+            Profile* profile = new Profile(p);
+            profile->set_id(p.get_id());
+            return profile;
+        }
     }
     return 0;
 }
@@ -390,7 +393,11 @@ Zone* DataParser::selectZone(unsigned int id)
 {
     for(auto& p : db->iterate<Zone>())
     {
-        return &p;
+        if (p.get_id() == id) {
+            Zone* zone = new Zone(p);
+            zone->set_id(p.get_id());
+            return zone;
+        }
     }
     return 0;
 }
@@ -398,7 +405,12 @@ LED* DataParser::selectLED(unsigned int id)
 {
     for(auto& p : db->iterate<LED>())
     {
-        return &p;
+        if (p.get_id() == id) {
+            LED* led = new LED(p);
+            led->set_controller(selectController(p.get_controller_id()));
+            led->set_id(p.get_id());
+            return led;
+        }
     }
     return 0;
 }
@@ -406,7 +418,11 @@ LEDState* DataParser::selectLEDState(unsigned int id)
 {
     for(auto& p : db->iterate<LEDState>())
     {
-        return &p;
+        if (p.get_id() == id) {
+            LEDState* ledState = new LEDState(p);
+            ledState->set_id(p.get_id());
+            return ledState;
+        }
     }
     return 0;
 }
@@ -414,7 +430,11 @@ DailyState* DataParser::selectDailyState(unsigned int id)
 {
     for(auto& p : db->iterate<DailyState>())
     {
-        return &p;
+        if (p.get_id() == id) {
+            DailyState* dailyState = new DailyState(p);
+            dailyState->set_id(p.get_id());
+            return dailyState;
+        }
     }
     return 0;
 }
@@ -422,10 +442,54 @@ Controller* DataParser::selectController(unsigned int id)
 {
     for(auto& p : db->iterate<Controller>())
     {
-        return &p;
+        if (p.get_id() == id) {
+            Controller* controller = new Controller(p);
+            controller->set_id(p.get_id());
+            return controller;
+        }
     }
     return 0;
 }
+Setting DataParser::selectSetting(std::string name)
+{
+    for(auto setting : db->iterate<Setting>())
+    {
+        if (setting.name == name) {
+            return setting;
+        }
+    }
+    return {};
+}
+ZoneDOW DataParser::selectZoneDOW(unsigned int zone_id) {
+    for(auto s : db->iterate<ZoneDOW>())
+    {
+        if (s.zone_id == zone_id) {
+            return s;
+        }
+    }
+    return {};
+}
+ZoneToLED DataParser::selectZoneToLED(unsigned int zone_id)
+{
+    for(auto s : db->iterate<ZoneToLED>())
+    {
+        if (s.zone_id == zone_id) {
+            return s;
+        }
+    }
+    return {};
+}
+DailyStateToLEDState DataParser::selectDailyStateToLEDState(unsigned int daily_state_id)
+{
+    for(auto s : db->iterate<DailyStateToLEDState>())
+    {
+        if (s.daily_state_id == daily_state_id) {
+            return s;
+        }
+    }
+    return {};
+}
+
 
 
 Zone* get_zone(std::map<unsigned int, Zone*> tmp, unsigned int id) {
@@ -467,7 +531,7 @@ bool DataParser::get_all()
 
         InternalState::add_controller(controller);
     }
-    
+
     // Get LEDs
     LED* led;
     for (auto& l : db->iterate<LED>()) {
@@ -489,7 +553,7 @@ bool DataParser::get_all()
             }
         }
     }
-    
+
     // Get LEDStates
     LEDState* ledState;
     for (auto& ls : db->iterate<LEDState>()) {

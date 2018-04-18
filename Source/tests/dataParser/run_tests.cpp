@@ -2,6 +2,9 @@
 #include <iostream>
 
 #include "./test_insert.cpp"
+#include "./test_update.cpp"
+#include "./test_delete.cpp"
+#include "./test_saveload.cpp"
 
 #define GET_VAR_NAME(variable) #variable
 
@@ -24,10 +27,13 @@ int main()
     run_test(GET_VAR_NAME(test_insert), test_insert);
 
     // UPDATE tests
+    run_test(GET_VAR_NAME(test_update), test_update);
 
     // DELETE tests
+    run_test(GET_VAR_NAME(test_delete), test_delete);
 
     // SAVE + LOAD tests
+    run_test(GET_VAR_NAME(test_saveload), test_saveload);
 
     return 0;
 }

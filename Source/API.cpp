@@ -974,6 +974,7 @@ void API::post_led(REQUEST, RESPONSE)
         // Validation
         if (l.get_controller()) {
             LED* led = new LED(l);
+            led->set_controller(InternalState::get_controller(l.get_controller_id()));
 
             InternalState::add_led(led);
 

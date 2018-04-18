@@ -68,6 +68,10 @@ public:
     static LEDState* selectLEDState(unsigned int);
     static DailyState* selectDailyState(unsigned int);
     static Controller* selectController(unsigned int);
+    static Setting selectSetting(std::string);
+    static ZoneDOW selectZoneDOW(unsigned int);
+    static ZoneToLED selectZoneToLED(unsigned int);
+    static DailyStateToLEDState selectDailyStateToLEDState(unsigned int);
     static bool get_all();
 
     // DELETE
