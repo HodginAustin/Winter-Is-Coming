@@ -26,7 +26,7 @@
 // Defines the function that should be used to send serial data
 // serial_send is used to send over I2C to hardware
 // serial_send_test is used to send to the LED simulator node server
-#define SEND_FUNC serial_send_test
+#define SEND_FUNC serial_send
 
 // Set the maximum number of times to reattempt
 // writing serial data in the serial_send function
@@ -211,7 +211,7 @@ bool serial_send_test(unsigned char io, unsigned char r, unsigned char g, unsign
     int offset_g = (int)((float)((int)g) * m);
     int offset_b = (int)((float)((int)b) * m);
     char curl[256];
-    sprintf(curl, "%s/%d/%d/%d/%d/%d", "curl -X POST http://localhost:4444/update", (int)io, (int)offset_r, (int)offset_g, (int)offset_b, (int)idx);
+    sprintf(curl, "curl --silent -X POST http://localhost:4444/update/%d/%d/%d/%d/%d > /dev/null", (int)io, (int)offset_r, (int)offset_g, (int)offset_b, (int)idx);
     system(curl); /* sends system command to run in the terminal */
     usleep(WAIT); /* to make things consistent with normal operations we still wait */
 	return true;

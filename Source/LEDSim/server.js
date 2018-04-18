@@ -37,7 +37,6 @@ app.post('/update/:io/:r/:g/:b/:strip_idx', function(req, res) {
             beds[io - 1].leds[strip_idx].r = r;
             beds[io - 1].leds[strip_idx].g = g;
             beds[io - 1].leds[strip_idx].b = b;
-            console.log(beds[io - 1]);
             res.status(200).send("ACK");
             return;
         }
