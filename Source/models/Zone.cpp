@@ -6,6 +6,7 @@
 // Constructor
 Zone::Zone()
 {
+    id = 0;
     name = "";
     weeklyState = {0,0,0,0,0,0,0};
 }

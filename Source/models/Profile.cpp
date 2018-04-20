@@ -4,6 +4,7 @@
 
 // Constructor
 Profile::Profile() {
+    id = 0;
     name = "";
     description = "";
 }
