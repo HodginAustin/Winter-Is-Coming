@@ -102,6 +102,79 @@
 					"response": []
 				},
 				{
+					"name": "Empty existing zones",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b408b307-b473-4f5f-b753-75d7e5d1f064",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"NotFound\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"EmptyArray\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedResponse = [];",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedResponse);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "81c110db-d0ff-4b92-a951-37f1609032ca",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a profile",
+									"const req = {",
+									"  url: 'http://localhost:9080/profiles/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify({",
+									"        name: 'ExistingZOnesTest',",
+									"        description: 'That'",
+									"      })",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:9080/profiles/1/zones",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles",
+								"1",
+								"zones"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
 					"name": "Get Profile",
 					"event": [
 						{
@@ -233,24 +306,24 @@
 					"response": []
 				},
 				{
-					"name": "Empty existing zones",
+					"name": "Patch Profile",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "b408b307-b473-4f5f-b753-75d7e5d1f064",
+								"id": "aa817331-50b1-4516-bd6c-19183b02414e",
 								"type": "text/javascript",
 								"exec": [
-									"pm.test(\"NotFound\", function () {",
+									"pm.test(\"OkayStatus\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"EmptyArray\", function () {",
+									"pm.test(\"BodyID\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    ",
-									"    var expectedResponse = [];",
+									"    var expectedBody = {\"description\":\"Desc\", \"id\":1, \"name\":\"patched\", \"zones\":[]};",
 									"    ",
-									"    pm.expect(jsonData).to.eql(expectedResponse);",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
 									"});"
 								]
 							}
@@ -258,7 +331,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "81c110db-d0ff-4b92-a951-37f1609032ca",
+								"id": "6b0ee654-33c4-4667-a895-cb8802d0b221",
 								"type": "text/javascript",
 								"exec": [
 									"// Add a profile",
@@ -269,8 +342,8 @@
 									"  body: {",
 									"    mode: 'raw',",
 									"    raw: JSON.stringify({",
-									"        name: 'ExistingZOnesTest',",
-									"        description: 'That'",
+									"        name: 'PatchProfile',",
+									"        description: 'Desc'",
 									"      })",
 									"  }",
 									"};",
@@ -285,11 +358,19 @@
 						}
 					],
 					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"patched\"\n}"
+						},
 						"url": {
-							"raw": "http://localhost:9080/profiles/1/zones",
+							"raw": "http://localhost:9080/profiles/1/edit",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -298,7 +379,106 @@
 							"path": [
 								"profiles",
 								"1",
-								"zones"
+								"edit"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profiles",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "3f6dba58-7dbe-4f8e-b7e4-d1768236d319",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a profile",
+									"var req = {",
+									"  url: 'http://localhost:9080/profiles/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify({",
+									"        name: 'GetProfiles',",
+									"        description: 'Number1'",
+									"      })",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									"",
+									"",
+									"setTimeout(function(){",
+									"    ",
+									"    // Add a second profile",
+									"    req = {",
+									"      url: 'http://localhost:9080/profiles/add',",
+									"      method: 'POST',",
+									"      header: '',",
+									"      body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            name: 'GetProfiles',",
+									"            description: 'Number2'",
+									"          })",
+									"      }",
+									"    };",
+									"    ",
+									"    pm.sendRequest(req, function (err, response) {",
+									"        if (err) {",
+									"            console.log(response.json());",
+									"        }",
+									"    });    ",
+									"}, 2000);",
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "c5c4fe02-72e9-4458-bf71-e5da6a81e1c1",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"EmptyBody\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedResponse = [",
+									"        {\"description\":\"Number1\", \"id\":1, \"name\":\"GetProfiles\", \"zones\":[]},",
+									"        {\"description\":\"Number2\", \"id\":2, \"name\":\"GetProfiles\", \"zones\":[]}",
+									"    ];",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedResponse);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:9080/profiles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles"
 							]
 						},
 						"description": ""

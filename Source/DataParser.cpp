@@ -181,6 +181,11 @@ bool DataParser::initialize(bool logEnable)
     // Create DB file
     db->sync_schema();
 
+    // Set database busy timeout time
+    // This will tell sqlite3 to wait at least this much time before
+    // throwing a database locked function
+    db->busy_timeout(2000);
+
     // Set database version
     Setting db_version = {SETTING_DATABASE_VERSION, 1, "plantergb v1.0"};
     DataParser::insert(db_version);
