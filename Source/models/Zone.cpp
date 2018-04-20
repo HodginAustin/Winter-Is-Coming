@@ -7,6 +7,7 @@
 Zone::Zone()
 {
     id = 0;
+    profile_id = 0;
     name = "";
     weeklyState = {0,0,0,0,0,0,0};
 }
@@ -30,15 +31,31 @@ void Zone::copy(const Zone& z)
         }
     }
 
-    set_profile_id(z.get_profile_id());
+    if (z.get_profile_id() != 0) {
+        set_profile_id(z.get_profile_id());
+    }
 
-    set_daily_state(0, z.get_daily_state(0));
-    set_daily_state(1, z.get_daily_state(1));
-    set_daily_state(2, z.get_daily_state(2));
-    set_daily_state(3, z.get_daily_state(3));
-    set_daily_state(4, z.get_daily_state(4));
-    set_daily_state(5, z.get_daily_state(5));
-    set_daily_state(6, z.get_daily_state(6));
+    if (z.get_daily_state(0) != 0) {
+        set_daily_state(0, z.get_daily_state(0));
+    }
+    if (z.get_daily_state(1) != 0) {
+        set_daily_state(1, z.get_daily_state(1));
+    }
+    if (z.get_daily_state(2) != 0) {
+        set_daily_state(2, z.get_daily_state(2));
+    }
+    if (z.get_daily_state(3) != 0) {
+        set_daily_state(3, z.get_daily_state(3));
+    }
+    if (z.get_daily_state(4) != 0) {
+        set_daily_state(4, z.get_daily_state(4));
+    }
+    if (z.get_daily_state(5) != 0) {
+        set_daily_state(5, z.get_daily_state(5));
+    }
+    if (z.get_daily_state(6) != 0) {
+        set_daily_state(6, z.get_daily_state(6));
+    }
 }
 
 

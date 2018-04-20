@@ -120,6 +120,7 @@ void API::setup_routes()
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/leds", Routes::bind(&API::get_zone_leds, this));
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/active_state", Routes::bind(&API::get_zone_active_led_state, this));
     Routes::Put(router, "profiles/:profile_id/zones/:zone_id/leds/add", Routes::bind(&API::put_zone_led, this));
+    Routes::Patch(router, "profiles/:profile_id/zones/:zone_id/edit", Routes::bind(&API::patch_zone, this));
     Routes::Patch(router, "profiles/:profile_id/zones/:zone_id/day/:day_of_week/add/:daily_state_id",
                 Routes::bind(&API::patch_zone_daily_state, this));
     Routes::Put(router, "profiles/:profile_id/zones/:zone_id/days/add",
@@ -624,6 +625,41 @@ void API::get_zone_active_led_state(REQUEST, RESPONSE)
                 j_out = *l;
                 code = Http::Code::Ok;
             } 
+        } else { j_out.push_back(json{"zone", zone_id}); }
+    } else { j_out.push_back(json{"profile", profile_id}); }
+
+    // Send response
+    response.send(code, j_out.dump());
+}
+void API::patch_zone(REQUEST, RESPONSE)
+{
+     // Log request
+    log_req(request);
+    
+    // Parameters
+    auto profile_id = request.param(":profile_id").as<unsigned int>();
+    auto zone_id = request.param(":zone_id").as<unsigned int>();
+
+    // Decode JSON
+    json j_in = json::parse(request.body());
+
+    // Data
+    Zone z = j_in;
+    Profile* profile = InternalState::get_profile(profile_id);
+    Http::Code code = Http::Code::Not_Found;
+    json j_out;
+
+    if (profile) {
+        Zone* zone = profile->get_zone(zone_id);
+        if (zone) {
+            // Update zone
+            zone->copy(z);
+        
+            // Update profile in DB
+            DataParser::update(zone);
+
+            j_out = *zone;
+            code = Http::Code::Ok;
         } else { j_out.push_back(json{"zone", zone_id}); }
     } else { j_out.push_back(json{"profile", profile_id}); }
 

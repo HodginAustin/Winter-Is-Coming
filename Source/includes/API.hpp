@@ -80,6 +80,7 @@ private:
     void get_zone(REQUEST, RESPONSE);              // Gets a zone by ID
     void get_zone_leds(REQUEST, RESPONSE);         // Gets a zone's LEDs
     void get_zone_active_led_state(REQUEST, RESPONSE); // Gets the currently active LEDState based on the system time
+    void patch_zone(REQUEST, RESPONSE);                // Updates a zone
     void put_zone_led(REQUEST, RESPONSE);          // Links a list of existing LEDs to a zone
                                                         // IN: list of LED IDs [1,4,9,40]
                                                         // OUT: list of things that were not found, or nothing on success
