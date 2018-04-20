@@ -1,0 +1,367 @@
+{
+	"info": {
+		"name": "plantergb_api_tests",
+		"_postman_id": "0571e741-089b-431e-8de7-e36626da7afa",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "profiles",
+			"description": "",
+			"item": [
+				{
+					"name": "Empty Profiles",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "495f33fa-1965-4795-a5bd-fd04ca872bba",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"GoodStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"EmptyBody\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.eql([]);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "59b43467-c08b-4a08-b062-8c843d379ffc",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:9080/profiles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Empty Get Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b782ad86-13f9-4e7b-ab8c-79a4845c2b82",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"NotFoundStatus\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"EmptyBody\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.eql([[\"profile\",7]]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:9080/profiles/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles",
+								"7"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "417fa989-56db-4181-8578-f4c00bcde4bb",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"BodyID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedBody = {\"description\":\"Desc\", \"id\":1, \"name\":\"GetProfile\", \"zones\":[]};",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e09954f4-856d-44aa-9c52-f42208a2184f",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a profile",
+									"const req = {",
+									"  url: 'http://localhost:9080/profiles/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify({",
+									"        name: 'GetProfile',",
+									"        description: 'Desc'",
+									"      })",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:9080/profiles/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles",
+								"1"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Add Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f0900fc3-13e0-4cee-a3aa-e63c917fb660",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"GoodStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"EmptyBody\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.eql({\"id\":1});",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e2c024c5-2b31-4859-af47-4cda79cf62e2",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"abf89\",\n\t\"description\": \"1189\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9080/profiles/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles",
+								"add"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Empty existing zones",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b408b307-b473-4f5f-b753-75d7e5d1f064",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"NotFound\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"EmptyArray\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedResponse = [];",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedResponse);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "81c110db-d0ff-4b92-a951-37f1609032ca",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a profile",
+									"const req = {",
+									"  url: 'http://localhost:9080/profiles/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify({",
+									"        name: 'ExistingZOnesTest',",
+									"        description: 'That'",
+									"      })",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:9080/profiles/1/zones",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles",
+								"1",
+								"zones"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "20b00bef-0ff4-42be-94b5-dc16cc78bee9",
+						"type": "text/javascript",
+						"exec": [
+							"// Clear all data before test",
+							"const deleteEverything = {",
+							"  url: 'http://localhost:9080/nuke_from_orbit',",
+							"  method: 'DELETE',",
+							"  header: '',",
+							"  body: ''",
+							"};",
+							"",
+							"pm.sendRequest(deleteEverything, function (err, response) {",
+							"    if (err) {",
+							"        console.log(response.json());",
+							"    }",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "9355f07a-013c-487e-9f78-bbef39752ebc",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "5fd26d06-ed1c-49be-8d04-c4959a7420fd",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "82e52237-e6dd-4e98-8d44-8d5a4eacea01",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
