@@ -1,3 +1,7 @@
+/* PlanteRGB API
+ * Written by Zach Lerew
+ */
+
 #include <map>
 #include <ctime>
 #include <cstdlib>

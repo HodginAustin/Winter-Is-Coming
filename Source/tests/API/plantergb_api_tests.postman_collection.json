@@ -1124,28 +1124,1117 @@
 		},
 		{
 			"name": "zones",
-			"description": "",
-			"item": []
-		},
-		{
-			"name": "leds",
-			"description": "",
-			"item": []
-		},
-		{
-			"name": "ledstates",
-			"description": "",
-			"item": []
-		},
-		{
-			"name": "dailystates",
-			"description": "",
-			"item": []
-		},
-		{
-			"name": "controllers",
-			"description": "",
-			"item": []
+			"description": null,
+			"item": [
+				{
+					"name": "Get Zone",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b767aef1-18c3-49f5-a42a-816937cbf000",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"BodyID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedBody = {\"name\":\"ZoneToAdd\", \"id\":1, \"days\": [0,0,0,0,0,0,0], \"leds\":[]};",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ba92e275-f2b3-4d1f-9a0c-220a2a83a246",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a profile",
+									"var req = {",
+									"  url: 'http://localhost:9080/profiles/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify({",
+									"        name: 'GetZoneProfile',",
+									"        description: 'Desc'",
+									"      })",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									"",
+									"",
+									"setTimeout(function(){",
+									"    ",
+									"    // Add zone",
+									"    req = {",
+									"      url: 'http://localhost:9080/profiles/1/zones/add',",
+									"      method: 'POST',",
+									"      header: '',",
+									"      body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            \"name\": 'ZoneToAdd'",
+									"          })",
+									"      }",
+									"    };",
+									"    ",
+									"    pm.sendRequest(req, function (err, response) {",
+									"        if (err) {",
+									"            console.log(response.json());",
+									"        }",
+									"    });    ",
+									"}, 2000);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/profiles/1/zones/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles",
+								"1",
+								"zones",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Empty Get Zone",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "321104aa-e757-4522-819a-8ef00ac9aa51",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"NotFoundStatus\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"EmptyBody\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.eql([[\"zone\",3]]);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "788762fa-24b9-4670-915e-8e5170c8c0a5",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a profile",
+									"var req = {",
+									"  url: 'http://localhost:9080/profiles/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify({",
+									"        name: 'GetEmptyZoneProfile',",
+									"        description: 'Desc'",
+									"      })",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/profiles/1/zones/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles",
+								"1",
+								"zones",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Zone LEDs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "56eca584-be52-456f-aa19-d75e15ffd894",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"BodyID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedBody = [{\"controller\":1,\"id\":1,\"strip_idx\":0}, {\"controller\":1,\"id\":2,\"strip_idx\":1}, {\"controller\":1,\"id\":3,\"strip_idx\":2}];",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "02bba709-b142-4d43-a534-205095e3e68d",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a profile",
+									"var req = {",
+									"  url: 'http://localhost:9080/profiles/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify({",
+									"        name: 'GetZoneLEDsProfile',",
+									"        description: 'Desc'",
+									"      })",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									"",
+									"",
+									"setTimeout(function(){",
+									"    ",
+									"    // Add zone",
+									"    req = {",
+									"      url: 'http://localhost:9080/profiles/1/zones/add',",
+									"      method: 'POST',",
+									"      header: '',",
+									"      body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            \"name\": 'ZoneToAdd'",
+									"          })",
+									"      }",
+									"    };",
+									"    ",
+									"    pm.sendRequest(req, function (err, response) {",
+									"        if (err) {",
+									"            console.log(response.json());",
+									"        }",
+									"    });",
+									"    ",
+									"    setTimeout(function(){",
+									"        // Post Controller",
+									"        req = {",
+									"          url: 'http://localhost:9080/controllers/add',",
+									"          method: 'POST',",
+									"          header: '',",
+									"          body: {",
+									"            mode: 'raw',",
+									"            raw: JSON.stringify(",
+									"                {\"io\": 1}",
+									"            )",
+									"          }",
+									"        };",
+									"        ",
+									"        pm.sendRequest(req, function (err, response) {",
+									"            if (err) {",
+									"                console.log(response.json());",
+									"            }",
+									"        });",
+									"            ",
+									"        setTimeout(function(){",
+									"            // Post LEDs",
+									"            req = {",
+									"              url: 'http://localhost:9080/leds/add',",
+									"              method: 'POST',",
+									"              header: '',",
+									"              body: {",
+									"                mode: 'raw',",
+									"                raw: JSON.stringify([",
+									"                    {\"controller\": 1, \"strip_idx\": 0 },",
+									"                    {\"controller\": 1, \"strip_idx\": 1 },",
+									"                    {\"controller\": 1, \"strip_idx\": 2 }",
+									"                ])",
+									"              }",
+									"            };",
+									"            ",
+									"            pm.sendRequest(req, function (err, response) {",
+									"                if (err) {",
+									"                    console.log(response.json());",
+									"                }",
+									"            });    ",
+									"                ",
+									"            setTimeout(function(){",
+									"            ",
+									"                // Add LEDS",
+									"                req = {",
+									"                  url: 'http://localhost:9080/profiles/1/zones/1/leds/add',",
+									"                  method: 'PUT',",
+									"                  header: '',",
+									"                  body: {",
+									"                    mode: 'raw',",
+									"                    raw: JSON.stringify([1,2,3])",
+									"                  }",
+									"                };",
+									"                ",
+									"                pm.sendRequest(req, function (err, response) {",
+									"                    if (err) {",
+									"                        console.log(response.json());",
+									"                    }",
+									"                });    ",
+									"            }, 1000);",
+									"        }, 1000);",
+									"    }, 1000);",
+									"}, 1000);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"patched\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9080/profiles/1/zones/1/leds/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles",
+								"1",
+								"zones",
+								"1",
+								"leds",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patch Zone",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8a4f66d0-01cd-4e52-a564-ff81b84efd96",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"BodyID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedBody = {\"name\":\"patched\", \"id\":1, \"days\": [0,0,0,0,0,0,0], \"leds\":[]};",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "81d58274-97ea-483b-bc76-a7002f499469",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a profile",
+									"var req = {",
+									"  url: 'http://localhost:9080/profiles/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify({",
+									"        name: 'PatchZoneProfile',",
+									"        description: 'Desc'",
+									"      })",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									"",
+									"",
+									"setTimeout(function(){",
+									"    ",
+									"    // Add zone",
+									"    req = {",
+									"      url: 'http://localhost:9080/profiles/1/zones/add',",
+									"      method: 'POST',",
+									"      header: '',",
+									"      body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            \"name\": 'ZoneToAdd'",
+									"          })",
+									"      }",
+									"    };",
+									"    ",
+									"    pm.sendRequest(req, function (err, response) {",
+									"        if (err) {",
+									"            console.log(response.json());",
+									"        }",
+									"    });    ",
+									"}, 2000);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"patched\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9080/profiles/1/zones/1/edit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles",
+								"1",
+								"zones",
+								"1",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Zone DailyStates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3e530299-82fa-4f8a-8b24-8d45bddd87aa",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"BodyID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedBody = [[\"daily_state\", 4]];",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a5a6fd9a-c611-41f0-96e1-606f9379e780",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a profile",
+									"var req = {",
+									"  url: 'http://localhost:9080/profiles/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify({",
+									"        name: 'GetZoneLEDsProfile',",
+									"        description: 'Desc'",
+									"      })",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									"",
+									"",
+									"setTimeout(function(){",
+									"    ",
+									"    // Add zone",
+									"    req = {",
+									"      url: 'http://localhost:9080/profiles/1/zones/add',",
+									"      method: 'POST',",
+									"      header: '',",
+									"      body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            \"name\": 'ZoneToAdd'",
+									"          })",
+									"      }",
+									"    };",
+									"    ",
+									"    pm.sendRequest(req, function (err, response) {",
+									"        if (err) {",
+									"            console.log(response.json());",
+									"        }",
+									"    });",
+									"    ",
+									"    setTimeout(function(){",
+									"        // Post Daily State",
+									"        req = {",
+									"          url: 'http://localhost:9080/daily_states/add',",
+									"          method: 'POST',",
+									"          header: '',",
+									"          body: {",
+									"            mode: 'raw',",
+									"            raw: JSON.stringify({})",
+									"          }",
+									"        };",
+									"        ",
+									"        pm.sendRequest(req, function (err, response) {",
+									"            if (err) {",
+									"                console.log(response.json());",
+									"            }",
+									"        });",
+									"            ",
+									"        setTimeout(function(){",
+									"            // Post daily state 2",
+									"            req = {",
+									"              url: 'http://localhost:9080/daily_states/add',",
+									"              method: 'POST',",
+									"              header: '',",
+									"              body: {",
+									"                mode: 'raw',",
+									"                raw: JSON.stringify({})",
+									"              }",
+									"            };",
+									"            ",
+									"            pm.sendRequest(req, function (err, response) {",
+									"                if (err) {",
+									"                    console.log(response.json());",
+									"                }",
+									"            });    ",
+									"        }, 1000);",
+									"    }, 1000);",
+									"}, 1000);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"monday\": 1,\n\t\"tuesday\": 0,\n\t\"sunday\": 4,\n\t\"saturday\": 2\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9080/profiles/1/zones/1/days/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles",
+								"1",
+								"zones",
+								"1",
+								"days",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Zone DailyState",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "96c6e852-05cb-4966-93de-75f126eeda02",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"BodyID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedBody = null;",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c2f88781-0ef9-42d7-8b43-6598ce0de365",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a profile",
+									"var req = {",
+									"  url: 'http://localhost:9080/profiles/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify({",
+									"        name: 'GetZoneLEDsProfile',",
+									"        description: 'Desc'",
+									"      })",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									"",
+									"",
+									"setTimeout(function(){",
+									"    ",
+									"    // Add zone",
+									"    req = {",
+									"      url: 'http://localhost:9080/profiles/1/zones/add',",
+									"      method: 'POST',",
+									"      header: '',",
+									"      body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            \"name\": 'ZoneToAdd'",
+									"          })",
+									"      }",
+									"    };",
+									"    ",
+									"    pm.sendRequest(req, function (err, response) {",
+									"        if (err) {",
+									"            console.log(response.json());",
+									"        }",
+									"    });",
+									"    ",
+									"    setTimeout(function(){",
+									"        // Post Daily State",
+									"        req = {",
+									"          url: 'http://localhost:9080/daily_states/add',",
+									"          method: 'POST',",
+									"          header: '',",
+									"          body: {",
+									"            mode: 'raw',",
+									"            raw: JSON.stringify({})",
+									"          }",
+									"        };",
+									"        ",
+									"        pm.sendRequest(req, function (err, response) {",
+									"            if (err) {",
+									"                console.log(response.json());",
+									"            }",
+									"        });",
+									"            ",
+									"        setTimeout(function(){",
+									"            // Put zone daily state",
+									"            req = {",
+									"              url: 'http://localhost:9080/profiles/1/zones/1/days/add',",
+									"              method: 'POST',",
+									"              header: '',",
+									"              body: {",
+									"                mode: 'raw',",
+									"                raw: JSON.stringify({\"sunday\":1})",
+									"              }",
+									"            };",
+									"            ",
+									"            pm.sendRequest(req, function (err, response) {",
+									"                if (err) {",
+									"                    console.log(response.json());",
+									"                }",
+									"            });    ",
+									"        }, 1000);",
+									"    }, 1000);",
+									"}, 1000);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/profiles/1/zones/1/day/1/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles",
+								"1",
+								"zones",
+								"1",
+								"day",
+								"1",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Zone LEDs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "26f7851b-fb77-4dcb-869b-1467d86d29d6",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"BodyID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedBody = [[\"led\",4]];",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4e8b129b-7175-402d-9b99-7ca5410165cf",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a profile",
+									"var req = {",
+									"  url: 'http://localhost:9080/profiles/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify({",
+									"        name: 'GetZoneLEDsProfile',",
+									"        description: 'Desc'",
+									"      })",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									"",
+									"",
+									"setTimeout(function(){",
+									"    ",
+									"    // Add zone",
+									"    req = {",
+									"      url: 'http://localhost:9080/profiles/1/zones/add',",
+									"      method: 'POST',",
+									"      header: '',",
+									"      body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            \"name\": 'ZoneToAdd'",
+									"          })",
+									"      }",
+									"    };",
+									"    ",
+									"    pm.sendRequest(req, function (err, response) {",
+									"        if (err) {",
+									"            console.log(response.json());",
+									"        }",
+									"    });",
+									"    ",
+									"    setTimeout(function(){",
+									"        // Post Controller",
+									"        req = {",
+									"          url: 'http://localhost:9080/controllers/add',",
+									"          method: 'POST',",
+									"          header: '',",
+									"          body: {",
+									"            mode: 'raw',",
+									"            raw: JSON.stringify(",
+									"                {\"io\": 1}",
+									"            )",
+									"          }",
+									"        };",
+									"        ",
+									"        pm.sendRequest(req, function (err, response) {",
+									"            if (err) {",
+									"                console.log(response.json());",
+									"            }",
+									"        });",
+									"            ",
+									"        setTimeout(function(){",
+									"            // Post LEDs",
+									"            req = {",
+									"              url: 'http://localhost:9080/leds/add',",
+									"              method: 'POST',",
+									"              header: '',",
+									"              body: {",
+									"                mode: 'raw',",
+									"                raw: JSON.stringify([",
+									"                    {\"controller\": 1, \"strip_idx\": 0 },",
+									"                    {\"controller\": 1, \"strip_idx\": 1 },",
+									"                    {\"controller\": 1, \"strip_idx\": 2 }",
+									"                ])",
+									"              }",
+									"            };",
+									"            ",
+									"            pm.sendRequest(req, function (err, response) {",
+									"                if (err) {",
+									"                    console.log(response.json());",
+									"                }",
+									"            });    ",
+									"        }, 1000);",
+									"    }, 1000);",
+									"}, 1000);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[1,2,3,4]"
+						},
+						"url": {
+							"raw": "http://localhost:9080/profiles/1/zones/1/leds/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles",
+								"1",
+								"zones",
+								"1",
+								"leds",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Zone LEDs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "68854de4-8877-4be3-8cb7-5fdefd3f0944",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"BodyID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedBody = [[\"led\",4]];",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
+									"});",
+									"",
+									"",
+									"// Zone has LEDs 2,3",
+									"pm.test(\"ZoneLEDCheck\", function () {",
+									"    var req = {",
+									"      url: 'http://localhost:9080/profiles/1/zones/1/',",
+									"      method: 'GET',",
+									"      header: '',",
+									"      body: ''",
+									"    };",
+									"    ",
+									"    pm.sendRequest(req, function (err, response) {",
+									"        if (err) {",
+									"            console.log(response.json());",
+									"        }",
+									"        pm.expect(response.json()).to.eql({\"days\":[0,0,0,0,0,0,0],\"id\":1,\"leds\":[2,3],\"name\":\"ZoneToAdd\"})",
+									"    });",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "731209d1-d801-4e49-8c97-b8ec7a3a8e14",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a profile",
+									"var req = {",
+									"  url: 'http://localhost:9080/profiles/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify({",
+									"        name: 'GetZoneLEDsProfile',",
+									"        description: 'Desc'",
+									"      })",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									"",
+									"",
+									"setTimeout(function(){",
+									"    ",
+									"    // Add zone",
+									"    req = {",
+									"      url: 'http://localhost:9080/profiles/1/zones/add',",
+									"      method: 'POST',",
+									"      header: '',",
+									"      body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            \"name\": 'ZoneToAdd'",
+									"          })",
+									"      }",
+									"    };",
+									"    ",
+									"    pm.sendRequest(req, function (err, response) {",
+									"        if (err) {",
+									"            console.log(response.json());",
+									"        }",
+									"    });",
+									"    ",
+									"    setTimeout(function(){",
+									"        // Post Controller",
+									"        req = {",
+									"          url: 'http://localhost:9080/controllers/add',",
+									"          method: 'POST',",
+									"          header: '',",
+									"          body: {",
+									"            mode: 'raw',",
+									"            raw: JSON.stringify(",
+									"                {\"io\": 1}",
+									"            )",
+									"          }",
+									"        };",
+									"        ",
+									"        pm.sendRequest(req, function (err, response) {",
+									"            if (err) {",
+									"                console.log(response.json());",
+									"            }",
+									"        });",
+									"            ",
+									"        setTimeout(function(){",
+									"            // Post LEDs",
+									"            req = {",
+									"              url: 'http://localhost:9080/leds/add',",
+									"              method: 'POST',",
+									"              header: '',",
+									"              body: {",
+									"                mode: 'raw',",
+									"                raw: JSON.stringify([",
+									"                    {\"controller\": 1, \"strip_idx\": 0 },",
+									"                    {\"controller\": 1, \"strip_idx\": 1 },",
+									"                    {\"controller\": 1, \"strip_idx\": 2 }",
+									"                ])",
+									"              }",
+									"            };",
+									"            ",
+									"            pm.sendRequest(req, function (err, response) {",
+									"                if (err) {",
+									"                    console.log(response.json());",
+									"                }",
+									"            });",
+									"            ",
+									"            setTimeout(function(){",
+									"            ",
+									"                // Add LEDS",
+									"                req = {",
+									"                  url: 'http://localhost:9080/profiles/1/zones/1/leds/add',",
+									"                  method: 'PUT',",
+									"                  header: '',",
+									"                  body: {",
+									"                    mode: 'raw',",
+									"                    raw: JSON.stringify([1,2,3])",
+									"                  }",
+									"                };",
+									"                ",
+									"                pm.sendRequest(req, function (err, response) {",
+									"                    if (err) {",
+									"                        console.log(response.json());",
+									"                    }",
+									"                });    ",
+									"            }, 1000);",
+									"        }, 1000);",
+									"    }, 1000);",
+									"}, 1000);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[1,4]"
+						},
+						"url": {
+							"raw": "http://localhost:9080/profiles/1/zones/1/leds/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"profiles",
+								"1",
+								"zones",
+								"1",
+								"leds",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "20b00bef-0ff4-42be-94b5-dc16cc78bee9",
+						"type": "text/javascript",
+						"exec": [
+							"// Clear all data before test",
+							"const deleteEverything = {",
+							"  url: 'http://localhost:9080/nuke_from_orbit',",
+							"  method: 'DELETE',",
+							"  header: '',",
+							"  body: ''",
+							"};",
+							"",
+							"pm.sendRequest(deleteEverything, function (err, response) {",
+							"    if (err) {",
+							"        console.log(response.json());",
+							"    }",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "9355f07a-013c-487e-9f78-bbef39752ebc",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		}
 	],
 	"event": [
