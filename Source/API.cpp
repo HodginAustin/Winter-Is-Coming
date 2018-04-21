@@ -119,7 +119,7 @@ void API::setup_routes()
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id", Routes::bind(&API::get_zone, this));
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/leds", Routes::bind(&API::get_zone_leds, this));
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/active_state", Routes::bind(&API::get_zone_active_led_state, this));
-    Routes::Put(router, "profiles/:profile_id/zones/:zone_id/leds/add", Routes::bind(&API::put_zone_led, this));
+    Routes::Put(router, "profiles/:profile_id/zones/:zone_id/leds/add", Routes::bind(&API::put_zone_leds, this));
     Routes::Patch(router, "profiles/:profile_id/zones/:zone_id/edit", Routes::bind(&API::patch_zone, this));
     Routes::Patch(router, "profiles/:profile_id/zones/:zone_id/day/:day_of_week/add/:daily_state_id",
                 Routes::bind(&API::patch_zone_daily_state, this));
@@ -136,7 +136,7 @@ void API::setup_routes()
     Routes::Get(router, "leds", Routes::bind(&API::get_leds, this));
     Routes::Get(router, "leds/:id", Routes::bind(&API::get_led, this));
     Routes::Get(router, "leds/:id/controller", Routes::bind(&API::get_led_controller, this));
-    Routes::Post(router, "leds/add", Routes::bind(&API::post_led, this));
+    Routes::Post(router, "leds/add", Routes::bind(&API::post_leds, this));
     Routes::Patch(router, "leds/:id/edit", Routes::bind(&API::patch_led, this));
     Routes::Delete(router, "leds/delete", Routes::bind(&API::delete_led, this));
 
@@ -666,7 +666,7 @@ void API::patch_zone(REQUEST, RESPONSE)
     // Send response
     response.send(code, j_out.dump());
 }
-void API::put_zone_led(REQUEST, RESPONSE)
+void API::put_zone_leds(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
@@ -990,7 +990,7 @@ void API::get_led_controller(REQUEST, RESPONSE)
     // Send response
     response.send(code, j_out.dump());
 }
-void API::post_led(REQUEST, RESPONSE)
+void API::post_leds(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
