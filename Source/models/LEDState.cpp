@@ -75,15 +75,15 @@ void LEDState::set_power(bool val)
 }
 
 // Equals
-bool LEDState::equals(LEDState* lhs, LEDState* rhs)
+bool LEDState::equals(struct bareLEDState* lhs, LEDState* rhs)
 {
     bool equal = true;
     if (lhs && rhs) {
-        equal &= (lhs->get_r() == rhs->get_r());
-        equal &= (lhs->get_g() == rhs->get_g());
-        equal &= (lhs->get_b() == rhs->get_b());
-        equal &= (lhs->get_intensity() == rhs->get_intensity());
-        equal &= (lhs->get_power() == rhs->get_power());
+        equal &= (lhs->r == rhs->get_r());
+        equal &= (lhs->g == rhs->get_g());
+        equal &= (lhs->b == rhs->get_b());
+        equal &= (lhs->intensity == rhs->get_intensity());
+        equal &= (lhs->power == rhs->get_power());
         return equal;
     }
     return false;

@@ -4,6 +4,7 @@
 #include "./includes/StateComposer.hpp"
 #include "./includes/DataParser.hpp"
 #include "./includes/Settings.hpp"
+#include "./includes/LEDStateSmall.hpp"
 
 // The I^2C serial bus device in the linux system
 #define I2C_BUS "/dev/i2c-1"
@@ -34,7 +35,6 @@
 #define TRIES 2
 
 
-
 // Threading
 pthread_t StateComposer::composerThread;
 
@@ -47,6 +47,9 @@ int StateComposer::i2cFileStream;
 // Composer variables
 std::ofstream StateComposer::logFile;
 unsigned int StateComposer::i2cAddressOffset;
+
+std::unordered_map<unsigned int, struct bareLEDState*>::const_iterator prevLEDStateIter;
+std::unordered_map<unsigned int, struct bareLEDState*> previousLEDStates;
 
 // Timing
 time_t StateComposer::sysTime;
@@ -115,17 +118,6 @@ bool StateComposer::initialize(bool logEnable)
         logFile << "[" << timeBuffer << "] StateComposer transcript started\n" << std::flush;
     }
 
-    // Open in non terminal, non blocking, read-write mode
-    i2cFileStream = open(I2C_BUS, O_RDWR | O_NOCTTY | O_NDELAY);
-
-	if (i2cFileStream == -1) {  // ERROR - CAN'T OPEN SERIAL PORT
-        std::cout << "failed to open I2C" << std::endl;
-		logFile << "    ERROR: Unable to open I2C device: "
-                << I2C_BUS
-                << "! \n           Ensure it is not in use by another application."
-                << std::endl;
-        //return false; // No longer returning due to test system being used
-	}
 
     // Threading
     int thrStatus = pthread_create(&composerThread, NULL, StateComposer::thr_compose_call, NULL);
@@ -243,6 +235,46 @@ void StateComposer::compose()
         currentZoneActiveState = currentZone->get_active_state(seconds, weekDay);
         if (currentZoneActiveState == NULL) {
             continue;
+        }
+
+        // Check previous LED state for this zone
+        // continue on to next zone if it is the same
+        prevLEDStateIter = previousLEDStates.find(currentZone->get_id());
+        if (prevLEDStateIter != previousLEDStates.end()) {
+            
+            if ( LEDState::equals(prevLEDStateIter->second, currentZoneActiveState) ) {
+                continue;
+            }
+            else {
+                if (logFile.is_open()) 
+                    logFile << "Zone state has changed, updating..." << std::endl;
+                delete previousLEDStates[currentZone->get_id()];
+            }
+                
+        }
+
+        struct bareLEDState* temp = new bareLEDState();
+
+        temp->r = currentZoneActiveState->get_r();
+        temp->g = currentZoneActiveState->get_g(); 
+        temp->b = currentZoneActiveState->get_b(); 
+        temp->intensity = currentZoneActiveState->get_intensity();
+        temp->power = currentZoneActiveState->get_power();
+       
+        // Save previous LED state
+        // State not equal, saving it
+        previousLEDStates[currentZone->get_id()] = temp;
+
+        // Open in non terminal, non blocking, read-write mode
+        i2cFileStream = open(I2C_BUS, O_RDWR | O_NOCTTY | O_NDELAY);
+
+        if (i2cFileStream == -1) {  // CAN'T OPEN SERIAL PORT
+            std::cout << "failed" << std::endl;
+            logFile << "    ERROR: Unable to open I2C device: "
+                    << I2C_BUS
+                    << "! \n           Ensure it is not in use by another application."
+                    << std::endl;
+            return;
         }
 
         // Gather and compute color data
