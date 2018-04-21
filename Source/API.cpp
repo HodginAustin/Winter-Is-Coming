@@ -802,7 +802,7 @@ void API::put_zone_daily_state(REQUEST, RESPONSE)
                     DataParser::insert(dow);
                     
                     // Daily state found
-                    if (ds && daily_state_id != 0) {
+                    if (ds || daily_state_id == 0) {
                         code = Http::Code::Ok;
                     } else { j_out.push_back(json{"daily_state", daily_state_id}); }
                 }
