@@ -3,4 +3,4 @@
 make clean
 make default
 
-tar -cvzf release.tar.gz ./environment/usr/ ./out/plantergb
+tar --exclude='./Site/node_modules' -cvzf release.tar.gz ./environment/usr ./out/plantergb ./Site/
