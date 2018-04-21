@@ -145,6 +145,12 @@
             </div>
         </div>
     </div>
+    <span class="float-left" style="margin-top: 15px;" >
+      <button type="button" class="btn btn-light"><a href="http://localhost:8080/ledStates">Pervious Section </a></button></button>
+    </span>
+    <span class="float-right" style="margin-top: 15px;" >
+      <button type="button" class="btn btn-light"><a href="http://localhost:8080/profiles">Next Section </a></button>
+    </span>
 </div>
 
 <script>
@@ -175,7 +181,7 @@
                 if (minutes < 10) {minutes = "0"+minutes;}
                 if (seconds < 10 && seconds > 0) {seconds = "0"+seconds;}
                 let ampm = (sec_num < noon ? "AM" : "PM");
-                
+
                 normal_time =  hours+':'+minutes+(seconds>0 ? ':'+seconds : '')+' '+ampm;
             } else {
                 normal_time = sec_num + "s. after midnight";
