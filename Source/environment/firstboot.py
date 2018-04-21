@@ -13,15 +13,15 @@ commands = [
     "raspi-config nonint do_i2c 0", # Enable I2C
     "wget -O /plantergb/release.tar.gz https://github.com/CarvellWakeman/plantergb/releases/download/Latest/release.tar.gz", # Download PlanteRGB
     "tar -xvzf /plantergb/release.tar.gz -C /plantergb", # Unzip files
-    "apt-get update", # Update packages
-    "apt-get -y upgrade", # Upgrade packages
-    "apt-get install libsqlite3-dev", # Install sqlite package for database
+    #"apt-get update", # Update packages
+    #"apt-get -y upgrade", # Upgrade packages
+    "apt-get -y install libsqlite3-dev", # Install sqlite package for database
     "cp /plantergb/environment/usr/local/lib/* /usr/local/lib/", # Copy binary files
     "cp -r /plantergb/environment/usr/local/include/* /usr/local/include/", # Copy library files
     "chmod +x /plantergb/out/plantergb", # Allow plantergb process to be executed
-    "apt-get install nodejs-legacy", # Install NodeJS for hosting the website
-    "apt-get install npm", # Package manager for website
-    "npm install", # Install packages for website
+    "apt-get -y install nodejs-legacy", # Install NodeJS for hosting the website
+    "apt-get -y install npm", # Package manager for website
+    "npm install --prefix /plantergb/Site", # Install packages for website
 ]
 
 # Command output
