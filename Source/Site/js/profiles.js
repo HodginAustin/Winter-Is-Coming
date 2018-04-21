@@ -7,9 +7,10 @@ module.exports = function () {
     var router = express.Router();
     const http = require("http");
 
-    /* profile zones */
+    /* Profile Zones */
     let zones = require('./global/zones.js');
     let curr = require('./global/currentProfile.js');
+
     /* Connection settings */
     let conn = require('./global/connection.js');
 
@@ -213,12 +214,14 @@ module.exports = function () {
 
     router.get('/:id', function (req, res) {
         callbackCount = 0;
-        var context = {};
+        var context =req.context;
+
         getProfile(res, context, req.params.id, complete);
         curr.get(res, context, complete);
         zones.get(res, context, req.params.id, complete);
         leds.get(res, context, complete);
-        dailyStates.get(res, context, complete)
+        dailyStates.get(res, context, complete);
+
         function complete() {
             callbackCount++;
             if (callbackCount >= 5) {
