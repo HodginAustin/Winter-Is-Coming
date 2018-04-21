@@ -19,7 +19,9 @@ commands = [
     "cp /plantergb/environment/usr/local/lib/* /usr/local/lib/", # Copy binary files
     "cp -r /plantergb/environment/usr/local/include/* /usr/local/include/", # Copy library files
     "chmod +x /plantergb/out/plantergb", # Allow plantergb process to be executed
-    "apt-get -y install nodejs-legacy", # Install NodeJS for hosting the website
+    #"apt-get -y install nodejs-legacy", # Install NodeJS for hosting the website
+    "chmod +x /plantergb/node_install.sh", # Allow node install script to be executed
+    "/plantergb/node_install.sh", # Execute node install script
     "apt-get -y install npm", # Package manager for website
     "npm install --prefix /plantergb/Site", # Install packages for website
 ]
