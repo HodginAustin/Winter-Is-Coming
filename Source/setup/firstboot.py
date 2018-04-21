@@ -20,6 +20,7 @@ commands = [
     "cp -r /plantergb/environment/usr/local/include/* /usr/local/include/", # Copy library files
     "chmod +x /plantergb/out/plantergb", # Allow plantergb process to be executed
     #"apt-get -y install nodejs-legacy", # Install NodeJS for hosting the website
+    "wget -O /plantergb/node_install.sh https://github.com/CarvellWakeman/plantergb/releases/download/Latest/node_install.sh", # Install Node
     "chmod +x /plantergb/node_install.sh", # Allow node install script to be executed
     "/plantergb/node_install.sh", # Execute node install script
     "apt-get -y install npm", # Package manager for website
