@@ -11,7 +11,7 @@ LED::LED() {
     controller_id = 0;
 }
 
-LED::LED(const LED& l)
+LED::LED(const LED& l) : LED()
 {
     copy(l);
 }

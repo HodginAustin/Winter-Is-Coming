@@ -8,7 +8,10 @@ Profile::Profile() {
     name = "";
     description = "";
 }
-Profile::Profile(const Profile& p) { copy(p); }
+Profile::Profile(const Profile& p) : Profile()
+{
+    copy(p);
+}
 
 
 // Copy

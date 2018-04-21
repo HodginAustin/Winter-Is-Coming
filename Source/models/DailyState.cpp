@@ -9,9 +9,8 @@ DailyState::DailyState() {
     id = 0;
     other = 0;
 }
-DailyState::DailyState(const DailyState& d)
+DailyState::DailyState(const DailyState& d) : DailyState()
 {
-    other = 0;
     copy(d);
 }
 

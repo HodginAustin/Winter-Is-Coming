@@ -11,7 +11,7 @@ Zone::Zone()
     name = "";
     weeklyState = {0,0,0,0,0,0,0};
 }
-Zone::Zone(const Zone& z)
+Zone::Zone(const Zone& z) : Zone()
 {
     copy(z);
 }
@@ -119,7 +119,7 @@ void Zone::delete_led(LED* led)
 DailyState* Zone::get_daily_state(unsigned int day) const
 {
     if (day < 0 || day > 6) { return 0; }
-    return weeklyState.at(day);
+    return weeklyState[day];
 }
 
 LEDState* get_led_state_from_daily_state(unsigned int t, DailyState* ds)
@@ -137,7 +137,7 @@ LEDState* Zone::get_active_state(unsigned int time_of_day, int day) const
     unsigned int timeToCheck = time_of_day;
 
     // Try to get closest active state initially
-    DailyState* ds = weeklyState.at(dayToCheck);
+    DailyState* ds = weeklyState[dayToCheck];
     LEDState* ls = get_led_state_from_daily_state(timeToCheck, ds);
 
     // If the initial day does not exist or it has no daily states
@@ -153,7 +153,7 @@ LEDState* Zone::get_active_state(unsigned int time_of_day, int day) const
         if (dayToCheck == day) { break; }
 
         // Get the previous day of the week
-        ds = weeklyState.at(dayToCheck);
+        ds = weeklyState[dayToCheck];
         // Try to get the latest LED state
         ls = get_led_state_from_daily_state(timeToCheck, ds);
     }
@@ -182,7 +182,6 @@ void to_json(json& j, const Zone& z) {
     json days_j = json::array(); // Empty JSON array []
     for (int i = 0; i < 7; i++){
         DailyState* day = z.get_daily_state(i);
-        json day_j;
         if (day) { days_j.push_back(day->get_id()); }
         else { days_j.push_back(0); }
     }
