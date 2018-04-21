@@ -243,14 +243,14 @@ void StateComposer::compose()
         // continue on to next zone if it is the same
         prevLEDStateIter = previousLEDStates.find(currentZone->get_id());
         if (prevLEDStateIter != previousLEDStates.end()) {
-            if ( LEDState::equals((prevLEDStateIter->second), currentZoneActiveState) ) {
+            if ( LEDState::equals(prevLEDStateIter->second, currentZoneActiveState) ) {
                 continue;
             }
             else {
                 if (logFile.is_open()) 
-                    logFile << "Zone state has changed, updating...\n" << std::flush;
+                    logFile << "Zone state has changed, updating..." << std::endl;
                 delete previousLEDStates[currentZone->get_id()];
-            } 
+            }
         }
 
         struct bareLEDState* temp = new bareLEDState();
@@ -272,8 +272,8 @@ void StateComposer::compose()
             std::cout << "failed" << std::endl;
             logFile << "    ERROR: Unable to open I2C device: "
                     << I2C_BUS
-                    << "! \n           Ensure it is not in use by another application.\n"
-                    << std::flush;
+                    << "! \n           Ensure it is not in use by another application."
+                    << std::endl;
             return;
         }
 
