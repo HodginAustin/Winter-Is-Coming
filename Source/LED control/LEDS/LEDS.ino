@@ -11,7 +11,8 @@
 
 #define NUM_LEDS 60       // adjust to your length of LED strip*/
 #define LED_DATA_PIN 2    // adjust to the used pin (Arduino nano pin 2 = D2)
-#define DEVICE_ID 3
+#define DEVICE_ID 3       // This is the device ID used for I2C, ID 1 and 2 are taken, so it starts at 3
+                          // The system uses 1 as the starting place. This value of 3 is matched by a DB setting.
 
 CRGB leds[NUM_LEDS];      // color object for setup testing
 unsigned char led_idx;
