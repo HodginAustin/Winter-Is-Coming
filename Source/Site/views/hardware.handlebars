@@ -55,9 +55,7 @@
                                         <div class="d-flex flex-wrap" id="leds">
                                             {{#each LEDs}}
                                             <!-- Hidden element for LED ID -->
-                                            <input type="number" name="ledIds" value="{{ id }}" hidden>
-
-                                            <a class="btn text-white badge badge-info" style="margin:2px;">{{strip_idx}}</a>
+                                            <a class="btn text-white badge badge-info" style="margin:2px;">ID: {{id}}, index:{{strip_idx}}</a>
                                             {{/each}}
                                         </div>
                                         </br>

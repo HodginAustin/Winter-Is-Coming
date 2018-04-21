@@ -5,13 +5,11 @@
     "main": "main.js",
     "scripts": {
         "start": "node main.js 8080",
-        "test": "node ./Tests/main.test.js 8080",
+        "test": "mocha -R spec ./Tests",
         "test-unit": "NODE_ENV=test mocha --require mocha 'Tests/*.test.js'",
         "dev": "nodemon main.js 8080"
     },
     "devDependencies": {
-
-
     },
     "dependencies": {
         "body-parser": "^1.13.3",
