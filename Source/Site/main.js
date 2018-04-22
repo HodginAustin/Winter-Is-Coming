@@ -15,9 +15,26 @@ let profiles = require('./js/global/profiles.js');
 /* Connection settings */
 let conn = require('./js/global/connection.js');
 
-app.engine('handlebars', handlebars({
-    defaultLayout: 'main',
-}));
+/* sets port to what is given in command line */
+app.set('port', process.argv[2]);
+
+
+// Handlebars
+var hbs = handlebars.create({
+    helpers: {
+        getLEDStateFromID: function (state, ledStates) {
+            let found = ledStates.find(function(s) {
+                return s.id == state;
+            });
+
+        return "<a class='btn badge' style='border: 1px solid black; background-color: rgb("+found.r+", "+found.g+", "+found.b+")'>ID: " + state + "</a>";
+        },
+    },
+    defaultLayout: 'main'
+});
+
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
 
 
 // Files and data
@@ -29,13 +46,8 @@ app.use('/css', express.static(path.join(__dirname, 'css'))); /* style sheets fo
 app.use('/img', express.static(path.join(__dirname, 'img'))); /* images folder */
 
 
-// Handlebars
-app.set('view engine', 'handlebars');
-app.set('port', process.argv[2]); /* sets port to what is given in command line */
-
-
 // Global call
-app.all('*', function(req, res, next) {
+app.all('*', function (req, res, next) {
     var callbackCount = 0;
     let context = {};
 
@@ -65,15 +77,15 @@ app.all('*', function(req, res, next) {
 });
 
 // Set current profile
-app.post('/currentProfile/', function(req, res) {
+app.post('/currentProfile/', function (req, res) {
     let id = req.body.id;
-    currentProfile.set(res, id, function() {
+    currentProfile.set(res, id, function () {
         res.redirect('back');
     });
 });
 
 // Base pages
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     res.redirect('/plant');
 });
 app.use('/plant', require('./js/plant.js'));
@@ -86,18 +98,18 @@ app.use('/simulator', require('./js/simulator.js'));
 
 
 // Bad states
-app.use(function(req, res) {
+app.use(function (req, res) {
     res.status(404);
     res.render('404');
 });
 
-app.use(function(req, res) {
+app.use(function (req, res) {
     res.status(500);
     res.render('500');
 });
 
 
 // Listen
-app.listen(app.get('port'), function() {
+app.listen(app.get('port'), function () {
     console.log('Express started on http://localhost:' + app.get('port') + '; press Ctrl-C to terminate.');
 });

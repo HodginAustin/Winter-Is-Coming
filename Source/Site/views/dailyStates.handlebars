@@ -68,7 +68,7 @@
                                                 <!-- State -->
                                                 <td>
                                                     {{#if state}}
-                                                    <a class="btn text-white badge badge-secondary">ID:{{ state }}</a>
+                                                    {{{getLEDStateFromID state ../../../LEDStates}}}
                                                     {{else}}
                                                     <a class="btn text-white badge badge-secondary">None</a>
                                                     {{/if}}
