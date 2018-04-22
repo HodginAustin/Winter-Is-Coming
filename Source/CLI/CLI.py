@@ -219,7 +219,7 @@ def initialize(url, header):
             system['led_states'][color['name']] = j['id']
 
 def shutdown(url, header):
-    subprocess.call("clear", shell = True);
+    subprocess.call("clear", shell = True)
     print("Shutting down PlanteRGB Service.....")
     r = requests.get(url + "/shutdown")
     if str(r.status_code) == "200":
@@ -250,7 +250,7 @@ def configure_Zones(url, header):
         option = str(raw_input("|   Add Zone(1)   |   Assign Daily State(2)   |    Delete (3)   |    Select new profile(3)   |\n| Return to main menu(4) |\n|Selected: "))
 
         if option == "1":
-            subprocess.call("clear", shell = True);
+            subprocess.call("clear", shell = True)
             zoneName = str(raw_input("Name of new Zone:  "))
             des = str(raw_input("Enter in description: "))
 
@@ -275,17 +275,17 @@ def configure_Zones(url, header):
             temp = 0
             days = []
             numOfDays = 0
-            subprocess.call("clear", shell = True);
+            subprocess.call("clear", shell = True)
             print("Zones: ")
             printZones(url,header,SelectedProfile)
             selectedZone = str(raw_input("Select Zone: "))
-            subprocess.call("clear", shell = True);
+            subprocess.call("clear", shell = True)
             
             print("Daily States: ")
             printDailyState(url,header)
 
             selectedDailyState = str(raw_input("Select Daily State: "))
-            subprocess.call("clear", shell = True);
+            subprocess.call("clear", shell = True)
             numOfDays = int(raw_input("How many days do you want want this zone to apply to? "))
             print("num of days before while: %s" % numOfDays)
             while temp < numOfDays:
@@ -299,7 +299,7 @@ def configure_Zones(url, header):
 
             
         if option == "3":
-            subprocess.call("clear", shell = True);
+            subprocess.call("clear", shell = True)
             printZones(url,header,SelectedProfile)
             deleteOption = str(raw_input("Which zone do you want to delete? "))
             confirm = str(raw_input("Do you wish to proceed? [y/N]:"))
@@ -315,13 +315,13 @@ def configure_profiles(url,header):
     option = 0
     numProfile = 0
     results = []
-    temp = 1;
+    temp = 1
 
     numProfile = len(r)
     print("num of profiles %i" %numProfile)
     while option != "5":
         subprocess.call("clear", shell = True)
-        temp = 1;
+        temp = 1
         print("|----------------------------------------Profile Menu----------------------------------------|")
         option = str(raw_input("|  Add(1)  |  Edit(2)  |  Set Active Profile (3)  |  Delete (4)  |   Return to main menu(5)  |\n|Selected:"))
         if option == "1":
@@ -583,7 +583,7 @@ def configure_led_state(url, header):
                     print("Deleted LED State %i" %deleteOption)
 
 def configure_demos(url, header):
-    subprocess.call("clear", shell = True);
+    subprocess.call("clear", shell = True)
     option = 0
     while option != "4":
         print("|---------------------------------------- Demos --------------------------------------------|")
@@ -599,7 +599,7 @@ def configure_demos(url, header):
             createDemo3(url, header)
 
 def createDemo1(url, header):
-    subprocess.call("clear", shell = True);
+    subprocess.call("clear", shell = True)
     if 'demo1' not in system['profiles']:
         print("Adding Demo1 Profile")
         j = {"name": "demo1", "description": "One zone, all white"}
@@ -620,7 +620,7 @@ def createDemo1(url, header):
         system['daily_states']['fullwhite'] = json.loads(r.text)['id']
 
         print("Assigning Daily State {} to Zone {} on Sunday".format(system['daily_states']['fullwhite'], zone1ID))
-        r = requests.put(url + "/profiles/{}/zones/{}/day/0/add/{}".format(demoProfile, zone1ID, system['daily_states']['fullwhite']))
+        r = requests.patch(url + "/profiles/{}/zones/{}/day/0/add/{}".format(demoProfile, zone1ID, system['daily_states']['fullwhite']))
         print_request(r)
 
         print("Assigning {} LEDS to Zone {}".format(NUM_LEDS*2, zone1ID))
@@ -633,7 +633,7 @@ def createDemo1(url, header):
     print_request(r)
 
 def createDemo2(url, header):
-    subprocess.call("clear", shell = True);
+    subprocess.call("clear", shell = True)
     if 'demo2' not in system['profiles']:
         how_long = raw_input("How long should it run? (minutes): ")
         how_long = int(how_long or 10) # 10 mins default
@@ -705,11 +705,11 @@ def createDemo2(url, header):
                 j = []
 
         print("Assign Daily State {} to Zone {}".format(rgbDailyState, zone1ID))
-        r = requests.put(url + "/profiles/{}/zones/{}/day/{}/add/{}".format(demoProfile, zone1ID, get_dow(), rgbDailyState))
+        r = requests.patch(url + "/profiles/{}/zones/{}/day/{}/add/{}".format(demoProfile, zone1ID, get_dow(), rgbDailyState))
         print_request(r)
 
         print("Assign Daily State {} to Zone {}".format(cmyDailyState, zone2ID))
-        r = requests.put(url + "/profiles/{}/zones/{}/day/{}/add/{}".format(demoProfile, zone2ID, get_dow(), cmyDailyState))
+        r = requests.patch(url + "/profiles/{}/zones/{}/day/{}/add/{}".format(demoProfile, zone2ID, get_dow(), cmyDailyState))
         print_request(r)
 
         print("Assigning {} LEDS to Zone {}".format(NUM_LEDS, zone1ID))
@@ -760,7 +760,7 @@ def createDemo3(url, header):
             dsID = system['daily_states']["ds{}".format(z+1)] = json.loads(r.text)['id']
 
             print("Assigning Daily State {} to Zone {}".format(dsID, zID))
-            r = requests.put(url + "/profiles/{}/zones/{}/day/{}/add/{}".format(demoProfile, zID, 0, dsID))
+            r = requests.patch(url + "/profiles/{}/zones/{}/day/{}/add/{}".format(demoProfile, zID, 0, dsID))
             print_request(r)
 
             print("Assigning {} LEDS to Zone {}".format(len(leds[z-1]), zID))
@@ -790,12 +790,12 @@ def nuke_from_orbit(url):
 def main():
     #URL
     port = sys.argv[1] if len(sys.argv)>1 else "9080"
-    url = "http://localhost:" + port
+    url = "http://192.168.1.18:" + port
     # Headers
     header = {'Content-type': 'application/json'}
     option = 0
     while option != "9":
-        subprocess.call("clear", shell = True);
+        subprocess.call("clear", shell = True)
         print("|--------------------------- Welcome to PlanteRGB Lighting System ---------------------------|")
         print("|------------------------------------ Configuration Menu ------------------------------------|")
         option = str(raw_input("|     Profiles (1)     | Zones (2) | Configure controller (3) |     Configure States (4)     |\n| Initialize Demos (5) | Demos(6)  |       Erase All(7)       | Shutdown (8) | Exit Script(9)|\n|Selection: "))
