@@ -27,7 +27,7 @@ var hbs = handlebars.create({
                 return s.id == state;
             });
 
-        return "<a class='btn badge' style='border: 1px solid black; background-color: rgb("+found.r+", "+found.g+", "+found.b+")'>ID: " + state + "</a>";
+        return "<a class='badge' style='border: 1px solid black; background-color: rgb("+found.r+", "+found.g+", "+found.b+")'>ID: " + state + "</a>";
         },
     },
     defaultLayout: 'main'
