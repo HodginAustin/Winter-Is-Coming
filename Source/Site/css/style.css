@@ -57,7 +57,8 @@ div .checkbox-round + label {
   left: 50%;
   transform: translateX(-50%);
   user-select: none;
-  cursor:pointer;
+  cursor: pointer;
+  pointer-events: none;
 }
 
 .checkbox-round:checked {
