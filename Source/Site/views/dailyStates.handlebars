@@ -194,14 +194,16 @@
     };
 
     function sortTable(table, order) {
-        var asc = order === 'asc',
-            tbody = table.find('tbody');
+        var asc = order === 'asc', tbody = table.find('tbody');
 
         tbody.find('tr').sort(function (a, b) {
+            ae = parseInt($('td:first', a)[0].innerHTML);
+            be = parseInt($('td:first', b)[0].innerHTML);
+            
             if (asc) {
-                return $('td:first', a).text().localeCompare($('td:first', b).text());
+                return ae - be;
             } else {
-                return $('td:first', b).text().localeCompare($('td:first', a).text());
+                return be - ae;
             }
         }).appendTo(tbody);
     }
