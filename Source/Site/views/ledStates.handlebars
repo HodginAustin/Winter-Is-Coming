@@ -14,7 +14,8 @@
             <div class="col-12">
               <p class="right">LED States represent a possible state of a single LED. It has 3 values (Red, Green, Blue), an intensity (percentage),
                 and a power state. Many LEDs can be assigned to a single LED State. Use this menu to add, edit, and delete
-                them.</p>
+                them.
+              </p>
             </div>
           </div>
 
@@ -61,7 +62,8 @@
                   <!-- Intensity -->
                   <td class="row_display_{{id}}" style="width:80px;">{{ intensity }}%</td>
                   <td class="row_update_{{id}} hidden">
-                    <input type="number" class="form-control" style="width:80px;" name="intensity" value="{{ intensity }}" min="0" max="100" required>
+                    <input type="number" class="form-control" style="width:80px;" name="intensity" value="{{ intensity }}" min="0" max="100"
+                      required>
                   </td>
                   <!-- Power -->
                   <td class="row_display_{{id}}">{{#if power}}On{{/if}}{{#unless power}}Off{{/unless}}</td>
@@ -110,7 +112,8 @@
               <!-- Blue -->
               <input type="number" class="form-control" placeholder="Blue" name="blue" value="{{ b }}" min="0" max="255" required>
               <!-- Intensity -->
-              <input type="number" class="form-control" placeholder="Brightness" name="intensity" value="{{ intensity }}" min="0" max="100" required>
+              <input type="number" class="form-control" placeholder="Brightness" name="intensity" value="{{ intensity }}" min="0" max="100"
+                required>
 
               <!-- Power -->
               <div class="input-group-prepend">
@@ -132,11 +135,13 @@
       </div>
     </div>
   </div>
-  <span class="float-left" style="margin-top: 15px;" >
-    <button type="button" class="btn btn-light"><a href="http://localhost:8080/hardware">Pervious Section </a></button></button>
+
+  <!-- Previous and next buttons -->
+  <span class="float-left bottom-nav-buttons">
+    <a href="/hardware" class="btn btn-outline-info">Previous Section</a>
   </span>
-  <span class="float-right" style="margin-top: 15px;" >
-    <button type="button" class="btn btn-light"><a href="http://localhost:8080/dailyStates">Next Section </a></button>
+  <span class="float-right bottom-nav-buttons">
+    <a href="/dailyStates" class="btn btn-outline-info">Next Section</a>
   </span>
 </div>
 

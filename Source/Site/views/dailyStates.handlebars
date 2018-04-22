@@ -145,11 +145,13 @@
             </div>
         </div>
     </div>
-    <span class="float-left" style="margin-top: 15px;" >
-      <button type="button" class="btn btn-light"><a href="http://localhost:8080/ledStates">Pervious Section </a></button></button>
+
+    <!-- Previous and next buttons -->
+    <span class="float-left bottom-nav-buttons">
+        <a href="/ledStates" class="btn btn-outline-info">Previous Section</a>
     </span>
-    <span class="float-right" style="margin-top: 15px;" >
-      <button type="button" class="btn btn-light"><a href="http://localhost:8080/profiles">Next Section </a></button>
+    <span class="float-right bottom-nav-buttons">
+        <a href="/profiles" class="btn btn-outline-info">Next Section</a>
     </span>
 </div>
 
@@ -170,7 +172,7 @@
             let sec_num = parseInt($(this).text(), 10);
 
             if (sec_num >= 0 && sec_num <= last_second) {
-                var hours   = Math.floor(sec_num / 3600);
+                var hours = Math.floor(sec_num / 3600);
                 var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
                 var seconds = sec_num - (hours * 3600) - (minutes * 60);
 
@@ -178,11 +180,11 @@
                 hours = (sec_num > noon ? hours - 12 : hours);
 
                 if (hours == 0) { hours = 12; }
-                if (minutes < 10) {minutes = "0"+minutes;}
-                if (seconds < 10 && seconds > 0) {seconds = "0"+seconds;}
+                if (minutes < 10) { minutes = "0" + minutes; }
+                if (seconds < 10 && seconds > 0) { seconds = "0" + seconds; }
                 let ampm = (sec_num < noon ? "AM" : "PM");
 
-                normal_time =  hours+':'+minutes+(seconds>0 ? ':'+seconds : '')+' '+ampm;
+                normal_time = hours + ':' + minutes + (seconds > 0 ? ':' + seconds : '') + ' ' + ampm;
             } else {
                 normal_time = sec_num + "s. after midnight";
             }

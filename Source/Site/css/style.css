@@ -63,3 +63,7 @@ div .checkbox-round + label {
 .checkbox-round:checked {
   background-color: #007BFF;
 }
+
+.bottom-nav-buttons {
+  margin-top: 15px;
+}
