@@ -94,7 +94,6 @@ private:
     void get_leds(REQUEST, RESPONSE);              // Gets all LEDs
     void get_led(REQUEST, RESPONSE);               // Gets an LED by ID
     void get_led_controller(REQUEST, RESPONSE);    // Gets an LED's controller
-    void put_led_controller(REQUEST, RESPONSE);    // Links an existing controller to an LED
     void post_leds(REQUEST, RESPONSE);             // Adds an LED
     void put_led(REQUEST, RESPONSE);               // Updates an LED
     void delete_led(REQUEST, RESPONSE);            // Deletes an LED
