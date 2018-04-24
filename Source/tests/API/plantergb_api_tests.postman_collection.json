@@ -68,14 +68,14 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "c5c4fe02-72e9-4458-bf71-e5da6a81e1c1",
+								"id": "9e17908a-d8d1-4670-b9f1-aba7a77bf772",
 								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"OkayStatus\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"EmptyBody\", function () {",
+									"pm.test(\"ResponseBody\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    ",
 									"    var expectedResponse = [",
@@ -285,14 +285,14 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "729c2aac-6e5d-48cf-99c1-e4f0824dcce3",
+								"id": "7dbfa045-1638-4286-b0cb-e79a311f8eb2",
 								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"NotFound\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"EmptyArray\", function () {",
+									"pm.test(\"ResponseBody\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    ",
 									"    var expectedResponse = [{\"name\":\"ZoneToAdd\", \"id\":1, \"days\": [0,0,0,0,0,0,0], \"leds\":[]}];",
@@ -1132,7 +1132,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "b767aef1-18c3-49f5-a42a-816937cbf000",
+								"id": "da466a4d-32a3-4ce3-a76b-d1dee3169922",
 								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"OkayStatus\", function () {",
@@ -1474,7 +1474,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "8a4f66d0-01cd-4e52-a564-ff81b84efd96",
+								"id": "15b03dfa-2862-44a5-96c4-e990f2b29b15",
 								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"OkayStatus\", function () {",
@@ -2221,6 +2221,965 @@
 							"        console.log(response.json());",
 							"    }",
 							"});"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "9355f07a-013c-487e-9f78-bbef39752ebc",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "daily_states",
+			"description": null,
+			"item": [
+				{
+					"name": "Get Daily States",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "18c59baa-1294-42ee-8830-95492985acdf",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a daily state",
+									"var req = {",
+									"  url: 'http://localhost:9080/daily_states/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify([{\"state\": 1, \"time\": 8000},{\"state\": 2, \"time\":12600},{\"state\": 0, \"time\": 86000}])",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "cc618c62-373a-46e0-9ad6-5792163502c5",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"ResponseBody\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedResponse = [",
+									"    {",
+									"        \"id\": 1,",
+									"        \"timeStateMap\": [",
+									"            {",
+									"                \"state\": 1,",
+									"                \"time\": 8000",
+									"            },",
+									"            {",
+									"                \"state\": 2,",
+									"                \"time\": 12600",
+									"            },",
+									"            {",
+									"                \"state\": 0,",
+									"                \"time\": 86000",
+									"            }",
+									"        ]",
+									"    }",
+									"];",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedResponse);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/daily_states",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"daily_states"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Empty Get Daily States",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "495f33fa-1965-4795-a5bd-fd04ca872bba",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"GoodStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"EmptyBody\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.eql([]);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "59b43467-c08b-4a08-b062-8c843d379ffc",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/daily_states",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"daily_states"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Daily State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "027c9a41-ca97-42c6-b3ab-a0e1c636579a",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"BodyID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedBody = {",
+									"        \"id\": 1,",
+									"        \"timeStateMap\": [",
+									"            {",
+									"                \"state\": 1,",
+									"                \"time\": 4",
+									"            }",
+									"        ]",
+									"    };",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "7394dd79-352c-47be-8c5f-a48671a730fc",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a daily state",
+									"var req = {",
+									"  url: 'http://localhost:9080/daily_states/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify([{\"state\": 1, \"time\": 4}])",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/daily_states/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"daily_states",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Empty Get Daily State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cd6e0fa8-d993-4fea-ae7d-a0ebef560aa0",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"NotFoundStatus\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"EmptyBody\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.eql([[\"daily_state\",7]]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/daily_states/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"daily_states",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Daily State LED States",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "db9789a0-b64c-4c5f-8671-4d3333e20ea1",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"NotFound\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"EmptyArray\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedResponse = [{\"state\":{\"b\":100,\"g\":200,\"id\":1,\"intensity\":50,\"power\":true,\"r\":255},\"time\":7400},{\"state\":{\"b\":0,\"g\":0,\"id\":0,\"intensity\":0,\"power\":false,\"r\":0},\"time\":15001}];",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedResponse);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "75cf0441-543f-435c-ad1a-c653f26baa92",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a daily state",
+									"var req = {",
+									"  url: 'http://localhost:9080/daily_states/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify([{\"state\": 1, \"time\": 7400},{\"state\": 0, \"time\": 15001}])",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/daily_states/1/led_states",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"daily_states",
+								"1",
+								"led_states"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Empty Get Daily State LED States",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b408b307-b473-4f5f-b753-75d7e5d1f064",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"NotFound\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"EmptyArray\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedResponse = [];",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedResponse);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f74e25da-37fa-4077-bc17-54776f11337c",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a daily state",
+									"var req = {",
+									"  url: 'http://localhost:9080/daily_states/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify([])",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/daily_states/1/led_states",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"daily_states",
+								"1",
+								"led_states"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Daily State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "618feef4-5e1c-4293-a0d3-e8e36f742e70",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"GoodStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"GetNewID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.eql({\"id\":1});",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e2c024c5-2b31-4859-af47-4cda79cf62e2",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t{\"state\": 1, \"time\": 20},\n\t{\"state\": 2, \"time\": 10}\n]"
+						},
+						"url": {
+							"raw": "http://localhost:9080/daily_states/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"daily_states",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Empty Post Daily State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "34a5c8f8-7caa-4a69-a661-bf26d43ffc4b",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"ServerError\", function () {",
+									"    pm.response.to.have.status(500);",
+									"});",
+									"",
+									"pm.test(\"SyntaxError\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"syntax error\");",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e2c024c5-2b31-4859-af47-4cda79cf62e2",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/daily_states/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"daily_states",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Daily State LED State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "db4d28a6-a256-4062-8b61-4fa1275fc291",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"GoodStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"GetNewID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.eql(null);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ec23fb7b-e67d-4d12-be78-e59eceb48c1e",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a daily state",
+									"var req = {",
+									"  url: 'http://localhost:9080/daily_states/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify([{\"state\": 2, \"time\":12200},{\"state\": 0, \"time\": 4076}])",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t{\"state\": 1, \"time\": 20}\n]"
+						},
+						"url": {
+							"raw": "http://localhost:9080/daily_states/1/led_states/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"daily_states",
+								"1",
+								"led_states",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Daily State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7f18bd7a-8625-4a6f-9471-d5a126f8670f",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Profile still exists",
+									"pm.test(\"DailyStateHasMoreLEDstates\", function () {",
+									"    var req = {",
+									"      url: 'http://localhost:9080/daily_states/1',",
+									"      method: 'GET',",
+									"      header: '',",
+									"      body: ''",
+									"    };",
+									"    ",
+									"    pm.sendRequest(req, function (err, response) {",
+									"        if (err) {",
+									"            console.log(response.json());",
+									"        }",
+									"        ",
+									"        var expectedResponse = {",
+									"            \"id\":1,",
+									"            \"timeStateMap\":[",
+									"                {\"state\":1,\"time\":20}",
+									"            ]",
+									"        };",
+									"        pm.expect(response.json()).to.eql(expectedResponse)",
+									"    });",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "64a53729-ef4e-4575-ab88-76596f97e8c7",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a daily state",
+									"var req = {",
+									"  url: 'http://localhost:9080/daily_states/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify([{\"state\": 2, \"time\":12200},{\"state\": 0, \"time\": 4076}])",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"state\":1, \"time\":20}]"
+						},
+						"url": {
+							"raw": "http://localhost:9080/daily_states/1/edit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"daily_states",
+								"1",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Daily State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6ab9be45-2adf-4a58-9ce9-ad9608180aaf",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"BodyID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedBody = null;",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "da23955e-5e03-43bb-8e25-4829bc4b628d",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a daily state",
+									"var req = {",
+									"  url: 'http://localhost:9080/daily_states/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify([{\"state\": 1, \"time\": 8000},{\"state\": 2, \"time\":12600},{\"state\": 0, \"time\": 86000}])",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/daily_states/1/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"daily_states",
+								"1",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Daily State LED State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e74732cb-8ff8-4ec3-ac74-f930f5d93ad1",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"BodyID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedBody = null;",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
+									"});",
+									"",
+									"pm.test(\"DailyStateOnly2LEDStates\", function () {",
+									"    var req = {",
+									"      url: 'http://localhost:9080/daily_states/1/led_states',",
+									"      method: 'GET',",
+									"      header: '',",
+									"      body: ''",
+									"    };",
+									"    ",
+									"    pm.sendRequest(req, function (err, response) {",
+									"        if (err) {",
+									"            console.log(response.json());",
+									"        }",
+									"        ",
+									"        var expectedBody = [",
+									"            {\"state\": {\"b\":1,\"g\":2,\"id\":2,\"intensity\":0,\"power\":false,\"r\":5}, \"time\": 12600},",
+									"            {\"state\": {\"b\":0,\"g\":0,\"id\":0,\"intensity\":0,\"power\":false,\"r\":0}, \"time\": 86000}",
+									"        ];",
+									"        ",
+									"        pm.expect(response.json()).to.eql(expectedBody)",
+									"    });",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "04ce2c83-8ebd-456c-a34f-72503c53fc35",
+								"type": "text/javascript",
+								"exec": [
+									"// Add a daily state",
+									"var req = {",
+									"  url: 'http://localhost:9080/daily_states/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify([{\"state\": 1, \"time\": 8000},{\"state\": 2, \"time\":12600},{\"state\": 0, \"time\": 86000}])",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/daily_states/1/led_states/8000/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"daily_states",
+								"1",
+								"led_states",
+								"8000",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "20b00bef-0ff4-42be-94b5-dc16cc78bee9",
+						"type": "text/javascript",
+						"exec": [
+							"// Clear all data before test",
+							"const deleteEverything = {",
+							"  url: 'http://localhost:9080/nuke_from_orbit',",
+							"  method: 'DELETE',",
+							"  header: '',",
+							"  body: ''",
+							"};",
+							"",
+							"pm.sendRequest(deleteEverything, function (err, response) {",
+							"    if (err) {",
+							"        console.log(response.json());",
+							"    }",
+							"});",
+							"",
+							"",
+							"setTimeout(function(){",
+							"    ",
+							"    // Add an LED state",
+							"    req = {",
+							"      url: 'http://localhost:9080/led_states/add',",
+							"      method: 'POST',",
+							"      header: '',",
+							"      body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify({",
+							"            r: 255,",
+							"            g: 200,",
+							"            b: 100,",
+							"            intensity: 50,",
+							"            power: true",
+							"          })",
+							"      }",
+							"    };",
+							"    ",
+							"    pm.sendRequest(req, function (err, response) {",
+							"        if (err) {",
+							"            console.log(response.json());",
+							"        }",
+							"    });",
+							"    ",
+							"    setTimeout(function(){",
+							"    ",
+							"        // Add an LED state",
+							"        req = {",
+							"          url: 'http://localhost:9080/led_states/add',",
+							"          method: 'POST',",
+							"          header: '',",
+							"          body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify({",
+							"                r: 5,",
+							"                g: 2,",
+							"                b: 1,",
+							"                intensity: 0,",
+							"                power: false",
+							"              })",
+							"          }",
+							"        };",
+							"        ",
+							"        pm.sendRequest(req, function (err, response) {",
+							"            if (err) {",
+							"                console.log(response.json());",
+							"            }",
+							"        });    ",
+							"    }, 2000);",
+							"}, 2000);",
+							""
 						]
 					}
 				},
