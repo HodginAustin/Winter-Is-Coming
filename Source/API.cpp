@@ -1415,7 +1415,12 @@ void API::get_daily_state_led_states(REQUEST, RESPONSE)
             unsigned int t = element.first;
             LEDState* s = element.second;
 
-            json s_j = *s;
+            json s_j;
+            if (s) {
+                s_j = *s;
+            } else {
+                s_j = *LEDState::off;
+            }
 
             json ts_j = json{
                 {"time", t},
