@@ -141,7 +141,7 @@ void API::setup_routes()
     Routes::Get(router, "leds/:id", Routes::bind(&API::get_led, this));
     Routes::Get(router, "leds/:id/controller", Routes::bind(&API::get_led_controller, this));
     Routes::Post(router, "leds/add", Routes::bind(&API::post_leds, this));
-    Routes::Patch(router, "leds/:id/edit", Routes::bind(&API::patch_led, this));
+    Routes::Put(router, "leds/:id/edit", Routes::bind(&API::put_led, this));
     Routes::Delete(router, "leds/delete", Routes::bind(&API::delete_led, this));
 
     // Controller routes
@@ -1040,7 +1040,7 @@ void API::post_leds(REQUEST, RESPONSE)
     // Send response
     response.send(code, j_out.dump());
 }
-void API::patch_led(REQUEST, RESPONSE)
+void API::put_led(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
