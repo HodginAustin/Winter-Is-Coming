@@ -7,9 +7,10 @@ LEDState* LEDState::off = new LEDState();
 
 // Constructor
 LEDState::LEDState() {
+    id = 0;
     r = g = b = intensity = power = 0;
 }
-LEDState::LEDState(const LEDState& ls)
+LEDState::LEDState(const LEDState& ls) : LEDState()
 {
     copy(ls);
 }

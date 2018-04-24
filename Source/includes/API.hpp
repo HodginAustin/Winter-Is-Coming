@@ -80,9 +80,10 @@ private:
     void get_zone(REQUEST, RESPONSE);              // Gets a zone by ID
     void get_zone_leds(REQUEST, RESPONSE);         // Gets a zone's LEDs
     void get_zone_active_led_state(REQUEST, RESPONSE); // Gets the currently active LEDState based on the system time
-    void put_zone_led(REQUEST, RESPONSE);          // Links a list of existing LEDs to a zone
-                                                        // IN: list of LED IDs [1,4,9,40]
-                                                        // OUT: list of things that were not found, or nothing on success
+    void patch_zone(REQUEST, RESPONSE);                // Updates a zone
+    void put_zone_leds(REQUEST, RESPONSE);             // Links a list of existing LEDs to a zone
+                                                           // IN: list of LED IDs [1,4,9,40]
+                                                           // OUT: list of things that were not found, or nothing on success
     void patch_zone_daily_state(REQUEST, RESPONSE);    // Links an existing dailyState to a zone by day of week
     void put_zone_daily_state(REQUEST, RESPONSE);      // Links an existing list of dailystates to a zone, must be given a list with 7 numbers ex: [0,0,1,1,2,4,0]
     void delete_zone_led(REQUEST, RESPONSE);           // Unlinks an existing LED from a zone
@@ -93,9 +94,8 @@ private:
     void get_leds(REQUEST, RESPONSE);              // Gets all LEDs
     void get_led(REQUEST, RESPONSE);               // Gets an LED by ID
     void get_led_controller(REQUEST, RESPONSE);    // Gets an LED's controller
-    void put_led_controller(REQUEST, RESPONSE);    // Links an existing controller to an LED
-    void post_led(REQUEST, RESPONSE);              // Adds an LED
-    void patch_led(REQUEST, RESPONSE);             // Updates an LED
+    void post_leds(REQUEST, RESPONSE);             // Adds an LED
+    void put_led(REQUEST, RESPONSE);               // Updates an LED
     void delete_led(REQUEST, RESPONSE);            // Deletes an LED
     void delete_led_controller(REQUEST, RESPONSE); // Unlinks an existing controller from an LED
 
@@ -120,9 +120,9 @@ private:
     void put_daily_state_led_state(REQUEST, RESPONSE);    // Links an existing LEDState to a dailyState
                                                                 // IN: list of objects containing time and state [{"time":8000,"state":5},{"time":23003,"state":1}]
                                                                 // OUT: list of things that were not found, or nothing on success
-    void post_daily_state(REQUEST, RESPONSE);      // Adds a daily state
-    void patch_daily_state(REQUEST, RESPONSE);     // Updates a daily state
-    void delete_daily_state(REQUEST, RESPONSE);    // Deletes a daily state
+    void post_daily_state(REQUEST, RESPONSE);             // Adds a daily state
+    void put_daily_state(REQUEST, RESPONSE);              // Updates a daily state
+    void delete_daily_state(REQUEST, RESPONSE);           // Deletes a daily state
     void delete_daily_state_led_state(REQUEST, RESPONSE); // Unlinks an existing LEDState from a dailyState
 };
 

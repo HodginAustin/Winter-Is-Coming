@@ -1,3 +1,7 @@
+/* PlanteRGB API
+ * Written by Zach Lerew
+ */
+
 #include <map>
 #include <ctime>
 #include <cstdlib>
@@ -119,7 +123,8 @@ void API::setup_routes()
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id", Routes::bind(&API::get_zone, this));
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/leds", Routes::bind(&API::get_zone_leds, this));
     Routes::Get(router, "profiles/:profile_id/zones/:zone_id/active_state", Routes::bind(&API::get_zone_active_led_state, this));
-    Routes::Put(router, "profiles/:profile_id/zones/:zone_id/leds/add", Routes::bind(&API::put_zone_led, this));
+    Routes::Put(router, "profiles/:profile_id/zones/:zone_id/leds/add", Routes::bind(&API::put_zone_leds, this));
+    Routes::Patch(router, "profiles/:profile_id/zones/:zone_id/edit", Routes::bind(&API::patch_zone, this));
     Routes::Patch(router, "profiles/:profile_id/zones/:zone_id/day/:day_of_week/add/:daily_state_id",
                 Routes::bind(&API::patch_zone_daily_state, this));
     Routes::Put(router, "profiles/:profile_id/zones/:zone_id/days/add",
@@ -135,8 +140,8 @@ void API::setup_routes()
     Routes::Get(router, "leds", Routes::bind(&API::get_leds, this));
     Routes::Get(router, "leds/:id", Routes::bind(&API::get_led, this));
     Routes::Get(router, "leds/:id/controller", Routes::bind(&API::get_led_controller, this));
-    Routes::Post(router, "leds/add", Routes::bind(&API::post_led, this));
-    Routes::Patch(router, "leds/:id/edit", Routes::bind(&API::patch_led, this));
+    Routes::Post(router, "leds/add", Routes::bind(&API::post_leds, this));
+    Routes::Put(router, "leds/:id/edit", Routes::bind(&API::put_led, this));
     Routes::Delete(router, "leds/delete", Routes::bind(&API::delete_led, this));
 
     // Controller routes
@@ -160,7 +165,7 @@ void API::setup_routes()
     Routes::Put(router, "daily_states/:daily_state_id/led_states/add",
                 Routes::bind(&API::put_daily_state_led_state, this));
     Routes::Post(router, "daily_states/add", Routes::bind(&API::post_daily_state, this));
-    Routes::Patch(router, "daily_states/:id/edit", Routes::bind(&API::patch_daily_state, this));
+    Routes::Put(router, "daily_states/:id/edit", Routes::bind(&API::put_daily_state, this));
     Routes::Delete(router, "daily_states/:id/delete", Routes::bind(&API::delete_daily_state, this));
     Routes::Delete(router, "daily_states/:daily_state_id/led_states/:time_of_day/delete",
                 Routes::bind(&API::delete_daily_state_led_state, this));
@@ -564,8 +569,8 @@ void API::get_zone(REQUEST, RESPONSE)
         if (zone) {
             j_out = *zone;         
             code = Http::Code::Ok;
-        }
-    }
+        } else { j_out.push_back(json{"zone", zone_id}); }
+    } else { j_out.push_back(json{"profile", profile_id}); }
 
     // Send response
     response.send(code, j_out.dump());
@@ -593,8 +598,8 @@ void API::get_zone_leds(REQUEST, RESPONSE)
                 j_out.push_back(j);
             }
             code = Http::Code::Ok;
-        }
-    }
+        } else { j_out.push_back(json{"zone", zone_id}); }
+    } else { j_out.push_back(json{"profile", profile_id}); }
 
     // Send response
     response.send(code, j_out.dump());
@@ -630,7 +635,42 @@ void API::get_zone_active_led_state(REQUEST, RESPONSE)
     // Send response
     response.send(code, j_out.dump());
 }
-void API::put_zone_led(REQUEST, RESPONSE)
+void API::patch_zone(REQUEST, RESPONSE)
+{
+     // Log request
+    log_req(request);
+    
+    // Parameters
+    auto profile_id = request.param(":profile_id").as<unsigned int>();
+    auto zone_id = request.param(":zone_id").as<unsigned int>();
+
+    // Decode JSON
+    json j_in = json::parse(request.body());
+
+    // Data
+    Zone z = j_in;
+    Profile* profile = InternalState::get_profile(profile_id);
+    Http::Code code = Http::Code::Not_Found;
+    json j_out;
+
+    if (profile) {
+        Zone* zone = profile->get_zone(zone_id);
+        if (zone) {
+            // Update zone
+            zone->copy(z);
+        
+            // Update profile in DB
+            DataParser::update(zone);
+
+            j_out = *zone;
+            code = Http::Code::Ok;
+        } else { j_out.push_back(json{"zone", zone_id}); }
+    } else { j_out.push_back(json{"profile", profile_id}); }
+
+    // Send response
+    response.send(code, j_out.dump());
+}
+void API::put_zone_leds(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
@@ -766,7 +806,7 @@ void API::put_zone_daily_state(REQUEST, RESPONSE)
                     DataParser::insert(dow);
                     
                     // Daily state found
-                    if (ds && daily_state_id != 0) {
+                    if (ds || daily_state_id == 0) {
                         code = Http::Code::Ok;
                     } else { j_out.push_back(json{"daily_state", daily_state_id}); }
                 }
@@ -924,7 +964,7 @@ void API::get_led(REQUEST, RESPONSE)
     if (led) {
         j_out = *led;
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"led", id}); }
     
     // Send response
     response.send(code, j_out.dump());
@@ -948,13 +988,25 @@ void API::get_led_controller(REQUEST, RESPONSE)
         if (controller) {
             j_out = *controller;
             code = Http::Code::Ok;
-        }
-    }
+        } else { j_out.push_back(json{"controller", led->get_controller_id()}); }
+    } else { j_out.push_back(json{"led", id}); }
     
     // Send response
     response.send(code, j_out.dump());
 }
-void API::post_led(REQUEST, RESPONSE)
+
+unsigned int add_led(LED l) {
+    LED* led = new LED(l);
+    led->set_controller(InternalState::get_controller(l.get_controller_id()));
+
+    InternalState::add_led(led);
+
+    DataParser::insert(led);
+    
+    return led->get_id();
+}
+
+void API::post_leds(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
@@ -968,28 +1020,27 @@ void API::post_led(REQUEST, RESPONSE)
     Http::Code code = Http::Code::Not_Found;
 
     // Data
-    for (auto json_led : j_in) {
-        LED l = json_led;
+    if (j_in.type() == json::value_t::array) {
+        for (auto json_led : j_in) {
+            LED l = json_led;
 
-        // Validation
-        if (l.get_controller()) {
-            LED* led = new LED(l);
-            led->set_controller(InternalState::get_controller(l.get_controller_id()));
+            // Validation
+            if (l.get_controller()) {
+                j_out["id"].push_back(add_led(l));
 
-            InternalState::add_led(led);
-
-            DataParser::insert(led);
-            
-            j_out["id"].push_back(led->get_id());
-
-            code = Http::Code::Ok;
-        } else { j_out.push_back(json{"controller", j_in["controller"]}); }
-    }  
+                code = Http::Code::Ok;
+            } else { j_out.push_back(json{"controller", j_in["controller"]}); }
+        }
+    } else {
+        LED l = j_in;
+        j_out["id"].push_back(add_led(l));
+        code = Http::Code::Ok;
+    }
 
     // Send response
     response.send(code, j_out.dump());
 }
-void API::patch_led(REQUEST, RESPONSE)
+void API::put_led(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);
@@ -1016,7 +1067,7 @@ void API::patch_led(REQUEST, RESPONSE)
 
         j_out = *led;
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"led", id}); }
 
     // Send response
     response.send(code, j_out.dump());
@@ -1092,7 +1143,7 @@ void API::get_controller(REQUEST, RESPONSE)
     if (controller) {
         j_out = *controller;
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"controller", id}); }
     
     // Send response
     response.send(code, j_out.dump());
@@ -1150,7 +1201,7 @@ void API::patch_controller(REQUEST, RESPONSE)
 
         j_out = *controller;
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"controller", id}); }
 
     // Send response
     response.send(code, j_out.dump());
@@ -1224,7 +1275,7 @@ void API::get_led_state(REQUEST, RESPONSE)
     if (ledState) {
         j_out = *ledState;
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"led_state", id}); }
     
     // Send response
     response.send(code, j_out.dump());
@@ -1276,7 +1327,7 @@ void API::patch_led_state(REQUEST, RESPONSE)
 
         j_out = *ledState;
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"led_state", id}); }
 
     // Send response
     response.send(code, j_out.dump());
@@ -1375,7 +1426,12 @@ void API::get_daily_state_led_states(REQUEST, RESPONSE)
             unsigned int t = element.first;
             LEDState* s = element.second;
 
-            json s_j = *s;
+            json s_j;
+            if (s) {
+                s_j = *s;
+            } else {
+                s_j = *LEDState::off;
+            }
 
             json ts_j = json{
                 {"time", t},
@@ -1484,7 +1540,7 @@ void API::post_daily_state(REQUEST, RESPONSE)
     // Send response
     response.send(code, j_out.dump());
 }
-void API::patch_daily_state(REQUEST, RESPONSE)
+void API::put_daily_state(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);

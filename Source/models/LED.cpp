@@ -5,12 +5,13 @@
 
 // Constructor
 LED::LED() {
+    id = 0;
     strip_idx = 0;
     controller = 0;
     controller_id = 0;
 }
 
-LED::LED(const LED& l)
+LED::LED(const LED& l) : LED()
 {
     copy(l);
 }

@@ -18,7 +18,7 @@
 #include "./relationships.hpp"
 #include "./Setting.hpp"
 
-#include "./sqlite_orm.hpp"
+#include "./sqlite_orm.h"
 
 using namespace sqlite_orm;
 

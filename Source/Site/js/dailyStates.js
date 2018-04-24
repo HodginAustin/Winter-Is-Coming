@@ -101,7 +101,7 @@ module.exports = function () {
     /* Update */
     router.post('/edit', function (req, res) {
         let id = req.body.id;
-        console.log("PATCH dailyState " + id);
+        console.log("PUT dailyState " + id);
 
         // Build JSON for control service
         let j = {};
@@ -113,7 +113,7 @@ module.exports = function () {
 
         // Patch control service
         var options = {
-            method: "PATCH",
+            method: "PUT",
             uri: conn.url + conn.port + "/" + conn.dailyStates + "/" + id + "/edit",
             json: j
         };

@@ -8,7 +8,7 @@ Controller::Controller() {
     details = "";
 }
 
-Controller::Controller(const Controller& c)
+Controller::Controller(const Controller& c) : Controller()
 {
     copy(c);
 }
