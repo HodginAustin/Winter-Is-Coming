@@ -521,7 +521,7 @@ def configure_daily_state(url, header):
                         j.append({"time": seconds_From_Midnight, "state": int(state)})
                         loopCount += 1
 
-                    r = requests.patch(url + "/daily_states/%s/edit" %D_State, json=j, headers=header, timeout=REQUEST_TIMEOUT)
+                    r = requests.put(url + "/daily_states/%s/edit" %D_State, json=j, headers=header, timeout=REQUEST_TIMEOUT)
                     print_request(r)
         if option == "3":
             subprocess.call("clear", shell = True)

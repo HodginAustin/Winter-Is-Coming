@@ -165,7 +165,7 @@ void API::setup_routes()
     Routes::Put(router, "daily_states/:daily_state_id/led_states/add",
                 Routes::bind(&API::put_daily_state_led_state, this));
     Routes::Post(router, "daily_states/add", Routes::bind(&API::post_daily_state, this));
-    Routes::Patch(router, "daily_states/:id/edit", Routes::bind(&API::patch_daily_state, this));
+    Routes::Put(router, "daily_states/:id/edit", Routes::bind(&API::put_daily_state, this));
     Routes::Delete(router, "daily_states/:id/delete", Routes::bind(&API::delete_daily_state, this));
     Routes::Delete(router, "daily_states/:daily_state_id/led_states/:time_of_day/delete",
                 Routes::bind(&API::delete_daily_state_led_state, this));
@@ -1529,7 +1529,7 @@ void API::post_daily_state(REQUEST, RESPONSE)
     // Send response
     response.send(code, j_out.dump());
 }
-void API::patch_daily_state(REQUEST, RESPONSE)
+void API::put_daily_state(REQUEST, RESPONSE)
 {
     // Log request
     log_req(request);

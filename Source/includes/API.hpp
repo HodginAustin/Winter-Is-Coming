@@ -122,7 +122,7 @@ private:
                                                                 // IN: list of objects containing time and state [{"time":8000,"state":5},{"time":23003,"state":1}]
                                                                 // OUT: list of things that were not found, or nothing on success
     void post_daily_state(REQUEST, RESPONSE);             // Adds a daily state
-    void patch_daily_state(REQUEST, RESPONSE);            // Updates a daily state
+    void put_daily_state(REQUEST, RESPONSE);              // Updates a daily state
     void delete_daily_state(REQUEST, RESPONSE);           // Deletes a daily state
     void delete_daily_state_led_state(REQUEST, RESPONSE); // Unlinks an existing LEDState from a dailyState
 };
