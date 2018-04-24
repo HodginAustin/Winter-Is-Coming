@@ -2237,6 +2237,760 @@
 			]
 		},
 		{
+			"name": "leds",
+			"description": null,
+			"item": [
+				{
+					"name": "Get LEDs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "468a8a26-9c47-4419-adb6-1280bcca683e",
+								"type": "text/javascript",
+								"exec": [
+									"// Add an led",
+									"var req = {",
+									"  url: 'http://localhost:9080/leds/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify([{",
+									"        \"strip_idx\": 12,",
+									"        \"controller\": 1",
+									"      }])",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									"",
+									"",
+									"setTimeout(function(){",
+									"    ",
+									"    // Add a second led",
+									"    req = {",
+									"      url: 'http://localhost:9080/leds/add',",
+									"      method: 'POST',",
+									"      header: '',",
+									"      body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            strip_idx: 14,",
+									"            controller: 1",
+									"          })",
+									"      }",
+									"    };",
+									"    ",
+									"    pm.sendRequest(req, function (err, response) {",
+									"        if (err) {",
+									"            console.log(response.json());",
+									"        }",
+									"    });    ",
+									"}, 2000);",
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "6a9b4d09-5edf-4795-a547-01b2f1abfc17",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"ResponseBody\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedResponse = [",
+									"        {",
+									"            \"controller\": 1,",
+									"            \"id\": 1,",
+									"            \"strip_idx\": 12",
+									"        },",
+									"        {",
+									"            \"controller\": 1,",
+									"            \"id\": 2,",
+									"            \"strip_idx\": 14",
+									"        }",
+									"    ];",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedResponse);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/leds",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"leds"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Empty Get LEDs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "495f33fa-1965-4795-a5bd-fd04ca872bba",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"GoodStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"EmptyBody\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.eql([]);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "59b43467-c08b-4a08-b062-8c843d379ffc",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/leds",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"leds"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get LED",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e786a8f4-90a3-4d11-bfc3-bfccb4d90c6e",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"BodyID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedBody = {\"controller\": 1, \"id\": 1, \"strip_idx\": 12};",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "91a3a4e8-e747-4737-bacd-1ca62a1eade2",
+								"type": "text/javascript",
+								"exec": [
+									"// Add an led",
+									"var req = {",
+									"  url: 'http://localhost:9080/leds/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify([{",
+									"        \"strip_idx\": 12,",
+									"        \"controller\": 1",
+									"      }])",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									"",
+									"",
+									"setTimeout(function(){",
+									"    ",
+									"    // Add a second led",
+									"    req = {",
+									"      url: 'http://localhost:9080/leds/add',",
+									"      method: 'POST',",
+									"      header: '',",
+									"      body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            strip_idx: 14,",
+									"            controller: 1",
+									"          })",
+									"      }",
+									"    };",
+									"    ",
+									"    pm.sendRequest(req, function (err, response) {",
+									"        if (err) {",
+									"            console.log(response.json());",
+									"        }",
+									"    });    ",
+									"}, 2000);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/leds/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"leds",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Empty Get LED",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "64cd9f70-2ca3-4f49-ba30-d10944382308",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"NotFoundStatus\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"EmptyBody\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.eql([[\"led\",7]]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/leds/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"leds",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post LED",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ed3e2493-f310-40f1-a072-f6b97b159746",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"GoodStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"GetNewID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.eql({\"id\":[1]});",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e2c024c5-2b31-4859-af47-4cda79cf62e2",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"strip_idx\": 0,\n\t\"controller\": 2\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9080/leds/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"leds",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post LEDs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fd0375b7-2a5d-46d8-8b1b-b0648c656423",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"GoodStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"GetNewID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.eql({\"id\":[1,2]});",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e2c024c5-2b31-4859-af47-4cda79cf62e2",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t{\n\t\t\"strip_idx\": 50,\n\t\t\"controller\": 1\n\t},\n\t{\n\t\t\"strip_idx\": 0,\n\t\t\"controller\": 2\n\t}\n]"
+						},
+						"url": {
+							"raw": "http://localhost:9080/leds/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"leds",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Empty Post LED",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "34a5c8f8-7caa-4a69-a661-bf26d43ffc4b",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"ServerError\", function () {",
+									"    pm.response.to.have.status(500);",
+									"});",
+									"",
+									"pm.test(\"SyntaxError\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"syntax error\");",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e2c024c5-2b31-4859-af47-4cda79cf62e2",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:9080/leds/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"leds",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put LED",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6d52ed2c-92a4-47cb-936b-530efac226a5",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"BodyID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedBody = {\"id\":1, \"strip_idx\":13, \"controller\":1};",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "de9791c4-8e07-489c-b572-9e032c7c3bfb",
+								"type": "text/javascript",
+								"exec": [
+									"// Add an led",
+									"var req = {",
+									"  url: 'http://localhost:9080/leds/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify([{",
+									"        \"strip_idx\": 12,",
+									"        \"controller\": 1",
+									"      }])",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"strip_idx\":13,\n\t\"controller\":1\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9080/leds/1/edit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"leds",
+								"1",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete LED",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6ab9be45-2adf-4a58-9ce9-ad9608180aaf",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"OkayStatus\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"BodyID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var expectedBody = null;",
+									"    ",
+									"    pm.expect(jsonData).to.eql(expectedBody);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d68e165f-f122-4188-b467-4101ecdaf0fa",
+								"type": "text/javascript",
+								"exec": [
+									"// Add an led",
+									"var req = {",
+									"  url: 'http://localhost:9080/leds/add',",
+									"  method: 'POST',",
+									"  header: '',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify([{",
+									"        \"strip_idx\": 12,",
+									"        \"controller\": 1",
+									"      }])",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(req, function (err, response) {",
+									"    if (err) {",
+									"        console.log(response.json());",
+									"    }",
+									"});",
+									"",
+									"",
+									"setTimeout(function(){",
+									"    ",
+									"    // Add a second led",
+									"    req = {",
+									"      url: 'http://localhost:9080/leds/add',",
+									"      method: 'POST',",
+									"      header: '',",
+									"      body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            strip_idx: 14,",
+									"            controller: 1",
+									"          })",
+									"      }",
+									"    };",
+									"    ",
+									"    pm.sendRequest(req, function (err, response) {",
+									"        if (err) {",
+									"            console.log(response.json());",
+									"        }",
+									"    });    ",
+									"}, 2000);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[2]"
+						},
+						"url": {
+							"raw": "http://localhost:9080/leds/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9080",
+							"path": [
+								"leds",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "20b00bef-0ff4-42be-94b5-dc16cc78bee9",
+						"type": "text/javascript",
+						"exec": [
+							"// Clear all data before test",
+							"const deleteEverything = {",
+							"  url: 'http://localhost:9080/nuke_from_orbit',",
+							"  method: 'DELETE',",
+							"  header: '',",
+							"  body: ''",
+							"};",
+							"",
+							"pm.sendRequest(deleteEverything, function (err, response) {",
+							"    if (err) {",
+							"        console.log(response.json());",
+							"    }",
+							"});",
+							"",
+							"",
+							"",
+							"",
+							"setTimeout(function(){",
+							"    ",
+							"    // Add a controller",
+							"    req = {",
+							"      url: 'http://localhost:9080/controllers/add',",
+							"      method: 'POST',",
+							"      header: '',",
+							"      body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify({",
+							"            address: \"\",",
+							"            details: \"\",",
+							"            io: 1",
+							"          })",
+							"      }",
+							"    };",
+							"    ",
+							"    pm.sendRequest(req, function (err, response) {",
+							"        if (err) {",
+							"            console.log(response.json());",
+							"        }",
+							"    });",
+							"    ",
+							"    setTimeout(function(){",
+							"    ",
+							"        // Add a second controller",
+							"        req = {",
+							"            url: 'http://localhost:9080/controllers/add',",
+							"            method: 'POST',",
+							"            header: '',",
+							"            body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify({",
+							"                address: \"\",",
+							"                details: \"\",",
+							"                io: 2",
+							"              })",
+							"          }",
+							"        };",
+							"        ",
+							"            ",
+							"        pm.sendRequest(req, function (err, response) {",
+							"            if (err) {",
+							"                console.log(response.json());",
+							"            }",
+							"        });",
+							"    }, 2000);",
+							"}, 2000);",
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "9355f07a-013c-487e-9f78-bbef39752ebc",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
 			"name": "daily_states",
 			"description": null,
 			"item": [
