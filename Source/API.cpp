@@ -964,7 +964,7 @@ void API::get_led(REQUEST, RESPONSE)
     if (led) {
         j_out = *led;
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"led", id}); }
     
     // Send response
     response.send(code, j_out.dump());
@@ -988,8 +988,8 @@ void API::get_led_controller(REQUEST, RESPONSE)
         if (controller) {
             j_out = *controller;
             code = Http::Code::Ok;
-        }
-    }
+        } else { j_out.push_back(json{"controller", led->get_controller_id()}); }
+    } else { j_out.push_back(json{"led", id}); }
     
     // Send response
     response.send(code, j_out.dump());
@@ -1067,7 +1067,7 @@ void API::patch_led(REQUEST, RESPONSE)
 
         j_out = *led;
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"led", id}); }
 
     // Send response
     response.send(code, j_out.dump());
@@ -1143,7 +1143,7 @@ void API::get_controller(REQUEST, RESPONSE)
     if (controller) {
         j_out = *controller;
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"controller", id}); }
     
     // Send response
     response.send(code, j_out.dump());
@@ -1201,7 +1201,7 @@ void API::patch_controller(REQUEST, RESPONSE)
 
         j_out = *controller;
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"controller", id}); }
 
     // Send response
     response.send(code, j_out.dump());
@@ -1275,7 +1275,7 @@ void API::get_led_state(REQUEST, RESPONSE)
     if (ledState) {
         j_out = *ledState;
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"led_state", id}); }
     
     // Send response
     response.send(code, j_out.dump());
@@ -1327,7 +1327,7 @@ void API::patch_led_state(REQUEST, RESPONSE)
 
         j_out = *ledState;
         code = Http::Code::Ok;
-    }
+    } else { j_out.push_back(json{"led_state", id}); }
 
     // Send response
     response.send(code, j_out.dump());
