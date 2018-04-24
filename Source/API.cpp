@@ -994,6 +994,18 @@ void API::get_led_controller(REQUEST, RESPONSE)
     // Send response
     response.send(code, j_out.dump());
 }
+
+unsigned int add_led(LED l) {
+    LED* led = new LED(l);
+    led->set_controller(InternalState::get_controller(l.get_controller_id()));
+
+    InternalState::add_led(led);
+
+    DataParser::insert(led);
+    
+    return led->get_id();
+}
+
 void API::post_leds(REQUEST, RESPONSE)
 {
     // Log request
@@ -1008,23 +1020,22 @@ void API::post_leds(REQUEST, RESPONSE)
     Http::Code code = Http::Code::Not_Found;
 
     // Data
-    for (auto json_led : j_in) {
-        LED l = json_led;
+    if (j_in.type() == json::value_t::array) {
+        for (auto json_led : j_in) {
+            LED l = json_led;
 
-        // Validation
-        if (l.get_controller()) {
-            LED* led = new LED(l);
-            led->set_controller(InternalState::get_controller(l.get_controller_id()));
+            // Validation
+            if (l.get_controller()) {
+                j_out["id"].push_back(add_led(l));
 
-            InternalState::add_led(led);
-
-            DataParser::insert(led);
-            
-            j_out["id"].push_back(led->get_id());
-
-            code = Http::Code::Ok;
-        } else { j_out.push_back(json{"controller", j_in["controller"]}); }
-    }  
+                code = Http::Code::Ok;
+            } else { j_out.push_back(json{"controller", j_in["controller"]}); }
+        }
+    } else {
+        LED l = j_in;
+        j_out["id"].push_back(add_led(l));
+        code = Http::Code::Ok;
+    }
 
     // Send response
     response.send(code, j_out.dump());
