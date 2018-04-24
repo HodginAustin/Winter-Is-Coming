@@ -55,9 +55,7 @@
                                         <div class="d-flex flex-wrap" id="leds">
                                             {{#each LEDs}}
                                             <!-- Hidden element for LED ID -->
-                                            <input type="number" name="ledIds" value="{{ id }}" hidden>
-
-                                            <a class="btn text-white badge badge-info" style="margin:2px;">{{strip_idx}}</a>
+                                            <a class="btn text-white badge badge-info" style="margin:2px;">ID: {{id}}, Index: {{strip_idx}}</a>
                                             {{/each}}
                                         </div>
                                         </br>
@@ -130,10 +128,26 @@
                         </div>
                     </form>
                 </div>
+
             </div>
+
         </div>
+
+
     </div>
+
+    <!-- Previous and next buttons -->
+    <span class="float-left bottom-nav-buttons">
+        <a href="/plant" class="btn btn-outline-info">Previous Section</a>
+    </span>
+    <span class="float-right bottom-nav-buttons">
+        <a href="/ledStates" class="btn btn-outline-info">Next Section</a>
+    </span>
 </div>
+
+
+
+
 
 <script>
     $(document).ready(function () {

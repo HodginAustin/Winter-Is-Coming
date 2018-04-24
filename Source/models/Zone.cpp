@@ -1,6 +1,7 @@
 #include <algorithm>
 
 #include "../includes/Zone.hpp"
+#include "../includes/InternalState.hpp"
 
 
 // Constructor
@@ -185,12 +186,18 @@ void to_json(json& j, const Zone& z) {
         if (day) { days_j.push_back(day->get_id()); }
         else { days_j.push_back(0); }
     }
-        
+    
+    // Get Active State
+    json active_j = json::object();
+    LEDState* as = z.get_active_state(InternalState::get_time(), InternalState::get_day());
+    if (as) { active_j = *as; }
+    
     j = json{
         {"id", z.get_id()},
         {"name", z.get_name()},
         {"days", days_j},
-        {"leds", leds_j}
+        {"leds", leds_j},
+        {"active_state", active_j}
     };
 }
 

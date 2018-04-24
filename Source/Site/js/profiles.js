@@ -2,15 +2,15 @@
 * profiles.js - Travis Hodgin, Zach Lerew
 * gets all profiles, current profile, create profile
 ******************************************************/
-
 module.exports = function () {
     var express = require('express');
     var router = express.Router();
     const http = require("http");
 
-    /* profile zones */
+    /* Profile Zones */
     let zones = require('./global/zones.js');
     let curr = require('./global/currentProfile.js');
+
     /* Connection settings */
     let conn = require('./global/connection.js');
 
@@ -38,9 +38,8 @@ module.exports = function () {
                 complete();
             });
         });
-    }
-
-
+      }
+    
     router.get('/', function (req, res) {
         var callbackCount = 0;
         var context = req.context;
@@ -56,13 +55,11 @@ module.exports = function () {
         }
     });
 
-
     router.post('/add', function (req, res) {
         console.log("POST ADD PROFILE");
         let j = {};
         j['name'] = req.body.name;
         j['description'] = req.body.description;
-
         var options = {
             method: "POST",
             uri: conn.url + conn.port + "/" + conn.profiles + "/add",
@@ -217,12 +214,14 @@ module.exports = function () {
 
     router.get('/:id', function (req, res) {
         callbackCount = 0;
-        var context = {};
+        var context =req.context;
+
         getProfile(res, context, req.params.id, complete);
         curr.get(res, context, complete);
         zones.get(res, context, req.params.id, complete);
         leds.get(res, context, complete);
-        dailyStates.get(res, context, complete)
+        dailyStates.get(res, context, complete);
+
         function complete() {
             callbackCount++;
             if (callbackCount >= 5) {

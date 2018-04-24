@@ -35,8 +35,8 @@
 }
 
 .checkbox-round {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   background-color: white;
   border-radius: 50%;
   vertical-align: middle;
@@ -53,12 +53,18 @@
 
 div .checkbox-round + label {
   position: absolute;
-  top: 25%;
+  top: 28%;
   left: 50%;
   transform: translateX(-50%);
   user-select: none;
+  cursor: pointer;
+  pointer-events: none;
 }
 
 .checkbox-round:checked {
   background-color: #007BFF;
+}
+
+.bottom-nav-buttons {
+  margin-top: 15px;
 }

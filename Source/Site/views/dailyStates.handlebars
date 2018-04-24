@@ -68,9 +68,9 @@
                                                 <!-- State -->
                                                 <td>
                                                     {{#if state}}
-                                                    <a class="btn text-white badge badge-secondary">ID:{{ state }}</a>
+                                                    {{{getLEDStateFromID state ../../../LEDStates}}}
                                                     {{else}}
-                                                    <a class="btn text-white badge badge-secondary">None</a>
+                                                    <a class="text-white badge badge-secondary">None</a>
                                                     {{/if}}
                                                 </td>
 
@@ -145,6 +145,14 @@
             </div>
         </div>
     </div>
+
+    <!-- Previous and next buttons -->
+    <span class="float-left bottom-nav-buttons">
+        <a href="/ledStates" class="btn btn-outline-info">Previous Section</a>
+    </span>
+    <span class="float-right bottom-nav-buttons">
+        <a href="/profiles" class="btn btn-outline-info">Next Section</a>
+    </span>
 </div>
 
 <script>
@@ -164,7 +172,7 @@
             let sec_num = parseInt($(this).text(), 10);
 
             if (sec_num >= 0 && sec_num <= last_second) {
-                var hours   = Math.floor(sec_num / 3600);
+                var hours = Math.floor(sec_num / 3600);
                 var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
                 var seconds = sec_num - (hours * 3600) - (minutes * 60);
 
@@ -172,11 +180,11 @@
                 hours = (sec_num > noon ? hours - 12 : hours);
 
                 if (hours == 0) { hours = 12; }
-                if (minutes < 10) {minutes = "0"+minutes;}
-                if (seconds < 10 && seconds > 0) {seconds = "0"+seconds;}
+                if (minutes < 10) { minutes = "0" + minutes; }
+                if (seconds < 10 && seconds > 0) { seconds = "0" + seconds; }
                 let ampm = (sec_num < noon ? "AM" : "PM");
-                
-                normal_time =  hours+':'+minutes+(seconds>0 ? ':'+seconds : '')+' '+ampm;
+
+                normal_time = hours + ':' + minutes + (seconds > 0 ? ':' + seconds : '') + ' ' + ampm;
             } else {
                 normal_time = sec_num + "s. after midnight";
             }
@@ -186,14 +194,16 @@
     };
 
     function sortTable(table, order) {
-        var asc = order === 'asc',
-            tbody = table.find('tbody');
+        var asc = order === 'asc', tbody = table.find('tbody');
 
         tbody.find('tr').sort(function (a, b) {
+            ae = parseInt($('td:first', a)[0].innerHTML);
+            be = parseInt($('td:first', b)[0].innerHTML);
+            
             if (asc) {
-                return $('td:first', a).text().localeCompare($('td:first', b).text());
+                return ae - be;
             } else {
-                return $('td:first', b).text().localeCompare($('td:first', a).text());
+                return be - ae;
             }
         }).appendTo(tbody);
     }
