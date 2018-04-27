@@ -5,7 +5,6 @@ const path = require("path"); /* allows use of path.join for folder paths */
 const http = require('http'); /* make internal requests to control service */
 
 var app = express();
-
 /* Current profile for navbar */
 let currentProfile = require('./js/global/currentProfile.js');
 

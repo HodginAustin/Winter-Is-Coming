@@ -6,12 +6,12 @@ var express = require('express');
 var supertest = require('supertest');
 var cheerio = require('cheerio');
 
-describe("Profiles", function(){
+describe("Settings", function(){
   var request = supertest('http://localhost:8080');
 
   it('should render profiles page', function(done){
     var should = require('should');
-    request.get('/profiles')
+    request.get('/settings')
     .expect(200).end(function(err, res){
       done();
     });
