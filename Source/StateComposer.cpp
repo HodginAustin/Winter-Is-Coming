@@ -248,7 +248,7 @@ void StateComposer::compose()
             }
             else {
                 if (logFile.is_open()) 
-                    logFile << "Zone state has changed, updating..." << std::endl;
+                    logFile << "Zone state has changed, updating...\n" << std::flush;
                 delete previousLEDStates[currentZone->get_id()];
             }
         }
@@ -272,8 +272,8 @@ void StateComposer::compose()
             std::cout << "failed" << std::endl;
             logFile << "    ERROR: Unable to open I2C device: "
                     << I2C_BUS
-                    << "! \n           Ensure it is not in use by another application."
-                    << std::endl;
+                    << "! \n           Ensure it is not in use by another application.\n"
+                    << std::flush;
             return;
         }
 
