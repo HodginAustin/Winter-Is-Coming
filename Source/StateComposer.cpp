@@ -5,6 +5,7 @@
 #include "./includes/DataParser.hpp"
 #include "./includes/Settings.hpp"
 #include "./includes/LEDStateSmall.hpp"
+#include "./includes/LEDState.hpp"
 
 // The I^2C serial bus device in the linux system
 #define I2C_BUS "/dev/i2c-1"
@@ -152,7 +153,8 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
                 << "  Idx:" << (int)idx << "\n"
                 << "  R:" << (int)r << "\n"
                 << "  G:" << (int)g << "\n"
-                << "  B:" << (int)b << "\n";
+                << "  B:" << (int)b << "\n"
+                << std::flush;
     }
 
 	p_s_buffer = &s_buffer[0];  // Reset pointer to head of array
@@ -165,7 +167,7 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 	if (i2cFileStream != -1) {
 
         if (ioctl(i2cFileStream, I2C_SLAVE, (io + i2cAddressOffset))) {   // Set io control for the I2C file stream, as sending to I2C slave, at address
-            logFile << "ERROR: Can't switch ioctl to I2C bus address: [ " << (io + i2cAddressOffset) << " ]" << std::endl;
+            logFile << "[" << timeBuffer << "] ERROR: Can't switch ioctl to I2C bus address: [ " << (io + i2cAddressOffset) << " ]\n" << std::flush;
             return true;    // Error state; return value not used currently
         }
 
@@ -175,7 +177,7 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 
 		while (count < 0) {                                                             // If error in transmission, keep trying
 
-            logFile << "ERROR: I2C transmit failed! [ " << (io + i2cAddressOffset) << " ]" << std::endl;
+            logFile << "[" << timeBuffer << "] ERROR: I2C transmit failed! [ " << (io + i2cAddressOffset) << " ]\n" << std::flush;
 
             count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Rewrite the same values
             usleep(WAIT);                                                               // Before blasting serial data again, let Arduino catch up
@@ -242,12 +244,12 @@ void StateComposer::compose()
         prevLEDStateIter = previousLEDStates.find(currentZone->get_id());
         if (prevLEDStateIter != previousLEDStates.end()) {
             
-            if ( LEDState::equals(prevLEDStateIter->second, currentZoneActiveState) ) {
+            if ( LEDState::equals((prevLEDStateIter->second), currentZoneActiveState) ) {
                 continue;
             }
             else {
                 if (logFile.is_open()) 
-                    logFile << "Zone state has changed, updating..." << std::endl;
+                    logFile << "Zone state has changed, updating...\n" << std::flush;
                 delete previousLEDStates[currentZone->get_id()];
             }
                 
@@ -272,8 +274,8 @@ void StateComposer::compose()
             std::cout << "failed" << std::endl;
             logFile << "    ERROR: Unable to open I2C device: "
                     << I2C_BUS
-                    << "! \n           Ensure it is not in use by another application."
-                    << std::endl;
+                    << "! \n           Ensure it is not in use by another application.\n"
+                    << std::flush;
             return;
         }
 
@@ -284,7 +286,7 @@ void StateComposer::compose()
         scalar = (float)( ((float)intensity / 100.0) * (float)power * WADKABSI );
 
         if (logFile.is_open()) {
-            logFile << "[" << timeBuffer << "] Power Scalar for current zone: " << scalar << "\n";
+            logFile << "[" << timeBuffer << "] Power Scalar for current zone: " << scalar << "\n" << std::flush;
         }
 
         red = ((unsigned char) ( ((float)currentZoneActiveState->get_r()) * scalar));
@@ -294,7 +296,7 @@ void StateComposer::compose()
         currentZoneLEDs = currentZone->get_leds();
 
         if (logFile.is_open()) {
-            logFile << "[" << timeBuffer << "] Looping on zone '" << currentZone->get_name() << "' LEDs\n";
+            logFile << "[" << timeBuffer << "] Looping on zone '" << currentZone->get_name() << "' LEDs\n" << std::flush;
         }
 
         // Will only loop over returned vector of LEDs (if none, skip)
@@ -387,5 +389,6 @@ char StateComposer::get_composer_state()
 // Mutators
 void StateComposer::set_composer_state(char state)
 {
-    composerState = state;
+    if ( (state == 'c') || (state == 'p') || (state == 's') || (state == 0) )   // Check if valid state
+        composerState = state;
 }
