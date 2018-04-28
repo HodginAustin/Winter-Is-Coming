@@ -9,7 +9,7 @@ var cheerio = require('cheerio');
 describe("Settings", function(){
   var request = supertest('http://localhost:8080');
 
-  it('should render profiles page', function(done){
+  it('should render settings page', function(done){
     var should = require('should');
     request.get('/settings')
     .expect(200).end(function(err, res){
