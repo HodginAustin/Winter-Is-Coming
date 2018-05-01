@@ -2,6 +2,10 @@
   var conn = require('../js/global/connection.js');
   var controlService = require('../js/global/controlServiceRequest.js');
 
+
+/****************************************************************/
+/* Deletes all data                                            */
+/****************************************************************/
 function NukeAll(){
   var options = {
       method: "DELETE",
@@ -14,9 +18,9 @@ function NukeAll(){
 }
 
   /****************************************************************/
-  /* setup Test hardware                                         */
+  /* setup Test hardware                                          */
   /****************************************************************/
-  function addTestController(complete){
+  function addTestController(){
     let j = {};
     j['io'] = 1;
     var options = {
@@ -30,10 +34,9 @@ function NukeAll(){
         console.log(err);
       }
     });
-    complete();
   }
 
-  function addTestLeds(complete){
+  function addTestLeds(){
     let controllerID = 1;
     let nextIdx = 0;
     let count = 60;
@@ -54,14 +57,13 @@ function NukeAll(){
         console.log(err);
       }
     });
-    complete();
   }
   /****************************************************************/
 
   /****************************************************************/
-  /* setup Test LED states                                             */
+  /* setup Test LED states                                        */
   /****************************************************************/
-  function addTestLEDStates(complete){
+  function addTestLEDStates(){
     let j = {};
     j['r'] = 255;
     j['g'] = 255;
@@ -79,14 +81,13 @@ function NukeAll(){
         console.log(err);
       }
     });
-    complete();
   }
   /****************************************************************/
 
   /****************************************************************/
   /* setup Test DailyStates                                       */
   /****************************************************************/
-  function addTestDailyStates(complete){
+  function addTestDailyStates(){
     var options = {
       method: "POST",
       uri: conn.url + conn.port + "/" + conn.dailyStates + "/add",
@@ -142,15 +143,14 @@ function NukeAll(){
         console.log(err);
       }
     });
-    complete();
   }
   /****************************************************************/
 
 
   /****************************************************************/
-  /* setup Test Profiles
+  /* setup Test Profiles                                          */
   /****************************************************************/
-  function addTestProfiles(complete){
+  function addTestProfiles(){
     /* setup profile */
     var j = {};
     j['name'] = "TESTING NAME 1";
@@ -215,16 +215,34 @@ function NukeAll(){
         console.log(err);
       }
     });
-    complete();
   }
 
   /****************************************************************/
 
+/****************************************************************/
+/*Basic sleep funcion                                           */
+/****************************************************************/
+function sleep(delay){
+  var start = new Date().getTime();
+  while(new Date().getTime() < start + delay);
+}
+
+function setup(){
+  console.log("IN SETUP!");
+  addTestController();
+  sleep(5000);
+  addTestLeds();
+  sleep(5000);
+  addTestLEDStates();
+  sleep(5000);
+  addTestDailyStates();
+  sleep(5000);
+  addTestProfiles();
+}
+
+// setup();
+
 module.exports = {
-  addTestController: addTestController,
-  addTestLeds: addTestLeds,
-  addTestDailyStates: addTestDailyStates,
-  addTestLEDStates: addTestLEDStates,
-  addTestProfiles: addTestProfiles,
+  setup: setup,
   NukeAll: NukeAll
 }

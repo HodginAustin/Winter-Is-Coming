@@ -6,7 +6,6 @@
     "scripts": {
         "start": "node main.js 8080",
         "test": "mocha -R spec ./Tests",
-        "test-unit": "NODE_ENV=test mocha --require mocha 'Tests/*.test.js'",
         "dev": "nodemon main.js 8080"
     },
     "devDependencies": {},
@@ -16,13 +15,8 @@
         "cheerio": "^1.0.0-rc.2",
         "express": "^4.13.2",
         "express-handlebars": "2.0.1",
-        "istanbul": "^0.4.5",
         "mocha": "^5.0.5",
         "nodemon": "^1.17.3",
-        "proxyquire": "^2.0.1",
-        "request": "^2.85.0",
-        "should": "^13.2.1",
-        "sinon": "^4.5.0",
         "supertest": "^3.0.0"
     }
 }

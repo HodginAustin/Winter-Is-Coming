@@ -2,7 +2,6 @@ let conn = require('../js/global/connection.js');
 let controlService = require('../js/global/controlServiceRequest.js');
 var testSetup = require('./test-setup.test.js');
 var chai = require('chai');
-var express = require('express');
 var supertest = require('supertest');
 var cheerio = require('cheerio');
 
@@ -16,4 +15,5 @@ describe("Profiles", function(){
       done();
     });
   });
+
 });
