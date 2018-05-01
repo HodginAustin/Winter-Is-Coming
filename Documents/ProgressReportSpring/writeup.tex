@@ -151,13 +151,28 @@
 
 	\section{Status}
 	The project is now in a release state. The team's definition of a release state is the successful completion of all system requirements.
-	
+	\\
 	The Internal State, API, and DataParser have all been thoroughly unit tested, and a large handful of bugs have been found and fixed because of it.
-	
+	\begin{center}
+		\begin{figure}[H]
+			\includegraphics[width=\linewidth]{tests/internal_state_data_parser_tests.png}
+			\caption{Passing internal state and data parser tests}
+			\label{fig:isdpTests}
+		\end{figure}
+	\end{center}
+
+	\begin{center}
+		\begin{figure}[H]
+			\includegraphics[width=\linewidth]{tests/api_tests.png}
+			\caption{Passing API tests using postman}
+			\label{fig:apiTests}
+		\end{figure}
+	\end{center}
+	\\
 	The State Composer remains untested, and currently still has the bug from ALPHA that turned random lights to random colors. However, this bug only
 	occurs for the system with three strips at full brightness.
-
-	The Site has basic unit testing completed, but could use some more work when it comes to confirming that the pages are rendering data correctly.
+	\\
+	The Site has basic unit testing completed, but needs more work when it comes to confirming that the pages are rendering data correctly.
 	It has also had a variety of minor improvements and tweaks, and is in very good shape.
 
 	\section{Problems}
