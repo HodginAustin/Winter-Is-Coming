@@ -31,7 +31,7 @@
 				%Technology Review
 				%Design Document
 				%Fall Progress Report
-				Winter Midterm Progress Report
+				Spring Progress Report
 				}
 
 \newcommand{\NameSigPair}[1]{\par
@@ -88,11 +88,9 @@
 %\textbf{\textsuperscript{citation needed}}
 				\newpage
         \begin{abstract}
-				\noindent This document details what the team has accomplished for the second stage of the project.
-				It covers the progress made on the programming portion of the project,
+				\noindent This document details what the team has accomplished for the final stage of the project.
+				It covers the progress made on the bug fixing and polishing portion of the project,
 				as well as problems we faced and the solutions implemented.
-				This document contains four sections written be each of the team's members.
-				These sections explain the individual work accomplished by each of us.
         \end{abstract}
     \end{singlespace}
 \end{titlepage}
@@ -148,290 +146,38 @@
 	\section{Goals}
 	The PlanteR-GB lighting system will allow users to change individual LEDs to a specific color and intensity at any time throughout the day or week.
 	LEDs on up to twenty light strips can be grouped into zones and controlled on a schedule with a local web interface.
+	The 1.0 version of the project will have thorough testing and very few bugs. Some minor improvements and tweaks will be made throughout the process,
+	but most of the effort between Beta and Release is testing and bug fixing.
 
 	\section{Status}
-	The project is now in an alpha state. The team's definition of an alpha state is full chain communication.
-	This involves sending data from the CLI, through the API, into the internal state, then to the state composer, and finally to the LED control program on the Arduino Nano which lights the LEDs.
-	Currently the system handles multiple profiles, zones, daily states, and LED states.
-	It does not yet handle multiple controllers and/or LED strips.
-	The database currently stores some values, but does not load, update, or delete data.
-	These changes are coming before beta, along with bug fixes and improvements.
+	The project is now in a release state. The team's definition of a release state is the successful completion of all system requirements.
+	
+	The Internal State, API, and DataParser have all been thoroughly unit tested, and a large handful of bugs have been found and fixed because of it.
+	
+	The State Composer remains untested, and currently still has the bug from ALPHA that turned random lights to random colors. However, this bug only
+	occurs for the system with three strips at full brightness.
 
-	\section{Austin Hodgin}
-	There have been several iterations of the command line interface. We started using C++ as the core language for it since the rest of the system is built using it. Due to several issues that are explained later in this section we had to switch to python for the script.  To interact with the system, we have created an API that will be accessed using HTTP requests. Since the final user interface will be a web UI it made sense to build the core system that way. The command line interface will be able to do most of the same features as the final web interface. We can change and add profiles, change and add zones as well as add and update daily states to be able to build schedules. We currently have 8 options to select from in the command line interface. We have a zone section that will allow you to create and edit zones as well as apply those zones to profiles. Additionally we have a profile section that is used for adding removing and updating profiles in the system. Then we have a schedule menu that will allow you to set date and time for the different profiles that can be changed at any time. We then have an initialize section that creates a default profile, creates a new daily state with a set of LEDs that starts on Sunday at midnight and sets the color to full white. Finally it sets that as the current active state. This is done to setup the server with how many LED’s and controllers connected. We then have two different demo sections. The first demo section creates a new daily state where every ten seconds it will change between red, green and blue over the full strip of LEDs. This shows how we can set up and apply timed schedules to the system using HTTP calls to the API to create and change the current state of the system. The Second demo creates a new profile, sets it as active and creates two new zones. Each zone is half the strip of LEDs on the controller. It will then set the first half of the strip to red and the second half of the strip to teal. This shows that we can switch between profiles, set up different zones on an LED strip and configure them separately. The next option in the menu is to apply the changes. This applies all the different updates and changes in the Zone, Profile and Schedule menu options. This is done so that all the changes can be applied at once, so we will not have to several requests each time something is changed. Ending the option menu we have shut down, which shuts down the server safely.
-Several problems have occured while creating this script. The first large problem is when researching how to make HTTP requests in C++. A library was found that we wanted to use, however we would have to clone the entire structure into our repository and compil with our code every time we wanted to compile the script. This is a problem as adding it to our system will increase compile time. We were unable to just compile it once and link the binary during our compile and make process for setting up the system.  This also added a bunch of files to our system that we did not develop, and we didn’t feel right having half our system be code not written by us. With this problem we started looking into alternatives. The main alternative we libcurl which was a library we could add that would allow us to make HTTP request and was used heavily in C++ request the problem with this is it is complicated and difficult to use and would add a lot of development time to our script figuring out how to send those requests. As we were looking we found a library that we were able to add to python called Python Request. This is what C++ request was based on.  The reason that we choose C++ request was that it made HTTP request simple. It managed to take what would be normally over 12 lines to make a simple HTTP request and turned it into one line. Python Request does the same thing which sped up our development and cleaned our code up dramatically.
-Once we had the script converted to python we ran into another problem, when we would make post request it would sometimes hang and then time out. This problem was consistent when making multiple post request to the server. After some research we found that it was a problem with the python 3.6 version of Python Requests.  Once we had that figured out we changed out code to python 2.7 which did not seem to have the same issue as 3.6. This took minimal effort to do since the difference between 2.7 and 3.6 is minimal.
-There are several advantages and disadvantages to having the command line interface running in python. The main advantage is that it is extremely portable. Any system that can run python and install python request can run this script. With our main controller being a Raspberry pi Raspbian the main OS built for the Raspberry pie comes with python built in. All that will need to be set up is that Python Request is installed within the python libraries. This is done during the set-up script that installs and creates everything that is needed for the system to run on the raspberry pie. This is also convenient since almost every operating system can install python it can be used from any computer that has network access to the main controller it does not need to be run from the main controller if the script has been configured to access it.
-The main disadvantage of running the command line interface in python is that it can be slow to start up and can be cumbersome to start as you must type “python CLI.py” as of right now. We will be wanting to change this into an excavatable that will make it more convention to run.  This is not as important as we will be changing the user interface to a web page that can be access by any computer on the network
-
-
-
-	\section{Travis Hodgin}
-	An Arduino Nano is used to control the LEDs. The nano is the device that
-	changes the registers attached to the each LED to a specific red, green,
-	and blue value. To do this we use the FastLED library, which makes setting
-	values fairly painless. We create an LED object based on a static defined
-	number of LEDS. The object allows us to change each color value
-	per LED.
-	\begin{lstlisting}
-	#define NUM_LEDS 12 /* adjust to your length of LED */
-	#define DATA_PIN 2 /* adjust to the used pin (Arduino nano pin 2 = D2*/
-	#define rxPin 0 /* Reciever pin */
-	#define txPin 1 /* Transmitter pin */
-	CRGB leds[NUM_LEDS]; /*color object */
-	\end{lstlisting}
-	The Nano is then connected to a Raspberry pi via its RX (receiver)
-	and TX (transmitter) pins with a common ground. The connection starts by
-	connecting the RX pin of the Pi to the TX pin of the Nano, and the RX pin on
-	the Nano to the TX pin on the Pi. Since there is a voltage difference between
-	the Pi’s RX and the Nano’s TX we need to use some sort of voltage divider, or
-	logic level converter. The Pi uses 3.3V, while the nano uses 5V. To fix this
-	we use two resistors, a 1.6KΩ and a 3kΩ to drop the voltage of the nano to
-	match the Pi’s, so we don’t fry any components. Once connected, the state composer
-	takes care of communication on the pi’s end, as well as getting information to
-	pass to the Nano. On the nano, communication is set up by setting up both the
-	RX and TX pins depending on the pin number of the specific controller. In this
-	case, on the Nano, the TX pin is pin 1, and RX is pin 0. We then set up the pins to be RX to input,
-	and TX to output. We then set the baud rate and begin listening.
-	\begin{lstlisting}
-	void setup() {
-  	FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS); /* initialize LEDs */
-  	pinMode(rxPin, INPUT);
-  	pinMode(txPin, OUTPUT);
-  	Serial.begin(57600); /* serial port */
-  	FastLED.show();
-	}
-	\end{lstlisting}
-
-	\noindent Arduino uses a loop function as its main function. Everytime this function
-	ends, it will return to the top and start over.  This allows for an easy check.
-	During each loop we check the serial buffer for entries. If the serial buffer
-	is not empty we then start reading. The first byte contains the LED index used
-	to change that specific LED, the second is the red value, third is the green
-	value, and finally the fourth has the blue value.  Once we set each value for
-	the specified LED index, we call FastLED.show() which will turn the LED on.
-	After this we flush the buffer to make sure it no longer contains lingering characters.
-
-	\noindent Each time we read from the serial buffer we are looking for a character. These
-	characters will be typecasted into an integer based on their ascii value.
-	This is done as parsing an integer using the native Serial.parseInt() function
-	would take to long to set values with the current setup of the state composer.
-	ParseInt blocks all other processes until parsing is complete. This was done
-	initially, however was moved over to a system using Serial.read() instead
-	Serial.read() parses byte by byte rather than reading until a delimiter is
-	reached. This allows for faster reading from the serial buffer, which is
-	needed for the state composer. Efficiency is a key in the system, we need to
-	make sure data from the serial buffer gets read, before its overwritten by the
-	following data sent by the state composer.
-
-	\noindent The state composer continuously sends data about the current profile to the
-	Nano. This is the main reason efficiency on the Nano is so important. If data
-	gets overwritten before the Nano has a chance to grab that, that data may be
-	lost. There is, however a failsafe. Because we are continuously sending data
-	to the Nano, if data is lost, it will most likely be recovered on the next
-	loop. This means that for any given profile, most data loss issues will be
-	cleared up fairly quickly, depending on the size of the given zone and profile.
-	That being said, our goal is to minimize as many potential data loss situations
-	as possible, to make it as seamless as possible for the user.
-
-	\noindent The Nano, also has a limited amount of given space and RAM, which limited our
-	potential solutions to the efficiency problem. If we were to take in the entire
-	serial buffer as a String, and parse it ourselves, we would run into space
-	issues, as Strings take up a lot of space. Reading in a single byte for each
-	color and index values is more efficient than parsing either Strings, or
-	integers, our testing has found.
-
-	\noindent Code written on the Nano can easily be ported to most types of devices capable
-	of running the Arduino coding language. Changes between devices include, LED
-	data pin number, RX pin number, TX pin number, as well as changing the
-	specific type in the Arduino IDE. Different devices may handle different baud
-	rates, however this would need to be changed on the Pi as well, as they need to
-	match. Different styles of LEDs different to the NEOPIXEL used in this project
-	may also be used, if the FastLED library supports it, by changing the type in
-	the initial FastLED setup. All of this means that the arduino code is portable
-	to many different hardware styles.
-
-	\noindent In future iterations of the project, as we add more LED controllers, we will
-	be implementing a read check system. This involves setting up another pin on
-	the Nano, and a separate pin for each controller on the Pi. We need a way to
-	communicate between several different controllers at once, however we are
-	stuck with only one set of RX and TX pins on the Pi. This means we need to
-	“daisy-chain” them together to be able to use the same pins. Because of this
-	we have decided to use a pin setup, that will let each individual controller
-	know, whether or not the code being sent out is meant for. This may cause a
-	problem depending on the number of LED controllers per Pi, as the pi has a
-	limited number of usable pins, however this is only a problem for large setups.
-
-	\section{Max Schmidt}
-	After the internal state has been completed by the user's inputs to the API, the state must find its way onto the physical hardware.
-	While the internal state contains all the proper zones, scheduling, and virtualized controllers and LEDs, the only true pieces of
-	the puzzle that reflect that mass of data are the RGB LEDs. In the internal virtual state, each physical LED can belong to any number
-	of zones, and any number of profiles. However, the LEDs only should reflect what the current active state of the system is. In this
-	regard, they must be able to switch on scheduling changes in the internal state.
-
-	\noindent The translation of the internal state onto the physical hardware is done by the subsystem called the State Composer. This
-	system maps virtual LEDs in zones on a schedule, to LED indexes on the strip of RGBs. Since this process involves processing through
-	a section of the Internal State class, it needs direct access to the Internal State class accessor functions, and the accessor functions
-	of each virtual model. This class is also static, similarly to the Internal State.  This is because there can only be one instance of it
-	running at any given point, due to the single set of RxTx pins.
-
-	\noindent Since assigned schedules can vary, and thus the state of the zones’ LEDs, the State Composer needs to be able to check the
-	Internal State constantly by checking the schedule against the current system time. This could have led to needless pausing of the code
-	to run the State Composer, causing the user interface to temporarily not accept input. To avoid this delay, the State Composer needed to
-	have its own separate execution thread to continuously perform the time check and read from the Internal State. In hind sight, the team
-	is grateful that we selected a multicore controller able to execute multiple threads of execution.
-
-	\noindent In the main thread we have split off a separate thread solely for the State Composer to have an isolated execution routine.
-	Because of the POSIX threading method used, this thread gets assigned to a separate core than the threads of execution in the API and main.
-	This also ensures that the State Composer has amble computational resources available to it, as composition of the Internal State can be
-	quite lengthy and stressful depending on the virtualized state, amount of LED controllers, and number of LEDs.
-
-	\noindent This threading was also carefully put into place as to not over use the core that it is assigned to.
-	Thus, the thread is halted for a relatively short time to a person, but a long time to the processor, after every return from the State
-	Composer function. This is especially seen when the Internal State hasn’t been initialized. With no current active profile on the system,
-	the thread will continuously and rapidly call the State Composer, which will immediately return. When there is an active state available,
-	the real orchestration from virtual to physical states happens.
-
-	\noindent Looking into the algorithm behind the State Composer, one can see it is quite simple once they understand the structure of the
-	Internal State. The first thing that the algorithm must get is the current active profile on the system.  This profile has a list of zones.
-	Each zone contains an active state, which lists the color values for red, green, and blue, as well as the intensity and on/off status. Once
-	we gather the previous elements, we get the list of virtual LEDs assigned to each zone. Each LED will be assigned to a physical controller
-	and have an index on that controller. With the controller in mind, and the index on the strip attached to that controller, we have everything
-	needed to tell the controller to update that LED. The following pseudo code details the previous steps:
-
-	\begin{lstlisting}
-	Get the CURRENT_ACTIVE_PROFILE:
-	Get the ZONE_LIST on the returned profile
-		For every ZONE in the returned ZONE_LIST:
-		Get the ZONE active state (R, G, B, intensity, and on/off)
-		Get the LED_LIST in the returned ZONE
-			For every LED in the returned LED_LIST:
-				Get the LED’s assigned CONTROLLER
-				Get the CONTROLLER’s IO_PORT
-				Get the LED’s STRIP_INDEX on the controller
-				Calculate the LED_POWER_SCALAR ( (intensity / 100) * power(0 or 1) )
-				Multiply each RGB color times the scalar
-				Send IO_PORT, RGB colors, and STRIP_INDEX to serializer
-	\end{lstlisting}
-
-	\noindent At the end of each deepest nested for loop (on the LED list), the State Composer calls a function to send the data out over UART
-	Serial communications to the LED controller. Currently this function does nothing with the controller IO port, because the current alpha build
-	only uses a single LED controller. Currently, disregarding the selectable IO port, this function takes the RGB color values, the LED’s index,
-	and sends it to the UART file stream file descriptor. This descriptor is set to open the Raspberry Pi’s ‘/dev/serial0’, with the proper baud rate
-	and UART options. To open this file stream, one must previously have set the Raspberry’s serial settings up to allow the device to be used. This
-	configuration setup is left until the end of this section.
-
-	\noindent In future releases, the following will be crucial implementations to improve the composer and serialization routines. When multiple LED
-	controllers are available and the given controller IO port available, the serialization function will determine the proper Pi GPIO pin to enable.
-	This will allow the State Composer to select LED controllers that can read the data coming over a shared serial “bus”. Along with multiple
-	controllers, the team is looking at a bug in the color data transfer where LEDs are not consecutively set along the strips or are set to incorrect
-	colors. The team believes this could be a timing issue between the State Composer and the LED controllers. To potentially resolve this, we believe
-	a set of send and acknowledges between the Pi and the LED controllers may be necessary.
-
-	\noindent Regarding the set up the Pi correctly for the PlanteR-GB LED service, there are a few things that the team has tried to automate for the
-	end user. The Raspbian OS must release control of the ‘/dev/serial0’ file. At boot this device is used as a kernel boot message console, and after
-	the OS is loaded it is locked. There are interactive methods of making most of these changes, but the team decided a single interface for these
-	changes would be more useful. Thus, the team has worked on a single automated script to select the user’s keyboard layout, time zone, username,
-	password, WiFi setup, python web requests, and installation of system updates and necessary packages. This script is still under heavy development
-	and is not quite as complete as the rest of the alpha build. It has been a last-minute addition to make a complete “out of box” configuration for the Pi.
-
-	\section{Zach Lerew}
-	For my portion of the project’s ALPHA, I wrote the API, Internal State, and started the Data Parser.
-	The API is a RESTful http endpoint which spawns a series of child listeners and defines a set of routes which map to action functions.
-	The library I chose to implement this is called Pistache, an element C++ REST framework.
-	Each of these routes use a different http verb, depending on the type of CRUD operation the route implements.
-	For example, adding a profile to the system uses a POST request because the request introduces new data.
-	Adding an existing LED to an existing zone uses a PUT request because it links existing items.
-	Viewing information uses the GET verb, and deleting it uses the DELETE verb.
-	Each API route maps to an action, much like the ASP.NET framework.
-	The action methods take JSON data as input and make changes to the internal state.
-	For example, a call to http://localhost:9080/profiles/add with the JSON data
-	\begin{lstlisting}
-	{“name”:”Test Profile”, “description”: “Winter herbs”}
-	\end{lstlisting}
-	will create an internal state Profile object with a name and description set.
-	The request will return the ID of the newly created object, or an error if the operation was not successful.
-	Afterwards, a call to http://localhost:9080/profiles/1 will return the JSON data
-	\begin{lstlisting}
-	{“name”:”Test Profile”, “description”:”Winter herbs”, “id”:1, “zones”:[]}
-	\end{lstlisting}
-	When retrieving data, the API uses the Nlohmann JSON library to convert between objects and their text representations. The library has a useful feature that allows me to define from\_json and to\_json functions for each of the internal state objects. These methods are called automatically when implicitly converting the internal state objects into JSON.
-	\begin{lstlisting}
-	json j_out = *profile;
-	\end{lstlisting}
-	The conversion works in the opposite direction too, by calling
-	\begin{lstlisting}
-	json::parse(request.body())
-	\end{lstlisting}
-	and implicitly casting it to a Profile object. The JSON library also provides numerous methods for easy parsing of JSON objects and lists.
-	The API is the entry point for the system as a whole, and is the primary method by which data is entered into the system.
-	The command line interface as well as the web interface connect to the API by calling its routes and passing JSON data, so it is essential that the API is well documented and provides all necessary actions.
-
-	\noindent After a request is processed by the API, the internal state takes over by providing a series of object methods which are called in order to add new data or link existing data together.
-	The internal state is the in memory representation of the system and all of its settings.
-	It has six types of objects. Two of the objects are virtual representations of the physical system, the LED and its associated Controller.
-	Two of the objects represent unique permutations of a set of possible states. The first of those is the LEDState, which is a combination of red, green, blue, intensity, and power status.
-	The second unique object is the Daily State which represents all led states which occur in a day.
-	A single daily state can be used for multiple days of the week, allowing a single daily schedule object to be used every day of the week without creating more data.
-	The daily state contains a dictionary of mappings between a time (in seconds after midnight) and pointers to LED states.
-	The fourth object is the Zone, which contains a set of 7 daily states and a list of LEDs.
-	The Zone has an algorithm in it which looks through the set of 7 daily states and finds a pointer to the current LED state which should be active based on the system's day and time.
-	If an LED state cannot be found anywhere in the week, the zero LED state is returned, which represents an state of no color, no intensity, and no power.
-	The final object is the Profile, which contains a name, description, and set of zones.
-	Each profile represents an overall state of the system, a unique combination of a schedule and a set of LEDs.
-	One possible user story would be a series of four profiles, one for each season.
-	During different seasons the user may grow different vegetables depending on seed availability and preference. Changes made to the internal state exist only in memory, and are lost when the system resets, or in the case of our alpha, crashes.
-
-	\noindent The data parser exists to save the data within the internal state into the file system and later retrieve it back into memory.
-	The chosen library is sqlite\_orm by fnc12 on github.
-	This library is likely the most flexible database Object Relational Mapping system available for C++ while still being quick to learn.
-	This system allows you to build the database schema using objects by passing the results of a make\_table call to a make\_storage function.
-	The make\_table function takes a series of make\_column calls which in turn take pointers to accessor and mutator functions for each of the objects in the system.
-	Once the storage object is created on the file system and the schema defined in memory, the ORM provides a series of SQL like functions such as insert, update, replace, remove, and so on.
-	These functions take an instance of an object such as a Zone, and automatically generate and call the appropriate SQL code.
-	The ORM also provides lamba style functions which replicate SQL functions like JOIN, WHICH, and aggregate functions such as COUNT or SUM.
-	In a similar manner as the JSON library, the sqlite\_orm library takes a heavy amount of setup for schema definition, after which subsequent operations are quick and painless.
-	Once the data is stored on the file system, it can be loaded in the dataParser’s initialize function.
-	The ORM library provides a series of select functions which allow a direct translation into standard C++ STL container containing objects.
-	My favorite part of this ORM library is the insert functions which take an internal state object and returns the ID of the newly created object.
-	This allows me to keep object IDs unique easily as well as pass them around in the API as objects are created, modified, and deleted.
-	During the project so far, I have been responsible for a lot of the middle parts of the system, and as such have been responsible for making sure my team understands what data to give me, and what data they are getting from me.
-
-
+	The Site has basic unit testing completed, but could use some more work when it comes to confirming that the pages are rendering data correctly.
+	It has also had a variety of minor improvements and tweaks, and is in very good shape.
 
 	\section{Problems}
-		\subsection{C++ is a terrible language for web development}
-			C++ is a language not intended to be used for serious web development or API writing.
-			Therefore, many libraries are small, difficult to use, and have few contributors.
-			This creates a more difficult learning curve, but was ultimately necessary due to hardware communication.
-		\subsubsection{Solution}
-			We spent extra time doing research into libraries and solutions in order to give us the best chance of success given the circumstances. We also chose to write the CLI in Python to speed up development.
-	\subsection{Libraries Not well documented}
-      Many open source or non-supported libraries include limited or non existent documentation.
-			This can be a hindrance when developing and issues come up, as support is limited.
+	\subsection{Random LEDs changing colors, entire strips occasionally denying input}
+    	This problem has plagued us since the first time we got LEDs to work.
+		At first it was due to using the UART serial protocol, but that was replaced with I2C which allows for complicated addressing over a single bus.
+		After that, we implemented a system that would store the state active for every zone in the system.
+		In order to send serial data, the state composer first checks to see if the state has changed for each zone.
+		This reduced the chances of the serial bus becoming saturated and corrupting data.
+		The last change was to open the I2C bus before writing to it, and close it when done. This added extra work for each write, but also eliminated some issues.
+		The system now works perfectly with two controllers. However, only one controller has an LED strip of 60, and it is set to 20 percent brightness.
+		We have still been seeing issues when using a system with an advanced power supply running three controllers and three LED strips at full brightness.
   	\subsubsection{Solution}
-	    In a few cases we were able to communicate with the library developer and get in depth answers,
-			otherwise we were forced to look through source code and make educated guesses.
-	\subsection{Database many-to-many relationships}
-      The database ORM chosen does not have an included method of supporting many-to-many relationships.
-			The system has two of these relationships.
-  	\subsubsection{Solution}
-	    We were able to post a question to the development GitHub and receive a response from the developer with a suggestion on how to solve the problem. A set of three temporary relationship objects were created, which only exist when saving and loading data.
-	\subsection{Five Person Scheduling and communication}
-		 Seeing that the group consists of four members, and our client's schedule contains busy times similar to ours, scheduling times that worked for everyone
-		 forced compromises in meeting times.
-  	\subsubsection{Solution}
-		  With no "perfect" times aligning in anyone's schedules, some group members had to cut time from work, other class work, or personal time to work on the project.
-		  There was no "clean" solution to the scheduling issue.
+		We have found solutions to get at least one variation of our system working, that is with a single strip of lights at 20 percent brightness.
+		However, we have not yet found a solution to the three strips problem. It is a very difficult one to debug because it is intermittent and random.
 
 
 	\section{Remaining work}
-	Data parser
-	CLI Multi zones, colors
-	Web interface
-	State composer multiple microcontrollers
-	Serial sends and acknowledges
-	Large system tests
+	All required goals were met.
+	During the remaining week some work may continue on stretch goals such as Site improvements, custom enclosure modeling, and more thorough testing.
 
 
 	\section{References}
