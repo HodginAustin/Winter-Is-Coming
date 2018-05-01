@@ -1,7 +1,7 @@
 #!/bin/bash
 
 while true ; do
-	if ifconfig wlan0 | grep -q "inet addr:" ; then
+	if ifconfig wlan0 | grep -q "inet " ; then
 		sleep 120
 	else
 		sudo systemctl daemon-reload
