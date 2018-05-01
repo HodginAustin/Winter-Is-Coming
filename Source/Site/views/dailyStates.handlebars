@@ -49,7 +49,7 @@
                                     </br>
 
                                     <!-- Existing LED States -->
-                                    <table class="table" id="timeStateMap">
+                                    <table class="table timeStateMap">
                                         <thead>
                                             <tr>
                                                 <th>Time</th>
@@ -157,7 +157,11 @@
 
 <script>
     $(document).ready(function () {
-        sortTable($('#timeStateMap'), 'asc');
+        $('.timeStateMap').each(function(i, obj) {
+            console.log($(this));
+            sortTable($(this), 'asc');
+        });
+
         to_am_pm();
 
         $('form').submit(function () {
@@ -199,7 +203,7 @@
         tbody.find('tr').sort(function (a, b) {
             ae = parseInt($('td:first', a)[0].innerHTML);
             be = parseInt($('td:first', b)[0].innerHTML);
-            
+            console.log("comparing " + ae + " to " + be);
             if (asc) {
                 return ae - be;
             } else {
