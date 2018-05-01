@@ -20,11 +20,11 @@ commands = [
     "sudo cp -r /plantergb/environment/usr/local/include/* /usr/local/include/", # Copy library files
     "sudo chmod +x /plantergb/out/plantergb", # Allow plantergb process to be executed
     #"sudo apt-get -y install nodejs-legacy", # Install NodeJS for hosting the website
-    "sudo wget -O /plantergb/node_install.sh https://github.com/CarvellWakeman/plantergb/releases/download/Latest/node_install.sh", # Install Node
-    "sudo chmod +x /plantergb/node_install.sh", # Allow node install script to be executed
-    "sudo /plantergb/node_install.sh", # Execute node install script
+    "sudo chmod +x /plantergb/setup/node_install.sh", # Allow node install script to be executed
+    "sudo /plantergb/setup/node_install.sh", # Execute node install script
     "sudo apt-get -y install npm", # Package manager for website
     "sudo npm install --prefix /plantergb/Site", # Install packages for website
+    "sudo chmod +x /plantergb/setup/wifi_reconnect.sh", # Allow wifi reconnect script to be executed
 ]
 
 # Command output
