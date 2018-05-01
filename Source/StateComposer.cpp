@@ -18,7 +18,7 @@
 
 // We All Didn't Know Any Better Stupidity Inhibitor
 // TODO: Update once better power system is found
-#define WADKABSI 0.2f
+#define WADKABSI 0.1f
 
 // The amount of microseconds to wait for the
 // Arduino Nano to send it's ACK and catch up
@@ -243,7 +243,6 @@ void StateComposer::compose()
         // continue on to next zone if it is the same
         prevLEDStateIter = previousLEDStates.find(currentZone->get_id());
         if (prevLEDStateIter != previousLEDStates.end()) {
-            
             if ( LEDState::equals((prevLEDStateIter->second), currentZoneActiveState) ) {
                 continue;
             }
@@ -251,8 +250,7 @@ void StateComposer::compose()
                 if (logFile.is_open()) 
                     logFile << "Zone state has changed, updating...\n" << std::flush;
                 delete previousLEDStates[currentZone->get_id()];
-            }
-                
+            } 
         }
 
         struct bareLEDState* temp = new bareLEDState();
