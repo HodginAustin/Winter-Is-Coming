@@ -216,7 +216,14 @@
 			\label{fig:siteSettings}
 		\end{figure}
 	\end{center}
-
+	
+	The system includes a routine for setup which involves running a release script which builds and zips the project.
+	This file can be uploaded to the release repository, along with firstboot.py, everyboot.py, and setup.xml.
+	When the setup.xml file is used by PiBakery to flash a fresh microSD card, it can be placed in a raspberry Pi.
+	The system will download and setup everything that is needed to run the system from scratch.
+	This is a great way for our client to update the system and set it up in the future without relying on a development version or sending any emails.
+	This release can also be used by anyone else in the community who wants to use our system.
+	
 
 	\section{Problems}
 		\subsection{Random LEDs changing colors, entire strips occasionally denying input}
