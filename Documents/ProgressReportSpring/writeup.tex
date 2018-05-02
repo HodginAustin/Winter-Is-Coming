@@ -223,6 +223,19 @@
 	The system will download and setup everything that is needed to run the system from scratch.
 	This is a great way for our client to update the system and set it up in the future without relying on a development version or sending any emails.
 	This release can also be used by anyone else in the community who wants to use our system.
+
+	The LED simulator is a system made to debug the lighting system without access to a raspberry pi.
+	The state composer can be lightly modified to use a different function. The alternative function makes a web request to an endpoint running on the site.
+	The simulator takes the same input as the LED controller over serial, and displays information in a similar way.
+	This has been massively useful for testing purposes, as it allows us to work on the project on our laptops without access to a system.
+
+	\begin{center}
+		\begin{figure}[H]
+			\includegraphics[width=\linewidth]{site/simulator.png}
+			\caption{LED Simulator page with one bed}
+			\label{fig:siteSimulator}
+		\end{figure}
+	\end{center}
 	
 
 	\section{Problems}
