@@ -168,26 +168,79 @@
 			\label{fig:apiTests}
 		\end{figure}
 	\end{center}
-	\\
+	
 	The State Composer remains untested, and currently still has the bug from ALPHA that turned random lights to random colors. However, this bug only
 	occurs for the system with three strips at full brightness.
 	\\
 	The Site has basic unit testing completed, but needs more work when it comes to confirming that the pages are rendering data correctly.
 	It has also had a variety of minor improvements and tweaks, and is in very good shape.
+	\begin{center}
+		\begin{figure}[H]
+			\includegraphics[width=\linewidth]{site/hardware.png}
+			\caption{Hardware page}
+			\label{fig:siteHardware}
+		\end{figure}
+	\end{center}
+	\begin{center}
+		\begin{figure}[H]
+			\includegraphics[width=\linewidth]{site/daily_states.png}
+			\caption{Daily states page}
+			\label{fig:siteDailyStates}
+		\end{figure}
+	\end{center}
+	\begin{center}
+		\begin{figure}[H]
+			\includegraphics[width=\linewidth]{site/led_states.png}
+			\caption{Led states page}
+			\label{fig:siteLEDStates}
+		\end{figure}
+	\end{center}
+	\begin{center}
+		\begin{figure}[H]
+			\includegraphics[width=\linewidth]{site/profiles.png}
+			\caption{Profiles page}
+			\label{fig:siteProfiles}
+		\end{figure}
+	\end{center}
+	\begin{center}
+		\begin{figure}[H]
+			\includegraphics[width=\linewidth]{site/zones_winter.png}
+			\caption{Zones for the Winter profile}
+			\label{fig:siteZonesWinter}
+		\end{figure}
+	\end{center}
+	\begin{center}
+		\begin{figure}[H]
+			\includegraphics[width=\linewidth]{site/settings.png}
+			\caption{Settings page}
+			\label{fig:siteSettings}
+		\end{figure}
+	\end{center}
+
 
 	\section{Problems}
-	\subsection{Random LEDs changing colors, entire strips occasionally denying input}
-    	This problem has plagued us since the first time we got LEDs to work.
-		At first it was due to using the UART serial protocol, but that was replaced with I2C which allows for complicated addressing over a single bus.
-		After that, we implemented a system that would store the state active for every zone in the system.
-		In order to send serial data, the state composer first checks to see if the state has changed for each zone.
-		This reduced the chances of the serial bus becoming saturated and corrupting data.
-		The last change was to open the I2C bus before writing to it, and close it when done. This added extra work for each write, but also eliminated some issues.
-		The system now works perfectly with two controllers. However, only one controller has an LED strip of 60, and it is set to 20 percent brightness.
-		We have still been seeing issues when using a system with an advanced power supply running three controllers and three LED strips at full brightness.
-  	\subsubsection{Solution}
-		We have found solutions to get at least one variation of our system working, that is with a single strip of lights at 20 percent brightness.
-		However, we have not yet found a solution to the three strips problem. It is a very difficult one to debug because it is intermittent and random.
+		\subsection{Random LEDs changing colors, entire strips occasionally denying input}
+			This problem has plagued us since the first time we got LEDs to work.
+			At first it was due to using the UART serial protocol, but that was replaced with I2C which allows for complicated addressing over a single bus.
+			After that, we implemented a system that would store the state active for every zone in the system.
+			In order to send serial data, the state composer first checks to see if the state has changed for each zone.
+			This reduced the chances of the serial bus becoming saturated and corrupting data.
+			The last change was to open the I2C bus before writing to it, and close it when done. This added extra work for each write, but also eliminated some issues.
+			The system now works perfectly with two controllers. However, only one controller has an LED strip of 60, and it is set to 20 percent brightness.
+			We have still been seeing issues when using a system with an advanced power supply running three controllers and three LED strips at full brightness.
+			
+			\subsubsection{Solution}
+				We have found solutions to get at least one variation of our system working, that is with a single strip of lights at 20 percent brightness.
+				However, we have not yet found a solution to the three strips problem. It is a very difficult one to debug because it is intermittent and random.
+		
+		\subsection{Initializing memory to zero}
+			In almost every case with the 6 models in the system, the values needed to initially be set to zero.
+			In nearly every programming language that is not C or C++, variables are initialized to zero.
+			This is something we forgot about in a few cases for the models' private variables.
+			In some rare cases this was causing segmentation faults.
+			
+			\subsubsection{Solution}
+				Every single private variable for every single object is set to zero in the constructor.
 
 
 	\section{Remaining work}
