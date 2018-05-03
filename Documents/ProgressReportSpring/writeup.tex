@@ -181,9 +181,9 @@
 		Site testing consists of page rendering tests that only make sure the page is being rendered, and a 200 status code is given back to the server.
 		In addition, we have a setup file that will fill the database with test data that can be checked on the server side. These tests consist of data
 		validation, making sure that each page renders specific values from the test data inside the database.
-	  \\\\
+	  	\\\\
 		\noindent One of the biggest additions to site since the last progress report, is the addition of several RGB visualizations.
-		% Austins section about RGB visualizations.
+		% TODO: Austins section about RGB visualizations.
 		\begin{center}
 			\begin{figure}[H]
 				\includegraphics[width=\linewidth]{site/led_states.png}
@@ -198,6 +198,12 @@
 				\label{fig:siteDailyStates}
 			\end{figure}
 		\end{center}
+
+		\noindent The zones page got a complete make over from what it was. 
+		Initially, the page simply had two text inputs, each which took a comma separated list of either daily states or LED IDs.
+		The page was updated to have two separate modals. The first modal selects up to 7 days of the week and applies a daily state to them.
+		The second modal selects a range of LED Ids to be added to a zone.
+		
 		\begin{center}
 			\begin{figure}[H]
 				\includegraphics[width=\linewidth]{site/zones_winter.png}
@@ -205,11 +211,20 @@
 				\label{fig:siteZonesWinter}
 			\end{figure}
 		\end{center}
+		\begin{center}
+			\begin{figure}[H]
+				\includegraphics[width=\linewidth]{site/modals.png}
+				\caption{Zones modals}
+				\label{fig:siteZonesWinterModals}
+			\end{figure}
+		\end{center}
+
 		\noindent In addition to RGB visualization, we added a few new options to the Settings page. These settings are more advanced and may require more attention.
-		One of these settings is the LED hardware simulator. This new settings page, used for more devlopment testing, is used when one wants to test, without
-		access to any physical LEDs. This is labled an advanced setting for Dev work only and requires some changing in the state composer. The second setting added is a control
+		One of these settings is the LED hardware simulator. This new settings page, used for more development testing, is used when one wants to test, without
+		access to any physical LEDs. This is labeled an advanced setting for Dev work only and requires some changing in the state composer. The second setting added is a control
 		service shutdown, which shuts down the planter-gb service. This is another advanced setting as it may require more work to get back up and running.
 		This setting is mainly used in testing and other dev situations.
+
 		\begin{center}
 			\begin{figure}[H]
 				\includegraphics[width=\linewidth]{site/settings.png}
