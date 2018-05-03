@@ -6,7 +6,7 @@
 /****************************************************************/
 /* Deletes all data                                            */
 /****************************************************************/
-function NukeAll(){
+function NukeAll(complete){
   var options = {
       method: "DELETE",
       uri: conn.url + conn.port + "/nuke_from_orbit",
@@ -14,13 +14,20 @@ function NukeAll(){
   };
 
   // Make request
-  controlService.makeRequest(options, function() {});
+  sleep(2000);
+  controlService.makeRequest(options, function(err, response, body){
+    if(err){
+      console.log(err);
+    }else{
+      complete();
+    }
+  });
 }
 
   /****************************************************************/
   /* setup Test hardware                                          */
   /****************************************************************/
-  function addTestController(){
+  function addTestController(complete){
     let j = {};
     j['io'] = 1;
     var options = {
@@ -28,15 +35,17 @@ function NukeAll(){
       uri: conn.url + conn.port + "/" + conn.controllers + "/add",
       json: j
     };
-
+    sleep(2000);
     controlService.makeRequest(options, function (err, response, body) {
       if(err){
         console.log(err);
+      }else{
+        complete();
       }
     });
   }
 
-  function addTestLeds(){
+  function addTestLeds(complete){
     let controllerID = 1;
     let nextIdx = 0;
     let count = 60;
@@ -52,9 +61,12 @@ function NukeAll(){
       uri: conn.url + conn.port + "/" + conn.leds + "/add",
       json: j
     };
+    sleep(2000);
     controlService.makeRequest(options, function (err, response, body) {
       if(err){
         console.log(err);
+      }else{
+        complete();
       }
     });
   }
@@ -63,7 +75,7 @@ function NukeAll(){
   /****************************************************************/
   /* setup Test LED states                                        */
   /****************************************************************/
-  function addTestLEDStates(){
+  function addTestLEDStates(complete){
     let j = {};
     j['r'] = 255;
     j['g'] = 255;
@@ -76,43 +88,54 @@ function NukeAll(){
       uri: conn.url + conn.port + "/" + conn.ledStates + "/add",
       json: j
     };
+    sleep(2000);
     controlService.makeRequest(options, function (err, response, body) {
       if(err){
         console.log(err);
+      }else{
+        complete();
       }
     });
   }
+
   /****************************************************************/
 
   /****************************************************************/
   /* setup Test DailyStates                                       */
   /****************************************************************/
-  function addTestDailyStates(){
+  function addTestDailyStates(complete){
     var options = {
       method: "POST",
       uri: conn.url + conn.port + "/" + conn.dailyStates + "/add",
       json: {}
     };
+    sleep(2000);
     controlService.makeRequest(options, function (err, response, body) {
       if(err){
         console.log(err);
+      }else{
+        complete();
+
       }
     });
     /* setup the LED states for this daily state */
     var j = {};
-    j['r'] = 255;
-    j['g'] = 255;
-    j['b'] = 255;
-    j['intensity'] = 100;
+    j['r'] = '255';
+    j['g'] = '255';
+    j['b'] = '255';
+    j['intensity'] = '100';
     j['power'] = true;
     var options2 = {
         method: "PUT",
         uri: conn.url + conn.port + "/" + conn.dailyStates + "/1" + "/edit",
         json: j
     };
+    sleep(2000);
     controlService.makeRequest(options, function (err, response, body) {
       if(err){
         console.log(err);
+      } else{
+        complete();
       }
     });
     var j2 = {};
@@ -124,9 +147,12 @@ function NukeAll(){
         uri: conn.url + conn.port + "/" + conn.dailyStates + "/1" + "/led_states/add",
         json: j
     };
+    sleep(2000);
     controlService.makeRequest(options3, function (err, response, body) {
       if(err){
         console.log(err);
+      }else{
+        complete();
       }
     });
     var j3 = {};
@@ -138,9 +164,13 @@ function NukeAll(){
         uri: conn.url + conn.port + "/" + conn.dailyStates + "/1" + "/led_states/add",
         json: j3
     };
+    sleep(5000);
     controlService.makeRequest(options4, function (err, response, body) {
       if(err){
         console.log(err);
+      }else{
+        complete();
+
       }
     });
   }
@@ -150,7 +180,7 @@ function NukeAll(){
   /****************************************************************/
   /* setup Test Profiles                                          */
   /****************************************************************/
-  function addTestProfiles(){
+  function addTestProfiles(complete){
     /* setup profile */
     var j = {};
     j['name'] = "TESTING NAME 1";
@@ -160,9 +190,12 @@ function NukeAll(){
       uri: conn.url + conn.port + "/" + conn.profiles + "/add",
       json: j
     };
+    sleep(2000);
     controlService.makeRequest(options, function (err, response, body) {
       if(err){
         console.log(err);
+      }else{
+        complete();
       }
     });
     /* setup zones */
@@ -173,11 +206,15 @@ function NukeAll(){
       uri: conn.url + conn.port + "/" + conn.profiles + "/1" + "/zones/add",
       json: j2
     };
+    sleep(2000);
     controlService.makeRequest(options2, function (err, response, body) {
       if(err){
         console.log(err);
-      }}
-    );
+      }else{
+        complete();
+      }
+    });
+
     /* add leds to zones */
     let min = 0;
     let max = 60;
@@ -191,9 +228,12 @@ function NukeAll(){
       uri: conn.url + conn.port + "/" + conn.profiles + "/1" + "/zones/1" + "/leds/add",
       json: j3
     };
+    sleep(2000);
     controlService.makeRequest(options, function (err, response, body) {
       if(err){
         console.log(err);
+      }else{
+        complete();
       }
     });
     /* set days */
@@ -210,9 +250,13 @@ function NukeAll(){
       uri: conn.url + conn.port + "/" + conn.profiles + "/1" + "/zones/1" + "/days/add/",
       json: j
     };
+    sleep(2000);
     controlService.makeRequest(options, function (err, response, body) {
       if(err){
         console.log(err);
+      }else{
+        complete();
+
       }
     });
   }
@@ -229,18 +273,46 @@ function sleep(delay){
 
 function setup(){
   console.log("IN SETUP!");
-  addTestController();
-  sleep(5000);
-  addTestLeds();
-  sleep(5000);
-  addTestLEDStates();
-  sleep(5000);
-  addTestDailyStates();
-  sleep(5000);
-  addTestProfiles();
+  var callbackcount = 0;
+  // NukeAll(complete);
+  complete();
+  function complete(){
+    callbackcount++;
+    sleep(2000);
+    if(callbackcount === 1){
+      sleep(2000);
+      addTestController(complete);
+    }
+
+    if(callbackcount === 2){
+      sleep(2000);
+      addTestController(complete);
+    }
+
+    if(callbackcount === 3){
+      sleep(2000);
+      addTestLeds(complete);
+    }
+
+    if(callbackcount === 4){
+      sleep(2000);
+      addTestLEDStates(complete);
+    }
+
+    if(callbackcount === 5){ // uses 4 complete calls
+      sleep(2000);
+      addTestDailyStates(complete);
+    }
+
+    if(callbackcount === 9){
+      sleep(2000);
+      addTestProfiles(complete);
+    }
+  }
 }
 
-// setup();
+
+setup();
 
 module.exports = {
   setup: setup,

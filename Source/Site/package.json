@@ -5,7 +5,8 @@
     "main": "main.js",
     "scripts": {
         "start": "node main.js 8080",
-        "test": "mocha -R spec ./Tests",
+        "test": "mocha -R spec ./Tests/test.js",
+        "test-setup": "node ./Tests/test-setup.js",
         "dev": "nodemon main.js 8080"
     },
     "devDependencies": {},
@@ -17,6 +18,8 @@
         "express-handlebars": "2.0.1",
         "mocha": "^5.0.5",
         "nodemon": "^1.17.3",
+        "request": "^2.85.0",
+        "should": "^13.2.1",
         "supertest": "^3.0.0"
     }
 }
