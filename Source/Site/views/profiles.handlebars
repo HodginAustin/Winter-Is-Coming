@@ -45,18 +45,18 @@
                     <textarea class="form-control" style="width:450px;" name="description">{{description}}</textarea>
                   </td>
                   <td class="row_display_{{id}}">{{zones}}
-                    <a href="/profiles/{{id}}" id="row_view_zones_{{id}}" class="btn text-white badge badge-info">View</a>
+                    <a href="/profiles/{{id}}" id="row_view_zones_{{id}}" class="btn text-white badge badge-info badge-width">View</a>
                   </td>
                   <td class="row_update_{{id}} hidden">
                     <a href="/profiles/{{id}}" class="btn text-white badge badge-warning">Edit Zones</a>
                   </td>
                   <td>
-                    <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
+                    <a id="row_edit_{{id}}" class="btn text-white badge badge-success badge-width" onclick="edit_mode({{id}})">Edit</a>
                   </td>
 
                   <!-- Save -->
                   <td class="row_update_{{id}} hidden">
-                    <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info">Save</button>
+                    <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info badge-width">Save</button>
                   </td>
                 </form>
 
@@ -65,7 +65,7 @@
                   <!-- Hidden element for ID -->
                   <input type="number" name="id" value="{{ id }}" hidden>
                   <td class="row_display_{{id}}">
-                    <button type="submit" id="row_delete_{{id}}" class="btn text-white badge badge-danger">Delete</button>
+                    <button type="submit" id="row_delete_{{id}}" class="btn text-white badge badge-danger badge-width">Delete</button>
                   </td>
                 </form>
               </tr>

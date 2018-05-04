@@ -1,3 +1,8 @@
+.modal-backdrop {
+    /* bug fix - no overlay */
+    display: none;
+}
+
 .navbar-custom {
     background-color: #81AA61;
     height: 56px;
@@ -33,6 +38,14 @@
 
 .above-navbar {
     margin-bottom: 200px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.badge-width {
+    width: 60px;
 }
 
 .circle {
