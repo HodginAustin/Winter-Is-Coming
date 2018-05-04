@@ -182,7 +182,7 @@
 		In addition, we have a setup file that will fill the database with test data that can be checked on the server side. These tests consist of data
 		validation, making sure that each page renders specific values from the test data inside the database.
 	  	\\\\
-		\noindent One of the biggest additions to site since the last progress report, is the addition of several RGB visualizations.
+		\noindent One of the biggest additions to site since the last progress report, is the addition of several RGB visualizations. We felt that the way that colors were being displayed was not as user friendly as it could be. Before this term started just represented by the three RGB numbers and the name given to them by the user. Unless you know those number or the name describes the color it can be difficult to know what was set. So adding color to the site was a must in our eyes. The first edition was to add a colored line below each LED State the represented the RGB values of that state. This allows the user to quickly glance at the state and know what color it is. We then also added a color picker to the add new LED state so that the user does not need to know what the RGB values are just the color that they want. The color picker displays all the possible colors and fills in the RGB boes with the appropriate values.
 		% TODO: Austins section about RGB visualizations.
 		\begin{center}
 			\begin{figure}[H]
@@ -191,6 +191,10 @@
 				\label{fig:siteLEDStates}
 			\end{figure}
 		\end{center}
+
+		\noindent We then added colors to the Daily State Page. Under the LEDState column each ID for the daily state is the appropriate color of that state. This allows the user to be able to at a glance see which color will be at what time.
+
+
 		\begin{center}
 			\begin{figure}[H]
 				\includegraphics[width=\linewidth]{site/daily_states.png}
@@ -199,11 +203,11 @@
 			\end{figure}
 		\end{center}
 
-		\noindent The zones page got a complete make over from what it was. 
+		\noindent The zones page got a complete make over from what it was.
 		Initially, the page simply had two text inputs, each which took a comma separated list of either daily states or LED IDs.
 		The page was updated to have two separate modals. The first modal selects up to 7 days of the week and applies a daily state to them.
-		The second modal selects a range of LED Ids to be added to a zone.
-		
+		The second modal selects a range of LED Ids to be added to a zone. Each zone will also display the the RGB values, brightness and power state ob each zone. The box around it will be the color the zone will be when it is activated.
+
 		\begin{center}
 			\begin{figure}[H]
 				\includegraphics[width=\linewidth]{site/zones_winter.png}
