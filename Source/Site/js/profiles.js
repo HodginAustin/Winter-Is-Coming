@@ -25,7 +25,6 @@ module.exports = function () {
 
     function getProfile(res, context, id, complete) {
         let profileUrl = conn.url + conn.port + '/' + conn.profiles + '/' + id;
-        console.log("getProfile url: " + profileUrl);
         http.get(profileUrl, res => {
             res.setEncoding("utf8");
             body = "";
@@ -39,14 +38,13 @@ module.exports = function () {
             });
         });
       }
-    
+
     router.get('/', function (req, res) {
         var callbackCount = 0;
         var context = req.context;
-
+        console.log("IN GET PROFILES");
         /* Get Daily states */
         dailyStates.get(res, context, complete);
-
         function complete() {
             callbackCount++;
             if (callbackCount >= 1) {

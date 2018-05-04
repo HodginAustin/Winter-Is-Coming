@@ -1,11 +1,9 @@
 <!-- LED States -->
 </br>
-</br>
-</br>
 
-<div class="container">
+<div class="container-fluid above-navbar">
   <div class="row">
-    <div class="col-12">
+    <div class="col-10 center-pls">
       <div class="card">
         <div class="card-body">
           <h4 class="card-title">LED States</h4>
@@ -76,13 +74,13 @@
 
                   <!-- Save -->
                   <td class="row_update_{{id}} hidden">
-                    <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info">Save</button>
+                    <button type="submit" id="row_save_{{id}}" class="btn text-white badge badge-info badge-width">Save</button>
                   </td>
                 </form>
 
                 <!-- Edit -->
                 <td>
-                  <a id="row_edit_{{id}}" class="btn text-white badge badge-success" onclick="edit_mode({{id}})">Edit</a>
+                  <a id="row_edit_{{id}}" class="btn text-white badge badge-success badge-width" onclick="edit_mode({{id}})">Edit</a>
                 </td>
 
                 <!-- Delete -->
@@ -91,7 +89,7 @@
                   <input type="number" name="id" value="{{ id }}" hidden>
 
                   <td class="row_display_{{id}}">
-                    <button type="submit" id="row_delete_{{id}}" class="btn text-white badge badge-danger">Delete</button>
+                    <button type="submit" id="row_delete_{{id}}" class="btn text-white badge badge-danger badge-width">Delete</button>
                   </td>
                 </form>
 
@@ -100,49 +98,64 @@
             </tbody>
           </table>
 
-          <!-- New LED state -->
-          </br>
-          <h5>Add new LED state</h5>
-          <form name="post_ledState" action="/ledStates/add" method="POST">
-            <div class="input-group mb-3">
-              <!-- Red -->
-              <input type="number" class="form-control" placeholder="Red" name="red" value="{{ r }}" min="0" max="255" required>
-              <!-- Green -->
-              <input type="number" class="form-control" placeholder="Green" name="green" value="{{ g }}" min="0" max="255" required>
-              <!-- Blue -->
-              <input type="number" class="form-control" placeholder="Blue" name="blue" value="{{ b }}" min="0" max="255" required>
-              <!-- Intensity -->
-              <input type="number" class="form-control" placeholder="Brightness" name="intensity" value="{{ intensity }}" min="0" max="100"
-                required>
-
-              <!-- Power -->
-              <div class="input-group-prepend">
-                <label class="input-group-text" for="inputGroupSelect01">Power</label>
-              </div>
-              <select class="custom-select" id="inputGroupSelect01" name="power" required>
-                <option value="true" selected>On</option>
-                <option value="false">Off</option>
-              </select>
-
-              <!-- Submit -->
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="submit">Submit</button>
-              </div>
-            </div>
-          </form>
-
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Previous and next buttons -->
-  <span class="float-left bottom-nav-buttons">
-    <a href="/hardware" class="btn btn-outline-info">Previous Section</a>
-  </span>
-  <span class="float-right bottom-nav-buttons">
-    <a href="/dailyStates" class="btn btn-outline-info">Next Section</a>
-  </span>
+</div>
+
+<!-- New LED state -->
+<div class="fixed-bottom">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-10 center-pls">
+        <div class="card">
+          <div class="card-body">
+
+            <h5>Add new LED state</h5>
+            <form name="post_ledState" action="/ledStates/add" method="POST">
+              <div class="input-group mb-3">
+                <!-- Color Picker -->
+                <input type='text' id="color_picker" />
+                <!-- Red -->
+                <input type="number" class="form-control" placeholder="Red" name="red" value="{{ r }}" min="0" max="255" required>
+                <!-- Green -->
+                <input type="number" class="form-control" placeholder="Green" name="green" value="{{ g }}" min="0" max="255" required>
+                <!-- Blue -->
+                <input type="number" class="form-control" placeholder="Blue" name="blue" value="{{ b }}" min="0" max="255" required>
+                <!-- Intensity -->
+                <input type="number" class="form-control" placeholder="Brightness" name="intensity" value="{{ intensity }}" min="0" max="100"
+                  required>
+
+                <!-- Power -->
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="inputGroupSelect01">Power</label>
+                </div>
+                <select class="custom-select" id="inputGroupSelect01" name="power" required>
+                  <option value="true" selected>On</option>
+                  <option value="false">Off</option>
+                </select>
+
+                <!-- Submit -->
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="submit">Submit</button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Previous and next buttons -->
+            <span class="float-left bottom-nav-buttons">
+              <a href="/hardware" class="btn btn-outline-info">Previous Section</a>
+            </span>
+            <span class="float-right bottom-nav-buttons">
+              <a href="/dailyStates" class="btn btn-outline-info">Next Section</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -168,4 +181,24 @@
       $('#row_edit_' + id).addClass("badge-success");
     }
   }
+</script>
+
+<script>
+  $("#color_picker").spectrum({
+    preferredFormat: "rgb",
+    showInput: true,
+    showPalette: true,
+    showAlpha: true,
+    palette: [["red", "rgba(0, 255, 0, .5)", "rgb(0, 0, 255)"]]
+  });
+
+  $("#color_picker").spectrum({
+    move: function (tinycolor) {
+      var color = $('#color_picker').spectrum('get');
+      var rgb = color.toRgb();
+      $('input[name=red]').val(rgb.r);
+      $('input[name=green]').val(rgb.g);
+      $('input[name=blue]').val(rgb.b);
+    },
+  });
 </script>

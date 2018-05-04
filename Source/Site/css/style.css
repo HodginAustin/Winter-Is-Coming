@@ -1,70 +1,94 @@
-.navbar-custom{
-  background-color: #81AA61;
-  height: 56px;
+.modal-backdrop {
+    /* bug fix - no overlay */
+    display: none;
 }
 
+.navbar-custom {
+    background-color: #81AA61;
+    height: 56px;
+}
 
 .navbar-custom .navbar-brand,
 .navbar-custom .navbar-text {
     color: #FFFFFF;
-  }
-
-.nav.navbar-nav li {
-  color: #FFFFFF;
-  float:left;
 }
 
-.nav.navbar-right li{
-  color: #FFFFFF;
-  padding-right: 10px;
-  padding-top: 15px;
+.nav.navbar-nav li {
+    color: #FFFFFF;
+    float: left;
+}
+
+.nav.navbar-right li {
+    color: #FFFFFF;
+    padding-right: 10px;
+    padding-top: 15px;
 }
 
 .hidden {
-  display: none;
+    display: none;
+}
+
+.center-pls {
+    margin: 0 auto;
+}
+
+.below-navbar {
+    margin-top: 56px;
+}
+
+.above-navbar {
+    margin-bottom: 200px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.badge-width {
+    width: 60px;
 }
 
 .circle {
-  height: 50px;
-  width: 50px;
-  border-radius: 50%;
-  display: table-cell;
-  text-align: center;
-  vertical-align: middle;
-  cursor: pointer;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
 }
 
 .checkbox-round {
-  width: 60px;
-  height: 60px;
-  background-color: white;
-  border-radius: 50%;
-  vertical-align: middle;
-  border: 1px solid #ddd;
-  -webkit-appearance: none;
-  outline: none;
-  cursor: pointer;
+    width: 60px;
+    height: 60px;
+    background-color: white;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
 }
 
 .checkbox-container {
-  position: relative;
-  display: inline-block;
+    position: relative;
+    display: inline-block;
 }
 
-div .checkbox-round + label {
-  position: absolute;
-  top: 28%;
-  left: 50%;
-  transform: translateX(-50%);
-  user-select: none;
-  cursor: pointer;
-  pointer-events: none;
+div .checkbox-round+label {
+    position: absolute;
+    top: 28%;
+    left: 50%;
+    transform: translateX(-50%);
+    user-select: none;
+    cursor: pointer;
+    pointer-events: none;
 }
 
 .checkbox-round:checked {
-  background-color: #007BFF;
+    background-color: #007BFF;
 }
 
 .bottom-nav-buttons {
-  margin-top: 15px;
+    margin-top: 15px;
 }
