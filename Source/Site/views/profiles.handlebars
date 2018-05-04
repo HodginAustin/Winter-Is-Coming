@@ -1,8 +1,8 @@
 <br />
 
-<div class="container" style="padding-bottom: 250px;">
+<div class="container-fluid plantergb-card" style="padding-bottom: 250px;">
   <div class="row">
-    <div class="col-12">
+    <div class="col-10 center-pls">
       <div class="card">
         <div class="card-body">
           <h4 class="card-title">Profiles</h4>
@@ -79,57 +79,62 @@
 
 </div>
 
-<nav class="navbar fixed-bottom">
-  <div class="card center-pls">
-    <div class="card-body">
+<div class="fixed-bottom">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-10 center-pls">
+        <div class="card">
+          <div class="card-body">
 
-      <h5>Add new profile</h5>
-      <!-- New profile -->
-      <form name="post_profile" action="/profiles/add" method="POST">
-        <div class="input-group mb-3">
-          <!-- name -->
-          <input type="text" class="form-control" placeholder="Name" name="name" required/>
-          <!-- description -->
-          <textarea class="form-control" placeholder="Description" name="description"></textarea>
-          <!-- Submit -->
-          <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="submit">Submit</button>
+            <h5>Add new profile</h5>
+            <!-- New profile -->
+            <form name="post_profile" action="/profiles/add" method="POST">
+              <div class="input-group mb-3">
+                <!-- name -->
+                <input type="text" class="form-control" placeholder="Name" name="name" required/>
+                <!-- description -->
+                <textarea class="form-control" placeholder="Description" name="description"></textarea>
+                <!-- Submit -->
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="submit">Submit</button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Previous and next buttons -->
+            <span class="float-left bottom-nav-buttons">
+              <a href="/dailyStates" class="btn btn-outline-info">Previous Section</a>
+            </span>
           </div>
         </div>
-      </form>
-
-      <!-- Previous and next buttons -->
-      <span class="float-left bottom-nav-buttons">
-        <a href="/dailyStates" class="btn btn-outline-info">Previous Section</a>
-      </span>
+      </div>
     </div>
   </div>
-</nav>
 
-<script>
+  <script>
 
-  $(document).ready(function () {
-    $('form').submit(function () {
-      $(this).find("button[type='submit']").prop('disabled', true);
+    $(document).ready(function () {
+      $('form').submit(function () {
+        $(this).find("button[type='submit']").prop('disabled', true);
+      });
     });
-  });
 
-  function edit_mode(id) {
-    if ($('.row_update_' + id).hasClass("hidden")) {
-      $('.row_update_' + id).removeClass("hidden");
-      $('.row_display_' + id).addClass("hidden");
-      // Edit button to cancel
-      $('#row_edit_' + id).text("Cancel");
-      $('#row_edit_' + id).removeClass("badge-success");
-      $('#row_edit_' + id).addClass("badge-secondary");
-    } else {
-      $('.row_update_' + id).addClass("hidden");
-      $('.row_display_' + id).removeClass("hidden");
-      // Edit button to edit
-      $('#row_edit_' + id).text("Edit");
-      $('#row_edit_' + id).removeClass("badge-secondary");
-      $('#row_edit_' + id).addClass("badge-success");
+    function edit_mode(id) {
+      if ($('.row_update_' + id).hasClass("hidden")) {
+        $('.row_update_' + id).removeClass("hidden");
+        $('.row_display_' + id).addClass("hidden");
+        // Edit button to cancel
+        $('#row_edit_' + id).text("Cancel");
+        $('#row_edit_' + id).removeClass("badge-success");
+        $('#row_edit_' + id).addClass("badge-secondary");
+      } else {
+        $('.row_update_' + id).addClass("hidden");
+        $('.row_display_' + id).removeClass("hidden");
+        // Edit button to edit
+        $('#row_edit_' + id).text("Edit");
+        $('#row_edit_' + id).removeClass("badge-secondary");
+        $('#row_edit_' + id).addClass("badge-success");
+      }
     }
-  }
 
-</script>
+  </script>

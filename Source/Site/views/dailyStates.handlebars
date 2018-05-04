@@ -1,9 +1,9 @@
 <!-- Daily States -->
 </br>
 
-<div class="container" style="padding-bottom:180px;">
+<div class="container-fluid" style="padding-bottom:120px;">
     <div class="row">
-        <div class="col-12">
+        <div class="col-10 center-pls">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Daily States</h4>
@@ -137,82 +137,99 @@
 
 </div>
 
-<nav class="navbar fixed-bottom">
-    <div class="card center-pls">
-        <div class="card-body">
-            <!-- New Daily state -->
-            <form name="post_dailyState" action="/dailyStates/add" method="POST" class="text-center">
-                <!-- Submit -->
-                <button class="btn btn-outline-secondary" type="submit">
-                    <h5>Add new daily state</h5>
-                </button>
-            </form>
-            <!-- Previous and next buttons -->
-            <span class="float-left bottom-nav-buttons">
-                <a href="/ledStates" class="btn btn-outline-info">Previous Section</a>
-            </span>
-            <span class="float-right bottom-nav-buttons">
-                <a href="/profiles" class="btn btn-outline-info">Next Section</a>
-            </span>
+<div class="fixed-bottom">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-10 center-pls">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+
+                            <div class="col-4">
+                                <!-- Previous button -->
+                                <span class="float-left bottom-nav-buttons">
+                                    <a href="/ledStates" class="btn btn-outline-info">Previous Section</a>
+                                </span>
+                            </div>
+
+                            <div class="col-4">
+                                <!-- New Daily state -->
+                                <form name="post_dailyState" action="/dailyStates/add" method="POST" class="text-center">
+                                    <!-- Submit -->
+                                    <button class="btn btn-outline-success" type="submit">
+                                        <h5>Add new daily state</h5>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Next button -->
+                            <div class="col-4">
+                                <span class="float-right bottom-nav-buttons">
+                                    <a href="/profiles" class="btn btn-outline-info">Next Section</a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</nav>
 
-<script>
-    $(document).ready(function () {
-        $('.timeStateMap').each(function (i, obj) {
-            console.log($(this));
-            sortTable($(this), 'asc');
+    <script>
+        $(document).ready(function () {
+            $('.timeStateMap').each(function (i, obj) {
+                console.log($(this));
+                sortTable($(this), 'asc');
+            });
+
+            to_am_pm();
+
+            $('form').submit(function () {
+                $(this).find("button[type='submit']").prop('disabled', true);
+            });
         });
+        function to_am_pm() {
+            let noon = 12 * 60 * 60;
+            let last_second = 24 * 60 * 60;
+            $('.disp_time').each(function (i, obj) {
+                let normal_time = "";
+                let sec_num = parseInt($(this).text(), 10);
 
-        to_am_pm();
+                if (sec_num >= 0 && sec_num <= last_second) {
+                    var hours = Math.floor(sec_num / 3600);
+                    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+                    var seconds = sec_num - (hours * 3600) - (minutes * 60);
 
-        $('form').submit(function () {
-            $(this).find("button[type='submit']").prop('disabled', true);
-        });
-    });
-    function to_am_pm() {
-        let noon = 12 * 60 * 60;
-        let last_second = 24 * 60 * 60;
-        $('.disp_time').each(function (i, obj) {
-            let normal_time = "";
-            let sec_num = parseInt($(this).text(), 10);
+                    // Hour adjustment
+                    hours = (sec_num > noon ? hours - 12 : hours);
 
-            if (sec_num >= 0 && sec_num <= last_second) {
-                var hours = Math.floor(sec_num / 3600);
-                var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-                var seconds = sec_num - (hours * 3600) - (minutes * 60);
+                    if (hours == 0) { hours = 12; }
+                    if (minutes < 10) { minutes = "0" + minutes; }
+                    if (seconds < 10 && seconds > 0) { seconds = "0" + seconds; }
+                    let ampm = (sec_num < noon ? "AM" : "PM");
 
-                // Hour adjustment
-                hours = (sec_num > noon ? hours - 12 : hours);
+                    normal_time = hours + ':' + minutes + (seconds > 0 ? ':' + seconds : '') + ' ' + ampm;
+                } else {
+                    normal_time = sec_num + "s. after midnight";
+                }
 
-                if (hours == 0) { hours = 12; }
-                if (minutes < 10) { minutes = "0" + minutes; }
-                if (seconds < 10 && seconds > 0) { seconds = "0" + seconds; }
-                let ampm = (sec_num < noon ? "AM" : "PM");
+                $(this).text(normal_time);
+            });
+        };
 
-                normal_time = hours + ':' + minutes + (seconds > 0 ? ':' + seconds : '') + ' ' + ampm;
-            } else {
-                normal_time = sec_num + "s. after midnight";
-            }
+        function sortTable(table, order) {
+            var asc = order === 'asc', tbody = table.find('tbody');
 
-            $(this).text(normal_time);
-        });
-    };
+            tbody.find('tr').sort(function (a, b) {
+                ae = parseInt($('td:first', a)[0].innerHTML);
+                be = parseInt($('td:first', b)[0].innerHTML);
+                console.log("comparing " + ae + " to " + be);
+                if (asc) {
+                    return ae - be;
+                } else {
+                    return be - ae;
+                }
+            }).appendTo(tbody);
+        }
 
-    function sortTable(table, order) {
-        var asc = order === 'asc', tbody = table.find('tbody');
-
-        tbody.find('tr').sort(function (a, b) {
-            ae = parseInt($('td:first', a)[0].innerHTML);
-            be = parseInt($('td:first', b)[0].innerHTML);
-            console.log("comparing " + ae + " to " + be);
-            if (asc) {
-                return ae - be;
-            } else {
-                return be - ae;
-            }
-        }).appendTo(tbody);
-    }
-
-</script>
+    </script>
