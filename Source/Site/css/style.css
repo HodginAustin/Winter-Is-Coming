@@ -35,6 +35,11 @@
     margin-bottom: 200px;
 }
 
+.color-box {
+    width: 100px;
+    height: 20px;
+}
+
 .circle {
     height: 50px;
     width: 50px;
