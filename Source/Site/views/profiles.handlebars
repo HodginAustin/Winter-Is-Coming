@@ -1,7 +1,6 @@
 <br />
-<br />
-<br />
-<div class="container">
+
+<div class="container" style="padding-bottom: 250px;">
   <div class="row">
     <div class="col-12">
       <div class="card">
@@ -38,12 +37,12 @@
 
                   <td class="row_display_{{id}}">{{name}}</td>
                   <td class="row_update_{{id}} hidden">
-                    <input type="text" class="from-control" style="width:200px;" name="name" value="{{name}}" required/>
+                    <input type="text" class="form-control" style="width:200px;" name="name" value="{{name}}" required/>
                   </td>
                   <td>{{id}}</td>
                   <td class="row_display_{{id}}">{{description}}</td>
                   <td class="row_update_{{id}} hidden">
-                    <textarea class="from-control" style="width:450px;" name="description">{{description}}</textarea>
+                    <textarea class="form-control" style="width:450px;" name="description">{{description}}</textarea>
                   </td>
                   <td class="row_display_{{id}}">{{zones}}
                     <a href="/profiles/{{id}}" id="row_view_zones_{{id}}" class="btn text-white badge badge-info">View</a>
@@ -73,34 +72,39 @@
               {{/each}}
             </tbody>
           </table>
-          <br />
-          <h5>Add new profile</h5>
-          <!-- New profile -->
-          <form name="post_profile" action="/profiles/add" method="POST">
-            <div class="input-group mb-3">
-              <!-- name -->
-              <input type="text" class="form-control" placeholder="Name" name="name" required/>
-              <!-- description -->
-              <input type="text" class="form-control" placeholder="Description" name="description" />
-
-              <!-- Submit -->
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="submit">Submit</button>
-              </div>
-            </div>
-          </form>
-
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Previous and next buttons -->
-  <span class="float-left bottom-nav-buttons">
-    <a href="/dailyStates" class="btn btn-outline-info">Previous Section</a>
-  </span>
 </div>
 
+<nav class="navbar fixed-bottom">
+  <div class="card center-pls">
+    <div class="card-body">
+
+      <h5>Add new profile</h5>
+      <!-- New profile -->
+      <form name="post_profile" action="/profiles/add" method="POST">
+        <div class="input-group mb-3">
+          <!-- name -->
+          <input type="text" class="form-control" placeholder="Name" name="name" required/>
+          <!-- description -->
+          <textarea class="form-control" placeholder="Description" name="description"></textarea>
+          <!-- Submit -->
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="submit">Submit</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Previous and next buttons -->
+      <span class="float-left bottom-nav-buttons">
+        <a href="/dailyStates" class="btn btn-outline-info">Previous Section</a>
+      </span>
+    </div>
+  </div>
+</nav>
 
 <script>
 

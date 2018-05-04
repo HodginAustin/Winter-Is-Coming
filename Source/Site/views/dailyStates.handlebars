@@ -1,9 +1,7 @@
 <!-- Daily States -->
 </br>
-</br>
-</br>
 
-<div class="container">
+<div class="container" style="padding-bottom:180px;">
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -67,9 +65,7 @@
                                                 <td class="disp_time">{{ time }}</td>
                                                 <!-- State -->
                                                 <td>
-                                                    {{#if state}}
-                                                    {{{getLEDStateFromID state ../../../LEDStates}}}
-                                                    {{else}}
+                                                    {{#if state}} {{{getLEDStateFromID state ../../../LEDStates}}} {{else}}
                                                     <a class="text-white badge badge-secondary">None</a>
                                                     {{/if}}
                                                 </td>
@@ -134,30 +130,37 @@
                     </br>
                     {{/each}}
 
-                    <!-- New Daily state -->
-                    <form name="post_dailyState" action="/dailyStates/add" method="POST">
-                        <!-- Submit -->
-                        <button class="btn btn-outline-secondary" type="submit">
-                            <h5>Add new daily state</h5>
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Previous and next buttons -->
-    <span class="float-left bottom-nav-buttons">
-        <a href="/ledStates" class="btn btn-outline-info">Previous Section</a>
-    </span>
-    <span class="float-right bottom-nav-buttons">
-        <a href="/profiles" class="btn btn-outline-info">Next Section</a>
-    </span>
 </div>
+
+<nav class="navbar fixed-bottom">
+    <div class="card center-pls">
+        <div class="card-body">
+            <!-- New Daily state -->
+            <form name="post_dailyState" action="/dailyStates/add" method="POST" class="text-center">
+                <!-- Submit -->
+                <button class="btn btn-outline-secondary" type="submit">
+                    <h5>Add new daily state</h5>
+                </button>
+            </form>
+            <!-- Previous and next buttons -->
+            <span class="float-left bottom-nav-buttons">
+                <a href="/ledStates" class="btn btn-outline-info">Previous Section</a>
+            </span>
+            <span class="float-right bottom-nav-buttons">
+                <a href="/profiles" class="btn btn-outline-info">Next Section</a>
+            </span>
+        </div>
+    </div>
+</nav>
 
 <script>
     $(document).ready(function () {
-        $('.timeStateMap').each(function(i, obj) {
+        $('.timeStateMap').each(function (i, obj) {
             console.log($(this));
             sortTable($(this), 'asc');
         });

@@ -1,8 +1,6 @@
 <br />
-<br />
-<br />
 
-<div class="container">
+<div class="container" style="padding-bottom: 220px;">
   <div class="row">
     <div class="col-12">
       <div class="card">
@@ -234,32 +232,41 @@
           </div>
           </br>
 
-          <h5>Add new zone</h5>
-          <!-- New zone -->
-          <form name="post_zone" action="/profiles/{{Profile.id}}/zones/add" method="POST">
-            <div class="input-group mb-3">
-              <!-- Hidden element for ID -->
-              <input type="number" name="id" value="{{ Profile.id }}" hidden>
-
-              <!-- name -->
-              <input type="text" class="form-control" placeholder="Name" name="name" required/>
-
-              <!-- Submit -->
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="submit">Submit</button>
-              </div>
-            </div>
-          </form>
 
         </div>
       </div>
 
-      <!-- Previous and next buttons -->
-      <span class="float-left bottom-nav-buttons">
-        <a href="/profiles" class="btn btn-outline-info">Previous Section</a>
-      </span>
     </div>
   </div>
+
+  <nav class="navbar fixed-bottom" role="navigation">
+    <div class="card center-pls">
+      <div class="card-body">
+        <h5>Add new zone</h5>
+        <!-- New zone -->
+        <form name="post_zone" action="/profiles/{{Profile.id}}/zones/add" method="POST">
+          <div class="input-group mb-3">
+            <!-- Hidden element for ID -->
+            <input type="number" name="id" value="{{ Profile.id }}" hidden>
+
+            <!-- name -->
+            <input type="text" class="form-control" placeholder="Name" name="name" required/>
+
+            <!-- Submit -->
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="submit">Submit</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Previous and next buttons -->
+        <span class="float-left bottom-nav-buttons">
+          <a href="/profiles" class="btn btn-outline-info">Previous Section</a>
+        </span>
+      </div>
+    </div>
+  </nav>
+
 
   <script>
     function edit_mode(id) {
