@@ -1,6 +1,7 @@
 var express = require('express'); /*express for handlebars*/
 var handlebars = require('express-handlebars'); /* templating engine */
 var bodyParser = require('body-parser');
+var tinycolor = require("tinycolor2");
 const path = require("path"); /* allows use of path.join for folder paths */
 const http = require('http'); /* make internal requests to control service */
 
