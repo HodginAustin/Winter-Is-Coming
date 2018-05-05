@@ -176,7 +176,7 @@
 		this bug only occurs for the system with three strips. Systems with two nanos and two strips see less than a system with three. Looking at the trends 
 		of LED states seen,	the more nanos and strips used, the more chance there is of getting random errors in LED states. To combat these errors, the state 
 		composer was first altered to detect errors on writing to the I2C file stream. If an error was detected when trying to write to the bus, the 
-		serial_send() function would wait, and then attempt to send the same data again.  Currently the serial_send() fucntion is given two extra tries to 
+		serial send function would wait, and then attempt to send the same data again.  Currently the serial send fucntion is given two extra tries to 
 		send if it sees continued failures. This initially fixed all errors with updating a single LED anywhere in the hardware. 
 		\\\\
 		\noindent However, this was not quite enough, because the system still continued to error on the I2C serial bus. In this case, entire strips of LEDs 
