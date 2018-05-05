@@ -2,8 +2,8 @@ GCC = g++ -std=c++14 -Wall -g
 INTERNAL_STATE_OBJECTS = ./out/internalstate.o ./out/led.o ./out/zone.o ./out/dailystate.o ./out/ledstate.o ./out/controller.o ./out/profile.o
 API_OBJECTS = ./out/api.o
 DATA_PARSER_OBJECTS = ./out/dataparser.o
-STATE_COMPOSER = ./out/statecomposer.o
-SETTINGS = ./out/settings.o
+STATE_COMPOSER_OBJECTS = ./out/statecomposer.o
+SETTINGS_OBJECTS = ./out/settings.o
 
 default: directories
 	make settings
@@ -27,7 +27,7 @@ control_service_main:
 	$(GCC) -c ./main.cpp -o ./out/main.o -lpistache -lpthread
 
 control_service:
-	$(GCC) -o ./out/plantergb -L/usr/local/lib ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) $(DATA_PARSER_OBJECTS) $(STATE_COMPOSER) $(SETTINGS) -lpistache -lpthread -lsqlite3
+	$(GCC) -o ./out/plantergb -L/usr/local/lib ./out/main.o $(INTERNAL_STATE_OBJECTS) $(API_OBJECTS) $(DATA_PARSER_OBJECTS) $(STATE_COMPOSER_OBJECTS) $(SETTINGS_OBJECTS) -lpistache -lpthread -lsqlite3
 
 
 # Internal State
@@ -76,7 +76,7 @@ settings:
 
 
 # Tests
-tests: directories internal_state_tests data_parser_tests
+tests: directories internal_state_tests data_parser_tests state_composer_tests
 
 internal_state_tests:
 	$(GCC) -c ./tests/internalState/run_tests.cpp -o ./out/tests/internal_state.o
@@ -84,8 +84,11 @@ internal_state_tests:
 
 data_parser_tests:
 	$(GCC) -c ./tests/dataParser/run_tests.cpp -o ./out/tests/data_parser.o
-	$(GCC) -o ./out/tests/data_parser $(INTERNAL_STATE_OBJECTS) $(DATA_PARSER_OBJECTS) $(SETTINGS) ./out/tests/data_parser.o -lsqlite3
+	$(GCC) -o ./out/tests/data_parser $(INTERNAL_STATE_OBJECTS) $(DATA_PARSER_OBJECTS) $(SETTINGS_OBJECTS) ./out/tests/data_parser.o -lsqlite3
 
+state_composer_tests:
+	$(GCC) -c ./tests/stateComposer/run_tests.cpp -o ./out/tests/state_composer.o
+	$(GCC) -o ./out/tests/state_composer $(STATE_COMPOSER_OBJECTS) $(INTERNAL_STATE_OBJECTS $(DATA_PARSER_OBJECTS) $(SETTINGS_OBJECTS)) ./out/tests/state_composer.o -lpthread
 
 # Install
 copy_api:
