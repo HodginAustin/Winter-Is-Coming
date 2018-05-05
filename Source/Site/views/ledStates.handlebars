@@ -113,6 +113,8 @@
       <h5>Add new LED state</h5>
       <form name="post_ledState" action="/ledStates/add" method="POST">
         <div class="input-group mb-3">
+          <!-- Color Picker -->
+          <input type='text' id="color_picker" />
           <!-- Red -->
           <input type="number" class="form-control" placeholder="Red" name="red" value="{{ r }}" min="0" max="255" required>
           <!-- Green -->
@@ -173,4 +175,24 @@
       $('#row_edit_' + id).addClass("badge-success");
     }
   }
+</script>
+
+<script>
+$("#color_picker").spectrum({
+    preferredFormat: "rgb",
+    showInput: true,
+    showPalette: true,
+    showAlpha: true,
+    palette: [["red", "rgba(0, 255, 0, .5)", "rgb(0, 0, 255)"]]
+});
+
+$("#color_picker").spectrum({
+    move: function(tinycolor) {
+      var color = $('#color_picker').spectrum('get');
+      var rgb = color.toRgb();
+      $('input[name=red]').val(rgb.r);
+      $('input[name=green]').val(rgb.g);
+      $('input[name=blue]').val(rgb.b);
+    },
+});
 </script>
