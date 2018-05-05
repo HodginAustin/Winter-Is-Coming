@@ -139,9 +139,10 @@
 	Zones set the color, intensity, and power state of their LEDs based on a configurable schedule.
 	Existing plant lighting systems offer little to no configuration options and cost between \$70 and \$100. \cite{expensive1} \cite{expensive2} \cite{expensive3}
 	Our team is building an LED plant growing system from the ground up to offer configuration options and affordability.
-	The trade off made for a lower price is more involvement during setup. Our team intends to release the project as open source software for the DIY community.
-	Initially the project will require users to purchase the specific micro controllers used by the system, flash the control software, and wire the system together.
-	Our stretch goals include purchasable kits which include all of the necessary parts and instructions to build the system for yourself, and possibly custom enclosures that are sold as pre-made working systems.
+	The trade off made for a lower price is more involvement during setup. Our team intends to release the project as open source software for the DIY 
+	community. Initially the project will require users to purchase the specific micro controllers used by the system, flash the control software, and wire 
+	the system together. Our stretch goals include purchasable kits which include all of the necessary parts and instructions to build the system for 
+	oneself, and possibly custom enclosures that are sold as pre-made working systems.
 
 	\section{Goals}
 	The PlanteR-GB lighting system will allow users to change individual LEDs to a specific color and intensity at any time throughout the day or week.
@@ -170,19 +171,43 @@
 			\end{figure}
 		\end{center}
 	\subsection{State Composer}
-		\noindent The State Composer remains untested, and currently still has the bug from ALPHA that turned random lights to random colors. However, this bug only
-		occurs for the system with three strips at full brightness.
+		\noindent The State Composer remains untested due to working on issues with LED updating. The system currently still has a bug similar to the one 
+		seen in ALPHA where random lights occasionally turn different colors than they are assigned. From observation in testing multiple configurations, 
+		this bug only occurs for the system with three strips. Systems with two nanos and two strips see less than a system with three. Looking at the trends 
+		of LED states seen,	the more nanos and strips used, the more chance there is of getting random errors in LED states. To combat these errors, the state 
+		composer was first altered to detect errors on writing to the I2C file stream. If an error was detected when trying to write to the bus, the 
+		serial_send() function would wait, and then attempt to send the same data again.  Currently the serial_send() fucntion is given two extra tries to 
+		send if it sees continued failures. This initially fixed all errors with updating a single LED anywhere in the hardware. 
+		\\\\
+		\noindent However, this was not quite enough, because the system still continued to error on the I2C serial bus. In this case, entire strips of LEDs 
+		would stop updating. This was assumed to occur because the I2C data clock was constantly running due to the file stream being constantly open. This 
+		would allow enough time for the nanos to lose their clock sync with the Raspberry Pi. The composer was thus altered to only use the I2C serial bus and 
+		file stream when absolutely necessary. This meant only on a current state change. To accomplish this, the state composer now stores an unordered map 
+		of profile zone IDs to LED states. While looping through the zones now, each ID is checked in the map with the LED state associated with it. If the LED 
+		state for a particular zone changes in the internal state, it therefore doesn't match what is stored in the map. The composer will then store the new 
+		state, open the I2C file stream, start composing on that zone, and close the I2C file stream when complete. 
+		\\\\
+		\noindent Along with the I2C changes, the state composer's debugging log function was also updated with file output buffer flushes. Before this 
+		update, the	composer would run through the internal state fast enough that the output to the log file was overflowing its buffer. This meant not every 
+		action taken by the composer got logged. By adding a buffer flush to every print statement to the file, every action successfully showed up in the log 
+		file. This initially allowed the group to figure out that the nanos were losing sync with the I2C data clock. 
 		\\\\
 	\subsection{Site}
 		\noindent The Site has basic unit testing completed, but needs more work when it comes to confirming that the pages are rendering data correctly.
-		It has also had a variety of minor improvements and tweaks, and is in very good shape. We moved the navbar buttons around to reflect the natural
+		It has also had a variety of minor improvements and tweaks, and is in very good shape. The navbar buttons were moved around to reflect the natural
 		flow of setup. This generally means going from hardware to LED states, to Daily States, to Profiles. This is also reflected by the addition of new
 		progress buttons at the bottom of each page. These buttons allow the user to go to the next logical page, following the previously stated flow.
 		Site testing consists of page rendering tests that only make sure the page is being rendered, and a 200 status code is given back to the server.
 		In addition, we have a setup file that will fill the database with test data that can be checked on the server side. These tests consist of data
 		validation, making sure that each page renders specific values from the test data inside the database.
 	  	\\\\
-		\noindent One of the biggest additions to site since the last progress report, is the addition of several RGB visualizations. We felt that the way that colors were being displayed was not as user friendly as it could be. Before this term started just represented by the three RGB numbers and the name given to them by the user. Unless you know those number or the name describes the color it can be difficult to know what was set. So adding color to the site was a must in our eyes. The first edition was to add a colored line below each LED State the represented the RGB values of that state. This allows the user to quickly glance at the state and know what color it is. We then also added a color picker to the add new LED state so that the user does not need to know what the RGB values are just the color that they want. The color picker displays all the possible colors and fills in the RGB boes with the appropriate values.
+		\noindent One of the biggest additions to site since the last progress report, is the addition of several RGB visualizations. The group felt that the 
+		way that colors were being displayed was not as user friendly as it could be. Before this term started just represented by the three RGB numbers and 
+		the name given to them by the user. Unless you know those number or the name describes the color it can be difficult to know what was set. So adding 
+		color to the site was a must in our eyes. The first edition was to add a colored line below each LED State the represented the RGB values of that 
+		state. This allows the user to quickly glance at the state and know what color it is. A color picker was also added to the add new LED state so that 
+		the user does not need to know what the RGB values are - just the color that they want. The color picker displays all the possible colors and fills in 
+		the RGB boxes with the appropriate values.
 		% TODO: Austins section about RGB visualizations.
 		\begin{center}
 			\begin{figure}[H]
@@ -192,7 +217,8 @@
 			\end{figure}
 		\end{center}
 
-		\noindent We then added colors to the Daily State Page. Under the LEDState column each ID for the daily state is the appropriate color of that state. This allows the user to be able to at a glance see which color will be at what time.
+		\noindent Colors were then added to the Daily State Page. Under the LEDState column each ID for the daily state is the appropriate color of that 
+		state. This allows the user to be able to at a glance see which color will be at what time.
 
 
 		\begin{center}
@@ -206,7 +232,8 @@
 		\noindent The zones page got a complete make over from what it was.
 		Initially, the page simply had two text inputs, each which took a comma separated list of either daily states or LED IDs.
 		The page was updated to have two separate modals. The first modal selects up to 7 days of the week and applies a daily state to them.
-		The second modal selects a range of LED Ids to be added to a zone. Each zone will also display the the RGB values, brightness and power state ob each zone. The box around it will be the color the zone will be when it is activated.
+		The second modal selects a range of LED Ids to be added to a zone. Each zone will also display the the RGB values, brightness and power state of each 
+		zone. The box around it will be the color the zone will be, when it is activated.
 
 		\begin{center}
 			\begin{figure}[H]
@@ -223,11 +250,11 @@
 			\end{figure}
 		\end{center}
 
-		\noindent In addition to RGB visualization, we added a few new options to the Settings page. These settings are more advanced and may require more attention.
-		One of these settings is the LED hardware simulator. This new settings page, used for more development testing, is used when one wants to test, without
-		access to any physical LEDs. This is labeled an advanced setting for Dev work only and requires some changing in the state composer. The second setting added is a control
-		service shutdown, which shuts down the planter-gb service. This is another advanced setting as it may require more work to get back up and running.
-		This setting is mainly used in testing and other dev situations.
+		\noindent In addition to RGB visualization, we added a few new options to the Settings page. These settings are more advanced and may require more 
+		attention. One of these settings is the LED hardware simulator. This new settings page is used when one wants to test without access to any physical 
+		LEDs. It is labeled as an advanced setting for development work only, requires a change in the state composer, and thus a recompilation of it and the
+		control service. The second setting added is a control service shutdown, which shuts down the planter-gb service. This is another advanced setting as 
+		it may require more work to get back up and running. This setting is mainly used in testing and other development situations.
 
 		\begin{center}
 			\begin{figure}[H]
@@ -236,7 +263,7 @@
 				\label{fig:siteSettings}
 			\end{figure}
 		\end{center}
-		\noindent The hardware page got a little update. We added the ID of each LED to make it easier down the line to add to zones. We think this addition
+		\noindent The hardware page got a little update. The ID of each LED was added to make it easier later to add to zones. The group thinks this addition
 		will help users understand which indexes are needed for their desired setup.
 		\begin{center}
 			\begin{figure}[H]
@@ -263,10 +290,10 @@
 		This is a great way for our client to update the system and set it up in the future without relying on a development version or sending any emails.
 		This release can also be used by anyone else in the community who wants to use our system.
 	\subsection{LED simulator}
-		\noindent The LED simulator is a system made to debug the lighting system without access to a raspberry pi.
-		The state composer can be lightly modified to use a different function. The alternative function makes a web request to an endpoint running on the site.
-		The simulator takes the same input as the LED controller over serial, and displays information in a similar way.
-		This has been massively useful for testing purposes, as it allows us to work on the project on our laptops without access to a system.
+		\noindent The LED simulator is a system made to debug the lighting system without access to a raspberry pi, nanos, and LED strips.
+		The state composer can be lightly modified to use a different function. The alternative function makes a web request to an endpoint running on the 
+		site. The simulator takes the same input as a LED controller over serial, and displays information in a similar way. This has been massively useful 
+		for testing purposes, as it allows group members to work on the project on laptops, without access to a full system.
 
 		\begin{center}
 			\begin{figure}[H]
@@ -279,20 +306,23 @@
 
 	\section{Problems}
 		\subsection{Random LEDs changing colors, entire strips occasionally denying input}
-			This problem has plagued us since the first time we got LEDs to work.
-			At first it was due to using the UART serial protocol, but that was replaced with I2C which allows for complicated addressing over a single bus.
-			After that, we implemented a system that would store the state active for every zone in the system.
-			In order to send serial data, the state composer first checks to see if the state has changed for each zone.
-			This reduced the chances of the serial bus becoming saturated and corrupting data.
-			The last change was to open the I2C bus before writing to it, and close it when done. This added extra work for each write, but also eliminated some issues.
-			The system now works perfectly with two controllers. However, only one controller has an LED strip of 60, and it is set to 20 percent brightness.
-			We have still been seeing issues when using a system with an advanced power supply running three controllers and three LED strips at full brightness.
+			This problem has plagued the group since the first time LEDs started to get data values.
+			At first it was due to using the UART serial protocol. However, that was replaced with the I2C serial protocol, which allows for complicated 
+			addressing over a single bus. Currently, the system only sees discolorations when using multiple nanos and LED strips on a larger power supply. 
 
 			\subsubsection{Solution}
-				We have found solutions to get at least one variation of our system working, that is with a single strip of lights at 20 percent brightness.
-				However, we have not yet found a solution to the three strips problem. It is a very difficult one to debug because it is intermittent and random.
+				The group implemented systems that would give the composer more tries to update LEDs, and later store a temporary active state for every zone 
+				in the system. Along with the logical changes, the I2C file stream was only used on a discovered state change. This adds extra I/O work for 
+				each write to the I2C bus, but eliminates most issues with LED updating. This also didn't significantly impact the update speed of the 
+				composition. The system now works perfectly with two controllers. However, only one controller has a strip of 60 LEDs, and is set to 20 
+				percent brightness. 
+				\\\\
+				Currently the group has found solutions to get at least one variation of our system working, which is with a single strip of lights at 20 
+				percent brightness. However, we have not yet found a solution to the multiple strips problem. It is difficult to debug because the LEDs that 
+				discolor are intermittent and random. At this point, the group is hypothesizing that this issue may be more related to the hardware, than 
+				the software.
 
-		\subsection{Initializing memory to zero}
+		\subsection{Initializing variables in memory to zero}
 			In almost every case with the 6 models in the system, the values needed to initially be set to zero.
 			In nearly every programming language that is not C or C++, variables are initialized to zero.
 			This is something we forgot about in a few cases for the models' private variables.
