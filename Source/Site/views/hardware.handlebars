@@ -1,11 +1,9 @@
 <!-- Hardware (controllers, LEDs) -->
 </br>
-</br>
-</br>
 
-<div class="container">
+<div class="container-fluid" style="padding-bottom:250px;">
     <div class="row">
-        <div class="col-12">
+        <div class="col-10 center-pls">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">LED Strips</h4>
@@ -107,52 +105,57 @@
                     </br>
                     {{/each}}
 
-                    <!-- New LED strip & controller -->
-                    </br>
-                    <h5>Add new LED strip</h5>
-                    <p>The IO port is the unique hardware ID given to a specific LED controller. These IDs are pre-flashed onto
-                        the LED controllers with a
-                        <i>#define DEVICE_ID</i>
-                    </p>
-                    <form name="post_led_strip" action="/hardware/add" method="POST">
-                        <div class="input-group mb-3">
-                            <!-- Controller details -->
-                            <input type="number" class="form-control" placeholder="Address" name="address" hidden>
-                            <input type="number" class="form-control" placeholder="Details" name="details" hidden>
-                            <input type="number" class="form-control" placeholder="IO Port" name="io" min="1">
-
-                            <!-- Submit -->
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-success" type="submit">Submit</button>
-                            </div>
-                        </div>
-                    </form>
                 </div>
-
             </div>
-
         </div>
-
-
     </div>
 
-    <!-- Previous and next buttons -->
-    <span class="float-left bottom-nav-buttons">
-        <a href="/plant" class="btn btn-outline-info">Previous Section</a>
-    </span>
-    <span class="float-right bottom-nav-buttons">
-        <a href="/ledStates" class="btn btn-outline-info">Next Section</a>
-    </span>
 </div>
 
 
+<!-- New LED strip & controller -->
+<div class="fixed-bottom">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-10 center-pls">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Add new LED strip</h5>
+                        <p>The IO port is the unique hardware ID given to a specific LED controller. These IDs are pre-flashed
+                            onto the LED controllers with a
+                            <i>#define DEVICE_ID</i>
+                        </p>
+                        <form name="post_led_strip" action="/hardware/add" method="POST">
+                            <div class="input-group mb-3">
+                                <!-- Controller details -->
+                                <input type="number" class="form-control" placeholder="Address" name="address" hidden>
+                                <input type="number" class="form-control" placeholder="Details" name="details" hidden>
+                                <input type="number" class="form-control" placeholder="IO Port" name="io" min="1">
+
+                                <!-- Submit -->
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-success" type="submit">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- Previous and next buttons -->
+                        <span class="float-left bottom-nav-buttons">
+                            <a href="/plant" class="btn btn-outline-info">Previous Section</a>
+                        </span>
+                        <span class="float-right bottom-nav-buttons">
+                            <a href="/ledStates" class="btn btn-outline-info">Next Section</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-
-<script>
-    $(document).ready(function () {
-        $('form').submit(function () {
-            $(this).find("button[type='submit']").prop('disabled', true);
+    <script>
+        $(document).ready(function () {
+            $('form').submit(function () {
+                $(this).find("button[type='submit']").prop('disabled', true);
+            });
         });
-    });
-</script>
+    </script>

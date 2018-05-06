@@ -4,14 +4,16 @@
 <head>
   <title>PlanteR-GB</title>
   <link rel="icon" href="../img/logo2-interior-shadow.png">
-  <link rel="stylesheet" href="../css/style.css" />
+  <link rel='stylesheet' href='../css/spectrum.css' /> <!--For color picker -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/style.css" />
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script src='../js/spectrum.js'></script>  <!--For color picker -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-  <nav class="navbar navbar-expand navbar-custom">
+  <nav class="navbar navbar-expand navbar-custom fixed-top">
     <!-- Header -->
     <a class="navbar-brand" href="/plant">
       <span>
@@ -48,13 +50,13 @@
     <ul class="navbar-nav">
       <li class="nav-item">
         <a class="btn navbar-text nav-right" data-toggle="modal" data-target="#changeCurrentProfile">
-          <span class="badge badge-pill badge-primary">Current Profile: {{#currentProfile}}{{name}}{{/currentProfile}}</span>
+          <span class="btn-sm btn-primary">Current Profile: {{#currentProfile}}{{name}}{{/currentProfile}}</span>
         </a>
       </li>
     </ul>
 
     <!-- Select current profile -->
-    <div id="changeCurrentProfile" class="modal" tabindex="-1" role="dialog">
+    <div id="changeCurrentProfile" class="modal fade" tabindex="-1" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -63,6 +65,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
+          
           <div class="modal-body">
             <div class="list-group">
               {{#each Profiles}}
@@ -73,7 +76,7 @@
 
                   <button class="btn list-group-item list-group-item-action col-12">
                     {{name}} {{#if active}}
-                    <span class="badge badge-success float-right m-2">Active</span>
+                    <span class="badge badge-success float-right m-2 badge-width">Active</span>
                     {{/if}}
                   </button>
                 </form>
@@ -88,8 +91,10 @@
       </div>
     </div>
   </nav>
-
-  {{{body}}}
+  
+  <div class="below-navbar">
+    {{{body}}}
+  </div>
 
 </body>
 
