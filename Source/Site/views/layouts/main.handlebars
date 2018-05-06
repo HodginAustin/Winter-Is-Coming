@@ -46,6 +46,13 @@
       </li>
     </ul>
 
+    <!-- Refresh state -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <button class="btn btn-sm btn-warning navbar-text nav-right" onclick="refresh_state(this)">Refresh</button>
+      </li>
+    </ul>
+
     <!-- Current profile -->
     <ul class="navbar-nav">
       <li class="nav-item">
@@ -95,6 +102,20 @@
   <div class="below-navbar">
     {{{body}}}
   </div>
+
+  <script type="text/javascript">
+    function refresh_state(e) {
+      $(e).prop("disabled", true);
+
+      $.ajax({
+        type: 'POST',
+        url: '/refreshState',
+        success: function (data) {
+          $(e).prop("disabled", false);
+        }
+      });
+    }
+  </script>
 
 </body>
 

@@ -18,7 +18,7 @@
 
 // We All Didn't Know Any Better Stupidity Inhibitor
 // TODO: Update once better power system is found
-#define WADKABSI 0.1f
+#define WADKABSI 0.2f
 
 // The amount of microseconds to wait for the
 // Arduino Nano to send it's ACK and catch up
@@ -164,6 +164,9 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
     *p_s_buffer++ = g;
     *p_s_buffer++ = b;
 
+    // Open in non terminal, non blocking, read-write mode
+    i2cFileStream = open(I2C_BUS, O_RDWR | O_NOCTTY | O_NDELAY);
+
 	if (i2cFileStream != -1) {
 
         if (ioctl(i2cFileStream, I2C_SLAVE, (io + i2cAddressOffset))) {   // Set io control for the I2C file stream, as sending to I2C slave, at address
@@ -171,10 +174,7 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
             return true;    // Error state; return value not used currently
         }
 
-
-
 		int count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Filestream, bytes to write, number of bytes to write
-
 		while (count < 0) {                                                             // If error in transmission, keep trying
 
             logFile << "[" << timeBuffer << "] ERROR: I2C transmit failed! [ " << (io + i2cAddressOffset) << " ]\n" << std::flush;
@@ -208,9 +208,15 @@ bool serial_send_test(unsigned char io, unsigned char r, unsigned char g, unsign
     sprintf(curl, "curl --silent -X POST http://localhost:8080/simulator/update/%d/%d/%d/%d/%d > /dev/null", (int)io, (int)offset_r, (int)offset_g, (int)offset_b, (int)idx);
     system(curl); /* sends system command to run in the terminal */
     usleep(WAIT); /* to make things consistent with normal operations we still wait */
-	return true;
+	return false;
 }
 
+
+// Dump previous state map, causes refresh
+void StateComposer::refresh_state()
+{
+    previousLEDStates.clear();
+}
 
 
 // Main composer function
@@ -254,7 +260,6 @@ void StateComposer::compose()
         }
 
         struct bareLEDState* temp = new bareLEDState();
-
         temp->r = currentZoneActiveState->get_r();
         temp->g = currentZoneActiveState->get_g(); 
         temp->b = currentZoneActiveState->get_b(); 
@@ -264,19 +269,7 @@ void StateComposer::compose()
         // Save previous LED state
         // State not equal, saving it
         previousLEDStates[currentZone->get_id()] = temp;
-
-        // Open in non terminal, non blocking, read-write mode
-        i2cFileStream = open(I2C_BUS, O_RDWR | O_NOCTTY | O_NDELAY);
-
-        if (i2cFileStream == -1) {  // CAN'T OPEN SERIAL PORT
-            std::cout << "failed" << std::endl;
-            logFile << "    ERROR: Unable to open I2C device: "
-                    << I2C_BUS
-                    << "! \n           Ensure it is not in use by another application.\n"
-                    << std::flush;
-            return;
-        }
-
+       
         // Gather and compute color data
         intensity = currentZoneActiveState->get_intensity();
         power = currentZoneActiveState->get_power();
@@ -320,7 +313,7 @@ void StateComposer::compose()
             SEND_FUNC(ioPort, red, green, blue, stripIndex);
             // END OF LEDS LOOP
         }
-
+    
         // END OF ZONES LOOP
     }
 
