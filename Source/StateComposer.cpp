@@ -184,12 +184,15 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
             attempts++;
 
             if (attempts == TRIES) {                                                    // Give up after TRIES attempts
+                close(i2cFileStream);                                                   // Close file stream, move on
                 return true;
             }
 		}
 
         usleep(WAIT);                                                                   // Even if no error, let Arduino catch up
 	}
+
+    close(i2cFileStream);                                                               // Close file stream when done
 
 	return false;
 }
