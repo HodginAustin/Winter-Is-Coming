@@ -63,11 +63,14 @@ void loop() {   // Do nothing until I2C serial arrives
 
 void receiveEvent(int numBytes) {     // At I2C interrupt, do this
 
-  while(Wire.available() > 0) {
-    led_idx = Wire.read();
-    leds[led_idx].red = Wire.read();
-    leds[led_idx].green = Wire.read();
-    leds[led_idx].blue = Wire.read();
-    FastLED.show();
+  if (numBytes == 4) {
+
+    while(Wire.available() > 0) {
+      led_idx = Wire.read();
+      leds[led_idx].red = Wire.read();
+      leds[led_idx].green = Wire.read();
+      leds[led_idx].blue = Wire.read();
+      FastLED.show();
+    }
   }
 }
