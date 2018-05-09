@@ -20,9 +20,7 @@ void setup() {
   FastLED.addLeds<NEOPIXEL, LED_DATA_PIN>(leds, NUM_LEDS);  // initialize LEDs
   Serial.begin(9600);                                   // open the serial port at 9600 bps 
                                                         // to send to the serial monitor for debugging if necessary
-  Wire.begin(DEVICE_ID);                                // Set Arduino up as an I2C slave at address 0x07
-  Wire.onReceive(receiveEvent);                         // Action upon recieving data (as interrupt; 
-                                                        // no wasted executions switching execution context)
+  Wire.onReceive(receiveEvent);                         // Action upon recieving data (as interrupt)
 
   // Fancy setup animation & test each LED
   for (int i = 0; i < NUM_LEDS; i++){
@@ -52,15 +50,16 @@ void setup() {
     delay(5);
   }
   delay(1000);  
+
+  Wire.begin(DEVICE_ID);                                // Set Arduino up as an I2C slave at address 0x07
   
   Serial.println("Ready!");
 }
 
 void loop() {   // Do nothing until I2C serial arrives
-  delay(1);
 }
 
-void receiveEvent(int numBytes) {     // At I2C interrupt, do this
+void receiveEvent(int numBytes) {     // At I2C rx interrupt, do this
 
   if (numBytes == 4) {
 
@@ -72,11 +71,11 @@ void receiveEvent(int numBytes) {     // At I2C interrupt, do this
       leds[led_idx].blue = Wire.read();
       FastLED.show();
 
-      Serial.println("### Next ###");
-      Serial.write(led_idx);
-      Serial.write(leds[led_idx].red);
-      Serial.write(leds[led_idx].green);
-      Serial.write(leds[led_idx].blue);
+      Serial.println("#");
+      Serial.println(led_idx);
+      Serial.println(leds[led_idx].red);
+      Serial.println(leds[led_idx].green);
+      Serial.println(leds[led_idx].blue);
     }
   }
 }
