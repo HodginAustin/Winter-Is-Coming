@@ -1,0 +1,7 @@
+*Power strip with at least 8 outlets
+*Monitor with HDMI input, preferably 1920x1080 resolution
+*Monitor power cable, HDMI cable
+*3 USB power brick, 5V 1A
+*2 Ethernet cables, < 5ft
+*USB Mouse and Keyboard
+
