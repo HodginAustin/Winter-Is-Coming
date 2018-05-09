@@ -5,8 +5,8 @@
     "main": "main.js",
     "scripts": {
         "start": "node main.js 8080",
-        "test": "mocha -R spec ./Tests/test.js",
-        "test-setup": "node ./Tests/test-setup.js",
+        "test": "mocha -R spec ./Tests/",
+        "test-setup": "node test-setup.js",
         "dev": "nodemon main.js 8080"
     },
     "devDependencies": {},
