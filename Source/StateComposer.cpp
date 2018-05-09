@@ -139,7 +139,7 @@ bool StateComposer::initialize(bool logEnable)
 bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
 {
 	unsigned char s_buffer[4];
-	unsigned char* p_s_buffer;
+	//unsigned char* p_s_buffer;
     unsigned char attempts = 0;
 
     // Get current time
@@ -157,12 +157,17 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
                 << std::flush;
     }
 
-	p_s_buffer = &s_buffer[0];  // Reset pointer to head of array
+	//p_s_buffer = &s_buffer[0];  // Reset pointer to head of array
 
-	*p_s_buffer++ = idx;
-    *p_s_buffer++ = r;
-    *p_s_buffer++ = g;
-    *p_s_buffer++ = b;
+	//*p_s_buffer++ = idx;
+    //*p_s_buffer++ = r;
+    //*p_s_buffer++ = g;
+    //*p_s_buffer++ = b;
+
+    s_buffer[0] = idx;
+    s_buffer[1] = r;
+    s_buffer[2] = g;
+    s_buffer[3] = b;
 
     // Open in non terminal, non blocking, read-write mode
     i2cFileStream = open(I2C_BUS, O_RDWR | O_NOCTTY | O_NDELAY);
@@ -170,16 +175,20 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 	if (i2cFileStream != -1) {
 
         if (ioctl(i2cFileStream, I2C_SLAVE, (io + i2cAddressOffset))) {   // Set io control for the I2C file stream, as sending to I2C slave, at address
-            logFile << "[" << timeBuffer << "] ERROR: Can't switch ioctl to I2C bus address: [ " << (io + i2cAddressOffset) << " ]\n" << std::flush;
-            return true;    // Error state; return value not used currently
+            logFile << "[" << timeBuffer << "] ERROR: Can't switch ioctl to I2C bus address: [ " << (io + i2cAddressOffset) << " ] !\n" << std::flush;
+            close(i2cFileStream);                                                       // Close file stream, move on
+            return true;                                                                // Error state; return value not used currently
         }
 
-		int count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Filestream, bytes to write, number of bytes to write
-		while (count < 0) {                                                             // If error in transmission, keep trying
+		//int count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Filestream, bytes to write, number of bytes to write
+        int count = write(i2cFileStream, &s_buffer, 4);
 
-            logFile << "[" << timeBuffer << "] ERROR: I2C transmit failed! [ " << (io + i2cAddressOffset) << " ]\n" << std::flush;
+		while (count != 4) {                                                            // If error in transmission, keep trying
 
-            count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Rewrite the same values
+            logFile << "[" << timeBuffer << "] ERROR: I2C transmit failed! [ " << (io + i2cAddressOffset) << " ] Sent " << count << "\n" << std::flush;
+
+            //count = write(i2cFileStream, &s_buffer[0], (p_s_buffer - &s_buffer[0]));    // Rewrite the same values
+            count = write(i2cFileStream, &s_buffer, 4);
             usleep(WAIT);                                                               // Before blasting serial data again, let Arduino catch up
             attempts++;
 
@@ -191,6 +200,12 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 
         usleep(WAIT);                                                                   // Even if no error, let Arduino catch up
 	}
+
+    else {
+        logFile << "[" << timeBuffer << "] ERROR: Couldn't open I2C filestream! Ensure it is not in use\n" << std::flush;
+        close(i2cFileStream);
+        return true;
+    }
 
     close(i2cFileStream);                                                               // Close file stream when done
 
@@ -227,7 +242,7 @@ void StateComposer::compose()
 {
     float scalar = 0.0;
 
-    // Get current time
+    // Get current timecount = write(i2cFileStream, &s_buffer, 4);
     time(&sysTime);
     timeInfo=localtime(&sysTime);
     strftime(timeBuffer, 30, "%c", timeInfo);
