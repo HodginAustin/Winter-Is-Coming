@@ -6,10 +6,7 @@
 
 <div>
     <h3 align="center">Install Instructions</h3>
-    <ul align="center">
-        <li>Step 1</li>
-        <li>Step 2</li>
-    </ul>
+    <a href="https://github.com/CarvellWakeman/plantergb/releases/tag/Latest">See release page for instructions </a>
 </div>
 
 <br/><br/>
