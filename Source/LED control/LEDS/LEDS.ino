@@ -11,7 +11,8 @@
 
 #define NUM_LEDS 60       // adjust to your length of LED strip*/
 #define LED_DATA_PIN 2    // adjust to the used pin (Arduino nano pin 2 = D2)
-#define DEVICE_ID 3
+#define DEVICE_ID 3       // DEVICE_ID ranges from min (Pi reserves 0-2) 3 
+                          // to max 127 (7 bit addresses, defined by Atmel C libs)
 
 CRGB leds[NUM_LEDS];      // color object for setup testing
 unsigned char led_idx;
@@ -51,7 +52,7 @@ void setup() {
   }
   delay(1000);  
 
-  Wire.begin(DEVICE_ID);                                // Set Arduino up as an I2C slave at address 0x07
+  Wire.begin(DEVICE_ID);                                // Set Arduino up as an I2C slave at address defined above
   
   Serial.println("Ready!");
 }
