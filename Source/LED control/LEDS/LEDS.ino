@@ -11,18 +11,17 @@
 
 #define NUM_LEDS 60       // adjust to your length of LED strip*/
 #define LED_DATA_PIN 2    // adjust to the used pin (Arduino nano pin 2 = D2)
-#define DEVICE_ID 3
+#define DEVICE_ID 3       // DEVICE_ID ranges from min (Pi reserves 0-2) 3 
+                          // to max 127 (7 bit addresses, defined by Atmel C libs)
 
 CRGB leds[NUM_LEDS];      // color object for setup testing
 unsigned char led_idx;
 
 void setup() {
   FastLED.addLeds<NEOPIXEL, LED_DATA_PIN>(leds, NUM_LEDS);  // initialize LEDs
-  // Serial.begin(9600);                                // open the serial port at 9600 bps 
+  //Serial.begin(9600);                                   // open the serial port at 9600 bps 
                                                         // to send to the serial monitor for debugging if necessary
-  Wire.begin(DEVICE_ID);                                // Set Arduino up as an I2C slave at address 0x07
-  Wire.onReceive(receiveEvent);                         // Action upon recieving data (as interrupt; 
-                                                        // no wasted executions switching execution context)
+  Wire.onReceive(receiveEvent);                         // Action upon recieving data (as interrupt)
 
   // Fancy setup animation & test each LED
   for (int i = 0; i < NUM_LEDS; i++){
@@ -52,21 +51,32 @@ void setup() {
     delay(5);
   }
   delay(1000);  
+
+  Wire.begin(DEVICE_ID);                                // Set Arduino up as an I2C slave at address defined above
   
-  Serial.println("Ready!");
+  //Serial.println("Ready!");
 }
 
 void loop() {   // Do nothing until I2C serial arrives
-  delay(1);
 }
 
-void receiveEvent(int numBytes) {     // At I2C interrupt, do this
+void receiveEvent(int numBytes) {     // At I2C rx interrupt, do this
 
-  while(Wire.available() > 0) {
-    led_idx = Wire.read();
-    leds[led_idx].red = Wire.read();
-    leds[led_idx].green = Wire.read();
-    leds[led_idx].blue = Wire.read();
-    FastLED.show();
+  if (numBytes == 4) {
+
+    while(Wire.available() > 0) {
+
+      led_idx = Wire.read();
+      leds[led_idx].red = Wire.read();
+      leds[led_idx].green = Wire.read();
+      leds[led_idx].blue = Wire.read();
+      FastLED.show();
+
+      //Serial.println("#");
+      //Serial.println(led_idx);
+      //Serial.println(leds[led_idx].red);
+      //Serial.println(leds[led_idx].green);
+      //Serial.println(leds[led_idx].blue);
+    }
   }
 }
