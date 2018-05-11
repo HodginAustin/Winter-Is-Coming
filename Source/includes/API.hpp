@@ -60,6 +60,7 @@ private:
     // API Actions
     void api_shutdown(REQUEST, RESPONSE);
     void nuke_from_orbit(REQUEST, RESPONSE);
+    void refresh_state(REQUEST, RESPONSE);
 
     // Top level objects (get all of a specific object without knowing what it belongs to)
     // add new objects which are not linked to any other objects yet

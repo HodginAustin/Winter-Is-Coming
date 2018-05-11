@@ -102,10 +102,11 @@ void API::setup_routes()
     Routes::Get(router, "/", Routes::bind(&API::index, this));
     Routes::Get(router, "/system_shutdown", Routes::bind(&API::system_shutdown, this));
     Routes::Get(router, "/system_restart", Routes::bind(&API::system_restart, this));
-    Routes::Delete(router, "/nuke_from_orbit", Routes::bind(&API::nuke_from_orbit, this));
 
     // API Actions
     Routes::Get(router, "/shutdown", Routes::bind(&API::api_shutdown, this));
+    Routes::Delete(router, "/nuke_from_orbit", Routes::bind(&API::nuke_from_orbit, this));
+    Routes::Get(router, "/refresh", Routes::bind(&API::refresh_state, this));
 
     // Profile routes
     Routes::Get(router, "profiles", Routes::bind(&API::get_profiles, this));
@@ -271,6 +272,13 @@ void API::nuke_from_orbit(REQUEST, RESPONSE)
 
     response.send(Http::Code::Ok,
         "This is just a thing... and things can be replaced. Lives cannot. - Lt. Cmdr. Data");
+}
+
+void API::refresh_state(REQUEST, RESPONSE)
+{
+    StateComposer::refresh_state();
+
+    response.send(Http::Code::Ok, "Cleared state composer state cache");
 }
 
 
