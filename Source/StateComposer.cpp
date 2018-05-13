@@ -22,8 +22,8 @@
 
 // The amount of microseconds to wait for the
 // Arduino Nano to send it's ACK and catch up
-// last updated to: 35000 (for serial write on nano)
-#define WAIT 35000
+// last updated to: 18000 (for with serial write on nano)
+#define WAIT 18000
 
 // Defines the function that should be used to send serial data
 // serial_send is used to send over I2C to hardware
