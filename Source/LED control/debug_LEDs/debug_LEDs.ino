@@ -1,7 +1,7 @@
 /******************************************************************************
 * PlanteRGB - Austin Hodgin, Travis Hodgin, Max Schmidt, Zach Lerew
 * Please make sure you are using the correct Controller in the Arduino IDE.
-* Make sure your USB type is Serial, running at speed 9600
+* For debugging, make sure your USB type is Serial, running at speed 9600
 * Input should look like: led_idx,red_value,green_value,blue_value as a 
 * series of bytes
 *******************************************************************************/
@@ -19,9 +19,10 @@ unsigned char led_idx;
 
 void setup() {
   FastLED.addLeds<NEOPIXEL, LED_DATA_PIN>(leds, NUM_LEDS);  // initialize LEDs
-  //Serial.begin(9600);                                   // open the serial port at 9600 bps 
+  Serial.begin(9600);                                   // open the serial port at 9600 bps 
                                                         // to send to the serial monitor for debugging if necessary
   Wire.onReceive(receiveEvent);                         // Action upon recieving data (as interrupt)
+  Wire.setClock(400000);
 
   // Fancy setup animation & test each LED
   for (int i = 0; i < NUM_LEDS; i++){
@@ -54,7 +55,7 @@ void setup() {
 
   Wire.begin(DEVICE_ID);                                // Set Arduino up as an I2C slave at address defined above
   
-  //Serial.println("Ready!");
+  Serial.println("Ready!");
 }
 
 void loop() {   // Do nothing until I2C serial arrives
@@ -72,11 +73,11 @@ void receiveEvent(int numBytes) {     // At I2C rx interrupt, do this
       leds[led_idx].blue = Wire.read();
       FastLED.show();
 
-      //Serial.println("#");
-      //Serial.println(led_idx);
-      //Serial.println(leds[led_idx].red);
-      //Serial.println(leds[led_idx].green);
-      //Serial.println(leds[led_idx].blue);
+      Serial.println("#");
+      Serial.println(led_idx);
+      Serial.println(leds[led_idx].red);
+      Serial.println(leds[led_idx].green);
+      Serial.println(leds[led_idx].blue);
     }
   }
 }
