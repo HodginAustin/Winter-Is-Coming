@@ -11,7 +11,7 @@
 
 #define NUM_LEDS 60       // adjust to your length of LED strip*/
 #define LED_DATA_PIN 2    // adjust to the used pin (Arduino nano pin 2 = D2)
-#define DEVICE_ID 3       // DEVICE_ID ranges from min (Pi reserves 0-2) 3 
+#define DEVICE_ID 5       // DEVICE_ID ranges from min (Pi reserves 0-2) 3 
                           // to max 127 (7 bit addresses, defined by Atmel C libs)
 
 CRGB leds[NUM_LEDS];      // color object for setup testing
@@ -22,6 +22,7 @@ void setup() {
   Serial.begin(9600);                                   // open the serial port at 9600 bps 
                                                         // to send to the serial monitor for debugging if necessary
   Wire.onReceive(receiveEvent);                         // Action upon recieving data (as interrupt)
+  Wire.setClock(400000);
 
   // Fancy setup animation & test each LED
   for (int i = 0; i < NUM_LEDS; i++){
