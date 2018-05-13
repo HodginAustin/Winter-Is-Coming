@@ -42,7 +42,6 @@ module.exports = function () {
     router.get('/', function (req, res) {
         var callbackCount = 0;
         var context = req.context;
-        console.log("IN GET PROFILES");
         /* Get Daily states */
         dailyStates.get(res, context, complete);
         function complete() {
@@ -212,7 +211,7 @@ module.exports = function () {
 
     router.get('/:id', function (req, res) {
         callbackCount = 0;
-        var context =req.context;
+        var context = req.context;
 
         getProfile(res, context, req.params.id, complete);
         curr.get(res, context, complete);
@@ -223,6 +222,19 @@ module.exports = function () {
         function complete() {
             callbackCount++;
             if (callbackCount >= 5) {
+                // Get day of week
+                var d = new Date().getDay();
+
+                context.isDOW = {
+                    sunday:    (d==0),
+                    monday:    (d==1),
+                    tuesday:   (d==2),
+                    wednesday: (d==3),
+                    thursday:  (d==4),
+                    friday:    (d==5),
+                    saturday:  (d==6)
+                };
+
                 res.render('update-zones', context);
             }
         }

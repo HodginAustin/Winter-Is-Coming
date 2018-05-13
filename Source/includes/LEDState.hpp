@@ -4,6 +4,7 @@
 //=================================
 
 #include "./json.hpp"
+#include "./LEDStateSmall.hpp"
 
 using nlohmann::json;
 
@@ -44,7 +45,7 @@ public:
     static LEDState* off;
 
     // Equals
-    static bool equals(LEDState*, LEDState*);
+    static bool equals(struct bareLEDState*, LEDState*);
 };
 
 // JSON
@@ -52,4 +53,4 @@ void to_json(json& j, const LEDState& ls);
 void from_json(const json& j, LEDState& ls);
 
 
-#endif //__CONTROLLER_H_INCLUDED__
+#endif //__LEDSTATE_H_INCLUDED__

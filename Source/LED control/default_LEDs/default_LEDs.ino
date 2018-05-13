@@ -19,9 +19,9 @@ unsigned char led_idx;
 
 void setup() {
   FastLED.addLeds<NEOPIXEL, LED_DATA_PIN>(leds, NUM_LEDS);  // initialize LEDs
-  //Serial.begin(9600);                                   // open the serial port at 9600 bps 
-                                                        // to send to the serial monitor for debugging if necessary
-  Wire.onReceive(receiveEvent);                         // Action upon recieving data (as interrupt)
+  //Serial.begin(9600);                                     // open the serial port at 9600 bps 
+                                                            // to send to the serial monitor for debugging if necessary
+  Wire.onReceive(receiveEvent);                             // Action upon recieving data (as interrupt)
   Wire.setClock(400000);
 
   // Fancy setup animation & test each LED
@@ -55,7 +55,7 @@ void setup() {
 
   Wire.begin(DEVICE_ID);                                // Set Arduino up as an I2C slave at address defined above
   
-  Serial.println("Ready!");
+  //Serial.println("Ready!");
 }
 
 void loop() {   // Do nothing until I2C serial arrives

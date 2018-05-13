@@ -1,7 +1,7 @@
 /******************************************************************************
 * PlanteRGB - Austin Hodgin, Travis Hodgin, Max Schmidt, Zach Lerew
 * Please make sure you are using the correct Controller in the Arduino IDE.
-* Make sure your USB type is Serial, running at speed 9600
+* For debugging, make sure your USB type is Serial, running at speed 9600
 * Input should look like: led_idx,red_value,green_value,blue_value as a 
 * series of bytes
 *******************************************************************************/
@@ -11,7 +11,7 @@
 
 #define NUM_LEDS 60       // adjust to your length of LED strip*/
 #define LED_DATA_PIN 2    // adjust to the used pin (Arduino nano pin 2 = D2)
-#define DEVICE_ID 5       // DEVICE_ID ranges from min (Pi reserves 0-2) 3 
+#define DEVICE_ID 3       // DEVICE_ID ranges from min (Pi reserves 0-2) 3 
                           // to max 127 (7 bit addresses, defined by Atmel C libs)
 
 CRGB leds[NUM_LEDS];      // color object for setup testing

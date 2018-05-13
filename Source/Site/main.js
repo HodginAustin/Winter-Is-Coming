@@ -15,6 +15,10 @@ let profiles = require('./js/global/profiles.js');
 /* Connection settings */
 let conn = require('./js/global/connection.js');
 
+
+/* Control service request */
+let controlService = require('./js/global/controlServiceRequest.js');
+
 /* sets port to what is given in command line */
 app.set('port', process.argv[2]);
 
@@ -74,6 +78,19 @@ app.all('*', function(req, res, next) {
             next();
         }
     }
+});
+
+app.post('/refreshState', function(req, res) {
+    // Get control service
+    var options = {
+        method: "GET",
+        uri: conn.url + conn.port + "/refresh"
+    };
+
+    // Make request
+    controlService.makeRequest(options, function (err, response, body) {
+        res.status(200).end();
+    })
 });
 
 // Set current profile

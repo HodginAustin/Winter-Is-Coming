@@ -86,6 +86,9 @@ public:
     //      False : don't ^
     static bool initialize(bool logEnable);
 
+    // Dump cache and refresh states
+    static void refresh_state();
+
     // Start compositioning of the internal state to the hardware state
     static void compose();
 
