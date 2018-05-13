@@ -11,6 +11,7 @@ commands = [
     "sudo raspi-config nonint do_ssh 0", # Enable SSH
     "sudo raspi-config nonint do_serial 0", # Enable Serial
     "sudo raspi-config nonint do_i2c 0", # Enable I2C
+    "sudo echo 'dtparam=i2c_baudrate=400000' >> /boot/config.txt", # Set baud rate for I2C on Pi
     "sudo wget -O /plantergb/release.tar.gz https://github.com/CarvellWakeman/plantergb/releases/download/Latest/release.tar.gz", # Download PlanteRGB
     "sudo tar -xvzf /plantergb/release.tar.gz -C /plantergb", # Unzip files
     #"sudo apt-get update", # Update packages
