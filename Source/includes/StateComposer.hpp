@@ -48,9 +48,9 @@ private:
     static int weekDay;
     static unsigned int seconds;
 
-    // Communication objects
-    static char acknowledge;
-    static char retransmit;
+    // Parameters
+    static bool USE_SIMULATOR;
+    static float WADKABSI;
 
     // Internal State working objects 
     // Structured by Internal State layers,
@@ -73,6 +73,8 @@ private:
 
     // Sends color state to a target controller with target LED
     static bool serial_send(unsigned char, unsigned char, unsigned char, unsigned char, unsigned char);
+    static bool serial_send_test(unsigned char, unsigned char, unsigned char, unsigned char, unsigned char);
+
 
     // Turn LEDs off (DO NOT CALL)
     static void led_shutdown();
@@ -84,7 +86,9 @@ public:
     //  @Param 1 - Log actions flag
     //      True  : output actions to log
     //      False : don't ^
-    static bool initialize(bool logEnable);
+    //  @Param 2 - Use LED simulator flag
+    //  @Param 3 - LED brightness ceiling, stupidity inhibitor
+    static bool initialize(bool logEnable, bool useSimulator, float wadkabsi);
 
     // Dump cache and refresh states
     static void refresh_state();

@@ -10,25 +10,10 @@
 // The I^2C serial bus device in the linux system
 #define I2C_BUS "/dev/i2c-1"
 
-// Required LED intensity scalar to use all 60
-// LEDs at full white, off of the Arduino 5V rail
-// 5V rail can drive a maximum of 500mA
-// 60 * .2 * .033 = .396A (396mA)
-// Also makes the light bearable to look at...
-
-// We All Didn't Know Any Better Stupidity Inhibitor
-// TODO: Update once better power system is found
-#define WADKABSI 0.2f
-
 // The amount of microseconds to wait for the
 // Arduino Nano to send it's ACK and catch up
 // last updated to: 18000 (for with serial write on nano)
 #define WAIT 18000
-
-// Defines the function that should be used to send serial data
-// serial_send is used to send over I2C to hardware
-// serial_send_test is used to send to the LED simulator node server
-#define SEND_FUNC serial_send
 
 // Set the maximum number of times to reattempt
 // writing serial data in the serial_send function
@@ -44,6 +29,11 @@ char StateComposer::composerState;
 
 // I2C
 int StateComposer::i2cFileStream;
+
+
+// Parameters
+bool StateComposer::USE_SIMULATOR;
+float StateComposer::WADKABSI;
 
 // Composer variables
 std::ofstream StateComposer::logFile;
@@ -102,11 +92,15 @@ void* StateComposer::thr_compose_call(void*)
 
 
 // Initialization
-bool StateComposer::initialize(bool logEnable)
+bool StateComposer::initialize(bool logEnable, bool useSimulator, float wadkabsi)
 {
     std::cout << "Initializing State Composer... ";
-
+    
     i2cAddressOffset = Settings::get_setting(DataParser::NANO_IO_OFFSET).int_value;
+
+    // Parameters
+    USE_SIMULATOR = useSimulator;
+    WADKABSI = wadkabsi;
 
     // Logging
     time(&sysTime);
@@ -215,8 +209,8 @@ bool StateComposer::serial_send(unsigned char io, unsigned char r, unsigned char
 
 /* Sends update request via cURL for simulator */
 /* this is used for testing when hardware is not available.*/
-/* Change the SEND_FUNC to this function for use in simulator */
-bool serial_send_test(unsigned char io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
+/* Set the Use Simulator parameter to True to use this */
+bool StateComposer::serial_send_test(unsigned char io, unsigned char r, unsigned char g, unsigned char b, unsigned char idx)
 {
     float m = (1.0f / WADKABSI);
     int offset_r = (int)((float)((int)r) * m);
@@ -327,8 +321,13 @@ void StateComposer::compose()
             if (stripIndex < 0) {
                 continue;
             }
-
-            SEND_FUNC(ioPort, red, green, blue, stripIndex);
+            
+            // Use simulator or send over I2C
+            if (USE_SIMULATOR) {
+                serial_send_test(ioPort, red, green, blue, stripIndex);
+            } else {
+                serial_send(ioPort, red, green, blue, stripIndex);
+            }
             // END OF LEDS LOOP
         }
     
@@ -364,7 +363,11 @@ void StateComposer::led_shutdown()
             }
 
             // Call serial send
-            SEND_FUNC(ioPort, '\0', '\0', '\0', stripIndex);
+            if (USE_SIMULATOR) {
+                serial_send_test(ioPort, '\0', '\0', '\0', stripIndex);
+            } else {
+                serial_send(ioPort, '\0', '\0', '\0', stripIndex);
+            }
         }
     }
 }

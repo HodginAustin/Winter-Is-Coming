@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 
 #include "./includes/InternalState.hpp"
 #include "./includes/DataParser.hpp"
@@ -49,28 +50,40 @@ int main(int argc, char** argv)
         return 0;
     }
 
+    // Use LED simulator instead of normal serial data transmission
+    bool USE_SIMULATOR = cmd_opt_exists(argv, argv+argc, "-sim");
+
+    // Required LED intensity scalar to use all 60
+    // LEDs at full white, off of the Arduino 5V rail
+    // 5V rail can drive a maximum of 500mA
+    // 60 * .2 * .033 = .396A (396mA)
+    // Also makes the light bearable to look at...
+
+    // We All Didn't Know Any Better Stupidity Inhibitor
+    // TODO: Update once better power system is found
+    float WADKABSI = 0.2f;
+    if (cmd_opt_exists(argv, argv+argc, "-wadkabsi")) {
+        WADKABSI = std::min((float)atof(get_cmd_opt(argv, argv+argc-1, "-wadkabsi")), 1.0f);
+    }    
+
     // Bool success
-    bool boot = true;
+    int boot = 0;
 
     // Internal state
-    boot &= InternalState::initialize();
-    if (!boot) { return 1; }
+    if (!InternalState::initialize()) { boot = 1; }
 
     // Data parser
-    boot &= DataParser::initialize(DEBUG);
-    if (!boot) { return 2; }
+    if (!DataParser::initialize(DEBUG)) { boot = 2; }
 
     // LED control system
-    boot &= StateComposer::initialize(DEBUG);
-    if (!boot) { return 3; }
+    if (!StateComposer::initialize(DEBUG, USE_SIMULATOR, WADKABSI)) { boot = 3; }
 
     // API
     Port port(port_num);
     Address addr(Ipv4::any(), port);
     int threads = 2;
     API* api = new API(addr);
-    boot &= api->initialize(threads, DEBUG);
-    if (!boot) { return 4; }
+    if (!api->initialize(threads, DEBUG)) { boot = 4; }
     api->start(port_num);
 
     // Cleanup
@@ -79,5 +92,5 @@ int main(int argc, char** argv)
     api->clean_up();
     free(api);
 
-    return !boot;
+    return boot;
 }
