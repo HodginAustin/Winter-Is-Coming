@@ -1,0 +1,400 @@
+\documentclass[onecolumn, draftclsnofoot,10pt, compsoc]{IEEEtran}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{etoolbox}
+\usepackage{pdflscape}
+
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{}
+
+\geometry{textheight=9.5in, textwidth=7in}
+
+% 1. Fill in these details
+\def \CapstoneTeamName{			              			 PlanteR-GB}
+\def \CapstoneTeamNumber{					           			 Group 64}
+\def \GroupMemberOne{				           				Austin Hodgin}
+\def \CapstoneProjectName{	      	    Winter is Coming...}
+\def \CapstoneSponsorCompany{		    Oregon State University}
+\def \CapstoneSponsorPerson{		 			  				 Victor Hsu}
+
+% 2. Uncomment the appropriate line below so that the document type works
+\def \DocType{		%Problem Statement
+				%Requirements Document
+				Technology Review
+				%Design Document
+				%Progress Report
+				}
+
+\newcommand{\NameSigPair}[1]{\par
+\makebox[2.75in][r]{#1} \hfil 	\makebox[3.25in]{\makebox[2.25in]{\hrulefill} \hfill		\makebox[.75in]{\hrulefill}}
+\par\vspace{-12pt} \textit{\tiny\noindent
+\makebox[2.75in]{} \hfil		\makebox[3.25in]{\makebox[2.25in][r]{Signature} \hfill	\makebox[.75in][r]{Date}}}}
+% 3. If the document is not to be signed, uncomment the RENEWcommand below
+\renewcommand{\NameSigPair}[1]{#1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{titlepage}
+    \pagenumbering{gobble}
+    \begin{singlespace}
+        \hfill
+        \par\vspace{.2in}
+        \centering
+        \scshape{
+            \huge CS Capstone \DocType \par
+            {\large\today}\par
+            \vspace{.5in}
+            \textbf{\Huge\CapstoneProjectName}\par
+            %\vfill
+						\vspace{1in}
+            {\large Prepared for}\par
+            \Huge \CapstoneSponsorCompany\par
+            \vspace{5pt}
+            {\Large\NameSigPair{\CapstoneSponsorPerson}\par}
+						\vspace{1in}
+            {\large Prepared by}\par
+						{\huge \CapstoneTeamNumber}\par
+            \CapstoneTeamName\par
+            \vspace{5pt}
+            {
+							\Large
+							\NameSigPair{\GroupMemberOne}\par
+            }
+            \vspace{20pt}
+        }
+%\textbf{\textsuperscript{citation needed}}
+
+        \begin{abstract}
+				This document will go over three different technologies related to the project.
+				Each technology has three options discussed as a possible solution for
+				that technology. The three technologies we will look at are, Mobile interfaces,
+				web servers and moisture sensors.
+        \end{abstract}
+    \end{singlespace}
+\end{titlepage}
+\newpage
+\pagenumbering{arabic}
+\tableofcontents
+% 7. uncomment this (if applicable). Consider adding a page break.
+%\listoffigures
+%\listoftables
+\clearpage
+\singlespace
+
+
+	% Document body
+	\section{Web Server Options}
+		\subsection{Overview and Criteria}
+	  For our user interface we will be developing a web application to interface
+		with the control system. There three criteria that are needed for our web
+		server for this project. The first is that the server will need to run on
+		our controller that we chose. The second being that the server will need to
+		be reliable on starting up and maintaining the server over long stretches of
+		time. The third being memory and processor efficient. The controllers that
+		we will be using will have limited memory and we will have other tasks
+		running on the same controller so having a server that uses less memory and
+		still maintains the features that we require is important.
+		\subsection{Potential Choices }
+		There is three different web servers that are under consideration. The first
+		being Apache. Apache is a HTTP server project produced by Apache Software. The
+		second web server is Lighttpd. Lighttpd is a web server that is an open source
+		project. The third option is Niginx web service produced by NGINX Software.
+		Below we will discuss each of these options and if they meet the criteria
+		that is required for this project.
+		\subsection{Apache Web Server}
+		Apache web server that is developed by Apache Software. It is a widely used
+		web server. Reviewing their about page \cite{Apache}, they talk about
+		building a stable and advanced web server that is robust, featureful, and
+		free for anyone to use. This benefits us since we will not have to pay to use
+		this server. Apache web server is also a process based server, this means
+		that each connection gets its own thread on the CPU. This allows for if there
+		is an error on one connection it does not bring down the whole server. This
+		makes the server more reliable and stable. Apache is also for flexible configuration
+		.htaccess files. It also comes standard on most Linux servers. Since it is
+		one of the more popular options for web server it also has a lot of documentation.
+		\\\\
+		\textbf{Advantages}:
+		\begin{itemize}
+			\item \textbf{Stable}: Apache is a very stable web server which his helped
+			with how it handles requests in multiple threads.
+
+			\item \textbf{Documentation}: With Apache being one of the most widely used
+			web servers there is a lot of documentation. When problems occur this will
+			be beneficial.
+		\end{itemize}
+
+		\noindent\textbf{Disadvantages}:
+		\begin{itemize}
+			\item \textbf{Resources}: The drawback of having head request
+			handled by a single thread on the CPU is that it requires more resources
+			compared to the alternatives.
+		\end{itemize}
+
+		\subsection{Lighttpd Web Server}
+		Lighttpd web server is a lightweight web server that is designed to be secure,
+		fast, flexible and is optimized for high-performance. From their website \cite{Lighttpd}
+		they state that they use non-blocking I/O event loop for running each single
+		process that comes to the server. They talk about how the have a low memory
+		footprint. Lighttpd is also an asynchronous server compared to Apache which is
+		a synchronous server. Below are the advantages and disadvantages of using
+		Lighttpd Web Server for our project.
+		\\\\
+		\textbf{Advantages}:
+		\begin{itemize}
+			\item \textbf{Fast and Lightweight}: With the server running on one thread
+			and assigning working threads as well as the system uses non-blocking I/O
+			event looping the server uses very little resources.
+		\end{itemize}
+		\noindent\textbf{Disadvantages}:
+		\begin{itemize}
+			\item \textbf{Not as Stable}: With the server running a single master thread
+			and assigning worker threads, if something goes wrong with a connection casuing
+			that thread to crash you lose the whole server.
+			\item \textbf{Documentation}: With Lighttpd not as widely used, there
+			is less documentation surrounding it. This can make solving problems down the
+			road more difficult.
+		\end{itemize}
+		\subsection{Nginx Web server}
+		Nginx is an open source web server developed by Nginx software. It is another
+		asynchronous lightweight HTTP server. It differs from apache by that it has
+		one master process to server requests. It then delegates tasks to worker
+		proccess. This allows it to be very fast and efficient when serving static
+		web pages. \cite{Nginx}. Below are the advantages and disadvantages
+		of using Nginx web server for our project.
+		\\\\
+		\textbf{Advantages}:
+		\begin{itemize}
+			\item \textbf{Fast and Lightweight}:With the server running on one thread
+			and assigning working threads as well as the system uses non-blocking I/O
+			event looping the server uses very little resources.
+			\item \textbf{Documentation}: Nginx is more widely so there is more documentation.
+			This will allow us to more quickly solve problems when they occur.
+		\end{itemize}
+		\noindent\textbf{Disadvantages}:
+		\begin{itemize}
+			\item \textbf{Not As Stable}: With the server running a single master thread
+			and assigning worker threads, if something goes wrong with a connection casuing
+			that thread to crash you lose the whole server.
+		\end{itemize}
+		\subsection{Discussion}
+	 	Apache, Lighttpd, Nginx, they all handle serving web pages and processing
+		request slightly differently. Apache for example uses a processes based approach.
+	 	Meaning that each request gets its own thread on the CPU, this does require
+		some overhead when it comes to resource. This is in contrast to both Lighttpd
+		and Nginx web servers which are asynchronous servers are mainly event-driven
+		and run on a single process and split into worker tasks from there to complete
+		tasks. This makes them a little faster and requires less total resources to run.
+		There is a problem with running a single master process if there is a problem
+		with the connection it could bring the whole server down which would not happen to an Apache server since each
+		connection is in its own thread. All three technologies meet the criteria for r
+		reliability, efficiency, and controller compatibility, but each has its own
+		advantage
+		\subsection{Conclusion}
+		Looking at all three options, chosen to go with the Apache web server.
+		This web service will only server web pages to a limited number of clients.
+		One of the main criteria that we were worried about was that
+		it would be stable once we had it working. Apache being one of the most stable
+		web servers due to it using a process based server if a problem occurs with
+		the connections then it won’t bring down the whole system. With that it meets
+		all of our criteria for our project.
+	\newpage
+	\section{Mobile Options}
+		\subsection{Overview and Criteria}
+ 		As mobile computing becomes more and more popular it is important to take
+		that into consideration when designing products today. With mobile becoming
+		more important in today's world we would like to add a mobile option to interface
+		with our system. When choosing which option we would like to go with when
+		incorporating mobile we have to look at three key criteria. The first being
+		that it works on multiple mobile platforms, Android, and IOS. The second being
+		that we would like it to be consistent with how the user interacts with the
+		product.
+		\subsection{Potential Choices}
+		When looking at mobile options there are three main options to look at. The
+		first being building a native mobile application for each platform. The second
+		being building a mobile friendly web interface.The final one being building
+		a dedicated mobile site which will be served to the user if requested from
+		a mobile device.
+		\subsection{Native Mobile Application}
+		Building a native app for mobile  Building a native mobile
+		app has several advantages and disadvantages when it comes to working with
+		products.
+		\\\\
+		\textbf{Advantages}:
+		\begin{itemize}
+			\item \textbf{Full Mobile Friendly}: This is designed and implemented with
+			mobile in mind. Making it a more friendly mobile environment.
+			\item \textbf{Quick Load Times}: With the app fully contained on the mobile
+			it does not have pull a web page from a server.
+		\end{itemize}
+		\noindent\textbf{Disadvantages}:
+		\begin{itemize}
+			\item \textbf{Developing and Maintaining Multiple Platforms}: With designing
+			and creating a native mobile app you have to create it on two different platforms.
+			This can be time consuming.
+		\end{itemize}
+		\subsection{Build Mobile Friendly Website}
+		Wth building a mobile friendly website we would develop the site with mobile
+		in mind. Building a mobile friendly website has several advantages and disadvantages
+		when working with products. Below are listed the advantages and disadvantages
+		for building a mobile friendly website.
+		\textbf{Advantages}:
+		\begin{itemize}
+			\item \textbf{Consistent With Desktop Content}: This would allow the desktop
+			and mobile environments to feel consistent and not make users learn two
+			different interfaces
+			\item \textbf{Less To Maintain}: Only once site needs to be built making
+			maintaining the site easier.
+		\end{itemize}
+		\textbf{Disadvantages}:
+		\begin{itemize}
+			\item \textbf{General Usability}: Changing settings or checking the same
+			information might be more difficult on a mobile platform due to how they go
+			through the pages.
+			\item \textbf{Slower Loading Times}: With the amount of information pushed
+			 back and forth between the device and could be slower due to it going over
+			 3g or 4g speeds.
+		\end{itemize}
+		\subsection{Build Mobile Dedicated Site}
+		Building a dedicated mobile app would be creating the site again but more
+		mobile friendly and delivering that to mobile devices instead of the desktop
+		site. Below are the advantages and disadvantages of creating a mobile dedicated site.
+		\textbf{Advantages}:
+		\begin{itemize}
+			\item \textbf{Mobile Focused}: With building a mobile dedicated site it allows
+			you to make it more mobile friendly.
+			\item \textbf{Consistent Style}: It allows for you to tweak the style of the
+			main site to allow for it to be more mobile friendly but still keep its look
+			and feel.
+		\end{itemize}
+		\textbf{Disadvantages}:
+		\begin{itemize}
+			\item \textbf{Increased Maintains Time/Cost}: With having two sites to maintain,
+			you will have to put more time and energy creating and maintaining it.
+			\item \textbf{Slower Service}: Since the server has to check what type of
+			device that is requesting the page it takes some processing time.
+		\end{itemize}
+		\subsection{Discussion}
+		Looking at all three options they all have advantages and disadvantages. For
+		our project we are looking at a few key criteria and those are that it has to
+		work on multiple platforms and that it needs to be consistent with the desktop
+		environment. All three can easily be made to be consistent with the desktop
+		environment. With building native application for mobile that would require
+		applications developed for both Android and IOS. This is time consuming and
+		difficult to maintain as a change in one would require a change in the other.
+		This is in contrast to the other two options, where both of them will work on any device
+		given that it has a browser. Looking at the other two options they both have very
+		similar advantages and disadvantages. The main disadvantage to building a dedicated
+		mobile site is that you will have to build and maintain two sites which compared to
+		building a mobile friendly website where you just have to maintain one site.
+		They both meet both criteria we have for our mobile options and are both strong
+		options.
+		\subsection{Conclusion}
+		Between the three options, building a native mobile application, building a
+		mobile dedicated site and building a mobile friendly site we choose to go with
+		building a mobile friendly site. With keeping mobile devices in mind from the
+		beginning of the web interface it makes it easier to develop and maintain over
+		time. This also cuts down on development time over all as we only need to
+		create one web site.
+	\section{Moisture Sensors}
+		\subsection{Overview and Criteria}
+		We would like to be able to add moisture sensors
+		to the enclosure to monitor the moisture of the soil the plants are in to
+		get an idea of when you should water your plants. To do this we have several
+		criteria that we have to look at. The first being that it must be able to
+		interact with our chosen microcontroller. The second being that it must
+		read the moisture of the soil.
+		\subsection{Potential Choices }
+		There are three different choices that we could go with. The first is going
+		with an Octopus soil moisture sensor from Elecfreaks \cite[pg 2] {Octopus_soil_sensor},
+		We could design and custom print our own moisture sensors or we could go with
+		a SparkFun Soil Moisture Sensor from SparkFun \cite[pg 2] {SparkFun_Soil_Moisture_Sensor}.
+		\subsection{Octopus Soil Moisture Sensor}
+		Octopus soil moisture sensor is a moisture sensor that can be purchased through
+		Elecfreaks. This sensor is a lot like other moisture sensors in shape and how
+		it connects to a micro controller. The way this moisture sensor is unique is
+		that it can connect to the sensor modules. This can connect to any arduino
+		based microcontroller.
+		\\\\
+		\textbf{Advantages}:
+		\begin{itemize}
+			\item \textbf{Time Investment}: With the sensors already built the only time
+			need is to configure and install the sensors.
+			\item \textbf{Cost}: For the first initial prototypes it is cheaper to use
+			these.
+		\end{itemize}
+		\noindent\textbf{Disadvantages}:
+		\begin{itemize}
+			\item \textbf{Not Customizable}: We are not able to design the shape or features
+			it monitors.
+		\end{itemize}
+		\subsection{Design and Print Own Sensors}
+		One option would be to design our own sensor using a program like Eagle and
+		have it printed and sent to use. The advantage to this is that we can make the
+		sensor exactly how want it in the shape that would fit in our enclosure. This
+		would also be ideal if we need a bunch of them. The disadvantage for this would
+		that we would have to spend time designing it and then have to wait for them
+		to print. This would only be ideal if we were going through to a production
+		unit.
+		\\\\
+		\textbf{Advantages}:
+		\begin{itemize}
+			\item \textbf{Customizable}: With designing and building our own sensors
+			we can add only the features that are needed for the project.
+			\item \textbf{Cost}: This is the cheapest options when buying large quantities.
+		\end{itemize}
+		\noindent\textbf{Disadvantages}:
+		\begin{itemize}
+			\item \textbf{Large Investment}: To design and have the sensors made would
+			take a large investment of time and money. In the long run it would be advantageous
+			to do this if this goes to production.
+		\end{itemize}
+		\subsection{SparkFun Soil Moisture Sensor}
+		SparkFun soil moisture sensor  be purchased through Sparkfun. It can be used
+		with any arduino microcontroller. This allows us to be able monitor the soil
+		moisture. The SparkFun soil moisture sensor is a lot like many other sensors
+		in design and how it interfaces with microcontrollers.
+		\\\\
+		\textbf{Advantages}:
+		\begin{itemize}
+			\item \textbf{Time Investment}: With the sensors already built the onlly time
+			need is to configure and install the sensors.
+		\end{itemize}
+		\noindent\textbf{Disadvantages}:
+		\begin{itemize}
+			\item \textbf{Not Customizable}: We are not able to design the shape or features
+			it monitors.
+			\item \textbf{Cost}: These are more expensive than other sensors on the market.
+		\end{itemize}
+		\subsection{Discussion}
+		Moisture sensors are simple sensors so most of them are similar in shape,
+		size and how they read in moisture. For this reason it is possible to design
+		our own and get it the shape and size that we would like. The disadvantage of this
+		is that we would have to design it and then have them printed and they are
+		not guaranteed to work. This is why the other two options were chosen. The
+		Octopus Soil Moisture Sensor and the Sparkfun Soil Moisture Sensor are very similar
+		The Octopus soil moisture sensor has the ability to connect to other sensors.
+		This is a nice feature if we would like to add any other sensors. The SparkFun
+		Soil moisture sensor doesn't have any special feature other than reading in
+		the moisture level. Though it is more expensive than the Octopus moisture sensor.
+		\subsection{Conclusion}
+		Looking at all the options it seems like the Octopus soil moisture sensor is
+		the option we will be going with. Designing and having it printed would be
+		time consuming and expensive up front. The SparkFun soil moisture sensor is
+		has all the features that we need but is more expensive than the Octopus soil.
+		The added cost of this sensor makes Octopus soil moisture sensor the sensor
+		we will be using for our project.
+
+		%References
+				\subsection*{References}
+				\begingroup
+					\renewcommand{\addcontentsline}[3]{}% Remove functionality of \addcontentsline
+					\renewcommand{\section}[2]{}% Remove functionality of \section
+					%\cite[Sec 3.8]{sourceName}
+					\bibliography{ref}
+					\bibliographystyle{IEEEtran}
+				\endgroup
+
+\end{document}
