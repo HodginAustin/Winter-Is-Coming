@@ -21,3 +21,4 @@ clean:
 	rm -f writeup.toc
 	rm -f writeup.bbl
 	rm -f writeup.blg
+	rm -f writeup.lof
