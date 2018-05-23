@@ -7,7 +7,7 @@
 	Version 2.0 of the RGB LED Planter Box begins the with the requirements that a web interface be developed for the controller.
 	This web interface will hosted on the local controller (localhost), and only this controller will be accessible to it.
 	This is true, only if there isn't a network infrastructure to allow this host to share its web interface to other devices.
-	This network infrastructure must accomodate the web interface host, other clients wishing to interact with the LED array, and
+	This network infrastructure must accommodate the web interface host, other clients wishing to interact with the LED array, and
 	be as simple to setup and maintain as possible.  \\
 
 	There are many different types of devices and protocols that allow devices to pass information to each other, and share resources.
@@ -27,7 +27,7 @@
 	In this architecture, all clients are able to communicate to each other by passing their network traffic through the central router.
 
 	\begin{center}
-		\includegraphics[scale=0.5]{switch-star-topology-hosts.png}
+		\includegraphics[scale=0.5]{techreview/switch-star-topology-hosts.png}
 	\end{center} \cite{IMG1}
 
 	\newpage % A better place to break and transition to new page
@@ -77,7 +77,7 @@
 	A good example would be B.A.T.M.A.N (\textbf{B}etter \textbf{A}pproach \textbf{T}o \textbf{M}obile \textbf{A}d-hoc \textbf{N}etworking).  \cite{LAN4}
 
 	\begin{center}
-		\includegraphics[scale=0.6]{mesh_topology.png}
+		\includegraphics[scale=0.6]{techreview/mesh_topology.png}
 	\end{center} \cite{IMG2}
 
 	\noindent \\ \textbf{Advantages} of using Mesh Topology LAN Over Radio:
@@ -126,11 +126,11 @@
 	\subsubsection{3D Printed Hardware}
 	In the past few years, 3D printing has exploded as a hobby, and as a practical manufacturing technique for quick, impromptu, custom hardware.  3D printing involves 3D
 	generation and rendering of 3d objects in modeling software.  The files created by such modeling software can then be printed.  The printing process involves a printer
-	head that moves in the X and Y dimensions, and a printing table that moves up and down in the Z dimesions.  Most printers print a rigid plastic that is heated to
+	head that moves in the X and Y dimensions, and a printing table that moves up and down in the Z dimensions.  Most printers print a rigid plastic that is heated to
 	melting temperatures, and then laid down on the printer table to form layers that make up the 3D object.
 
 	\begin{center}
-		\includegraphics[scale=0.5]{90-degree-bracket.jpg}
+		\includegraphics[scale=0.5]{techreview/90-degree-bracket.jpg}
 	\end{center} \cite{IMG3}
 
 	\noindent \\ \textbf{Advantages} of 3D printing parts for a planter bed:
@@ -189,10 +189,10 @@
 
 
 	\subsection{Discussion}
-	Seeing that this section doesn't quite have a coding or electical design to it, not much time was spent on developing options.  The options considered were found to be the
+	Seeing that this section doesn't quite have a coding or electrical design to it, not much time was spent on developing options.  The options considered were found to be the
 	simplest.  Of the three, the least cost and effort would go towards the "Slap-On" method.  However cheap and easy it may be, this option may prove not to have the structural
 	integrity that the application requires.  Designing parts to have fabricated is an option that likely would not be implemented, but it is not out of the question.  This option
-	adds an exteme layer of simplicity for the end user, who would basically have to follow a simple instruction set to assemble said parts.  However, the team doesn't have a
+	adds an extreme layer of simplicity for the end user, who would basically have to follow a simple instruction set to assemble said parts.  However, the team doesn't have a
 	mechanical or civil engineering background, and further research or collaboration with outside sources would be required to complete this implementation.  The last option of
 	3D printing the parts necessary offers the argument of being simple to produce, relatively inexpensive, and customizable.
 
@@ -218,7 +218,7 @@
 
 		\subsubsection{C/C++}
 		The C language has been around since the early 1970s. \cite{LANG1}  It is extremely powerful compared to other languages because it is one of the few languages that comes closely
-		to mimicing Assembly, a very low level microprocessor instruction language.  This means that when compiled, the code produces an efficient executing program.  Efficient in the terms
+		to mimicking Assembly, a very low level microprocessor instruction language.  This means that when compiled, the code produces an efficient executing program.  Efficient in the terms
 		that the processor can do the most in the least amount of time, with the least amount of memory. Considering these ideologies, the UNIX and *nix family of operating systems
 		foundations are built on this language.  From C sprouted C++, which essentially is the same core language.  The only difference between the two is that C++ was developed to support Object Oriented (OO) programming.  C++ programming has the caveats of
 		being based on the C language while incorporating the powerful idea of objects in a programming language.
@@ -258,7 +258,7 @@
 
 
 		\subsubsection{Rust}
-		A relatively new language, Rust is basically a child of C++.  While being syntactically very similar to C++, Rust claims to have better memory managment, and also be developed with the
+		A relatively new language, Rust is basically a child of C++.  While being syntactically very similar to C++, Rust claims to have better memory management, and also be developed with the
 		sense that the language should maintain system functionality.  Rust has grown to be a new choice for operating systems, game engines, and even virtual reality applications. \cite{LANG2}
 
 		\noindent \\ \textbf{Advantages} of using Rust:

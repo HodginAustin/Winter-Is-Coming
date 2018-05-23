@@ -122,22 +122,32 @@
 	frame = single,                  % code framing
 }
 
-
-
-	%References
-	\subsection*{References}
-	\begingroup
-		\renewcommand{\addcontentsline}[3]{}% Remove functionality of \addcontentsline
-		\renewcommand{\section}[2]{}% Remove functionality of \section
-		%\cite[Sec 3.8]{sourceName}
-		\bibliography{ref}
-		\bibliographystyle{IEEEtran}
-	\endgroup
+	\section{Introduction} % Include information to answer these questions in the problem statement:
+	% Who requested it?
+	% Why was it requested?
+	% What is its importance?
+	% Who was/were your client(s)?
+	% Who are the members of your team?
+	% What were their roles?
+	% What was the role of the client(s)? (I.e., did they supervise only, or did they participate in doing development)
+	\input{problemstatement.tex}
 
 	\section{Introduction}
 	\section{Requirements Document}
 	\section{Design Document}
-	\section{Technology Review}
+	% Add (your client should have okay'd): What design aspects were changed, deleted or added? Why?
+	\input{design.tex}
+
+	\section{Technology Reviews}
+		\subsection{Austin Hodgin}
+		\input{techreview/techreview_austin.tex}
+		\subsection{Travis Hodgin}
+		\input{techreview/techreview_travis.tex}
+		\subsection{Zach Lerew}
+		\input{techreview/techreview_zach.tex}
+		\subsection{Max Schmidt}
+		\input{techreview/techreview_max.tex}
+
 	\section{Weekly Blog Posts}
 		\subsection{Austin Hodgin}
 			\subsubsection{Fall}
