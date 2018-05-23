@@ -26,13 +26,12 @@
 \def \CapstoneSponsorPerson{		 			  				 Victor Hsu}
 
 % 2. Uncomment the appropriate line below so that the document type works
-\def \DocType{
-	%Problem Statement
-	%Requirements Document
-	%Technology Review
-	%Design Document
-	Final Progress Report
-}
+\def \DocType{		%Problem Statement
+				%Requirements Document
+				%Technology Review
+				%Design Document
+				Final Progress Report
+				}
 
 \newcommand{\NameSigPair}[1]{\par
 \makebox[2.75in][r]{#1} \hfil 	\makebox[3.25in]{\makebox[2.25in]{\hrulefill} \hfill		\makebox[.75in]{\hrulefill}}
@@ -61,14 +60,14 @@
             \textbf{\Huge\CapstoneProjectName}\par
 
             %\vfill
-			\vspace{1in}
+						\vspace{1in}
 
             {\large Prepared for}\par
             \Huge \CapstoneSponsorCompany\par
             \vspace{5pt}
             {\Large\NameSigPair{\CapstoneSponsorPerson}\par}
 
-			\vspace{1in}
+						\vspace{1in}
 
             {\large Prepared by}\par
 						{\huge \CapstoneTeamNumber}\par
@@ -76,15 +75,16 @@
             \vspace{5pt}
 
             {
-				\Large
-				\NameSigPair{\GroupMemberOne}\par
-				\NameSigPair{\GroupMemberTwo}\par
-				\NameSigPair{\GroupMemberThree}\par
-				\NameSigPair{\GroupMemberFour}\par
+							\Large
+							\NameSigPair{\GroupMemberOne}\par
+							\NameSigPair{\GroupMemberTwo}\par
+							\NameSigPair{\GroupMemberThree}\par
+							\NameSigPair{\GroupMemberFour}\par
             }
 
             \vspace{20pt}
         }
+%\textbf{\textsuperscript{citation needed}}
 				\newpage
         \begin{abstract}
 				\noindent This is the abstract for the WHOLE paper.
@@ -111,76 +111,53 @@
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
 
 \lstset{
-	backgroundcolor=\color{white},   % choose the background color
-	basicstyle=\footnotesize,        % size of fonts used for the code
-	breaklines=true,                 % automatic line breaking only at whitespace
-	captionpos=b,                    % sets the caption-position to bottom
-	commentstyle=\color{mygreen},    % comment style
-	escapeinside={\%*}{*)},          % if you want to add LTeX within your code
-	keywordstyle=\color{blue},       % keyword style
-	stringstyle=\color{mymauve},     % string literal style
+  backgroundcolor=\color{white},   % choose the background color
+  basicstyle=\footnotesize,        % size of fonts used for the code
+  breaklines=true,                 % automatic line breaking only at whitespace
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  escapeinside={\%*}{*)},          % if you want to add LTeX within your code
+  keywordstyle=\color{blue},       % keyword style
+  stringstyle=\color{mymauve},     % string literal style
 	frame = single,                  % code framing
 }
 
 
-	Hello \cite{expensive1}
-	
 
-	\section{Introduction} % Include information to answer these questions in the problem statement:
-	% Who requested it?
-	% Why was it requested?
-	% What is its importance?
-	% Who was/were your client(s)?
-	% Who are the members of your team?
-	% What were their roles?
-	% What was the role of the client(s)? (I.e., did they supervise only, or did they participate in doing development)
-	\input{problemstatement.tex}
+	%References
+	\subsection*{References}
+	\begingroup
+		\renewcommand{\addcontentsline}[3]{}% Remove functionality of \addcontentsline
+		\renewcommand{\section}[2]{}% Remove functionality of \section
+		%\cite[Sec 3.8]{sourceName}
+		\bibliography{ref}
+		\bibliographystyle{IEEEtran}
+	\endgroup
 
+	\section{Introduction}
 	\section{Requirements Document}
-	% Add (your client should have okay'd): What new requirements were added? What existing requirements were changed?
-	% What existing requirements were deleted? Why? 
-	% Add: Final Gantt Chart as a record of what happened when.
-	\input{requirements.tex}
-
 	\section{Design Document}
-	% Add (your client should have okay'd): What design aspects were changed, deleted or added? Why?
-	\input{design.tex}
-
 	\section{Technology Review}
-		\subsection{Austin Hodgin}
-		\input{techreview/techreview_austin.tex}
-		\subsection{Travis Hodgin}
-		\input{techreview/techreview_travis.tex}
-		\subsection{Zach Lerew}
-		\input{techreview/techreview_zach.tex}
-		\subsection{Max Schmidt}
-		\input{techreview/techreview_max.tex}
-
 	\section{Weekly Blog Posts}
 		\subsection{Austin Hodgin}
+			\subsubsection{Fall}
+			\subsubsection{Winter}
+			\subsubsection{Spring}
 		\subsection{Travis Hodgin}
+			\subsubsection{Fall}
+			\subsubsection{Winter}
+			\subsubsection{Spring}
 		\subsection{Zach Lerew}
+			\subsubsection{Fall}
+			\subsubsection{Winter}
+			\subsubsection{Spring}
 		\subsection{Max Schmidt}
-
+			\subsubsection{Fall}
+			\subsubsection{Winter}
+			\subsubsection{Spring}
 	\section{Final Poster}
-	% 8.5 X 11 formatted, landscape
-
 	\section{Project Documentation}
-	% How does your project work? (Could include the following...)
-	% What is its structure?
-	% What is its Theory of Operation?
-	% Block and flow diagrams are good here.
-	% How does one install your software, if any?
-	% How does one run it?
-	% Are there any special hardware, OS, or runtime requirements to run your software?
-	% Any user guides, API documentation, etc.
-	% This needs to be detailed enough to recreate and/or use your project!
-
 	\section{Recommended Technical Resources}
-	% What web sites were helpful? (Listed in order of helpfulness.)
-	% What, if any, reference books really helped?
-	% Were there any people on campus that were really helpful?
-
 	\section{Reflection}
 		\subsection{Austin Hodgin}
 			\subsubsection{What technical information did you learn?}
@@ -212,14 +189,4 @@
 			\subsubsection{If you could do it all over, what would you do differently?}
 	\section{Conclusion}
 
-
-	%%% References %%%
-	\subsection*{References}
-	\begingroup
-		\renewcommand{\addcontentsline}[3]{}% Remove functionality of \addcontentsline
-		\renewcommand{\section}[2]{}% Remove functionality of \section
-		%\cite[Sec 3.8]{sourceName}
-		\bibliography{ref}
-		\bibliographystyle{IEEEtran}
-	\endgroup
 \end{document}
