@@ -10,6 +10,7 @@
 \usepackage{etoolbox}
 \usepackage{pdflscape}
 \usepackage{lscape}
+\usepackage{hyperref}
 
 \patchcmd{\thebibliography}{\section*{\refname}}{}{}{}
 
@@ -317,7 +318,7 @@
 				\begin{itemize}
 					\item \textbf{Week 1} - Our schedules are pretty tight this term, but at least our project is in pretty good shape and ready for testing, bugfixing, and polish.
 					\item \textbf{Week 2} - Data parser has unit tests to cover insert, update, delete, and loading (select). I have also restructured the tests and fixed a couple bugs that were uncovered because of the data parser testing. Mostly they were default values that should have been set, or a minor re-organization to cover an edge case. The data parser feels complete to me at this point, and I am ready to start moving on to finishing the setup script (it needs rewritten), and working on a 3d printable enclosure for the system. Oh, and the silly wired article is done. It was a waste of time.
-					\item \textbf{Week 3} - As of now, all of the systems have some form of unit testing. The Site and API are only partially tested, but they are being worked on still. The biggest remaining bug with the state composer appears to have been solved, and the team is adding polish here and there. Additionally, I have successfully completed the Setup scripts. This means that a user can go to the latest release of the system ( https://github.com/CarvellWakeman/plantergb/releases/tag/Latest), download a setup config file (setup.xml), Open it and flash it with PiBakery, insert that SD card into a Pi, and have a system up and running after about 20 minutes. This is primarily for our client should he ever want to update the system, but also so that the control service and website start when the Pi boots. Everything is starting to come together and it's looking pretty damn cool.
+					\item \textbf{Week 3} - As of now, all of the systems have some form of unit testing. The Site and API are only partially tested, but they are being worked on still. The biggest remaining bug with the state composer appears to have been solved, and the team is adding polish here and there. Additionally, I have successfully completed the Setup scripts. This means that a user can go to the latest release of the system, download a setup config file (setup.xml), Open it and flash it with PiBakery, insert that SD card into a Pi, and have a system up and running after about 20 minutes. This is primarily for our client should he ever want to update the system, but also so that the control service and website start when the Pi boots. Everything is starting to come together and it's looking pretty damn cool.
 					\item \textbf{Week 4} - Finished the poster, got approved. Rewrote setup script and cleaned up the process for building a release. Added script to reconnect to wifi if signal is dropped.
 					\item \textbf{Week 5} - Our team is on a great track for being done by the time expo comes around.
 					\item \textbf{Week 6} - The only remaining issue has existed since the beginning of spring term. The LEDs still blip to the wrong color in some circumstances which are hard to measure. Max seems to think it is a hardware problem at this point.
@@ -334,8 +335,65 @@
 	}
 
 	\section{Project Documentation}
+	The latest version of the installation instructions can be found on GitHub under the name PlanteRGB, or at \url{https://github.com/CarvellWakeman/plantergb/releases/tag/Latest}.
+
+	\subsection{\textbf{Software Installation Instructions:}}
+	\begin{itemize}
+		\item 1) Download PiBakery at http://www.pibakery.org/download.html \textbf{This will take a long time}
+		\item 2) Install PiBakery with raspbian lite, though the desktop version should run fine if you want to use it instead.
+		\item 3) Download setup.xml from this release.
+		\item 4) Open PiBakery and import the setup.xml file.
+		\item 5) Change the WiFi block to match your network name and password. \textbf{Make sure they match perfectly or this whole process will fail.}
+ 		\item 6) The timezone setting option was temporarily removed due to a new setup system. For now, the firstboot.py file is hardcoded for Los\_Angeles. This setting can be changed from raspi-config after the pi has started up.
+		\item 7) Change the default user password. You probably won't need this unless you plug the Pi into a monitor and keyboard, but it's a good idea to remember it anyways.
+		\begin{itemize}
+			\item Everything after the password block should be left alone
+		\end{itemize}
+		\item 8) Insert a microSD card using some kind of card reader, and determine its drive letter (Ex: D:/)
+		\item 9) In PiBakery, click the \textit{write} button at the top of the screen, and follow the prompts by choosing your microSD card, Raspbian Lite (preferred) or Rasbian Desktop (slower). \textbf{This will take a long time, ~10 mins}
+		\begin{itemize}
+			\item a) If this process fails at the very end (as it often did for us), do it again but select the "boot" drive. It usually succeeds on the second try.
+		\end{itemize}
+		\item 10) Properly eject the microSD card from your machine and give it a moment to cool down if it is warm.
+	\end{itemize}
+
+	\subsection{\textbf{Hardware Installation Instructions:}}
+	\begin{itemize}
+		\item 1) If you want to connect a monitor and/or keyboard, do so before plugging in the raspberry Pi.
+		\item 2) Insert the microSD card into the Raspberry Pi
+		\item 3) TODO:INSTRUCTIONS ON WIRING THE SYSTEM TOGETHER HERE
+		\item 4) Finally, plug the power in for the Raspberry Pi
+	\end{itemize}
+
+
+	\subsection{\textbf{System Configuration:}}
+	\begin{itemize}
+		\item 1) When your system is first connected, it may take quite a while to get setup. \textbf{This will take a long time, about 15 min}
+		\item 2) Now that the system is set up, the IP address of the raspberry pi can be used to access the interface. There are several ways to do this.
+		\begin{itemize}
+			\item a) If you have access to your router, connect to it through the browser. This is typically an address such as \textbf{192.168.1.1} or \textbf{192.168.1.0}. The router will prompt you to log in. Once you are logged in, find a part of the interface about \textit{attached devices} or something along those lines. The raspberry Pi will be in the Wifi section, and will probably have a device name similar to \textbf{raspberrypi}. Keep note of its IP address.
+			\item b) If you have physical access to the Raspberry Pi Zero W, as well as a microHDMI adapter, you can plug a monitor into the Pi before booting it up. Once it is booted, one of the last lines before the login prompt will by \textbf{My address is xxx.xxx.x.x}.
+		\end{itemize}
+		\item 3) Once you know the IP address of the raspberry Pi, (\textit{ex: 192.168.1.18}) and type that into the browser, followed by \textit{:8080}. Here is what a full address would look like: \textbf{http://192.168.1.18:8080/} If everything was successful, you will see the welcome page to the system.
+	\end{itemize}
+	
+
+	\subsection{\textbf{Software Update Instructions:}}
+	\begin{itemize}
+		\item 1) TBD. Short answer: load the microSD card into your machine, wipe it clean, and start the software installation process over again.
+	\end{itemize}
+
 
 	\section{Recommended Technical Resources}
+	\begin{itemize}
+		\item \textbf{Sqlite C++ ORM:} \url{https://github.com/fnc12/sqlite_orm}
+		\item \textbf{Pistache C++ API:} \url{http://pistache.io/}
+		\item \textbf{C++ JSON library:} \url{https://github.com/nlohmann/json}
+		\item \textbf{NodeJS Documentation:} \url{https://nodejs.org/api/}
+		\item \textbf{Bootstrap documentation:} \url{https://getbootstrap.com/docs/4.1/getting-started/introduction/}
+		\item \textbf{Npm Requests:} \url{https://www.npmjs.com/package/requests}
+	\end{itemize}
+
 
 	\section{Reflection}
 		\subsection{Austin Hodgin}
@@ -382,7 +440,7 @@
 			\subsubsection{If you could do it all over, what would you do differently?}
 			\noindent I would do a few things differently if I could. First and foremost I would start using I2C instead of UART for communication.
 			This was a somewhat big issue we had about halfway through winter term. When we started working on multi-controller communication we ran
-			into issues when connecting between several Nano’s. This was fixed by switching to I2C, but it was a major roadblock for about a week. Secondly,
+			into issues when connecting between several Nanos. This was fixed by switching to I2C, but it was a major roadblock for about a week. Secondly,
 			I would have done most of the project in Javascript, rather than C++. Having C++ do HTTP requests was a pain to get working. This wasn’t impossible
 			to implement, we just think that it would have gone better if the API was also done in Javascript along with the Node.js web service.
 
