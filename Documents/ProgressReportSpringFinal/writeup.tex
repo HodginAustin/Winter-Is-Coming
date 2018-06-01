@@ -277,7 +277,7 @@
 			\subsubsection{Spring}
 				\begin{itemize}
 					\item \textbf{Week 1} - Introductions to Spring term. Kevin and Kirsten explaining that the course will be on Canvas this term (gross). The team met to discuss scheduling and what times would work for team meetings. Mostly decided on Tuesdays and Saturdays.
-					\item \textbf{Week 2} - Further research into how or why the I2C bus is losing sync. We are still seeing write errors on the composer end. My initial guess was that the bus was getting interference. Updating the delay time does not seem to be helping at this point. Updated serial_send function to allow multiple attempts if it failed in writing. If this resolves the issue, I could begin on testing for the StateComposer.
+					\item \textbf{Week 2} - Further research into how or why the I2C bus is losing sync. We are still seeing write errors on the composer end. My initial guess was that the bus was getting interference. Updating the delay time does not seem to be helping at this point. Updated serial\_send function to allow multiple attempts if it failed in writing. If this resolves the issue, I could begin on testing for the StateComposer.
 					\item \textbf{Week 3} - Further testing with the serial communications. tarted to get timings on when the nanos lose sync with the Pi. It doesn't seem to have a pattern. I'm seeing losses at 2 minutes up to about 6 hours... The sporadic-ness is starting to get really frustrating. It's getting so bad, I'm about to dig out my old oscilloscope to start looking at the actual wave forms. Started looking at writing tests for the State Composer.
 					\item \textbf{Week 4} - Broke down and pulled out the oscilloscope to start looking at the serial wave forms coming from the Pi and what the nano is seeing. Setup some test serial functions away from the project code to have a constant source of serial data. Noticing the correct data patterns. I'm also starting to wonder about the interference again, mainly because the Pi is only outputting a logic high level of 3.3V, when the nanos are generally accepting 5V... It could also be these are cheap nanos (~5 a chip) and their oscillators/timers aren't perfectly clocked. Other teammates are making tremendous progress on the site and backend pieces for data movement.
 					\item \textbf{Week 5} - Further research into the I2C bus. Amongst other class work and work, not much was done this week. Worked on further updating the nano code to be more reliable by adding another check for 4 bytes on receive. Also created a debug version that sends the received values back over serial UART (USB) to a serial console. Continued checking on the serial bus to see where nanos were falling off. Got whole system stress tested with three LED strips on full bright white, 4 nanos, and the pi. Main lines going to each strip were a tad warm, but not anything that will melt something. No significant voltage drops on the Pi, nanos, or strips. Everything seems stable.
@@ -360,9 +360,32 @@
 	\subsection{\textbf{Hardware Installation Instructions:}}
 	\begin{itemize}
 		\item 1) If you want to connect a monitor and/or keyboard, do so before plugging in the raspberry Pi.
-		\item 2) Insert the microSD card into the Raspberry Pi
-		\item 3) TODO:INSTRUCTIONS ON WIRING THE SYSTEM TOGETHER HERE
-		\item 4) Finally, plug the power in for the Raspberry Pi
+		\item 2) Wire the system together based on the following diagrams:
+
+		\begin{center}
+			\begin{figure}[H]
+				\includegraphics[width=\linewidth]{systemDiagrams/power-distribution-schematic.png}
+				\caption{The PlanteRGB power distribution system}
+				\label{fig:systemDiagram}
+			\end{figure}
+		\end{center}
+
+		\item This is the data diagram that shows how to connect the I2C bus and LEDs to the arduino nanos.
+		
+		\begin{center}
+			\begin{figure}[H]
+				\includegraphics[width=\linewidth]{systemDiagrams/I2C-bus.png}
+				\caption{The PlanteRGB data schematic}
+				\label{fig:systemDiagram}
+			\end{figure}
+		\end{center}
+
+		\begin{itemize}
+			\item a) Make sure to measure how many amps the system will use and choose an appropriate power supply. The raspberry Pi will use about 1 amp, each nano will use about 0.5 amps, and the strips of lights will use at most 60 milliamps per LED at full brightness. This all depends on which LED strips you get.
+		\end{itemize}
+
+		\item 3) Insert the microSD card into the Raspberry Pi.
+		\item 4) Finally, plug the power in for the system.
 	\end{itemize}
 
 
