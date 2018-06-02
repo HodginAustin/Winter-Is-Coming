@@ -384,7 +384,7 @@
 		\end{center}
 
 		\begin{itemize}
-			\item a) Make sure to measure how many amps the system will use and choose an appropriate power supply. The raspberry Pi will use about 1 amp, each nano will use about 0.5 amps, and the strips of lights will use at most 60 milliamps per LED at full brightness. This all depends on which LED strips you get.
+			\item a) Make sure to measure how many amps the system will use and choose an appropriate power supply. The raspberry Pi will use about 1 amp for the PlanteRGB service, each Arduino nano will use about 0.5 amps, and the strips of lights will use at most 60 milliamps per LED at full brightness. This all depends on which LED strips you get.
 		\end{itemize}
 
 		\item 3) Insert the microSD card into the Raspberry Pi.
@@ -397,7 +397,7 @@
 		\item 1) When your system is first connected, it may take quite a while to get setup. \textbf{This will take a long time, about 15 min}
 		\item 2) Now that the system is set up, the IP address of the raspberry pi can be used to access the interface. There are several ways to do this.
 		\begin{itemize}
-			\item a) If you have access to your router, connect to it through the browser. This is typically an address such as \textbf{192.168.1.1} or \textbf{192.168.1.0}. The router will prompt you to log in. Once you are logged in, find a part of the interface about \textit{attached devices} or something along those lines. The raspberry Pi will be in the Wifi section, and will probably have a device name similar to \textbf{raspberrypi}. Keep note of its IP address.
+			\item a) If you have access to your router, connect to it through the browser. This is typically an address such as \textbf{192.168.0.1} or \textbf{192.168.1.1}. The router will prompt you to log in. Once you are logged in, find a part of the interface about \textit{attached devices} or something along those lines. The raspberry Pi will be in the Wifi section, and will probably have a device name similar to \textbf{raspberrypi}. Keep note of its IP address.
 			\item b) If you have physical access to the Raspberry Pi Zero W, as well as a microHDMI adapter, you can plug a monitor into the Pi before booting it up. Once it is booted, one of the last lines before the login prompt will by \textbf{My address is xxx.xxx.x.x}.
 		\end{itemize}
 		\item 3) Once you know the IP address of the raspberry Pi, (\textit{ex: 192.168.1.18}) and type that into the browser, followed by \textit{:8080}. Here is what a full address would look like: \textbf{http://192.168.1.18:8080/} If everything was successful, you will see the welcome page to the system.
