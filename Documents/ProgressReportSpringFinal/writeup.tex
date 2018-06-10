@@ -1,0 +1,521 @@
+\documentclass[onecolumn, draftclsnofoot,10pt, compsoc]{IEEEtran}
+
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{etoolbox}
+\usepackage{pdflscape}
+\usepackage{lscape}
+\usepackage{hyperref}
+
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{}
+
+\geometry{textheight=9.5in, textwidth=7in}
+
+% 1. Fill in these details
+\def \CapstoneTeamName{			              				   PlanteR-GB}
+\def \CapstoneTeamNumber{					           			 Group 64}
+\def \GroupMemberOne{				           				Austin Hodgin}
+\def \GroupMemberTwo{				           				Travis Hodgin}
+\def \GroupMemberThree{			            		  Maximillian Schmidt}
+\def\GroupMemberFour{		        	               		   Zach Lerew}
+\def \CapstoneProjectName{	      	   				  Winter is Coming...}
+\def \CapstoneSponsorCompany{		    		  Oregon State University}
+\def \CapstoneSponsorPerson{		 			  			   Victor Hsu}
+
+% 2. Uncomment the appropriate line below so that the document type works
+\def \DocType{		%Problem Statement
+				%Requirements Document
+				%Technology Review
+				%Design Document
+				Final Progress Report
+				}
+
+\newcommand{\NameSigPair}[1]{\par
+\makebox[2.75in][r]{#1} \hfil 	\makebox[3.25in]{\makebox[2.25in]{\hrulefill} \hfill		\makebox[.75in]{\hrulefill}}
+\par\vspace{-12pt} \textit{\tiny\noindent
+\makebox[2.75in]{} \hfil		\makebox[3.25in]{\makebox[2.25in][r]{Signature} \hfill	\makebox[.75in][r]{Date}}}}
+% 3. If the document is not to be signed, uncomment the RENEWcommand below
+\renewcommand{\NameSigPair}[1]{#1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{titlepage}
+    \pagenumbering{gobble}
+    \begin{singlespace}
+    	%\includegraphics[height=4cm]{coe_v_spot1}
+        \hfill
+
+        % 4. If you have a logo, use this includegraphics command to put it on the coversheet.
+        \includegraphics[height=4cm]{logo.png}
+
+        \par\vspace{.2in}
+        \centering
+        \scshape{
+            \huge CS Capstone \DocType \par
+            {\large\today}\par
+            \vspace{.5in}
+            \textbf{\Huge\CapstoneProjectName}\par
+
+            %\vfill
+						\vspace{1in}
+
+            {\large Prepared for}\par
+            \Huge \CapstoneSponsorCompany\par
+            \vspace{5pt}
+            {\Large\NameSigPair{\CapstoneSponsorPerson}\par}
+
+						\vspace{1in}
+
+            {\large Prepared by}\par
+						{\huge \CapstoneTeamNumber}\par
+            \CapstoneTeamName\par
+            \vspace{5pt}
+
+            {
+							\Large
+							\NameSigPair{\GroupMemberOne}\par
+							\NameSigPair{\GroupMemberTwo}\par
+							\NameSigPair{\GroupMemberThree}\par
+							\NameSigPair{\GroupMemberFour}\par
+            }
+
+            \vspace{20pt}
+        }
+%\textbf{\textsuperscript{citation needed}}
+				\newpage
+        \begin{abstract}
+				\noindent This paper serves as a final wrap up and summary of the team's project from start to finish. It details what the team assessed as the problem, how the team designed the
+				large system components to solve the problem, what technologies were researched to complete the system, and the overall progress made throughout the year. To capture this
+				progress, the paper collects each member's weekly blog posts and notes. Since the project is now complete, detailed instructions on how to setup and use the system are included.
+				Finally, the document provides each of the team members' retrospective and opinions of the project, and some resources helpful to the reader.
+        \end{abstract}
+    \end{singlespace}
+\end{titlepage}
+
+\newpage
+
+\pagenumbering{arabic}
+\tableofcontents
+% 7. uncomment this (if applicable). Consider adding a page break.
+\listoffigures
+%\listoftables
+\clearpage
+\singlespace
+
+\newpage
+
+
+% Syntax highlighting
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  backgroundcolor=\color{white},   % choose the background color
+  basicstyle=\footnotesize,        % size of fonts used for the code
+  breaklines=true,                 % automatic line breaking only at whitespace
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  keywordstyle=\color{blue},       % keyword style
+  stringstyle=\color{mymauve},     % string literal style
+	frame = single,                  % code framing
+}
+
+	\section{Introduction} % Include information to answer these questions in the problem statement:
+	% Who requested it?
+	% Why was it requested?
+	% What is its importance?
+	% Who was/were your client(s)?
+	% Who are the members of your team?
+	% What were their roles?
+	% What was the role of the client(s)? (I.e., did they supervise only, or did they participate in doing development)
+
+	During the winter months it can be very cold and wet especially here in Oregon. This can make growing plants that we want year
+	round such as Herbs for cooking very difficult. Since it is difficult during the winter to grow the plants we want we would want
+	to bring them inside where we have more control. Our sponsor Victor Hsu wanted just that. So he started doing research and found
+	that the current lighting/Growing system that are currently available are expensive and offer very little in customization. So he
+	tasked our Group, Austin Hodgin, Travis Hodgin, Maximillian Schmidt and Zach Lerew to build a RGB LED plant growth system. Austin Hodgin worked
+	on the command line interface as well as the website. Travis Hodgin worked on the Hardware and Web site. Zach Lerew worked on building the API, database
+	and internal state. Maximillian Schmidt worked on the hardware and state composer. Our client was very hands off and allowed us to work on our own time
+	and allowed us a fair bit of freedom when it came to designing the system. He gave us the base requirements he wanted and allowed us to expand and add features
+	that we thought would work well with the system.
+
+
+
+	\input{problemstatement.tex}
+
+	\section{Requirements Document}
+	\input{requirements.tex}
+	\section{Design Document}
+	% Add (your client should have okay'd): What design aspects were changed, deleted or added? Why?
+	\input{design.tex}
+
+	\section{Technology Reviews}
+		\subsection{Austin Hodgin}
+		\input{techreview/techreview_austin.tex}
+		\subsection{Travis Hodgin}
+		\input{techreview/techreview_travis.tex}
+		\subsection{Zach Lerew}
+		\input{techreview/techreview_zach.tex}
+		\subsection{Max Schmidt}
+		\input{techreview/techreview_max.tex}
+
+	\section{Weekly Blog Posts}
+		\subsection{Austin Hodgin}
+			\subsubsection{Fall}
+				\begin{itemize}
+					\item \textbf{Week 1} - Looked over the email sent by Max to the client for "Winter is coming" project and then looked through and filled out the project selections. 
+					\item \textbf{Week 2} -  We were selected for the winter is coming project. We met after class to figure out a good meeting time that we could set up a schedule for meeting as well as figure out when we would like meet with victor to set up requirements for this project. After the email exchange happened we figured out  a time to meet and had our meeting. We asked him questions about the whole project about what expectations. After the meeting we met to discuss when we were free to work on the project.
+					\item \textbf{Week 3} - Finished the problem statement and turned it into teach.  Created and added group mates to the GitHub. Had meeting with TA. Went well. Asked some questions. Added Everyone to the GitHub and shared my One Note with the TA.
+					\item \textbf{Week 4} - Met with our group to compile the final draft of our problem statement.  Email was sent to victor to have him check the problem statement.  I drafted an email to our client and then sent it to him. He responded with a few changes he would like made. We made those changes and submitted the it to our groups one note.  Looked research that has been done by Travis and talked to our group about those notes. Formatted the Latex for requirements document and pushed it to the Git Hub.
+					\item \textbf{Week 5} - Met with our group several times to talk about the requirements. Came up with the team name PlanteR-GB. We emailed victor to set up a meeting to discuss our requirements document. We had a meeting to disusse it and gave victor our current rough draft.  We made a few formatting changes and turned in the rough draft.
+					\item \textbf{Week 6} - Finished the requirements document and emailed victor and had him approve it. Had a meeting with junki to talk about technology document. We as a group figured out who is going to go over which technology.  Below are what each person is going to go over.
+					\item \textbf{Week 7} - Worked on the requirements documents. Met with the team to discuss which parts each of us were going to take. Did research on my parts, Mobile options, temperature and moisture sensor options, and web hosting options.  Met with the TA to discuss this as well.
+					\item \textbf{Week 8} - Worked on tech review. Finished research  for it. Had a meeting with our TA and asked some questions. Zach worked on a logo so we now have a logo.  Going to start working on the final draft for Tuesday.
+					\item \textbf{Week 9} - Worked on finishing my final draft of my technology review document. Finished and turned in my technology review document.
+					\item \textbf{Week 10} - Finished the design doc an had a meeting with victor to discuss it and the materials needed for the project next term. 
+				\end{itemize}
+			\subsubsection{Winter}
+				\begin{itemize}
+					\item \textbf{Week 1} - Met to discuss how our breaks went. We talked about the current state of the project.
+					\item \textbf{Week 2} - Met and discussed the current state of the project and assigned each person a part of the project.  Travis was able to get LED's that we had on hand and a Teensy we had to Light up LED's
+					\item \textbf{Week 3} - Had a meeting to talk about the current state of the project, What needs to be done when, talked about the things that need to be done by each person and how it should be completed. Set up a scheduled meeting to work together each week. We got the hardware from victor and started working with it. Still missing a raspberry pie as the master controller.
+					\item \textbf{Week 4} - Started to add the HTTP requests that are needed to communicate with the API for the command line interface. The framework that I was going to use for this C++ Requests turns out to be very difficult to add to a project if we do not want to clone the whole project and we would have to compile it every time. This makes it very cumbersome and would take a lot longer to compile. Looking at the alternatives it looks like it will be very difficult and time consuming to implement it in c++. We are looking at possible alternatives for this. Python requests is a good alternative and would make implementing it much simper.
+					\item \textbf{Week 5} - Changed the script to python and worked with Zach about how to use the API appropriate.  Figured out how to use Python Request.
+					\item \textbf{Week 6} - We were able to get an alpha up and working. We finished our progress report, EXPO poster, Progress Video.
+					\item \textbf{Week 7} - Critical TODO: CLI - Finish soon (Austin), Multi-zone - FINISHED, Multi-controller - State composer Serializer sends EN pin, each nano checks pin for EN, Data parser - mostly written (needs relationships, insertion), Web interface - Started (uses mustache for templating, Apache
+											\\ Non-critical: State composer - checks state every 5-30 seconds rather than constantly, power - powered off separate supply (off the pi for now?)
+											\\ What is everyone working on: Austin - CLI/Site, Travis - Site, Zach - Data parser, Max - Multi controller communication
+											\\We all worked on our own part of that are described above. I worked on the script and was able to implement the controller section of the script.
+					\item \textbf{Week 8} - Had Group Meeting Discussed the state of the project that was discussed in the last meeting. Everyone is working on their assigned part of the project. Today's meeting was more of a work meeting where everyone was working on their own part.
+					\item \textbf{Week 9} - We were able to get I2C working for communication across multiple controllers.  Talked about all the different states of the project. Talked about the site and how the plan to use mustache as a templating engine with apache is most likely not going to work since the documentation is out dated and is not clear. We are talking about using Node JS since Travis and I have experience with node and would make the development of the site easier and more stable. Going to continue researching to see if it will be viable on the pi zero.
+					\item \textbf{Week 10} -  Finished the script. Most of the site is setup and interacting with the internal state through the API using node js handlebars and express. We are very close to having a beta.
+				\end{itemize}
+			\subsubsection{Spring}
+				\begin{itemize}
+					\item \textbf{Week 1} - We discussed over slack a time to meet for the term and basic things we would like to discussed what needs to be covered in the first meeting.
+					\item \textbf{Week 2} - We had group meeting on Tuesday and Saturday to discuss the current state of the project. Discussed what each person needs to do for this term. What testing needs to be done as well as what features we would like to be done.
+					\item \textbf{Week 3} - Had team meeting Tuesday and Saturday to discuss current state of the project. Worked on the poster.
+					\item \textbf{Week 4} - Had team meeting on Tuesday and Saturday to discuss more site additions for adding more color.  Worked on poster. Filled in all information that was missing.
+					\item \textbf{Week 5} - Worked on the color picker for the led states page. Was able to get it to output of the color picker to input the rgb values into the correct field. Will still need to add pallet for pre-defined colors and an alpha. That will hopefully be able to get it done before the 11th. We worked on and finished the poster. We submitted it and should be at expo on time.
+					\item \textbf{Week 6} - We met on Tuesday to discuss what was needed for Expo and get everything ready we figured what we needed and who was going to bring what as a backup in case we need something or something was not going to supplied.  We had our friend George 3d model a box that we can hold everything in and display during expo. I 3d Printed it on my 3d printer.
+					\item \textbf{Week 7} - We had Expo this week. It went well. We met to make sure that we had everything working. We had the box built by max's dad built. We made sure that we were able to make the full release  and fixed some bugs when it came to it not able to connect to the internet. We were able to make the full system and created several different profiles to display the different aspects of the system as we explained it. We had some acrylic cut for the top of our box so people could see the hardware required for our system to run. We decide that we did not need to meet during our normal scheduled meeting for Saturday.
+					\item \textbf{Week 8} - Met on Tuesday to discuss what was left to do for the term. We broke down the hardware for Expo and set up what we need to deliver to Victor. We started laying out what needs to be done for the final paper. We outlined who is going to do what and when for the final paper. We met on Saturday to work on the progress report and to work on the final project that will be used for the hand off to victor.
+					\item \textbf{Week 9} - Finished the report and video on Saturday and turned in the video. We were able to make the video only 30 min. We also made the hardware for Victor and were able to make it compact so it is not as crazy with wirers everywhere. 
+					\item \textbf{Week 10} -Had the hand off to victor on Friday gave him back his Nano's, the pi zero w and his LED's. We gave him a rundown of how it works and how to re-flash it if things go wrong or something changes and showed him how to use it to add Nano's, LEDS, Daily States, Zones, and how to change them if needed.  
+				\end{itemize}
+		\subsection{Travis Hodgin}
+			\subsubsection{Fall}
+				\begin{itemize}
+					\item \textbf{Week 1} -
+					\item \textbf{Week 2} - Should we create a single notebook to share to Victor Hsu? Invite client to slack Channel? Github account. Send Email (1). Figure out schedule. Which design style should we use? Set up meeting times (find three times that can work with client)
+					\item \textbf{Week 3} - Projects: Finish rough draft of Problem Statement, Create github, Setup time for TA meeting, TA meeting thursday @5:40pm.
+					\item \textbf{Week 4} - Projects: Finish final draft of the Problem Statement, Start doing research on microcontrollers, TA meeting thursday @5:40pm.
+					\item \textbf{Week 5} - Projects: Work on the Requirements document (Rough draft due on 10/27), Continue research on microcontrollers and programable LED's, TA meeting thursday @ 5:40pm.
+					\item \textbf{Week 6} -Requirements document final: Higher quality GANT chart, Insert sources, Get approval from victor. Technology review assigned:  Compare and contrast technology, Parts we need (language, controller, LED, platforms, application), Define 3 parts each, Each part requires at least a paragraph, One paragraph telling why we chose what we chose, Got together after class to discuss the final revision of the requirements document and preliminary topics for the technology review.
+					\item \textbf{Week 7} - Technology review Rough draft due 11/14/17, Start working on tech review. Part 1: Microcontroller options. Part 2: LED options. Part 3: LED library options
+					\item \textbf{Week 8} - Final draft of tech review due 11/20. Finished rough draft of tech review. Implemented peer review changes to rough draft. Started discussion of design document.
+					\item \textbf{Week 9} - NO TA MEETING THIS WEEK! NO CLASS THIS WEEK! (Class canceled 11/21, Thanksgiving 11/24). Tech review final draft due 11/21. (email kirsten/Junki). Finished my final draft of the tech review. Design document rough draft due 12/1. Need to send tech reviews to victor for approval by the end of the term.
+					\item \textbf{Week 10} - Client Meeting 11/29 at 5pm. TA meeting 11/30 at 5:45pm. Design document due 12/1 by 11:59pm. My work: Hardware, Master Controller, LED Controller, LED Control System, Control Communication, Control Software. Send design document to client for approval by start of next term. Need client approval for tech reviews by start of next term. Progress report due 12/4 by 2pm.
+				\end{itemize}
+			\subsubsection{Winter}
+				\begin{itemize}
+					\item \textbf{Week 1} - Sent an email to victor 1/9/2018. Get together 1/10/2018. Zach worked on the internal state. Travis worked on the LED controller Arduino. Sent an email to victor asking about hardware.
+					\item \textbf{Week 2} - Got an email back from victor after sending a second email. He has 4 Arduino Nano's for us along with 5m of LED's. The pi zeroes are on backorder and will be delayed. He mentioned that he has a pi 2 with a Wi-Fi dongle for us to use in the meantime. Worked on serial handling on the LED controller. Met with junki and group.
+					\item \textbf{Week 3} - Picked up hardware from Victor. Still waiting on the Raspberry Pi Zero W to become available. Finished LED controller Serial parsing. Met with junki and group.
+					\item \textbf{Week 4} - Got code ported over to new hardware. Need other controller working to start rxtx communication. Met with junki and group.
+					\item \textbf{Week 5} - Updated LED controller to run faster. Started connecting things together and working on single set of hardware, and testing over multiple sets of hardware(Pi3 and zeroW). Met with junki and group.
+					\item \textbf{Week 6} - Alpha Due! Progress report due! Pi's are ordered. Met with junki and group.
+					\item \textbf{Week 7} - Critical TODO: CLI - Finish soon (Austin) Multi-zone - FINISHED. Multi-controller - State composer Serializer sends EN pin, each Nano checks pin for EN, Data parser - mostly written (needs relationships, insertion), Web interface - Started (uses mustache for templating, Apache). Non-critical: State composer - checks state every 5-30 seconds rather than constantly, power - powered off separate supply (off the pi for now?), Got an email from victor about our raspberry pi zero W, one should get here on wednesday. Got a pi from victor! Met with junki and group
+					\item \textbf{Week 8} - Working on Website using mustache for templating, XMLHTTPRequest for async requests,  Bootstrap for CSS, Javascript. Using apache web service to start HTML on http://localhost/, Notes: Can use CDNs for website ( for now), Group class meeting tomorrow (3/1) (elevator pitch), Got ACK working between Nano and composer, Lights look cool, Look into Rx/Tx chaining, see if there is backflow, Needs for EXPO: Expo poster, Monitor, 6 (or more) outlets, Pick leader, Sign up by April 14th
+					\item \textbf{Week 9} - Working on the website. Need to finish display all profiles and show current profile running. Basic structure setup.
+					\item \textbf{Week 10} -Currently working on the Website. Need to work on zones and add profile. Need to work on presentation and paper due next week. Finished site and working on presentation/progress report.
+				\end{itemize}
+			\subsubsection{Spring}
+				\begin{itemize}
+					\item \textbf{Week 1} - Website Improvements: -Color picker, Daily state edit button, Bottom navbar for easier navigation to the "Next" page, Review each page description. Site Testing: Hardware: Add, Remove, LED states: Add, Remove, Edit Daily States: Add, Remove, Edit, Profiles: Add, Remove, Edit,
+					\item \textbf{Week 2} - Site testing is going slowly. Using Mocha as a testing platform on Node.js. Need to find a few other things before I can get everything working. Some improvements on the site, we added colors to the LED states page.
+					\item \textbf{Week 3} - Working with Mocha and super test to continue testing.  Since everything is grabbed from an api and then rendered, testing is a little difficult. We are trying to debug some problems with the system. Sometimes, seemingly at random, a few of our LEDs will turn a different color, and not be fixed by our system. Our first thought is something wrong with the state composer, but so far no errors are being reported.
+					\item \textbf{Week 4} - Sent an email to victor about our poster. Meeting notes:  Midterm progress report due 5/6, Poster is finished and waiting approval from Kevin and Kirsten.
+					\item \textbf{Week 5} - Progress report due 5/6. Presentation due 5/6. Working on site testing still. Finished a basic test of  site rendering. Site has more improvements. We added color to every place we reference the LED state with the color of that LED state. We hope this makes it easier to know what color we want. Austin is working on adding a color picker to the LED states.
+					\item \textbf{Week 6} - Code freeze is 5/11. Finished out presentation and report and turned them in. Austin finished the color picker. An RGB box is now available to use on the LED states page that also changes the RGB values in the boxes to the left of it.  There is also an alpha bar that can change the brightness. We think we narrowed down out LED problem to either something hardware related, or interference on the I2C line. We will continue to investigate. Zach and Max are working. on this problem.
+					\item \textbf{Week 7} - TA Meeting notes: Expo tomorrow 5/18, Meetings after this week are optional, Bring hardware to Hodgin house for expo day. note: Show up @ 8 - Kelley Atrium, Business casual, Need anything during? Talk to Kevin or Kirsten.  May need to adapt.  Worst case is go to Kevin's office. Anything you bring, take with you. Poster can either stay or can be taken. 4:30 is when it can leave. Hand-off to client. Address to the advisory board (morning 9-11?).
+					\item \textbf{Week 8} -  We need to start the final paper. Compile hardware for hand off to victor. Make sure final push is also pushed to the release version.
+					\item \textbf{Week 9} - We got together and compiled all of our hardware. What we bought and what we need to return to Victor. We started work on the final report and presentation. Emailed victor about the project handoff.
+					\item \textbf{Week 10} - We finished the presentation and just about finished the final report. All we have to do is insert this last weeks' worth of OneNote into it. Finally got an email back from Victor about the project handoff.  Meeting on Friday at Noon. 
+				\end{itemize}
+		\subsection{Max Schmidt}
+			\subsubsection{Fall}
+				\begin{itemize}
+					\item \textbf{Week 1} - Went to class and got initialized into the class. Started looking through the projects, and have a pretty good idea of what projects I would like to work on.  Talked with Austin and Travis about the Winter is Coming... project in particular.
+					\item \textbf{Week 2} - Got teamed up and started discussing the requirements document. Latex is big and clunky.  However, powerful though. Class notes cover new semantics about class structure and client interaction.
+					\item \textbf{Week 3} - A fairly unbusy week. The rough draft of the problem statement was completed, and reviewed in class. A presentation was also given about the Univ. Ombuds Office, who assists with remediation among internal conflicting interests.
+					\item \textbf{Week 4} - Completed the problem statement. Talked about git repo structures in class.
+					\item \textbf{Week 5} - Completed rough draft of requirements document and submitted to client. Met with client and talked about the rough draft of the req doc.
+					\item \textbf{Week 6} - Completed the requirements document. Heavy collaboration between the team, and communications with the client and Junki
+					\item \textbf{Week 7} - REEEEEALLY started working on overall design. Worked heavily with Zach to determine data flow and internal software systems.
+					\item \textbf{Week 8} - Worked on rough draft of the tech review this week.  Really starting to research what tech we will use.
+					\item \textbf{Week 9} - Thanksgiving week. Ate a lot... Submitted final tech review. Emailed client about setting up meeting about the tech review and design document.
+					\item \textbf{Week 10} - Met with client and confirmed tech review and design document.
+				\end{itemize}
+			\subsubsection{Winter}
+				\begin{itemize}
+					\item \textbf{Week 1} - Getting back into the swing of things after Winter Break, the team met up to discuss our timeline, and the status of the design to implementation process.
+					\item \textbf{Week 2} - With MLK day and a long weekend/short week, the team was mainly dormant. Zach however, was plowing through the API and Internal State coding.  While Zach was off in data structure land, Travis and I started looking into the hardware and what we will need to get LEDs to light up (correctly).
+					\item \textbf{Week 3} - Conversed with Victor about getting the hardware via email. This proved to be somewhat of a challenge due to scheduling. We received the nano controllers and a strip of LEDs, however the Pi 0 w's are back ordered and have not arrived yet. Team decided to set up twice weekly meetings to talk about code and helping each other with our individual parts. Zach pretty much has the API and Internal State done.  With the back end structure in mind now, work can start on the LED management system and the front end user interface. Worked with Travis to see how he thinks we will be getting the serial data to the nanos.
+					\item \textbf{Week 4} - Class this week discussed how the expo will run and what to expect. The restrictions we learned of slightly changed our display and project, but not too much to the point where we are changing the design. Nailed down the psuedo code / algorithm that will transfer the virtual hardware state in memory onto the hardware via UART serial, and so the "Composer" was born.
+					\item \textbf{Week 5} - Some micro-design changes occurred this week with the team. The Composer algorithm is still under construction. Zach is still trucking along with the Internal State and API. Kinda scary, his devotion and understanding of this stuff.
+					\item \textbf{Week 6} - Alpha level complete. We have one nano controller communicating over UART. It's strip is able to update extremely quick, from the StateComposer. I am thinking however, when we start implementing multiple controllers, that we will run into issues on the Rx line for the Pi (Tx line for the nanos). Even though we aren't sending anything important back, the nano's may try to step on each other getting data back to the Pi.
+					\item \textbf{Week 7} - Started working on multi controller support. Defining IDs in the nanos has seemed to work so far. However, we are running into Rx collisions in UART. Started looking into different serial protocols like I2C and SPI. I2C may be what we're looking for, and SPI may be overkill...
+					\item \textbf{Week 8} - Class this week was devoted to the Elevator Pitch. 5th Graders vs VPs of big companies. Talked about Expo a little more. Started looking at how we would need to switch to I2C since it resolves our nano ID / addressing system. It should also resolve our ACK issues, since we are sending data frames that contain the nano's slave address, an ACK, and the raw byte data.
+					\item \textbf{Week 9} - Finished up I2C communications. Was able to clean the nano code up significantly, which allowed less wait time in the Composer. Seeing significantly less errors on the serial comms. Instead of 1 per 5, we are seeing 1 per 1000. Addressing will still have to be hard coded, until we can find a way to register the nanos.
+					\item \textbf{Week 10} - Last week of class, we talked about Expo some more, specifically on the poster and the final progress report. Worked with Zach to get addressing complete for the I2C offset in the data base, with the settings class. This will complete our beta readiness for the StateComposer and Nano code. Everyone else is still pounding away at the CLI, DataParser, and Site.
+				\end{itemize}
+			\subsubsection{Spring}
+				\begin{itemize}
+					\item \textbf{Week 1} - Introductions to Spring term. Kevin and Kirsten explaining that the course will be on Canvas this term (gross). The team met to discuss scheduling and what times would work for team meetings. Mostly decided on Tuesdays and Saturdays.
+					\item \textbf{Week 2} - Further research into how or why the I2C bus is losing sync. We are still seeing write errors on the composer end. My initial guess was that the bus was getting interference. Updating the delay time does not seem to be helping at this point. Updated serial\_send function to allow multiple attempts if it failed in writing. If this resolves the issue, I could begin on testing for the StateComposer.
+					\item \textbf{Week 3} - Further testing with the serial communications. tarted to get timings on when the nanos lose sync with the Pi. It doesn't seem to have a pattern. I'm seeing losses at 2 minutes up to about 6 hours... The sporadic-ness is starting to get really frustrating. It's getting so bad, I'm about to dig out my old oscilloscope to start looking at the actual wave forms. Started looking at writing tests for the State Composer.
+					\item \textbf{Week 4} - Broke down and pulled out the oscilloscope to start looking at the serial wave forms coming from the Pi and what the nano is seeing. Setup some test serial functions away from the project code to have a constant source of serial data. Noticing the correct data patterns. I'm also starting to wonder about the interference again, mainly because the Pi is only outputting a logic high level of 3.3V, when the nanos are generally accepting 5V... It could also be these are cheap nanos (~5 a chip) and their oscillators/timers aren't perfectly clocked. Other teammates are making tremendous progress on the site and backend pieces for data movement.
+					\item \textbf{Week 5} - Further research into the I2C bus. Amongst other class work and work, not much was done this week. Worked on further updating the nano code to be more reliable by adding another check for 4 bytes on receive. Also created a debug version that sends the received values back over serial UART (USB) to a serial console. Continued checking on the serial bus to see where nanos were falling off. Got whole system stress tested with three LED strips on full bright white, 4 nanos, and the pi. Main lines going to each strip were a tad warm, but not anything that will melt something. No significant voltage drops on the Pi, nanos, or strips. Everything seems stable.
+					\item \textbf{Week 6} - Further research into the I2C bus failures. Found that we were assuming the baudrate from the Pi was 100KHz, which I was seeing on the oscilloscope, but never found this explicitly defined in our software. Found that the arduino nano is capable of running in "fast mode" (400KHz baudrate), and the Pi is capable of driving that baud rate. Updated the Pi's raspi-config to explicitly define the baudrate, and flashed a couple of nanos with Wire explicitly defining the same baudrate. Let the system run for hours, and nothing came unsynced. All LEDs updating correctly for each switch. Going to keep testing it later by decreasing the "wait on nano" delays.
+					\item \textbf{Week 7} - The entirety of this week was dedicated to the Engineering Expo and the preparation for it. Dad was awesome and finished the mock planter box on Monday. The team met on Tuesday to work on the expo release of the PlanteR-GB software. During this meeting we also reconfigured the hardware and applied it to the mock planter box. Used Zach's handy script to apply daily states for the entire time of expo. Sped up the LED switching times from 50000 microseconds to 18000. Met on Thursday to do a quick recheck of the system. Friday was early morning meetup before the expo to triple check we had all the hardware. Friday was expo. Context switching between 12-year-olds and company executives was fun. We all had a lot of fun though. The team called off our Saturday meeting due to exhaustion this week.
+					\item \textbf{Week 8} - Worked on tearing down the expo demo and dividing out the hardware that we received from Victor, Kevin, and our own purchased materials. Met with team to discuss the final report, presentation, and the handoff of hardware and software to Victor. Started getting caught up on documentation and notes. Completed some wiring diagrams for power distribution and the I2C bus.
+					\item \textbf{Week 9} - Final progress report and presentation work. Emailed Victor about the sofware and hardware handoff. 
+					\item \textbf{Week 10} - Final progress report work. Got hardware borrowed from Kevin back to Kirsten. Completed handoff with Victor. 
+				\end{itemize}
+		\subsection{Zach Lerew}
+			\subsubsection{Fall}
+				\begin{itemize}
+					\item \textbf{Week 1} - This week was entirely spent looking through projects and performing setup tasks like configuring OneNote. Early in the week I went through the project list and sorted them by my interest. Next I wrote descriptions for my top five choices. I contacted the client of my first choice to determine if they were open to additional goals and to get more information about the project. This week was primarily spent configuring software and absorbing information.
+					\item \textbf{Week 2} - During this week, I started with no knowledge of my project, team, or client. After the week has finished, I have met my team, established communication channels and organized the project and its files. My team has met with our client and gone over a series of questions to help establish our project and its goals. Next week we will be meeting with our TA, turning in rough drafts for problem statements, and building requirements for this project.
+					\item \textbf{Week 3} - Most of this week was an interlude between the Problem Statement and Requirements document. Our team has been in regular contact however, and I have been making final touches to the problem statement before the final draft is due. The team also met with our TA to discuss the project and the TA's role in it.
+					\item \textbf{Week 4} - This week we have finished planning and describing the 10,000 foot view of our project, the problem statement. We have contacted our client with the final draft and have received approval. There were a couple minor changes our client wanted to make, which have been done.
+					\item \textbf{Week 5} - This week our team has been focusing solely on the requirements document. We have had a couple meetings both in person and remotely to hash out the ideas we want in our document. We are fairly confident in the work we have done, and are on track to have our requirements document flushed out and finalized for version 1.0. We have met as a team several times, as well as with our client. We have been forming the image of where the project is heading and in what order, which is quite exciting to see this idea being formed into official documents.
+					\item \textbf{Week 6} - This week was spent doing a lot of brainstorming to transform our rough draft of the requirements document into a final draft. Last week we got the majority of our requirements done, and this week all we had left was a series of revisions, the Gantt chart, the bibliography, and minor changes to the latex formatting. We have also met as a team to discuss the direction we are headed for our technology review.
+					\item \textbf{Week 7} - This week was hectic. So far our team has had many thought streams flowing around in every direction, and we've been writing down different ideas we have for every part of the system. This week we are gently squeezing these thought streams into a coherent set of ideas. The process is difficult, but very necessary to produce a product. Our team is communicating frequently which makes this process easier. My efforts have been particularly stretched thin this week, as I lost both Friday and Saturday due to moving
+					\item \textbf{Week 8} - This week has been a lighter week compared to previous ones, I believe this is mostly due to the fact that I under estimated the time I would have to complete the technology review, and ended up producing what was essentially a final draft when the rough draft was due. I am glad that I did however, as I now have even more time to shape up my document. This is important because the sections I have are a deep part of the system, and will affect the core of the project. As for the issue suspected last week - we are a team of four, and as such there should be 12 individual pieces for our technology reviews. Our project is by no means small or simple, but we do not believe that there are 12 crucial categories of technology to discuss. The result of this is that some members of our team have spent their team researching less important tech that is relegated to stretch goals. This is not a bad thing, but something that we will need to keep in mind as the design document is being developed.
+					\item \textbf{Week 9} - This week, my team built an outline for the design document based on several examples found online, as well as the IEEE standard itself. Once the outline was completed and discussed, we individually began writing our components. Unfortunately we were unable to write enough content to build a rough draft for review. I also created a system diagram with individually labeled pieces. The system diagram has individual pieces, each of which will likely need its own diagram. I have also created the system diagram for the internal state, as well as part of the database. The last thing I did was some research into third party libraries for a REST client.
+					\item \textbf{Week 10} - This week our team took the individual technology review documents and merged each of the selected technologies as well as a series of diagrams and extra writing into a grand document called the design document. The design document is the overall how of the system, and should ideally allow a developer to build a system that matches the requirements with only slight deviation from the system we will be building. The final project this term is a progress report, but I fear that we do not have enough content to speak about, nor enough time to create 40 minutes of content. The vast majority of the work done this term was writing papers and designing the system. There is plenty to discuss of that nature, but I fear there may not be 40 minutes of content given our larger team.
+				\end{itemize}
+			\subsubsection{Winter}
+			\begin{itemize}
+					\item \textbf{Week 1} - This first week was fairly successful but there is still a lot of work left to do for iteration 1. The internal state classes which represent all of the data in the system are put together and have been merged into the master branch. Internal state behavior has been started but has a long way to go as the project progresses. The behavior consists of things like adding/removing an LED to a zone, modifying a weekly schedule, or determining which LED state should be used based on the current time.
+					\item \textbf{Week 2} - The Internal State has primary objects in it, and together they make up the entirety of the system. Four of those objects are unique, and three of them are relational objects which tie the other four models together. The API performs the basic CRUD operations and queries the internal state based on user input or input from other parts of the software, so it has to be robust. I did not fully anticipate how much work would be involved in creating it however. There are 41 routes defined (a route being a unique URL which can be accessed in order to send data back and forth), and each one of those needs a function which modifies some aspect of the system's data. This week I created those routes and defined what all of the 41 action functions will be called, but I still have a lot of work to do in order to write each action. This code needs to be robust, because all system data goes through it.
+					\item \textbf{Week 3} - This week our team had our first long meeting, we discussed how the API will work, looked at the hardware we've received from our client (so far), and wrote some algorithms for the LED Control system and flow diagrams for the command line interface. We have established a communication chain for who needs to talk to who about what. So far we have the LED controller (Teensy/arduino nano) controlling a strip of lights successfully, we have an internal state which holds all system data, an API which can take incoming requests and change/retrieve system data properly (formatted in JSON), and we have the beginning of a command line menu started, as well as the steps necessary for the LED control system.
+					\item \textbf{Week 4} - I have gotten the data parser up and running, and have built most of the basic constructs of the schema using the sqlite\_orm. I have run into a foreign key problem while developing the schema, but I have a potential solution that I will try next week. Hopefully it works and I can finish up the schema and start writing the query functions for insert, update, get, and delete. After that I can begin to integrate the DataParser into the API when data changes are made.
+					\item \textbf{Week 5} - The DataParser is my class implementation of an ORM (object relational manager). Essentially it provides a nice interface between my C++ objects and SQL code. This week I was able to get the schema fully created, including one-to-many relationships and many-to-many relationships as seen below. The system can now build a schema on initialization, create the sqlite db file, and insert data into it. I have a minimum working example for profiles which allows me to insert data and then load it when the system starts, but there is still a lot of work to do in order to complete the DataParser. Much like the API a couple weeks ago, I am now over most of the major issues, but I still have a lot of grunt work to do.
+					\item \textbf{Week 6} - So far this term, each part of the system has been developed and tested independently. Due to our extensive design last term, we are fairly confident in each of the pieces, but demonstrating that a command can be sent from the user interface all the way to the LED strip is a very important part of the process. I am slightly disappointed that we were not able to get this test done more than 1 day before the ALPHA presentation was due, because we would have had more time to debug and improve the quality of our ALPHA build. This week we have also tried to communicate with our client twice by email, and gotten no response either time. We are now approaching week 7 and we still have not received half of the hardware which we requested during winter break last year. Since then we have each been using our own hardware, and I personally have purchased my own raspberry pi zero w so that I can continue working on the project on an isolated system that matches the hardware we agreed upon during Fall term.
+					\item \textbf{Week 7} - Data parser work continues, but due to other classes and family visiting, I have not completed the data parser this week as I had planned. I am continuing work on it next week. Our team has had a meeting and discussed exactly what we need to do until the end of the term, so we are in fairly good shape to get those things done.
+					\item \textbf{Week 8} - The finishing steps of the dataParser were the hardest, because the system has so many small moving pieces that all have to work together. When a foreign key reference does not work on the database, the entire system crashes, so it is crucial that I keep the data in check and prevent the system from reaching a bad state. I believe I have finally accomplished that, and have asked my team to help me stress test it.
+					\item \textbf{Week 9} - Project is in decent shape, client meeting and demo went well, but we are still lacking a completely functioning CLI, and multi-controller support is going to need a lot of work despite our team starting the task 2 weeks earlier. MC support was not fully tested until this week when I dug into it. Our project is very close to beta status and meeting our performance metrics, but it would be better if the margin was larger.
+					\item \textbf{Week 10} - We are very close to being done, but the interface stuff got dragged out too long and won't be as polished anymore due to that. I did some last minute changes to add logging to files rather than std::cout, and cleaned up a lot of the code through the system. This weekend I am starting to help out with the Site to get everything finished up and in a BETA quality.ot of code all over the place.
+				\end{itemize}
+			\subsubsection{Spring}
+				\begin{itemize}
+					\item \textbf{Week 1} - Our schedules are pretty tight this term, but at least our project is in pretty good shape and ready for testing, bugfixing, and polish.
+					\item \textbf{Week 2} - Data parser has unit tests to cover insert, update, delete, and loading (select). I have also restructured the tests and fixed a couple bugs that were uncovered because of the data parser testing. Mostly they were default values that should have been set, or a minor re-organization to cover an edge case. The data parser feels complete to me at this point, and I am ready to start moving on to finishing the setup script (it needs rewritten), and working on a 3d printable enclosure for the system. Oh, and the silly wired article is done. It was a waste of time.
+					\item \textbf{Week 3} - As of now, all of the systems have some form of unit testing. The Site and API are only partially tested, but they are being worked on still. The biggest remaining bug with the state composer appears to have been solved, and the team is adding polish here and there. Additionally, I have successfully completed the Setup scripts. This means that a user can go to the latest release of the system, download a setup config file (setup.xml), Open it and flash it with PiBakery, insert that SD card into a Pi, and have a system up and running after about 20 minutes. This is primarily for our client should he ever want to update the system, but also so that the control service and website start when the Pi boots. Everything is starting to come together and it's looking pretty damn cool.
+					\item \textbf{Week 4} - Finished the poster, got approved. Rewrote setup script and cleaned up the process for building a release. Added script to reconnect to wifi if signal is dropped.
+					\item \textbf{Week 5} - Our team is on a great track for being done by the time expo comes around.
+					\item \textbf{Week 6} - The only remaining issue has existed since the beginning of spring term. The LEDs still blip to the wrong color in some circumstances which are hard to measure. Max seems to think it is a hardware problem at this point.
+					\item \textbf{Week 7} - I did one last change this week, where I added two command line parameters - one to use the LED simulator instead of serial, and the other added a maximum brightness cap to avoid over volting our hardware.
+					\item \textbf{Week 8} - Finish up final report, build system for client, try to contact client for hand off. Started working on report by copying files from other projects and adding structure to the assignment. Team worked on oneNote summaries, organized what we need to make the client's system next week.
+					\item \textbf{Week 9} - The progress report is coming along nicely. It's very long, over 50 pages. This document should be done by this week, and we can start on the presentation.
+					\item \textbf{Week 10} - The progress report is done and polished, the presentation is outlined, and we are scheduled to meet with our client and hand off the client.
+				\end{itemize}
+
+	\section{Final Poster}
+
+	\rotatebox{90}{
+		\includegraphics[width=10in]{../ExpoPoster/poster_undergrad_expo_48x36_eecs.png}
+	}
+
+	\section{Project Documentation}
+	The latest version of the installation instructions can be found on GitHub under the name PlanteRGB, or at \url{https://github.com/CarvellWakeman/plantergb/releases/tag/Latest}.
+
+	\subsection{\textbf{Software Installation Instructions:}}
+	\begin{itemize}
+		\item 1) Download PiBakery at http://www.pibakery.org/download.html \textbf{This will take a long time}
+		\item 2) Install PiBakery with raspbian lite, though the desktop version should run fine if you want to use it instead.
+		\item 3) Download setup.xml from this release.
+		\item 4) Open PiBakery and import the setup.xml file.
+		\item 5) Change the WiFi block to match your network name and password. \textbf{Make sure they match perfectly or this whole process will fail.}
+ 		\item 6) The timezone setting option was temporarily removed due to a new setup system. For now, the firstboot.py file is hardcoded for Los\_Angeles. This setting can be changed from raspi-config after the pi has started up.
+		\item 7) Change the default user password. You probably won't need this unless you plug the Pi into a monitor and keyboard, but it's a good idea to remember it anyways.
+		\begin{itemize}
+			\item Everything after the password block should be left alone
+		\end{itemize}
+		\item 8) Insert a microSD card using some kind of card reader, and determine its drive letter (Ex: D:/)
+		\item 9) In PiBakery, click the \textit{write} button at the top of the screen, and follow the prompts by choosing your microSD card, Raspbian Lite (preferred) or Rasbian Desktop (slower). \textbf{This will take a long time, ~10 mins}
+		\begin{itemize}
+			\item a) If this process fails at the very end (as it often did for us), do it again but select the "boot" drive. It usually succeeds on the second try.
+		\end{itemize}
+		\item 10) Properly eject the microSD card from your machine and give it a moment to cool down if it is warm.
+	\end{itemize}
+
+	\subsection{\textbf{Hardware Installation Instructions:}}
+	\begin{itemize}
+		\item 1) If you want to connect a monitor and/or keyboard, do so before plugging in the raspberry Pi.
+		\item 2) Wire the system together based on the following diagrams:
+
+		\begin{center}
+			\begin{figure}[H]
+				\includegraphics[width=\linewidth]{systemDiagrams/power-distribution-schematic.png}
+				\caption{The PlanteRGB power distribution system}
+				\label{fig:systemDiagram}
+			\end{figure}
+		\end{center}
+
+		\item This is the data diagram that shows how to connect the I2C bus and LEDs to the arduino nanos.
+
+		\begin{center}
+			\begin{figure}[H]
+				\includegraphics[width=\linewidth]{systemDiagrams/I2C-bus.png}
+				\caption{The PlanteRGB data schematic}
+				\label{fig:systemDiagram}
+			\end{figure}
+		\end{center}
+
+		\begin{itemize}
+			\item a) Make sure to measure how many amps the system will use and choose an appropriate power supply. The raspberry Pi will use about 1 amp for the PlanteRGB service, each Arduino nano will use about 0.5 amps, and the strips of lights will use at most 60 milliamps per LED at full brightness. This all depends on which LED strips you get.
+		\end{itemize}
+
+		\item 3) Insert the microSD card into the Raspberry Pi.
+		\item 4) Finally, plug the power in for the system.
+	\end{itemize}
+
+
+	\subsection{\textbf{System Configuration:}}
+	\begin{itemize}
+		\item 1) When your system is first connected, it may take quite a while to get setup. \textbf{This will take a long time, about 15 min}
+		\item 2) Now that the system is set up, the IP address of the raspberry pi can be used to access the interface. There are several ways to do this.
+		\begin{itemize}
+			\item a) If you have access to your router, connect to it through the browser. This is typically an address such as \textbf{192.168.0.1} or \textbf{192.168.1.1}. The router will prompt you to log in. Once you are logged in, find a part of the interface about \textit{attached devices} or something along those lines. The raspberry Pi will be in the Wifi section, and will probably have a device name similar to \textbf{raspberrypi}. Keep note of its IP address.
+			\item b) If you have physical access to the Raspberry Pi Zero W, as well as a microHDMI adapter, you can plug a monitor into the Pi before booting it up. Once it is booted, one of the last lines before the login prompt will by \textbf{My address is xxx.xxx.x.x}.
+		\end{itemize}
+		\item 3) Once you know the IP address of the raspberry Pi, (\textit{ex: 192.168.1.18}) and type that into the browser, followed by \textit{:8080}. Here is what a full address would look like: \textbf{http://192.168.1.18:8080/} If everything was successful, you will see the welcome page to the system.
+	\end{itemize}
+
+
+	\subsection{\textbf{Software Update Instructions:}}
+	\begin{itemize}
+		\item 1) TBD. Short answer: load the microSD card into your machine, wipe it clean, and start the software installation process over again.
+	\end{itemize}
+
+
+	\section{Recommended Technical Resources}
+	\begin{itemize}
+		\item \textbf{Sqlite C++ ORM:} \url{https://github.com/fnc12/sqlite_orm}
+		\item \textbf{Pistache C++ API:} \url{http://pistache.io/}
+		\item \textbf{C++ JSON library:} \url{https://github.com/nlohmann/json}
+		\item \textbf{NodeJS Documentation:} \url{https://nodejs.org/api/}
+		\item \textbf{Bootstrap documentation:} \url{https://getbootstrap.com/docs/4.1/getting-started/introduction/}
+		\item \textbf{Npm Requests:} \url{https://www.npmjs.com/package/requests}
+	\end{itemize}
+
+
+	\section{Reflection}
+		\subsection{Austin Hodgin}
+			\subsubsection{What technical information did you learn?}
+			Python for HTTP Requests and designing CLI interface, NodeJS with API requests, Latex, working with API, hardware requirements research and design.
+			\subsubsection{What non-technical information did you learn?}
+			Communicate with a non-technical client, Conducting weekly meetings, using WebX for remote meetings.
+			\subsubsection{What have you learned about project work?}
+			Time management as it goes to when things should be done when. Management of resources, group communication is important.
+			\subsubsection{What have you learned about project management?}
+			Working with github for version control and issue management, Rebase and branch management.
+			\subsubsection{What have you learned about working in teams?}
+			Group communication of problems and found solutions, Work distribution (Who is doing what and when).
+			\subsubsection{If you could do it all over, what would you do differently?}
+			Write in all of the project  javascript/Typescript instead of C++, javascript, and Python. We would start with I2C communication between the Pi and the  Arduino Nano's instead of UART.
+		\subsection{Travis Hodgin}
+			\subsubsection{What technical information did you learn?}
+			\noindent During this project I learned more about hardware diagrams and working with hardware.
+			I also got to experience working with serial using Arduino, which is something I have never
+			done before. Working with git using multiple branches, rebasing and merge conflicts really helped
+			solidify my understanding of git and github.
+
+			\subsubsection{What non-technical information did you learn?}
+			\noindent Communication seems like something you would already know how to do effectively, but between our client and EXPO,
+			 we had to explain our project in many different ways.This was definitely a new experience as most of our work here is
+			 based on discussing with people in our field.
+
+			\subsubsection{What have you learned about project work?}
+			\noindent Some of the important things I learned from working on this project about project work comes down to
+			client interaction. The client may not always know exactly what it is they want, or are asking for. In this
+			instance they knew what they wanted, but didn’t really know any way to make it happen.
+
+			\subsubsection{What have you learned about project management?}
+			\noindent Time is very important in project management. In order for a project to be done in the given time frame, goals
+			 need to be met and deadlines need to be created. This is difficult when working with a client who is not in the same industry.
+			 You have to create every deadline, and set goals for yourself or team. Since most of us are still new at professional level
+			 design and work, it was difficult to know how long a certain part of the project will take.
+
+			\subsubsection{What have you learned about working in teams?}
+			\noindent Time management and separation of work is key in a group. We do not want multiple people working on the same thing at
+			the same time. Communicating issues we are seeing in our side of things also helps to make other sections easier to manage, as
+			 we will know about these issues well in advance.
+
+			\subsubsection{If you could do it all over, what would you do differently?}
+			\noindent I would do a few things differently if I could. First and foremost I would start using I2C instead of UART for communication.
+			This was a somewhat big issue we had about halfway through winter term. When we started working on multi-controller communication we ran
+			into issues when connecting between several Nanos. This was fixed by switching to I2C, but it was a major roadblock for about a week. Secondly,
+			I would have done most of the project in Javascript, rather than C++. Having C++ do HTTP requests was a pain to get working. This wasn’t impossible
+			to implement, we just think that it would have gone better if the API was also done in Javascript along with the Node.js web service.
+
+		\subsection{Zach Lerew}
+			\subsubsection{What technical information did you learn?}
+			LaTeX, C++ Web programming, Sqlite ORM, Soldering, wiring diagrams, hardware prototyping on protoboards, determining wire gauge to meet current requirements.
+ 			\subsubsection{What non-technical information did you learn?}
+			Communication with client, technical writing.
+ 			\subsubsection{What have you learned about project work?}
+			Time management, task scheduling and issue management on GitHub
+ 			\subsubsection{What have you learned about project management?}
+			Working with a group of four people as a technical lead, scheduling meetings.
+ 			\subsubsection{What have you learned about working in teams?}
+			Scheduling is hard, everyone is busy at different times. Finding a good mixture between meeting as friends and meeting as a team.
+ 			\subsubsection{If you could do it all over, what would you do differently?}
+			Write the whole thing in javascript, Start with I2C protocol.
+		\subsection{Max Schmidt}
+			\subsubsection{What technical information did you learn?}
+			Advanced serial communictations (I2C), specific inter-controller serial communication (Pi to Arduino), Bootstrap JS, automated Pi setup processes
+			\subsubsection{What non-technical information did you learn?}
+			Communication management between a team and the client, heavy technical writing, time management, still have a lot to learn
+			\subsubsection{What have you learned about project work?}
+			Notes are important, nothing comes without fear of failing
+			\subsubsection{What have you learned about project management?}
+			clear communication is necessary about anything, start as early as possible, if struggling try anything
+			\subsubsection{What have you learned about working in teams?}
+			Scheduling is hard, conflict resolution, everyone has specific skills, find time to work as friends not just a team, spread as much of your personal knowledge as possible
+			\subsubsection{If you could do it all over, what would you do differently?}
+			start with I2C serial communications rather than UART, look at something else besides C++ as the service language
+	\section{Conclusion}
+	There are several reasons you would want to keep plants year round such as herbs for cooking. This can be difficult due to it being cold and wet during the winter making it less ideal
+	for them. With that we would want to bring them inside due to the fact that we can control more of the veribles such as heat, humitity and lighting. The current lighting systems available
+	offer very little in customization as what kind of light and when it turns on and off. Most of the system currently available for conusmers have a timer that starts when you pugg in the system and
+	they run for 16 hours and are off for the rest of the day. This would mean that you would have to plug it in at 3am for it to go all day. This is not convenent for humans. Our task was to
+	create a system that was more customizable and was more user friendly offering features such as scheduling and profiles, full customization to what color the LEDs are, subzoning, ect. This project
+	was given to us by Victor Hsu and we were able to create a system that fifiled his requirements and some additional features we felt were nice quality of life featues such as a web interface.
+
+
+
+	%References
+	\subsection{References}
+
+	\begingroup
+		\renewcommand{\addcontentsline}[3]{}% Remove functionality of \addcontentsline
+		\renewcommand{\section}[2]{}% Remove functionality of \section
+
+		%\cite[Sec 3.8]{sourceName}
+		\bibliography{ref}
+		\bibliographystyle{IEEEtran}
+
+
+\end{document}

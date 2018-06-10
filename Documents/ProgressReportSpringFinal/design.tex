@@ -1,0 +1,489 @@
+	\section{Introduction}
+
+		\subsection{Purpose}
+		The aim of this document is to provide a solid base that the implementation of the system can build upon. It generalizes how the RGB LEDs system
+		operates, yet details how each researched technology contributes to the overall function. The specifics of the implementation may change as new
+		challenges are presented, but the overall system function and design should not.
+
+		\subsection{Scope}
+		Due to the minimal requirements set on the project, the core design only covers items up until the end of Iteration 6. Iteration 6 marks the end of the
+		requirements set by both the client and implementation team. Each section dives into detail	about selected technologies to perform critical functions,
+		and how each of them are used in conjunction with each other. However, the design also keeps future iterations in mind, and leaves some areas open to
+		adaptation and improvements.
+
+		\subsection{Overview}
+		The following sections of the document provide the formal details on how the design is carried out. Each section is focused on a particular aspect of the
+		design, and how it plays a crucial roll in the total functionality of the system. Each section and implementation is necessary to fulfill the requirements of
+		Iteration 6.\\
+
+		\noindent When considering the system's architecture, one has to look at the physical hardware, and the control services operating the hardware. These components
+		ideally are the choke points of the system function. The system also has to handle the data flow, the organization of the data, and lastly, the
+		conversion of said data to meaningful values for the RGB LEDs.\\
+
+		\noindent The system would also be incomplete without a useful human interface. This interface can be somewhat simple, such as a command line terminal, or it can
+		take the form of a graphical web page, that allows one to visually see the system setup with a depicted diagram, offering more control.
+
+
+		\subsection{Definitions and Acronyms}
+		\textbf{LED} - \textbf{L}ight \textbf{E}mitting \textbf{D}iode
+		\\\textbf{RGB} - \textbf{R}ed \textbf{G}reen \textbf{B}lue (LED)
+		\\\textbf{UI} - \textbf{U}ser \textbf{I}nterface
+		\\\textbf{API} - \textbf{A}pplication \textbf{P}rogramming \textbf{I}nterface
+		\\\textbf{REST} - \textbf{Re}presentational \textbf{S}tate \textbf{T}ransfer
+		\\\textbf{LAN} - \textbf{L}ocal \textbf{A}rea \textbf{N}etwork
+
+
+
+
+	\section{System Overview}
+		\subsection{Assumptions}
+		Considering the hardware selected, the members of the team have made the following assumptions about the system and the end use case. The user(s) have
+		the general knowledge of how to interface with the Raspberry Pi's inputs and outputs, such as graphics and keyboard/mouse input. The users also have the
+		basic knowledge to launch programs from a standard OS desktop environment, navigate web pages, and provide keyboard input to some initial command line scripts.
+		Regarding the hardware used, it is also a given that electrical hazards that could result in physical harm to the user or hardware, are avoided.
+
+		\subsection{General Constraints}
+		Limiting factors mostly come from the limited performance hardware selected. These technologies are small form factor and operate on low energy levels
+		to complete their computation. Thus, these systems are limited in their processing performance, and the amount of memory they have. Due to their
+		low energy input, they also cannot output much power. This limits how many LEDs can be initially powered from a controller until a more powerful
+		electricity source can be found.
+
+		\subsection{System Environment}
+		The system typically resides in a residential setting or outdoor covered garden. When indoors in an apartment or house, factors such as temperature and
+		humidity can be controlled by a separate, independent system. The system shall not endure any elements of nature or unfavorable conditions
+		for electronics. As per the software environment, most master controller code is housed and run in a Unix environment.
+		The smaller controller code source is housed in the same environment, but the raw binaries are statically run on the smaller controllers in their low-level instruction environment.
+
+	\section{System Architecture}
+		\subsection{System Diagram}
+
+		\noindent \\This system is comprised of many distinct pieces. Each of them are explored in further depth in the sections below.
+
+		\begin{center}
+			\begin{figure}[H]
+				\includegraphics[width=\linewidth]{systemDiagrams/systemdiag.png}
+				\caption{The PlanteR-GB system including interface and control systems}
+				\label{fig:systemDiagram}
+			\end{figure}
+		\end{center}
+
+		\subsection{Hardware}
+			\subsubsection{Overview}
+			\noindent The hardware controls the LEDs as well as run software. This software
+			consists of controlling the LEDs, checking time, and other additional
+			features such as a hosting a local web page. Because of the robust needs of
+			the software, two different controllers are used.
+
+			\noindent Two controllers are used, a Teensy 3.2 for LED control, and a Raspberry Pi Zero W for timing
+			and additional features.
+			\subsubsection{Master Controller}
+			\noindent The Raspberry Pi Zero W was chosen to be the master controller for its
+			multitasking capabilities. Raspberry Pi Zero W uses a ARM11 processor
+			running at 1GHz with 512MB of RAM. \cite{pizero} The Pi Zero W has built in wireless and
+			Bluetooth chips, allowing access to a wireless network without the need
+			of additional hardware. This cuts down on the cost of the build and
+			simplifies the build.
+
+			\noindent The Raspberry Pi Zero W's ability to host a local web page while also
+			keeping time makes this perfect to use as the master controller. The
+			master controller is in charge of web hosting for iteration 6,
+			data storage, and system state control. The Pi Zero W sends data to the LED controller which in turn controls
+			to the LEDs.
+			\begin{center}
+				\begin{figure}[H]
+					\includegraphics[width=\linewidth]{systemDiagrams/pischem.png}
+					\caption{Raspberry Pi Zero W schematic}
+					\label{fig:piSchematic}
+				\end{figure}
+			\end{center}
+			\subsubsection{LED Controller(s)}
+			\noindent The Teensy 3.2 was chosen for its ability to run Arduino and C programs.
+			The size of the Teensy also makes this a great choice as reducing the
+			total size of the build cuts down on the minimum size of each box.
+			The Teensy 3.2 runs an updated Cortex-M4 with 64kB of RAM making this a
+			better choice than the Teensy 2.0.\cite{atmel} The Teensy 3.2 can run Arduino code as well as the third party LED control library FastLED.
+
+			\subsubsection{LED strips}
+			\noindent The LEDs are the WS812 Neopixel LED strips by Adafruit. These LED
+			strips are fairly thin, at 12.5mm wide with the included casing. The
+			Neopixel LEDs are fully compatible with the FastLED library and are fully addressable.\cite{neo}
+
+		\subsection{Control Service}
+			\subsubsection{Overview}
+			The control service is the bridge between the user interface and the LEDs.
+			It has an API that serves as the entry point for all system changes, an internal state representation which is fed to the LED control system and also translated into persistent storage.
+			The API obfuscates the communication between the client UI and the control service by providing a set of routes through which data can be sent.
+			To make a data request or modification, the client sends data to the control service using one of the REST verbs (GET, POST, PUT, DELETE, etc).
+			Using the REST protocol simplifies communication between client and server, but also allows new settings and parameters to quickly become accessible through the addition of new routes.
+
+			\noindent \\The control service internal state is the primary representation of the configuration and settings of the system.
+			This internal state is the focal point of the API, data storage, and LED control system.
+			It is responsible for representing all data and committing it into persistent storage.
+			When a client UI makes a change to a system parameter, the data is routed through the API and into the internal state.
+
+			\noindent \\The data parser is responsible for translating the system state into persistent storage when changes are made.
+			When the system starts, the data parser reads from persistent storage and rebuilds the internal state.
+			A database with tables closely mirroring the internal state objects is the persistent end of the data parser.
+
+			\subsubsection{API}
+			%pistache.io is a good REST library for C++
+			The API implements a REST protocol. REST is an architectural style and modern approach to web service communication. \cite{rest1}
+			It provides a lightweight communication protocol between client and server, making it a popular building style for cloud-based APIs.
+			The control service API consists of a series of routes, each relevant to a particular parameter or set of parameters.
+			The internal state is updated when a client sends a request to the API.
+
+			\noindent \\Here is an example of a series of REST requests which build a basic functioning system:
+			\begin{lstlisting}[language=XML]
+// Create an LED state with ID 3
+PUT http://localhost:5324/ledstate/3
+// Set the color of LED state 3 to red
+POST http://localhost:5324/ledstate/3/color/ff0000
+// Set the intensity of LED state 3 to 85%
+POST http://localhost:5324/ledstate/3/intensity/85
+// Set the power of LED state to on
+POST http://localhost:5324/ledstate/3/power/on
+
+// Add a new schedule with ID 4
+PUT http://localhost:5324/schedule/4/
+// LED state 3 triggers at 8:30am
+POST http://localhost:5324/schedule/4/hour/0830/ledstate/3
+// LED state 4 triggers at 2:00pm
+POST http://localhost:5324/schedule/4/hour/1600/ledstate/4
+// LED state 0 triggers at 9:00pm
+POST http://localhost:5324/schedule/4/hour/2100/ledstate/0
+
+// Add a new zone with ID 3
+PUT http://localhost:5324/zone/3/
+// Set the schedule used by zone 3 to schedule 4
+POST http://localhost:5324/zone/3/schedule/4
+// Assign LEDs 1 through 4 to zone 3
+POST http://localhost:5324/zone/3/leds/1-4
+// Assign LEDs 6 through 8 to zone 3
+POST http://localhost:5324/zone/3/leds/6-8
+// Assign LED 9 to zone 3
+POST http://localhost:5324/zone/3/leds/9
+
+// Get the current color of zone 3
+GET http://localhost:5324/zone/3/color/
+
+// Delete zone 3
+DELETE http://localhost:5324/zone/3/
+\end{lstlisting}
+
+			\subsubsection{Internal State}
+			The internal state of the system is represented by a series of objects closely mirroring their physical counterparts.
+			An object is a template that can be instantiated into memory, and then manipulated.
+			Using objects allows the system to represent its properties in a human readable way, as well as easily translate them into persistent storage and LED controller data.
+
+			\noindent \\In this system, the smallest unit of measurement is the LED. The properties assigned to groups of LEDs defines the behavior of the system as a whole.
+			A strip may have any number of individually controllable LEDs, attached to an LED controller.
+			The Controller contains all information needed for the Control Service to locate and communicate with a physical LED controller.
+			The Zone is the next highest unit of measurement, and represents a set of relationships between LEDs and a shared schedule of behavior.
+			The LEDs within a zone can come from any number of LED strips attached to any LED controllers in the system.
+			A schedule contains a series of time stamps each of which point to an LED state.
+			Color, intensity, and power (on/off) are the three properties of an LED. An LED state defines a single combination of these properties, and can be assigned to a Zone at a specific time.
+
+
+			\noindent \\This diagram shows the internal state of the control service:
+
+			\begin{center}
+				\begin{figure}[H]
+					\includegraphics[width=\linewidth]{systemDiagrams/internalstate.png}
+					\caption{The Internal state of the Control Service is the primary data representation, which is translated as necessary to persistent storage and LED control system.}
+					\label{fig:internalStateDiagram}
+				\end{figure}
+			\end{center}
+
+			\subsubsection{Data Parser}
+			The data parser serves as a translator between internal state and persistent storage.
+			Data flows from the Control Service API, into the internal state, and then finally to the Data Parser where the data is saved.
+			The data parser has a series of functions which take internal state objects as parameters, and generate queries that are ran against the database.
+			In addition to saving data, the data parser has functions that query the database and return internal state objects.
+			Lastly, the data parser is responsible for any conversion routines necessary should the data format be changed significantly between iterations.
+
+
+		\subsection{Data Design}
+			\subsubsection{Overview}
+			% Probably SQLite, because MySQL is a memory hog
+			The persistent data storage is done with a database.
+			The Data Parser in the Control Service translates the internal state into a series of SQL commands to INSERT, UPDATE, or DELETE from the data tables.
+			A database is used because of its ability to update, delete, or read a single piece of information without requiring the entire data structure to be read into memory.
+			When changes are made to the way data is structured in the internal state, the database can be restructured and updated with a short script.
+
+			\noindent \\These are the tables that exist within the database:
+			\begin{center}
+				\begin{figure}[H]
+					\includegraphics[width=\linewidth]{systemDiagrams/database.png}
+					\caption{Schema Diagram of the database tables}
+					\label{fig:databaseDiagram}
+				\end{figure}
+			\end{center}
+
+			\subsubsection{Data Description}
+			In the database, LEDs are stored with an ID, zone, profile, and controller. Zones store the schedule that all LEDs within it follow.
+			Schedules store LED states and the time that each becomes active. LED states store color, intensity, and the power state.
+			Lastly, profiles store a name and description, but each LED itself stores the Zone it belongs to per Profile.
+
+			\noindent \\The tables below contain example data that represents how a real system might look.
+
+			\subsubsection{LEDs table}
+				\begin{tabular}{ |c|c|c|c|c| }
+					\hline
+					id (INT) & strip\_index (INT) & controller\_id (INT) & zone\_id (INT) & profile\_id (INT) \\
+					\hline
+					1 & 1 & 1 & 1 & 1 \\
+					2 & 2 & 1 & 2 & 1 \\
+					3 & 3 & 1 & 1 & 1 \\
+					4 & 4 & 1 & 2 & 1 \\
+					5 & 1 & 2 & 1 & 1 \\
+					6 & 2 & 2 & 2 & 1 \\
+					7 & 3 & 2 & 3 & 1 \\
+					8 & 4 & 2 & 3 & 1 \\
+					\hline
+				\end{tabular}
+
+			\subsubsection{LED States table}
+				\begin{tabular}{ |c|c|c|c| }
+					\hline
+					id (INT) & color (CHAR(7)) & intensity (FLOAT) & pwr (BIT)\\
+					\hline
+					1 & 000000 & 0 & 0 \\
+					2 & FF0000 & 85 & 1 \\
+					3 & 00FF00 & 60 & 1 \\
+					4 & 0000FF & 60 & 1 \\
+					\hline
+				\end{tabular}
+
+			\subsubsection{Zones table}
+				\begin{tabular}{ |c|c| }
+					\hline
+					id (INT) & schedule\_id (INT) \\
+					\hline
+					1 & 1 \\
+					2 & 1 \\
+					3 & 2 \\
+					\hline
+				\end{tabular}
+
+			\subsubsection{Schedules table}
+				\begin{tabular}{ |c|c|c| }
+					\hline
+					id (INT) & effective (INT) & led\_state\_id (INT) \\
+					\hline
+					1 & 800 & 2 \\
+					1 & 1800 & 1 \\
+					2 & 430 & 3 \\
+					2 & 934 & 4 \\
+					2 & 2200 & 1 \\
+					\hline
+				\end{tabular}
+
+			\subsubsection{Profiles table}
+				\begin{tabular}{ |c|c|c| }
+					\hline
+					id (INT) & name (TEXT) & description (TEXT) \\
+					\hline
+					1 & ``Default'' & ``The default schedule that happens every day'' \\
+					2 & ``Holiday'' & ``Lights flash green and red for 30 minutes in the morning, then return to normal'' \\
+					2 & ``Vacation'' & ``Lights come on earlier in the morning and turn off later'' \\
+					\hline
+				\end{tabular}
+
+			\subsubsection{Controllers table}
+				\begin{tabular}{ |c|c|c|c| }
+					\hline
+					id (INT) & gpio (INT) & addr (TEXT) & details (TEXT) \\
+					\hline
+					1 & 26 & ``NULL'' & ``NULL'' \\
+					2 & 17 & ``NULL'' & ``NULL'' \\
+					3 & 0 & ``DF:48:16:A3:44:2B'' & ``protocol:3'' \\
+					\hline
+				\end{tabular}
+
+
+		\subsection{LED Control System}
+			\subsubsection{Overview}
+				\noindent LED control System is be handled by two different controllers. The master controller handles human input, while the LED controller handles the LED input such as color, intensity, and power state.
+				This allows a single controller to handle communication to the LEDs, as the
+				LEDs are clock based and can be interfered by other processes. \cite{fastLED}
+				\subsubsection{LED Controller Communication}
+				\noindent Communication between the master controller and LED controller is done via a serial link.
+				A serial link capable of sending user data through the Pi, to the Teensy, and out to the LED strip can be formed by connecting pins eight and ten of the Pi Zero TX and RX respectively, to the Teensy pins zero and one.
+				The Pi Zero translates what is given from the user to serial, and then send it to the Teensy. The Teensy then communicates the received serial data to the LEDs via the FastLED library.
+				\subsubsection{LED Controller Software}
+				\noindent FastLED is the library chosen that is used on the LED controller.
+				As the name implies, the library is a fast LED library created for Arduino projects.
+				Initialization code would look like this:
+
+			\begin{lstlisting}
+#define NUM_LEDS 10 // number of LEDs on the strip. use only number of LED's on the strip
+#define DATA_PIN 6 // pin used for data signal
+
+void setup(){
+	FastLED.addLeds<WS812>(leds, NUM_LEDS)
+}
+
+void loop(){
+	leds[0] =  CRGB::Red; //sets the first LED to red
+	fastLED.show(); // library call to display
+	delay(30); //refresh every 30 cycles
+}
+
+		\end{lstlisting}
+
+			\section{Human Interface Design}
+			        \subsection{Overview of User Interface}
+			        They way humans interface with a program is an important part of any program.
+			        For this project there are two iterations of the human interface. The
+			        first being though the command line. The second is a web interface.
+			        \subsection{Command Line Interface}
+			            \subsubsection{Interface Overview}
+			            The command line interface asks questions of the user about how they
+			            would like to configure the settings. There are 5 options to
+			            choose from in the main menu. Those options are: Bed Options, Zoning Options,
+			            Scheduling Options, Profile Options and the final option is to apply changes.
+			            Each Option as sub options to configure that section. For example in the
+			            scheduling section there is a prompt to edit a schedule or to add a schedule.
+			            If edit schedule is chosen the system prompts the user to choose which
+			            schedule to modify and then specific settings such as start time, color, and brightness are chosen.
+			            Once all the options are filled in the system return to the page where you can apply the changes.
+			            \subsubsection{Command Line Mockup}
+			            \begin{center}
+			                \begin{figure}[H]
+			                    \includegraphics[width=\linewidth]{comand_line_interface/Selection_006.png}
+			                    \caption{Start of Command Line Interface}
+			                    \label{fig:Start of Command Line Interface}
+			                \end{figure}
+
+			                \begin{figure}[H]
+			                    \includegraphics[width=\linewidth]{comand_line_interface/Selection_003.png}
+			                    \caption{Bed and Zone Selection Menu}
+			                    \label{fig:Bed and Zone Selection Menu}
+			                \end{figure}
+
+			            \begin{figure}[H]
+			                \includegraphics[width=\linewidth]{comand_line_interface/Selection_004.png}
+			                \caption{Scheduling Configuration Menu}
+			                \label{fig:Scheduling Configuration Menu}
+			            \end{figure}
+
+			            \begin{figure}[H]
+			                \includegraphics[width=\linewidth]{comand_line_interface/Selection_005.png}
+			                \caption{End of Command Line Interface}
+			                \label{fig:End of Command Line Interface}
+			            \end{figure}
+			        \end{center}
+
+			        \subsection{Web Interface}
+			            \subsubsection{Interface Overview}
+			            The web interface consists of four pages to configure the settings of
+			            the lighting system. The pages are the home page where the bed that the user
+			            wishes to modify is selected. The Zoning page where the user can select
+			            the zones the user would like to set on the LED strips. A Scheduling page
+			            to set up schedules for when to turn on and off, what color and how bright.
+			            The last page is the profile page where a user can create and change profiles.
+			            The currently selected bed and profile appear in the top right corner.
+			            Below, each page is discussed in greater detail and a mockup of each page
+			            is displayed.
+			            \subsubsection{Home Page}
+			            The home page of the web interface prompts the user to select which
+			            bed they would like to modify. If the user only has one bed hooked up there
+			            is only one option. The chosen bed appears in the top right corner under Currently
+			            Selected.
+			            \subsubsection{Home Page Mockup}
+			            \begin{center}
+			                \begin{figure}[H]
+			                    \includegraphics[width=\linewidth]{web_design/BedPage.png}
+			                    \caption{Home Web Page}
+			                    \label{fig:Home Page}
+			                \end{figure}
+			            \end{center}
+			            \subsubsection{Zones Page}
+			            The zoning section of the web page is where the user sets zones on
+			            the LEDs. All LED strips that are on the selected bed are shown, and the user can assign each LED to a zone by click on it.
+									The number of zones can be increased by clicking the "Add Zone" button.
+									They appear below with the color that is assigned to that zone. You can then select
+			            which zone you would like to add LEDs too by clicking the drop down menu "Select Zone".
+			            When you add an LED to a zone a box with that color appears around it
+			            and grow as more LEDs are added to the zone.
+			            \subsubsection{Zoning Page Mockup}
+			            \begin{center}
+			                \begin{figure}[H]
+			                    \includegraphics[width=\linewidth]{web_design/ZoningPage.png}
+			                    \caption{Zoning Web Page}
+			                    \label{fig:Zoning Page}
+			                \end{figure}
+			            \end{center}
+			            \subsubsection{Schedule Page}
+			            The schedule page is where the main part of the configuration is done.
+			            This is where you would select what time color and brightness of the LEDs.
+			            You can have different schedules for different zones. You can add new schedule
+			            by clicking the "Add Schedule" button and a new schedule is added to the
+			            list.
+			            \subsubsection{Schedule Page Mockup}
+			            \begin{center}
+			                \begin{figure}[H]
+			                    \includegraphics[width=\linewidth]{web_design/SchedulingPage.png}
+			                    \caption{Scheduling Web Page Mockup}
+			                    \label{fig:Schedule Page}
+			                \end{figure}
+			            \end{center}
+			            \subsubsection{Profile Page}
+			            The profile page is where you can switch or create new profiles. The profile
+			            that is currently selected is in the top right of the screen under the "Currently
+			            Selected" section.
+			            \subsubsection{Profile Page Mockup}
+			            \begin{center}
+			                \begin{figure}[H]
+			                    \includegraphics[width=\linewidth]{web_design/ProfilePage.png}
+			                    \caption{Profile Web Page Mockup}
+			                    \label{fig:Profile Page}
+			                \end{figure}
+			            \end{center}
+
+
+	% Scheduling
+	\section{Project Timeline}
+		\subsection{Overview}
+		Looking at the general timing of each of the described implementations, and given roughly 13 weeks, plus or minus a week, each iteration of the project
+		should be given about two weeks of time. This allow plenty of time to be spent on each iteration. If an iteration takes less time than expected, this
+		allows work to start on the next iteration early. The more iterations that are completed early, the more the iterations contained in the
+		\textbf{Additional Features - v2.0} and \textbf{Stretch Goals - v3.0} can also potentially be completed.
+
+		\subsection{Iteration 0}
+		Iteration 0 accomplishes rough connectivity between the RGB strips and the microcontroller system. This means the Master controller can provide input
+		to the LED controllers to manipulate trivial options like color and brightness. This iteration is only expected to take a maximum of 2 weeks, and may
+		take closer to the end of those two weeks. This is the initial "get the ball rolling" iteration. It is expected there may be some complications
+		getting used to the code environment, and getting the hardware up and running.
+
+		\subsection{Iteration 1}
+		Iteration 1 builds on Iteration 1 by making the LED controller look for values and configurations on the Master controller. These are scheduled
+		statically. This is more of a testing iteration to see what the capabilities of communication are between the two controllers. This time will likely decrease.
+		However, it still leaves time should any new issues arise in the details of the design.
+
+		\subsection{Iteration 2}
+		Iteration 2's largest feature is the scripting of the basic LED controls. A user may run a text based script to insert values into the control
+		service. This updates the LEDs quickly, but may not be user friendly. This may also be a shortened iteration interval. The passing of
+		data is completed, and a script is now taking over for manual updates. This script may also be the base for which future command line interfaces to the
+		LEDs are made.
+
+		\subsection{Iteration 3}
+		This iteration sees the first basic functionality of scheduling the LED timings. Currently, the requirements state the iteration includes daily or
+		weekly changes, but could also include hourly start timings for a specific LED state. Seeing as this iteration requires the implementation of a clock,
+		and potentially multiple schedules running, this iteration could take the entire two weeks of the interval.
+
+		\subsection{Iteration 4}
+		Adding the largest functionality yet, Iteration 4 includes the implementation of LED zoning. Each zone has its own state and schedule. This iteration
+		should almost certainly take the entire two week interval. This is due to the increased coding of the internal state housed by the master controller, which
+		keeps a complete "image" of all zones, their specific LEDs, and schedules.
+
+		\subsection{Iteration 5}
+		Further building upon the previous iteration, Iteration 5 increases the amount of LEDs that can be driven, and the amount of control zones. This provides
+		more precise control, and more options for future customization. This iteration is not expected to take the full two allotted weeks. Spending less time at
+		this stage gives wiggle	room to the final iteration.
+
+		\subsection{Iteration 6}
+		Of the 7 iterations, Iteration 6 provides the largest boost of usability with a full fledged web interface. This web page, or set of pages, can provide
+		the end	user the graphical representation of the current planter bed and all its LEDs. It also gives them full control of color, brightness, zoning,
+		and scheduling, all within a few clicks. This iteration should take the remaining time left. If it turns out that it is completed early, the next set of
+		iterations can be attempted.
